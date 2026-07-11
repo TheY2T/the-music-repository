@@ -21,6 +21,8 @@ declare namespace App {
       toolProgression: boolean;
       toolMetronome: boolean;
       toolTuner: boolean;
+      toolIntervals: boolean;
+      toolStaff: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {

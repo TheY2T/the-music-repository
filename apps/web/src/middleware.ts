@@ -139,6 +139,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.ToolTuner,
     FlagDefaults[FlagKeys.ToolTuner],
   );
+  const toolIntervals = await client.getBooleanValue(
+    FlagKeys.ToolIntervals,
+    FlagDefaults[FlagKeys.ToolIntervals],
+  );
+  const toolStaff = await client.getBooleanValue(
+    FlagKeys.ToolStaff,
+    FlagDefaults[FlagKeys.ToolStaff],
+  );
 
   context.locals.flags = {
     demoNewBanner,
@@ -158,6 +166,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
     toolProgression,
     toolMetronome,
     toolTuner,
+    toolIntervals,
+    toolStaff,
   };
   context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
   return next();

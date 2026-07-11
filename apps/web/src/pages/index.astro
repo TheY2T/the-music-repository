@@ -19,6 +19,8 @@ const {
   toolProgression,
   toolMetronome,
   toolTuner,
+  toolIntervals,
+  toolStaff,
 } = Astro.locals.flags;
 const showTools =
   toolKeyboard ||
@@ -30,7 +32,9 @@ const showTools =
   toolModes ||
   toolProgression ||
   toolMetronome ||
-  toolTuner;
+  toolTuner ||
+  toolIntervals ||
+  toolStaff;
 ---
 
 <html lang="en">

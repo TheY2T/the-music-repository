@@ -1,9 +1,10 @@
 # Feature: Interactive tools
 
-- **Phase:** 3 (Slices A–E) · **Status:** shipped
-- **Flag keys:** `tools.keyboard`, `tools.fretboard`, `tools.circle-of-fifths`, `tools.chords`,
-  `tools.scale-explorer`, `tools.chord-id`, `tools.modes`, `tools.progression`, `tools.metronome`,
-  `tools.tuner` (from `@TheY2T/tmr-flags`). Default on.
+- **Phase:** 3 (Slices A–F) · **Status:** shipped
+- **Flag keys:** one `tools.*` flag per tool — `tools.keyboard`, `tools.fretboard`,
+  `tools.circle-of-fifths`, `tools.chords`, `tools.scale-explorer`, `tools.chord-id`, `tools.modes`,
+  `tools.progression`, `tools.metronome`, `tools.tuner`, `tools.intervals`, `tools.staff` (from
+  `@TheY2T/tmr-flags`). Default on.
 
 ## Purpose
 
@@ -36,6 +37,10 @@ staff notation) drop into the same `/tools` hub behind their own flags.
   accurate timing); adjustable BPM + beats-per-bar with a visual beat indicator.
 - `/tools/tuner` — a **tuning reference**: sustained tones for A440 and the six guitar strings
   (E2–E4) with their exact frequencies, to tune by ear.
+- `/tools/intervals` — an **interval explorer**: pick a lower note + interval → the two notes + full
+  interval name; play **melodic** or **harmonic**.
+- `/tools/staff` — a **staff note reader**: an SVG **treble staff** (with clef + ledger lines) of the
+  natural notes C4–C6; click a note to hear and name it.
 - Every tool page renders the **Info View** (Phase 2) and tags terms with `data-help` (e.g. "Highlight
   scale" → `scales`, "Chord type" → `chords`), so the tools contribute to the same contextual glossary.
 

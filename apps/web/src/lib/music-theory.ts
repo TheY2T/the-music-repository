@@ -140,6 +140,72 @@ export function intervalLabel(semitones: number): string {
   return INTERVAL_LABELS[((semitones % 12) + 12) % 12];
 }
 
+/** Full interval names for 0–12 semitones. */
+export const INTERVAL_NAMES = [
+  'Perfect unison',
+  'Minor 2nd',
+  'Major 2nd',
+  'Minor 3rd',
+  'Major 3rd',
+  'Perfect 4th',
+  'Tritone',
+  'Perfect 5th',
+  'Minor 6th',
+  'Major 6th',
+  'Minor 7th',
+  'Major 7th',
+  'Perfect octave',
+];
+
+// --- Staff notation (treble clef) ---
+
+export interface StaffNote {
+  name: string;
+  midi: number;
+  /** Diatonic step above the bottom staff line (E4 = 0); a line every even step. */
+  step: number;
+}
+
+const LETTER_INDEX: Record<string, number> = { C: 0, D: 1, E: 2, F: 3, G: 4, A: 5, B: 6 };
+const NATURALS: { letter: string; semitone: number }[] = [
+  { letter: 'C', semitone: 0 },
+  { letter: 'D', semitone: 2 },
+  { letter: 'E', semitone: 4 },
+  { letter: 'F', semitone: 5 },
+  { letter: 'G', semitone: 7 },
+  { letter: 'A', semitone: 9 },
+  { letter: 'B', semitone: 11 },
+];
+const E4_DIATONIC = LETTER_INDEX.E + 4 * 7;
+
+/** Natural notes C4…C6 for a treble staff, with their vertical staff step. */
+export function trebleStaffNotes(): StaffNote[] {
+  const notes: StaffNote[] = [];
+  for (let octave = 4; octave <= 5; octave += 1) {
+    for (const natural of NATURALS) {
+      notes.push({
+        name: `${natural.letter}${octave}`,
+        midi: 12 * (octave + 1) + natural.semitone,
+        step: LETTER_INDEX[natural.letter] + octave * 7 - E4_DIATONIC,
+      });
+    }
+  }
+  notes.push({ name: 'C6', midi: 84, step: LETTER_INDEX.C + 6 * 7 - E4_DIATONIC });
+  return notes;
+}
+
+/** Even staff steps (ledger lines) needed to reach a note below or above the five lines (0–8). */
+export function ledgerSteps(step: number): number[] {
+  const lines: number[] = [];
+  for (let s = -2; s >= step; s -= 2) {
+    lines.push(s);
+  }
+  for (let s = 10; s <= step; s += 2) {
+    lines.push(s);
+  }
+  return lines;
+}
+
 /** Whole/half step pattern between successive scale degrees (wrapping to the octave). */
 export function stepPattern(intervals: number[]): string[] {
   const steps: number[] = [];

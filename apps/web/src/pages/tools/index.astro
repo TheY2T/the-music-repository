@@ -12,6 +12,8 @@ const {
   toolProgression,
   toolMetronome,
   toolTuner,
+  toolIntervals,
+  toolStaff,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -73,6 +75,18 @@ const tools = [
     title: 'Tuning reference',
     summary: 'Reference tones (A440 + guitar strings) to tune by ear.',
     enabled: toolTuner,
+  },
+  {
+    href: '/tools/intervals',
+    title: 'Interval explorer',
+    summary: 'Hear and name any interval, melodic or harmonic.',
+    enabled: toolIntervals,
+  },
+  {
+    href: '/tools/staff',
+    title: 'Staff note reader',
+    summary: 'Read notes on the treble staff; click to hear them.',
+    enabled: toolStaff,
   },
 ].filter((tool) => tool.enabled);
 

@@ -51,6 +51,10 @@ export const FlagKeys = {
   ToolMetronome: 'tools.metronome',
   /** Phase 3 — tuning reference tool. */
   ToolTuner: 'tools.tuner',
+  /** Phase 3 — interval explorer tool. */
+  ToolIntervals: 'tools.intervals',
+  /** Phase 3 — staff-notation note reader tool. */
+  ToolStaff: 'tools.staff',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -74,4 +78,6 @@ export const FlagDefaults = {
   [FlagKeys.ToolProgression]: true,
   [FlagKeys.ToolMetronome]: true,
   [FlagKeys.ToolTuner]: true,
+  [FlagKeys.ToolIntervals]: true,
+  [FlagKeys.ToolStaff]: true,
 } satisfies Record<FlagKey, boolean>;
