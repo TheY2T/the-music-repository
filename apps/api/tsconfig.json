@@ -3,7 +3,12 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "./dist",
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      // meilisearch ships exports-only (no `types`/`main`); classic node10 resolution can't find
+      // its .d.ts. Point TS at it directly — runtime still uses node's real package resolution.
+      "meilisearch": ["./node_modules/meilisearch/dist/index"]
+    }
   },
   "include": ["src", "drizzle.config.ts", "vitest.config.ts"],
   "exclude": ["node_modules", "dist"]

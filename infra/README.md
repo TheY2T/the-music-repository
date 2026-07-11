@@ -25,7 +25,7 @@ App **Dockerfiles** live next to each app (`apps/api/Dockerfile`, `apps/web/Dock
 
 | Script | What it does |
 |---|---|
-| `pnpm infra:up` | start **db + flagd** (`compose.yaml`) — the core stack for everyday dev |
+| `pnpm infra:up` | start **db + flagd + meilisearch + minio** (`compose.yaml`) — the core stack for everyday dev |
 | `pnpm infra:down` | stop the core stack |
 | `pnpm obs:up` | start the **observability** stack (`compose.observability.yaml`) |
 | `pnpm obs:down` | stop the observability stack |
@@ -38,6 +38,8 @@ Full containerized app run (db + flagd + api + web): `podman compose -f infra/po
 |---|---|---|
 | Postgres (`db`) | 5432 | app data |
 | flagd | 8013 / 8016 | gRPC eval / OFREP HTTP |
+| Meilisearch | 7700 | catalogue search (faceted, typo-tolerant) |
+| MinIO | 9000 / 9001 | media object storage (S3 API) / console |
 | api | 3000 | NestJS |
 | web | 4321 | Astro SSR |
 | OTel Collector | 4317 / 4318 / 8889 | OTLP gRPC / OTLP HTTP / Prometheus scrape |

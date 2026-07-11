@@ -7,7 +7,7 @@ import {
   type ProblemFieldError,
   titleFromCode,
 } from '@TheY2T/tmr-errors';
-import { LOGGER, type LoggerPort } from '@TheY2T/tmr-observability';
+import { type AppLogger, LOGGER } from '@TheY2T/tmr-observability';
 import {
   type ArgumentsHost,
   Catch,
@@ -38,7 +38,7 @@ interface ZodErrorLike {
  */
 @Catch()
 export class ProblemDetailsExceptionFilter implements ExceptionFilter {
-  constructor(@Inject(LOGGER) private readonly logger: LoggerPort) {}
+  constructor(@Inject(LOGGER) private readonly logger: AppLogger) {}
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const http = host.switchToHttp();

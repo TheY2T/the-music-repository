@@ -2,12 +2,12 @@ import { randomUUID } from 'node:crypto';
 import { Module } from '@nestjs/common';
 import { ClsModule } from 'nestjs-cls';
 import { LoggerModule } from 'nestjs-pino';
-import { ClsContextAdapter } from './context/als-context.adapter';
-import { PinoLoggerAdapter } from './logging/pino-logger.adapter';
-import { LOGGER } from './ports/logger.port';
+import { ClsRequestContext } from './context/cls-request-context.adapter';
+import { PinoAppLogger } from './logging/pino-app-logger.adapter';
+import { LOGGER } from './ports/app-logger.port';
 import { REQUEST_CONTEXT } from './ports/request-context.port';
 import { TRACER } from './ports/tracer.port';
-import { OtelTracerAdapter } from './tracing/otel-tracer.adapter';
+import { OtelTracer } from './tracing/otel-tracer.adapter';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -71,9 +71,9 @@ function buildLogTransport() {
     }),
   ],
   providers: [
-    { provide: LOGGER, useClass: PinoLoggerAdapter },
-    { provide: TRACER, useClass: OtelTracerAdapter },
-    { provide: REQUEST_CONTEXT, useClass: ClsContextAdapter },
+    { provide: LOGGER, useClass: PinoAppLogger },
+    { provide: TRACER, useClass: OtelTracer },
+    { provide: REQUEST_CONTEXT, useClass: ClsRequestContext },
   ],
   exports: [LOGGER, TRACER, REQUEST_CONTEXT, LoggerModule, ClsModule],
 })

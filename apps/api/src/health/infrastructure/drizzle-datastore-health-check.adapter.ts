@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { sql } from 'drizzle-orm';
 import { DATABASE, type Database } from '../../infrastructure/database/database.module';
-import { DatabaseHealthPort } from '../application/ports/database-health.port';
+import { DatastoreHealthCheck } from '../application/ports/datastore-health-check.port';
 
-/** Infrastructure adapter: implements the health port using the Drizzle client. */
+/** Infrastructure adapter: implements the datastore health check using the Drizzle client. */
 @Injectable()
-export class DrizzleDatabaseHealthAdapter extends DatabaseHealthPort {
+export class DrizzleDatastoreHealthCheck extends DatastoreHealthCheck {
   constructor(@Inject(DATABASE) private readonly db: Database) {
     super();
   }

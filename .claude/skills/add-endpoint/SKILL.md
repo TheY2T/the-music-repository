@@ -25,7 +25,11 @@ Add a key to `@TheY2T/tmr-flags` + `flags/flags.json`; gate the route with `@Req
   inject `LOGGER`/`TRACER`/`REQUEST_CONTEXT` ports for logging/tracing — never the SDKs).
 - `infrastructure/` — Drizzle adapter + mapper; **outbound** errors re-categorised (5xx→502, timeout→504).
 - `*.controller.ts` — thin: DTO in → use-case → response DTO out. Map DTO ↔ domain in the use-case.
-- `*.module.ts` — bind `{ provide: XPort, useClass: DrizzleX }`.
+- `*.module.ts` — bind `{ provide: <PortClass>, useClass: <Adapter> }`.
+
+**Name ports for the domain capability, not the tech (ADR 0012):** port = `ContentRepository` /
+`CatalogueSearch` / `MediaLibrary` (no `Port` suffix); adapter = `<Tech><Capability>` e.g.
+`DrizzleContentRepository`, `MeilisearchCatalogueSearch`, `S3MediaLibrary`.
 
 No new wiring for errors/logging/tracing — `PlatformModule` (already in AppModule) handles it.
 

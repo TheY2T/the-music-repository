@@ -18,8 +18,11 @@ Add a key to `FlagKeys` (`<domain>.<capability>`) and a default to `FlagDefaults
 ## 3. Backend module (`apps/api/src/<feature>/`) — hexagonal
 Create `domain/` (POJO entities), `application/ports/*.port.ts` (abstract classes) + `*.use-case.ts`,
 `infrastructure/*.adapter.ts` (Drizzle repo + mapper), `dto/`, `*.controller.ts`, `*.module.ts`
-(bind `{ provide: XPort, useClass: DrizzleX }`). Gate routes with `@RequireFlagsEnabled`. Mirror
-`src/health/`. Add tables to `infrastructure/database/schema.ts` and run `db:generate`.
+(bind `{ provide: <PortClass>, useClass: <Adapter> }`). Gate routes with `@RequireFlagsEnabled`. Mirror
+`src/catalogue/`. Add tables to `infrastructure/database/schema.ts` and run `db:generate`.
+
+**Name ports for the domain capability, not the tech (ADR 0012):** e.g. port `CatalogueSearch` /
+`MediaLibrary` (no `Port` suffix), adapter `MeilisearchCatalogueSearch` / `S3MediaLibrary`.
 
 ## 4. Frontend (`apps/web/src/`)
 Add a route in `pages/`, islands in `components/` (one island root per interactive unit; keep

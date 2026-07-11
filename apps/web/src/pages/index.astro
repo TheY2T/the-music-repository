@@ -27,6 +27,12 @@ const { demoNewBanner } = Astro.locals.flags;
         <p class="text-muted-foreground">
           Phase 0 scaffold — Astro + NestJS + Postgres/Drizzle + OpenFeature.
         </p>
+        <a
+          href="/catalogue"
+          class="inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+        >
+          Browse the catalogue →
+        </a>
       </header>
 
       <FlagBanner client:load initial={demoNewBanner} />

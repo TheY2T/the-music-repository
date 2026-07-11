@@ -7,6 +7,18 @@ export const envSchema = z.object({
   DATABASE_URL: z.string().min(1),
   FLAGD_HOST: z.string().default('localhost'),
   FLAGD_PORT: z.coerce.number().int().positive().default(8013),
+
+  // Catalogue search (Meilisearch). Defaults match `pnpm infra:up` on localhost.
+  MEILI_HOST: z.string().default('http://localhost:7700'),
+  MEILI_MASTER_KEY: z.string().default('tmr_dev_master_key'),
+
+  // Catalogue media (MinIO / S3). Defaults match the compose so the app boots for local dev.
+  S3_ENDPOINT: z.string().default('http://localhost:9000'),
+  S3_PUBLIC_ENDPOINT: z.string().optional(),
+  S3_REGION: z.string().default('us-east-1'),
+  S3_ACCESS_KEY_ID: z.string().default('tmr'),
+  S3_SECRET_ACCESS_KEY: z.string().default('tmrsecret'),
+  S3_BUCKET: z.string().default('tmr-media'),
 });
 
 export type Env = z.infer<typeof envSchema>;

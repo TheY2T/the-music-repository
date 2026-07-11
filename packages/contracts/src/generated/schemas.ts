@@ -10,6 +10,122 @@
 import * as zod from 'zod';
 
 /**
+ * Browse & search the catalogue with faceted filters.
+ */
+export const SearchCatalogueQueryParams = zod.object({
+  "q": zod.string().optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional(),
+  "topic": zod.array(zod.string()).optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']).optional(),
+  "difficulty": zod.number().optional(),
+  "page": zod.number().optional(),
+  "pageSize": zod.number().optional()
+})
+
+export const SearchCatalogueResponse = zod.object({
+  "items": zod.array(zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.')),
+  "facets": zod.object({
+  "genres": zod.array(zod.object({
+  "value": zod.string(),
+  "label": zod.string(),
+  "count": zod.number()
+}).describe('One facet bucket (a value + its result count).')),
+  "instruments": zod.array(zod.object({
+  "value": zod.string(),
+  "label": zod.string(),
+  "count": zod.number()
+}).describe('One facet bucket (a value + its result count).')),
+  "topics": zod.array(zod.object({
+  "value": zod.string(),
+  "label": zod.string(),
+  "count": zod.number()
+}).describe('One facet bucket (a value + its result count).')),
+  "types": zod.array(zod.object({
+  "value": zod.string(),
+  "label": zod.string(),
+  "count": zod.number()
+}).describe('One facet bucket (a value + its result count).')),
+  "difficulties": zod.array(zod.object({
+  "value": zod.string(),
+  "label": zod.string(),
+  "count": zod.number()
+}).describe('One facet bucket (a value + its result count).'))
+}).describe('Available facets for the current result set.'),
+  "total": zod.number(),
+  "page": zod.number(),
+  "pageSize": zod.number()
+}).describe('Paginated, faceted catalogue search result.')
+
+
+/**
+ * Fetch a single catalogue item (with taxonomy + presigned media) by slug.
+ */
+export const GetContentBySlugParams = zod.object({
+  "slug": zod.string()
+})
+
+export const GetContentBySlugResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "bodyMdx": zod.string().optional(),
+  "source": zod.string().optional(),
+  "attribution": zod.string().optional(),
+  "license": zod.string().optional(),
+  "tags": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "media": zod.array(zod.object({
+  "id": zod.string(),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'midi', 'musicxml']),
+  "url": zod.string(),
+  "filename": zod.string(),
+  "mime": zod.string(),
+  "license": zod.string().optional(),
+  "attribution": zod.string().optional()
+}).describe('A media file attached to a content item, with a ready-to-use (presigned) URL.')),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+}).describe('Full detail view of a catalogue item.')
+
+
+/**
  * Reference endpoint that always fails with a Problem Details 404 (proves the error pipeline).
  */
 export const GetDemoErrorResponse = zod.void()

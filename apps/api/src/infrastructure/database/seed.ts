@@ -1,0 +1,146 @@
+import 'reflect-metadata';
+import { Logger } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { eq } from 'drizzle-orm';
+import { AppModule } from '../../app.module';
+import { MediaLibrary } from '../../catalogue/application/ports/media-library.port';
+import { CatalogueReindexService } from '../../catalogue/infrastructure/catalogue-reindex.service';
+import { DATABASE, type Database } from './database.module';
+import * as schema from './schema';
+import { CONTENT, GENRES, INSTRUMENTS, makeMinimalPdf, SKILL_TOPICS, TAGS } from './seed-data';
+
+const log = new Logger('Seed');
+
+async function main(): Promise<void> {
+  const app = await NestFactory.createApplicationContext(AppModule, {
+    logger: ['error', 'warn', 'log'],
+  });
+  const db = app.get<Database>(DATABASE);
+  const media = app.get(MediaLibrary);
+  const reindex = app.get(CatalogueReindexService);
+
+  await media.ensureBucket();
+
+  await upsertTaxonomy(db, schema.genres, GENRES);
+  await upsertTaxonomy(db, schema.instruments, INSTRUMENTS);
+  await upsertTaxonomy(db, schema.skillTopics, SKILL_TOPICS);
+  await upsertTaxonomy(db, schema.tags, TAGS);
+
+  const genreIds = await idMap(db, schema.genres);
+  const instrumentIds = await idMap(db, schema.instruments);
+  const topicIds = await idMap(db, schema.skillTopics);
+  const tagIds = await idMap(db, schema.tags);
+
+  for (const item of CONTENT) {
+    const [row] = await db
+      .insert(schema.contentItems)
+      .values({
+        slug: item.slug,
+        title: item.title,
+        summary: item.summary,
+        type: item.type,
+        visibility: 'public',
+        status: 'published',
+        difficulty: item.difficulty ?? null,
+        source: item.source,
+        attribution: item.attribution,
+        license: item.license,
+      })
+      .onConflictDoUpdate({
+        target: schema.contentItems.slug,
+        set: {
+          title: item.title,
+          summary: item.summary,
+          type: item.type,
+          difficulty: item.difficulty ?? null,
+          source: item.source,
+          attribution: item.attribution,
+          license: item.license,
+          updatedAt: new Date(),
+        },
+      })
+      .returning({ id: schema.contentItems.id });
+    if (!row) {
+      continue;
+    }
+    const contentId = row.id;
+
+    await replaceJoins(db, schema.contentGenres, 'genreId', contentId, ids(item.genres, genreIds));
+    await replaceJoins(
+      db,
+      schema.contentInstruments,
+      'instrumentId',
+      contentId,
+      ids(item.instruments, instrumentIds),
+    );
+    await replaceJoins(
+      db,
+      schema.contentSkillTopics,
+      'skillTopicId',
+      contentId,
+      ids(item.topics, topicIds),
+    );
+    await replaceJoins(db, schema.contentTags, 'tagId', contentId, ids(item.tags, tagIds));
+
+    await db.delete(schema.mediaAssets).where(eq(schema.mediaAssets.contentId, contentId));
+    if (item.withPdf) {
+      const key = `scores/${item.slug}.pdf`;
+      const bytes = makeMinimalPdf(item.title);
+      await media.putObject(key, bytes, 'application/pdf');
+      await db.insert(schema.mediaAssets).values({
+        contentId,
+        kind: 'score_pdf',
+        storageKey: key,
+        filename: `${item.slug}.pdf`,
+        mime: 'application/pdf',
+        bytes: bytes.byteLength,
+        license: item.license,
+        attribution: item.attribution,
+      });
+    }
+  }
+
+  const indexed = await reindex.reindex();
+  log.log(`Seeded ${CONTENT.length} content items; reindexed ${indexed} into Meilisearch.`);
+
+  await app.close();
+  process.exit(0);
+}
+
+function ids(slugs: string[], map: Record<string, string>): string[] {
+  return slugs.map((slug) => map[slug]).filter((id): id is string => Boolean(id));
+}
+
+// biome-ignore lint/suspicious/noExplicitAny: generic helper over interchangeable taxonomy tables.
+async function upsertTaxonomy(db: Database, table: any, rows: { slug: string; name: string }[]) {
+  for (const row of rows) {
+    await db.insert(table).values(row).onConflictDoNothing({ target: table.slug });
+  }
+}
+
+// biome-ignore lint/suspicious/noExplicitAny: generic helper over interchangeable taxonomy tables.
+async function idMap(db: Database, table: any): Promise<Record<string, string>> {
+  const rows: { id: string; slug: string }[] = await db
+    .select({ id: table.id, slug: table.slug })
+    .from(table);
+  return Object.fromEntries(rows.map((r) => [r.slug, r.id]));
+}
+
+async function replaceJoins(
+  db: Database,
+  // biome-ignore lint/suspicious/noExplicitAny: generic helper over interchangeable join tables.
+  joinTable: any,
+  fkColumn: string,
+  contentId: string,
+  taxonomyIds: string[],
+): Promise<void> {
+  await db.delete(joinTable).where(eq(joinTable.contentId, contentId));
+  if (taxonomyIds.length > 0) {
+    await db.insert(joinTable).values(taxonomyIds.map((id) => ({ contentId, [fkColumn]: id })));
+  }
+}
+
+main().catch((error) => {
+  log.error(error);
+  process.exit(1);
+});

@@ -1,0 +1,31 @@
+---
+import CatalogueBrowser from '@/components/CatalogueBrowser.tsx';
+import '@/styles/global.css';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Catalogue — The Music Repository</title>
+    <script is:inline>
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body>
+    <main class="mx-auto max-w-6xl space-y-6 p-8">
+      <header class="space-y-1">
+        <a href="/" class="text-sm text-muted-foreground underline">← Home</a>
+        <h1 class="text-3xl font-bold">Catalogue</h1>
+        <p class="text-muted-foreground">
+          Browse teaching materials and songs — filter by type, genre, instrument, and topic.
+        </p>
+      </header>
+      <CatalogueBrowser client:load />
+    </main>
+  </body>
+</html>

@@ -20,4 +20,10 @@ export default tseslint.config(
     ],
   },
   ...tseslint.configs.recommended,
+  {
+    rules: {
+      // Biome owns `noExplicitAny` (with `biome-ignore` for intentional cases). Don't double-enforce.
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
 );

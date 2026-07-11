@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { CheckHealthUseCase } from './application/check-health.use-case';
-import { DatabaseHealthPort } from './application/ports/database-health.port';
+import { DatastoreHealthCheck } from './application/ports/datastore-health-check.port';
 import { HealthController } from './health.controller';
-import { DrizzleDatabaseHealthAdapter } from './infrastructure/drizzle-database-health.adapter';
+import { DrizzleDatastoreHealthCheck } from './infrastructure/drizzle-datastore-health-check.adapter';
 
-/** Wires the port to its adapter — swap the adapter here to change persistence. */
+/** Wires the datastore-health-check capability to its Drizzle adapter. */
 @Module({
   controllers: [HealthController],
   providers: [
     CheckHealthUseCase,
-    { provide: DatabaseHealthPort, useClass: DrizzleDatabaseHealthAdapter },
+    { provide: DatastoreHealthCheck, useClass: DrizzleDatastoreHealthCheck },
   ],
 })
 export class HealthModule {}

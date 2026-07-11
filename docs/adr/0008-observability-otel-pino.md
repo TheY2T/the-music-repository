@@ -9,7 +9,8 @@
   Loki (logs) / Prometheus (metrics) / Grafana** — all in `infra/podman/observability`. Swapping to a
   SaaS (Grafana Cloud/Honeycomb/Datadog) is a one-file collector change.
 - **Hexagonal placement:** the **domain stays OTEL-free**. Logging/tracing/context are exposed as
-  **ports** (`LoggerPort`, `TracerPort`, `RequestContextPort` in `@TheY2T/tmr-observability`) with
+  **ports** (`AppLogger`, `Tracer`, `RequestContext` in `@TheY2T/tmr-observability`; named for the
+  capability per ADR 0012) with
   Pino/OTEL/ALS adapters. Request context uses **AsyncLocalStorage** (nestjs-cls), not REQUEST-scoped DI.
 - **Record-once:** the tracing interceptor marks the span ERROR; the ProblemDetails filter is the sole
   log site — no double logging/span-recording.

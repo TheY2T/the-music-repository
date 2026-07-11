@@ -15,7 +15,7 @@
     "test": "turbo run test",
     "db:generate": "pnpm --filter @TheY2T/tmr-api db:generate",
     "db:migrate": "pnpm --filter @TheY2T/tmr-api db:migrate",
-    "infra:up": "docker compose -f infra/podman/compose.yaml up -d db flagd",
+    "infra:up": "docker compose -f infra/podman/compose.yaml up -d db flagd meilisearch minio",
     "infra:down": "docker compose -f infra/podman/compose.yaml down",
     "obs:up": "docker compose -f infra/podman/observability/compose.observability.yaml up -d",
     "obs:down": "docker compose -f infra/podman/observability/compose.observability.yaml down",

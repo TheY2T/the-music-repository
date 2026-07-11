@@ -24,3 +24,15 @@ filesystems otherwise pass locally but break Linux containers).
 
 - Backend features are hexagonal folders (`domain/`, `application/`, `infrastructure/`, `dto/`).
 - No nested workspace packages; prefer `exports` over barrel files.
+
+## Ports & adapters (hexagonal — see ADR 0012)
+
+- **Ports** are named for the **capability the application core needs**, in the domain's ubiquitous
+  language — **never the technology, and no `Port` suffix** on the identifier. Examples:
+  `ContentRepository`, `CatalogueSearch`, `MediaLibrary`, `DatastoreHealthCheck`, `AppLogger`,
+  `Tracer`, `RequestContext`. (`Repository` is DDD language and is kept.)
+- **Adapters** are named `<Technology><Capability>`: `DrizzleContentRepository`,
+  `MeilisearchCatalogueSearch`, `S3MediaLibrary`, `PinoAppLogger`, `OtelTracer`, `ClsRequestContext`.
+- Use-cases inject the **port**; the module binds `{ provide: <PortClass>, useClass: <Adapter> }`.
+- Files keep the `application/ports/*.port.ts` / `infrastructure/*.adapter.ts` role markers (a discovery
+  aid — the filename may mark the role; the identifier stays technology-free).

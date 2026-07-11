@@ -5,7 +5,7 @@
 
 ## What you get
 
-- **Traces** — auto-instrumented HTTP/DB spans; add business spans via `TracerPort.startActiveSpan`.
+- **Traces** — auto-instrumented HTTP/DB spans; add business spans via `Tracer.startActiveSpan`.
 - **Logs** — Pino JSON with redaction; automatic `trace_id`/`span_id` on every line.
 - **Metrics** — RED metrics + custom counters (nestjs-otel).
 - All exported OTLP → Collector → Tempo/Loki/Prometheus → Grafana (http://localhost:3001).
@@ -14,11 +14,12 @@
 
 ```ts
 constructor(
-  @Inject(LOGGER) private readonly log: LoggerPort,
-  @Inject(TRACER) private readonly tracer: TracerPort,
-  @Inject(REQUEST_CONTEXT) private readonly ctx: RequestContextPort,
+  @Inject(LOGGER) private readonly log: AppLogger,
+  @Inject(TRACER) private readonly tracer: Tracer,
+  @Inject(REQUEST_CONTEXT) private readonly ctx: RequestContext,
 ) {}
 ```
+(Ports named for the capability, not the tech — see ADR 0012.)
 
 The **domain** imports none of these — keep spans/logs in application/infrastructure.
 

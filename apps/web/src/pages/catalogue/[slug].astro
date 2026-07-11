@@ -1,0 +1,27 @@
+---
+import ContentDetail from '@/components/ContentDetail.tsx';
+import '@/styles/global.css';
+
+const { slug = '' } = Astro.params;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Music Repository</title>
+    <script is:inline>
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body>
+    <main class="mx-auto max-w-3xl space-y-6 p-8">
+      <a href="/catalogue" class="text-sm text-muted-foreground underline">← Catalogue</a>
+      <ContentDetail client:load slug={slug} />
+    </main>
+  </body>
+</html>

@@ -1,6 +1,7 @@
 import { PlatformModule } from '@TheY2T/tmr-nest-platform';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { CatalogueModule } from './catalogue/catalogue.module';
 import { validateEnv } from './config/env';
 import { DemoModule } from './demo/demo.module';
 import { FeatureFlagsModule } from './flags/feature-flags.module';
@@ -22,6 +23,7 @@ import { DatabaseModule } from './infrastructure/database/database.module';
     FeatureFlagsModule,
     HealthModule,
     DemoModule,
+    CatalogueModule,
   ],
 })
 export class AppModule {}

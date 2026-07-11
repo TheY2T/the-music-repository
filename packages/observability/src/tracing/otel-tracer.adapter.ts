@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { SpanStatusCode, trace } from '@opentelemetry/api';
-import type { TracerPort } from '../ports/tracer.port';
+import type { Tracer } from '../ports/tracer.port';
 
 @Injectable()
-export class OtelTracerAdapter implements TracerPort {
+export class OtelTracer implements Tracer {
   private readonly tracer = trace.getTracer('tmr');
 
   currentTraceId(): string | undefined {

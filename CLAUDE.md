@@ -38,6 +38,10 @@ Biome + thin ESLint · podman-compose deploy.
   significant decision gets an ADR in `docs/adr/`. Update Mermaid diagrams in `docs/architecture/`.
 - **Hexagonal dependency rule (api):** `domain ← application ← infrastructure/presentation`.
   Use-cases depend on **ports** (abstract classes), never on Drizzle. Bind adapters in the module.
+- **Port naming (ADR 0012):** ports are named for the **domain capability** the core needs (ubiquitous
+  language), **never the technology, no `Port` suffix** — e.g. `CatalogueSearch`, `MediaLibrary`,
+  `ContentRepository`, `DatastoreHealthCheck`. Adapters are `<Technology><Capability>` (e.g.
+  `MeilisearchCatalogueSearch`, `S3MediaLibrary`). Applies to every feature, skill, and doc.
 - **Islands (web):** context-dependent shadcn components must be composed inside **one** `.tsx`
   island root — React context is not shared across separate islands.
 
