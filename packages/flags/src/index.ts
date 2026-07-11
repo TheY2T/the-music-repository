@@ -47,6 +47,10 @@ export const FlagKeys = {
   ToolModes: 'tools.modes',
   /** Phase 3 — Roman-numeral progression builder tool. */
   ToolProgression: 'tools.progression',
+  /** Phase 3 — metronome tool. */
+  ToolMetronome: 'tools.metronome',
+  /** Phase 3 — tuning reference tool. */
+  ToolTuner: 'tools.tuner',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -68,4 +72,6 @@ export const FlagDefaults = {
   [FlagKeys.ToolChordId]: true,
   [FlagKeys.ToolModes]: true,
   [FlagKeys.ToolProgression]: true,
+  [FlagKeys.ToolMetronome]: true,
+  [FlagKeys.ToolTuner]: true,
 } satisfies Record<FlagKey, boolean>;

@@ -15,6 +15,31 @@ function getContext(): AudioContext | null {
   return context;
 }
 
+/** The shared AudioContext, resumed if a user gesture has occurred. Null during SSR / if unsupported. */
+export function getAudioContext(): AudioContext | null {
+  const ctx = getContext();
+  if (ctx?.state === 'suspended') {
+    void ctx.resume();
+  }
+  return ctx;
+}
+
+/** Schedule a short metronome click at an absolute AudioContext time. */
+export function scheduleClick(atTime: number, accent: boolean): void {
+  const ctx = getContext();
+  if (!ctx) {
+    return;
+  }
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+  oscillator.frequency.value = accent ? 1500 : 1000;
+  gain.gain.setValueAtTime(accent ? 0.5 : 0.28, atTime);
+  gain.gain.exponentialRampToValueAtTime(0.0001, atTime + 0.05);
+  oscillator.connect(gain).connect(ctx.destination);
+  oscillator.start(atTime);
+  oscillator.stop(atTime + 0.05);
+}
+
 /** Play a single tone at `frequency` Hz for `duration` seconds with a soft envelope. */
 export function playTone(frequency: number, duration = 0.7): void {
   const ctx = getContext();

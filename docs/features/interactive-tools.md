@@ -1,14 +1,14 @@
 # Feature: Interactive tools
 
-- **Phase:** 3 (Slices A–D) · **Status:** shipped
+- **Phase:** 3 (Slices A–E) · **Status:** shipped
 - **Flag keys:** `tools.keyboard`, `tools.fretboard`, `tools.circle-of-fifths`, `tools.chords`,
-  `tools.scale-explorer`, `tools.chord-id`, `tools.modes`, `tools.progression` (from
-  `@TheY2T/tmr-flags`). Default on.
+  `tools.scale-explorer`, `tools.chord-id`, `tools.modes`, `tools.progression`, `tools.metronome`,
+  `tools.tuner` (from `@TheY2T/tmr-flags`). Default on.
 
 ## Purpose
 
-Client-side, audible music-theory tools — the interactive layer. More (ear-training drills, staff
-notation) drop into the same `/tools` hub behind their own flags.
+Client-side, audible music-theory + practice tools — the interactive layer. More (ear-training drills,
+staff notation) drop into the same `/tools` hub behind their own flags.
 
 ## UX behaviour
 
@@ -32,6 +32,10 @@ notation) drop into the same `/tools` hub behind their own flags.
   with their notes and **characteristic note**; play each.
 - `/tools/progression` — a **Roman-numeral progression builder**: pick a key → click diatonic chords to
   build a progression; see the **Roman-numeral sequence** (e.g. I–V–vi–IV) + names; play it.
+- `/tools/metronome` — an **accented metronome** using a Web Audio **lookahead scheduler** (sample-
+  accurate timing); adjustable BPM + beats-per-bar with a visual beat indicator.
+- `/tools/tuner` — a **tuning reference**: sustained tones for A440 and the six guitar strings
+  (E2–E4) with their exact frequencies, to tune by ear.
 - Every tool page renders the **Info View** (Phase 2) and tags terms with `data-help` (e.g. "Highlight
   scale" → `scales`, "Chord type" → `chords`), so the tools contribute to the same contextual glossary.
 

@@ -113,6 +113,22 @@
       },
       "defaultVariant": "on"
     },
+    "tools.metronome": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
+    "tools.tuner": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "demo.new-banner": {
       "state": "ENABLED",
       "variants": {
