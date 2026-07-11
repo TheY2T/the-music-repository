@@ -31,6 +31,10 @@ export const FlagKeys = {
   Progress: 'learning.progress',
   /** Phase 2 — gates the Info View contextual helper (help topics on hover/focus). */
   InfoView: 'learning.info-view',
+  /** Phase 3 — interactive piano keyboard tool. */
+  ToolKeyboard: 'tools.keyboard',
+  /** Phase 3 — circle of fifths explorer tool. */
+  ToolCircleOfFifths: 'tools.circle-of-fifths',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -44,4 +48,6 @@ export const FlagDefaults = {
   [FlagKeys.Collections]: true,
   [FlagKeys.Progress]: true,
   [FlagKeys.InfoView]: true,
+  [FlagKeys.ToolKeyboard]: true,
+  [FlagKeys.ToolCircleOfFifths]: true,
 } satisfies Record<FlagKey, boolean>;

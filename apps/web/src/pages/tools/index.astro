@@ -1,0 +1,62 @@
+---
+import '@/styles/global.css';
+
+const { toolKeyboard, toolCircleOfFifths } = Astro.locals.flags;
+const tools = [
+  {
+    href: '/tools/keyboard',
+    title: 'Interactive keyboard',
+    summary: 'Click keys to hear them; highlight any scale.',
+    enabled: toolKeyboard,
+  },
+  {
+    href: '/tools/circle-of-fifths',
+    title: 'Circle of fifths',
+    summary: 'Explore keys, signatures, and diatonic chords.',
+    enabled: toolCircleOfFifths,
+  },
+].filter((tool) => tool.enabled);
+
+if (tools.length === 0) {
+  return Astro.redirect('/');
+}
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tools — The Music Repository</title>
+    <script is:inline>
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body>
+    <main class="mx-auto max-w-4xl space-y-6 p-8">
+      <header class="space-y-1">
+        <a href="/" class="text-sm text-muted-foreground underline">← Home</a>
+        <h1 class="text-3xl font-bold">Interactive tools</h1>
+        <p class="text-muted-foreground">Play, explore, and hear music theory in the browser.</p>
+      </header>
+      <ul class="grid gap-4 sm:grid-cols-2">
+        {
+          tools.map((tool) => (
+            <li>
+              <a
+                href={tool.href}
+                class="flex h-full flex-col gap-1 rounded-lg border border-border p-4 transition-colors hover:bg-muted"
+              >
+                <span class="font-semibold">{tool.title}</span>
+                <span class="text-sm text-muted-foreground">{tool.summary}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </main>
+  </body>
+</html>

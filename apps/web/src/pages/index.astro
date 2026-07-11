@@ -8,6 +8,7 @@ const user = Astro.locals.user;
 const canAuthor = adminCms && (user?.role === 'admin' || user?.role === 'editor');
 const showFavorites = favorites && !!user;
 const showProgress = progress && !!user;
+const showTools = Astro.locals.flags.toolKeyboard || Astro.locals.flags.toolCircleOfFifths;
 ---
 
 <html lang="en">
@@ -39,6 +40,7 @@ const showProgress = progress && !!user;
             Browse the catalogue →
           </a>
           {collections && <a href="/collections" class="text-sm underline">Collections</a>}
+          {showTools && <a href="/tools" class="text-sm underline">Tools</a>}
           {
             authEnabled &&
               (user ? (

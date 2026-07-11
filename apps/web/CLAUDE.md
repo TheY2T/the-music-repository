@@ -75,6 +75,13 @@ src/
   has the public list/get + `helpAdminApi`.
 - Admin: `/admin/help/*` (`AdminHelpList` + `HelpTopicForm`). Gated on `learning.info-view`.
 
+## Interactive tools (Phase 3)
+
+- Client-side only — no API. `src/lib/music-theory.ts` (pure 12-TET helpers) + `src/lib/audio.ts`
+  (dependency-free Web Audio player). Islands `PianoKeyboard.tsx`, `CircleOfFifths.tsx`.
+- Pages under `pages/tools/`; each gated on its `tools.*` flag (redirect to `/tools` when off). New
+  tools drop into the `/tools` hub the same way. Tool terms carry `data-help` to feed the Info View.
+
 ## Feature flags
 
 - **SSR:** `src/middleware.ts` sets the flagd provider and evaluates flags per request into

@@ -99,6 +99,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
   );
   const progress = await client.getBooleanValue(FlagKeys.Progress, FlagDefaults[FlagKeys.Progress]);
   const infoView = await client.getBooleanValue(FlagKeys.InfoView, FlagDefaults[FlagKeys.InfoView]);
+  const toolKeyboard = await client.getBooleanValue(
+    FlagKeys.ToolKeyboard,
+    FlagDefaults[FlagKeys.ToolKeyboard],
+  );
+  const toolCircleOfFifths = await client.getBooleanValue(
+    FlagKeys.ToolCircleOfFifths,
+    FlagDefaults[FlagKeys.ToolCircleOfFifths],
+  );
 
   context.locals.flags = {
     demoNewBanner,
@@ -108,6 +116,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
     collections,
     progress,
     infoView,
+    toolKeyboard,
+    toolCircleOfFifths,
   };
   context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
   return next();

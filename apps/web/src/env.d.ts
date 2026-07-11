@@ -11,6 +11,8 @@ declare namespace App {
       collections: boolean;
       progress: boolean;
       infoView: boolean;
+      toolKeyboard: boolean;
+      toolCircleOfFifths: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {
