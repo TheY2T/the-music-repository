@@ -17,6 +17,7 @@ const {
   toolEarTrainer,
   toolSequencer,
   toolSightReading,
+  toolBackingTrack,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -108,6 +109,12 @@ const tools = [
     title: 'Sight-reading',
     summary: 'Read a generated melody on the staff, then check yourself.',
     enabled: toolSightReading,
+  },
+  {
+    href: '/tools/backing-track',
+    title: 'Backing track',
+    summary: 'Loop a chord progression with drums and bass to jam over.',
+    enabled: toolBackingTrack,
   },
 ].filter((tool) => tool.enabled);
 

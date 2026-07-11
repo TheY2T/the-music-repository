@@ -87,6 +87,30 @@ export function scheduleClick(atTime: number, accent: boolean): void {
   oscillator.stop(atTime + 0.05);
 }
 
+/** Schedule a tone at an absolute AudioContext time (for arranged/looped playback). */
+export function scheduleTone(
+  frequency: number,
+  atTime: number,
+  duration: number,
+  options?: { type?: OscillatorType; gain?: number },
+): void {
+  const ctx = getContext();
+  if (!ctx) {
+    return;
+  }
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+  oscillator.type = options?.type ?? 'triangle';
+  oscillator.frequency.value = frequency;
+  const peak = options?.gain ?? 0.25;
+  gain.gain.setValueAtTime(0.0001, atTime);
+  gain.gain.exponentialRampToValueAtTime(peak, atTime + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, atTime + duration);
+  oscillator.connect(gain).connect(ctx.destination);
+  oscillator.start(atTime);
+  oscillator.stop(atTime + duration);
+}
+
 /** Play a single tone at `frequency` Hz for `duration` seconds with a soft envelope. */
 export function playTone(frequency: number, duration = 0.7): void {
   const ctx = getContext();

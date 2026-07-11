@@ -85,6 +85,15 @@ src/
   (redirect to `/tools` when off). New tools drop into the `/tools` hub the same way. Tool terms carry
   `data-help` to feed the Info View. `StaffSequence` renders a row of notes for the staff/sight-reading tools.
 
+## Play-along (Phase 5)
+
+- Backing-track generator at `/tools/backing-track` (gated on `tools.backing-track`). Client-side only,
+  reusing `src/lib/audio.ts` + `music-theory.ts`. `BackingTrack.tsx` runs a lookahead scheduler (same
+  pattern as the metronome/sequencer) that arranges drums + walking bass + comping chords from a
+  progression (`{rootOffset, intervals, roman, suffix}` per bar) × key × tempo, all changeable live via
+  refs; per-part mute checkboxes. New primitive: `scheduleTone(freq, atTime, duration, {type, gain})` in
+  `audio.ts` for precisely-timed bass/chord notes. See `docs/features/play-along.md`.
+
 ## Trainers / drills (Phase 4)
 
 - SRS drills at `/drills` (gated on `trainers.srs` + login). **Decks are client-side**

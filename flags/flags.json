@@ -177,6 +177,14 @@
       },
       "defaultVariant": "on"
     },
+    "tools.backing-track": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "demo.new-banner": {
       "state": "ENABLED",
       "variants": {

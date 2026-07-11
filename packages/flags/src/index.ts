@@ -63,6 +63,8 @@ export const FlagKeys = {
   Trainers: 'trainers.srs',
   /** Phase 4 — sight-reading generator tool. */
   ToolSightReading: 'tools.sight-reading',
+  /** Phase 5 — play-along backing-track generator (progression × key × tempo). */
+  ToolBackingTrack: 'tools.backing-track',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -92,4 +94,5 @@ export const FlagDefaults = {
   [FlagKeys.ToolSequencer]: true,
   [FlagKeys.Trainers]: true,
   [FlagKeys.ToolSightReading]: true,
+  [FlagKeys.ToolBackingTrack]: true,
 } satisfies Record<FlagKey, boolean>;
