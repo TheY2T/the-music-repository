@@ -133,3 +133,30 @@ export const favorites = pgTable(
   },
   (t) => [primaryKey({ columns: [t.userId, t.contentId] })],
 );
+
+// --- Collections (Phase 2): ordered groupings — courses / learning paths / syllabi / song lists. ---
+export const collections = pgTable('collections', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  slug: text('slug').notNull().unique(),
+  title: text('title').notNull(),
+  summary: text('summary'),
+  kind: text('kind').notNull().default('course'), // course | path | syllabus | songlist
+  visibility: text('visibility').notNull().default('public'),
+  status: text('status').notNull().default('draft'), // draft | published
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const collectionItems = pgTable(
+  'collection_items',
+  {
+    collectionId: uuid('collection_id')
+      .notNull()
+      .references(() => collections.id, { onDelete: 'cascade' }),
+    contentId: uuid('content_id')
+      .notNull()
+      .references(() => contentItems.id, { onDelete: 'cascade' }),
+    position: integer('position').notNull(), // 0-based order within the collection
+  },
+  (t) => [primaryKey({ columns: [t.collectionId, t.contentId] })],
+);

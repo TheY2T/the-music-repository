@@ -25,6 +25,8 @@ export const FlagKeys = {
   AdminCms: 'admin.cms',
   /** Slice 2c — gates favorites (heart toggles + My favorites page). */
   Favorites: 'personalization.favorites',
+  /** Phase 2 — gates collections (courses / learning paths) browse + admin. */
+  Collections: 'learning.collections',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -35,4 +37,5 @@ export const FlagDefaults = {
   [FlagKeys.AuthEnabled]: true,
   [FlagKeys.AdminCms]: true,
   [FlagKeys.Favorites]: true,
+  [FlagKeys.Collections]: true,
 } satisfies Record<FlagKey, boolean>;

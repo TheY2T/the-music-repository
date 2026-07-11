@@ -8,6 +8,7 @@ declare namespace App {
       authEnabled: boolean;
       adminCms: boolean;
       favorites: boolean;
+      collections: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {

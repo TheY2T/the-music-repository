@@ -53,6 +53,14 @@ src/
 - Hearts/pages are gated on `Astro.locals.flags.favorites && !!Astro.locals.user` (props passed from
   the page frontmatter). Anonymous users see no hearts.
 
+## Collections (Phase 2)
+
+- Public: `/collections` + `/collections/[slug]` (islands `CollectionsBrowser`/`CollectionDetail` via
+  generated hooks), flag-gated on `learning.collections`.
+- Admin: `/admin/collections/*` (guard + `learning.collections`) — `AdminCollectionList` +
+  `CollectionForm` (ordered content slugs, one per line; save = update metadata + `setItems`). API via
+  `collectionsAdminApi` in `src/lib/admin-api.ts`.
+
 ## Feature flags
 
 - **SSR:** `src/middleware.ts` sets the flagd provider and evaluates flags per request into

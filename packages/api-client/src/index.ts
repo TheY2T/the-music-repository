@@ -2,6 +2,7 @@
 
 export * from './generated/authoring/authoring';
 export * from './generated/catalogue/catalogue';
+export * from './generated/collections/collections';
 export * from './generated/demo/demo';
 export * from './generated/favorites/favorites';
 export * from './generated/health/health';

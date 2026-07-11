@@ -46,6 +46,7 @@ adapters for the technology.
 | `auth/` | `CurrentUser` | `BetterAuthCurrentUser` (+ Better Auth guard/RBAC) |
 | `authoring/` | `ContentAuthoring`, `TaxonomyCatalog` | `DrizzleContentAuthoring`, `DrizzleTaxonomyCatalog` |
 | `favorites/` | `FavoritesRepository` | `DrizzleFavoritesRepository` |
+| `collections/` | `CollectionRepository` | `DrizzleCollectionRepository` |
 
 Cross-feature reuse is via module imports (e.g. `authoring`/`favorites` import `CatalogueModule` for
 `ContentRepository`/`MediaLibrary`/`CatalogueReindexService`, and `auth` for `CurrentUser`) — never by

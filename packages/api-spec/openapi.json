@@ -19,10 +19,263 @@
       "name": "authoring"
     },
     {
+      "name": "collections"
+    },
+    {
       "name": "favorites"
     }
   ],
   "paths": {
+    "/admin/collections": {
+      "get": {
+        "operationId": "listCollectionsAdmin",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      },
+      "post": {
+        "operationId": "createCollection",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionWriteInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/collections/{slug}": {
+      "get": {
+        "operationId": "getCollectionForEdit",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      },
+      "put": {
+        "operationId": "updateCollection",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionWriteInput"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteCollection",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      }
+    },
+    "/admin/collections/{slug}/items": {
+      "put": {
+        "operationId": "setCollectionItems",
+        "description": "Replace the ordered items of a collection.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionItemsInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/collections/{slug}/publish": {
+      "post": {
+        "operationId": "publishCollection",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      }
+    },
+    "/admin/collections/{slug}/unpublish": {
+      "post": {
+        "operationId": "unpublishCollection",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      }
+    },
     "/catalogue/items": {
       "get": {
         "operationId": "searchCatalogue",
@@ -207,6 +460,69 @@
         },
         "tags": [
           "catalogue"
+        ]
+      }
+    },
+    "/collections": {
+      "get": {
+        "operationId": "listCollections",
+        "description": "Browse published collections.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      }
+    },
+    "/collections/{slug}": {
+      "get": {
+        "operationId": "getCollectionBySlug",
+        "description": "A published collection with ordered items.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
         ]
       }
     },
@@ -681,6 +997,191 @@
           }
         },
         "description": "Paginated, faceted catalogue search result."
+      },
+      "CollectionDetail": {
+        "type": "object",
+        "required": [
+          "slug",
+          "title",
+          "kind",
+          "visibility",
+          "itemCount",
+          "status",
+          "items"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "course",
+              "path",
+              "syllabus",
+              "songlist"
+            ]
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "public",
+              "authed",
+              "premium"
+            ]
+          },
+          "itemCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "review",
+              "published"
+            ]
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionEntry"
+            }
+          }
+        },
+        "description": "Full collection with its ordered items."
+      },
+      "CollectionEntry": {
+        "type": "object",
+        "required": [
+          "position",
+          "content"
+        ],
+        "properties": {
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "$ref": "#/components/schemas/ContentSummary"
+          }
+        },
+        "description": "One ordered entry in a collection (a catalogue item at a position)."
+      },
+      "CollectionItemsInput": {
+        "type": "object",
+        "required": [
+          "contentSlugs"
+        ],
+        "properties": {
+          "contentSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "Ordered list of content slugs that make up a collection."
+      },
+      "CollectionList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionSummary"
+            }
+          }
+        }
+      },
+      "CollectionSummary": {
+        "type": "object",
+        "required": [
+          "slug",
+          "title",
+          "kind",
+          "visibility",
+          "itemCount"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "course",
+              "path",
+              "syllabus",
+              "songlist"
+            ]
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "public",
+              "authed",
+              "premium"
+            ]
+          },
+          "itemCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "List/card view of a collection."
+      },
+      "CollectionWriteInput": {
+        "type": "object",
+        "required": [
+          "slug",
+          "title",
+          "kind"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "course",
+              "path",
+              "syllabus",
+              "songlist"
+            ]
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "public",
+              "authed",
+              "premium"
+            ]
+          }
+        },
+        "description": "Create/replace payload for a collection (items set separately)."
       },
       "ContentAdminList": {
         "type": "object",

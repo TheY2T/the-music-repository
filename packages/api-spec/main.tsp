@@ -315,6 +315,118 @@ op createTaxonomy(@path dimension: string, @body body: TaxonomyWriteInput): {
   @body body: TaxonomyRef;
 };
 
+// ===================== Collections (Phase 2) =====================
+// Ordered groupings of catalogue items: courses / learning paths / syllabi / song lists.
+
+alias CollectionKind = "course" | "path" | "syllabus" | "songlist";
+
+/** List/card view of a collection. */
+model CollectionSummary {
+  slug: string;
+  title: string;
+  summary?: string;
+  kind: CollectionKind;
+  visibility: Visibility;
+  itemCount: int32;
+}
+
+/** One ordered entry in a collection (a catalogue item at a position). */
+model CollectionEntry {
+  position: int32;
+  content: ContentSummary;
+}
+
+/** Full collection with its ordered items. */
+model CollectionDetail {
+  ...CollectionSummary;
+  status: ContentStatus;
+  items: CollectionEntry[];
+}
+
+model CollectionList {
+  items: CollectionSummary[];
+}
+
+/** Create/replace payload for a collection (items set separately). */
+model CollectionWriteInput {
+  slug: string;
+  title: string;
+  summary?: string;
+  kind: CollectionKind;
+  visibility?: Visibility;
+}
+
+/** Ordered list of content slugs that make up a collection. */
+model CollectionItemsInput {
+  contentSlugs: string[];
+}
+
+/** Browse published collections. */
+@route("/collections")
+@tag("collections")
+@get
+op listCollections(): CollectionList;
+
+/** A published collection with ordered items. */
+@route("/collections/{slug}")
+@tag("collections")
+@get
+op getCollectionBySlug(@path slug: string): CollectionDetail | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+// --- Admin authoring (RBAC-gated in NestJS) ---
+
+@route("/admin/collections")
+@tag("collections")
+@get
+op listCollectionsAdmin(): CollectionList;
+
+@route("/admin/collections")
+@tag("collections")
+@post
+op createCollection(@body body: CollectionWriteInput): {
+  @statusCode statusCode: 201;
+  @body body: CollectionDetail;
+};
+
+@route("/admin/collections/{slug}")
+@tag("collections")
+@get
+op getCollectionForEdit(@path slug: string): CollectionDetail | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+@route("/admin/collections/{slug}")
+@tag("collections")
+@put
+op updateCollection(@path slug: string, @body body: CollectionWriteInput): CollectionDetail;
+
+/** Replace the ordered items of a collection. */
+@route("/admin/collections/{slug}/items")
+@tag("collections")
+@put
+op setCollectionItems(@path slug: string, @body body: CollectionItemsInput): CollectionDetail;
+
+@route("/admin/collections/{slug}/publish")
+@tag("collections")
+@post
+op publishCollection(@path slug: string): CollectionDetail;
+
+@route("/admin/collections/{slug}/unpublish")
+@tag("collections")
+@post
+op unpublishCollection(@path slug: string): CollectionDetail;
+
+@route("/admin/collections/{slug}")
+@tag("collections")
+@delete
+op deleteCollection(@path slug: string): {
+  @statusCode statusCode: 204;
+};
+
 // ===================== Favorites (Slice 2c) =====================
 // Personalization: a signed-in user's bookmarked content. Auth-gated in NestJS.
 

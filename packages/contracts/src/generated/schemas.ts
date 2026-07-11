@@ -9,6 +9,272 @@
  */
 import * as zod from 'zod';
 
+export const ListCollectionsAdminResponse = zod.object({
+  "items": zod.array(zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "itemCount": zod.number()
+}).describe('List\/card view of a collection.'))
+})
+
+
+export const CreateCollectionBody = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'premium']).optional()
+}).describe('Create\/replace payload for a collection (items set separately).')
+
+export const CreateCollectionResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "itemCount": zod.number(),
+  "status": zod.enum(['draft', 'review', 'published']),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.')
+}).describe('One ordered entry in a collection (a catalogue item at a position).'))
+}).describe('Full collection with its ordered items.')
+
+
+export const GetCollectionForEditParams = zod.object({
+  "slug": zod.string()
+})
+
+export const GetCollectionForEditResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "itemCount": zod.number(),
+  "status": zod.enum(['draft', 'review', 'published']),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.')
+}).describe('One ordered entry in a collection (a catalogue item at a position).'))
+}).describe('Full collection with its ordered items.')
+
+
+export const UpdateCollectionParams = zod.object({
+  "slug": zod.string()
+})
+
+export const UpdateCollectionBody = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'premium']).optional()
+}).describe('Create\/replace payload for a collection (items set separately).')
+
+export const UpdateCollectionResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "itemCount": zod.number(),
+  "status": zod.enum(['draft', 'review', 'published']),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.')
+}).describe('One ordered entry in a collection (a catalogue item at a position).'))
+}).describe('Full collection with its ordered items.')
+
+
+export const DeleteCollectionParams = zod.object({
+  "slug": zod.string()
+})
+
+export const DeleteCollectionResponse = zod.void()
+
+
+/**
+ * Replace the ordered items of a collection.
+ */
+export const SetCollectionItemsParams = zod.object({
+  "slug": zod.string()
+})
+
+export const SetCollectionItemsBody = zod.object({
+  "contentSlugs": zod.array(zod.string())
+}).describe('Ordered list of content slugs that make up a collection.')
+
+export const SetCollectionItemsResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "itemCount": zod.number(),
+  "status": zod.enum(['draft', 'review', 'published']),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.')
+}).describe('One ordered entry in a collection (a catalogue item at a position).'))
+}).describe('Full collection with its ordered items.')
+
+
+export const PublishCollectionParams = zod.object({
+  "slug": zod.string()
+})
+
+export const PublishCollectionResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "itemCount": zod.number(),
+  "status": zod.enum(['draft', 'review', 'published']),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.')
+}).describe('One ordered entry in a collection (a catalogue item at a position).'))
+}).describe('Full collection with its ordered items.')
+
+
+export const UnpublishCollectionParams = zod.object({
+  "slug": zod.string()
+})
+
+export const UnpublishCollectionResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "itemCount": zod.number(),
+  "status": zod.enum(['draft', 'review', 'published']),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.')
+}).describe('One ordered entry in a collection (a catalogue item at a position).'))
+}).describe('Full collection with its ordered items.')
+
+
 /**
  * Browse & search the catalogue with faceted filters.
  */
@@ -151,6 +417,62 @@ export const GetRelatedContentResponse = zod.object({
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
 }).describe('List\/card view of a catalogue item.'))
 }).describe('Related items — published content sharing genre\/instrument\/topic, ranked by overlap.')
+
+
+/**
+ * Browse published collections.
+ */
+export const ListCollectionsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "itemCount": zod.number()
+}).describe('List\/card view of a collection.'))
+})
+
+
+/**
+ * A published collection with ordered items.
+ */
+export const GetCollectionBySlugParams = zod.object({
+  "slug": zod.string()
+})
+
+export const GetCollectionBySlugResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "itemCount": zod.number(),
+  "status": zod.enum(['draft', 'review', 'published']),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.')
+}).describe('One ordered entry in a collection (a catalogue item at a position).'))
+}).describe('Full collection with its ordered items.')
 
 
 /**

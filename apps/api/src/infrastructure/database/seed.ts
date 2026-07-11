@@ -1,13 +1,21 @@
 import 'reflect-metadata';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import { AppModule } from '../../app.module';
 import { MediaLibrary } from '../../catalogue/application/ports/media-library.port';
 import { CatalogueReindexService } from '../../catalogue/infrastructure/catalogue-reindex.service';
 import { DATABASE, type Database } from './database.module';
 import * as schema from './schema';
-import { CONTENT, GENRES, INSTRUMENTS, makeMinimalPdf, SKILL_TOPICS, TAGS } from './seed-data';
+import {
+  COLLECTIONS,
+  CONTENT,
+  GENRES,
+  INSTRUMENTS,
+  makeMinimalPdf,
+  SKILL_TOPICS,
+  TAGS,
+} from './seed-data';
 
 const log = new Logger('Seed');
 
@@ -102,6 +110,50 @@ async function main(): Promise<void> {
 
   const indexed = await reindex.reindex();
   log.log(`Seeded ${CONTENT.length} content items; reindexed ${indexed} into Meilisearch.`);
+
+  for (const collection of COLLECTIONS) {
+    const [row] = await db
+      .insert(schema.collections)
+      .values({
+        slug: collection.slug,
+        title: collection.title,
+        summary: collection.summary,
+        kind: collection.kind,
+        visibility: 'public',
+        status: 'published',
+      })
+      .onConflictDoUpdate({
+        target: schema.collections.slug,
+        set: {
+          title: collection.title,
+          summary: collection.summary,
+          kind: collection.kind,
+          status: 'published',
+          updatedAt: new Date(),
+        },
+      })
+      .returning({ id: schema.collections.id });
+    if (!row) {
+      continue;
+    }
+    await db.delete(schema.collectionItems).where(eq(schema.collectionItems.collectionId, row.id));
+    const contentRows = await db
+      .select({ id: schema.contentItems.id, slug: schema.contentItems.slug })
+      .from(schema.contentItems)
+      .where(inArray(schema.contentItems.slug, collection.itemSlugs));
+    const idBySlug = new Map(contentRows.map((r) => [r.slug, r.id]));
+    const values = collection.itemSlugs
+      .filter((slug) => idBySlug.has(slug))
+      .map((slug, position) => ({
+        collectionId: row.id,
+        contentId: idBySlug.get(slug) as string,
+        position,
+      }));
+    if (values.length) {
+      await db.insert(schema.collectionItems).values(values);
+    }
+  }
+  log.log(`Seeded ${COLLECTIONS.length} collections.`);
 
   await app.close();
   process.exit(0);

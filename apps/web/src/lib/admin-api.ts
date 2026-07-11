@@ -1,4 +1,7 @@
 import type {
+  CollectionDetail,
+  CollectionList,
+  CollectionWriteInput,
   ContentAdminList,
   ContentDetail,
   ContentWriteInput,
@@ -51,6 +54,35 @@ export const adminApi = {
       body: JSON.stringify(body),
     }),
   listTaxonomy: (dimension: string) => request<{ items: TaxonomyRef[] }>(`/taxonomy/${dimension}`),
+};
+
+/** Admin CMS for collections (Phase 2). */
+export const collectionsAdminApi = {
+  list: () => request<CollectionList>('/admin/collections'),
+  get: (slug: string) =>
+    request<CollectionDetail>(`/admin/collections/${encodeURIComponent(slug)}`),
+  create: (body: CollectionWriteInput) =>
+    request<CollectionDetail>('/admin/collections', { method: 'POST', body: JSON.stringify(body) }),
+  update: (slug: string, body: CollectionWriteInput) =>
+    request<CollectionDetail>(`/admin/collections/${encodeURIComponent(slug)}`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+    }),
+  setItems: (slug: string, contentSlugs: string[]) =>
+    request<CollectionDetail>(`/admin/collections/${encodeURIComponent(slug)}/items`, {
+      method: 'PUT',
+      body: JSON.stringify({ contentSlugs }),
+    }),
+  publish: (slug: string) =>
+    request<CollectionDetail>(`/admin/collections/${encodeURIComponent(slug)}/publish`, {
+      method: 'POST',
+    }),
+  unpublish: (slug: string) =>
+    request<CollectionDetail>(`/admin/collections/${encodeURIComponent(slug)}/unpublish`, {
+      method: 'POST',
+    }),
+  remove: (slug: string) =>
+    request<void>(`/admin/collections/${encodeURIComponent(slug)}`, { method: 'DELETE' }),
 };
 
 /** Upload bytes to a presigned PUT URL (direct browser → object storage). */

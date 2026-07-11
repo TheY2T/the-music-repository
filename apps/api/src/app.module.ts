@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { AuthoringModule } from './authoring/authoring.module';
 import { CatalogueModule } from './catalogue/catalogue.module';
+import { CollectionsModule } from './collections/collections.module';
 import { validateEnv } from './config/env';
 import { DemoModule } from './demo/demo.module';
 import { FavoritesModule } from './favorites/favorites.module';
@@ -30,6 +31,7 @@ import { DatabaseModule } from './infrastructure/database/database.module';
     CatalogueModule,
     AuthoringModule,
     FavoritesModule,
+    CollectionsModule,
   ],
 })
 export class AppModule {}
