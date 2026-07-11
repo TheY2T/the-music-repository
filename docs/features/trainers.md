@@ -14,8 +14,11 @@ right time and persist per user — the learning system on top of the Phase-3 to
 - `/drills/{deck}` — a review session: hear the question (**▶ Play**, auto-plays after the first
   gesture), **Show answer**, then self-grade **Again / Good / Easy** → the next card. A session runs
   through due + new cards (capped) and ends with a summary.
-- Two decks ship: **Interval recognition** and **Chord quality** (questions generated + played
-  client-side, reusing the Phase-3 audio + theory).
+- Four decks ship — **aural** (a **▶ Play** question): Interval recognition, Chord quality, Scale
+  degrees; and **visual/reading** (a rendered prompt, no audio): Note reading (a note on the treble
+  staff). All questions are generated client-side, reusing the Phase-3 audio + theory + staff code.
+- Decks declare an optional `play(card)` (aural) and/or `prompt(card)` (a rendered React node, e.g.
+  `StaffNotePrompt`); the session shows whichever the deck provides and only auto-plays aural cards.
 
 ## Data model
 
@@ -40,5 +43,7 @@ Hexagonal: pure `applySm2` domain fn; `ReviewRepository` port ← `DrizzleReview
 
 - **Backend (curl):** anon → 401; grade "Good"→ interval 1 → 6 → (Easy) 15 days with ease 2.5 → 2.6;
   "Again" lapses to 1 day / 0 reps; invalid grade → 422; deck state + summary correct.
-- **Web (browser):** hub lists both decks (13 / 10 new); a session runs "Card 1 of 10" → Show answer →
-  grade Good → "Card 2 of 10"; the graded card persists and the hub then shows **1 learned**.
+- **Web (browser):** hub lists all four decks; the intervals session runs "Card 1 of 10" → Show answer
+  → grade Good → "Card 2 of 10", persists (hub shows **1 learned**). The **Note reading** deck renders a
+  staff prompt (no Play), reveals e.g. "C4", grades Easy → persists (SM-2: interval 1, ease 2.6). The
+  **Scale degrees** deck plays audio and reveals e.g. "1 (Tonic)". New decks needed **no backend change**.

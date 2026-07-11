@@ -32,9 +32,10 @@ export default function ReviewSession({ deckKey }: { deckKey: string }) {
     });
   }, [deck]);
 
-  // Auto-play the current card's question (silent until the first user gesture unlocks audio).
+  // Auto-play aural cards (silent until the first user gesture unlocks audio). Visual (reading) decks
+  // show a prompt instead and are not auto-played.
   useEffect(() => {
-    if (deck && queue && index < queue.length) {
+    if (deck?.play && !deck.prompt && queue && index < queue.length) {
       deck.play(queue[index]);
     }
   }, [deck, queue, index]);
@@ -98,11 +99,14 @@ export default function ReviewSession({ deckKey }: { deckKey: string }) {
         Card {index + 1} of {queue.length}
       </p>
 
-      <div className="flex justify-center">
-        <Button variant="outline" size="lg" onClick={() => deck.play(card)}>
-          ▶ Play
-        </Button>
-      </div>
+      {deck.prompt ? <div className="flex justify-center">{deck.prompt(card)}</div> : null}
+      {deck.play ? (
+        <div className="flex justify-center">
+          <Button variant="outline" size="lg" onClick={() => deck.play?.(card)}>
+            ▶ Play
+          </Button>
+        </div>
+      ) : null}
 
       {revealed ? (
         <div className="space-y-4 text-center">
