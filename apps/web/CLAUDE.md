@@ -92,7 +92,11 @@ src/
   pattern as the metronome/sequencer) that arranges drums + walking bass + comping chords from a
   progression (`{rootOffset, intervals, roman, suffix}` per bar) × key × tempo, all changeable live via
   refs; per-part mute checkboxes. New primitive: `scheduleTone(freq, atTime, duration, {type, gain})` in
-  `audio.ts` for precisely-timed bass/chord notes. See `docs/features/play-along.md`.
+  `audio.ts` for precisely-timed bass/chord notes.
+- Voicing library at `/tools/voicings` (gated on `tools.voicings`). `VoicingLibrary.tsx` builds standard
+  voicings (close, inversions, drop-2/3, shell for 7ths; open for triads) via pure array math local to
+  the component (`invert`/`drop`) and renders each on a fixed 3-octave keyboard diagram with lit + named
+  tones + play/arpeggiate. See `docs/features/play-along.md`.
 
 ## Trainers / drills (Phase 4)
 

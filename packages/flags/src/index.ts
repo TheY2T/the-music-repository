@@ -65,6 +65,8 @@ export const FlagKeys = {
   ToolSightReading: 'tools.sight-reading',
   /** Phase 5 — play-along backing-track generator (progression × key × tempo). */
   ToolBackingTrack: 'tools.backing-track',
+  /** Phase 5 — chord voicing library (close / inversions / drop-2/3 / shell). */
+  ToolVoicings: 'tools.voicings',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -95,4 +97,5 @@ export const FlagDefaults = {
   [FlagKeys.Trainers]: true,
   [FlagKeys.ToolSightReading]: true,
   [FlagKeys.ToolBackingTrack]: true,
+  [FlagKeys.ToolVoicings]: true,
 } satisfies Record<FlagKey, boolean>;

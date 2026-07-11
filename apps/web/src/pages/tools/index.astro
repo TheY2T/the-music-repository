@@ -18,6 +18,7 @@ const {
   toolSequencer,
   toolSightReading,
   toolBackingTrack,
+  toolVoicings,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -115,6 +116,12 @@ const tools = [
     title: 'Backing track',
     summary: 'Loop a chord progression with drums and bass to jam over.',
     enabled: toolBackingTrack,
+  },
+  {
+    href: '/tools/voicings',
+    title: 'Voicing library',
+    summary: 'See a chord’s inversions, drop-2/3, and shell voicings on the keyboard.',
+    enabled: toolVoicings,
   },
 ].filter((tool) => tool.enabled);
 

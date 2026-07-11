@@ -185,6 +185,14 @@
       },
       "defaultVariant": "on"
     },
+    "tools.voicings": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "demo.new-banner": {
       "state": "ENABLED",
       "variants": {

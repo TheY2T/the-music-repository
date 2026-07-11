@@ -164,6 +164,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.ToolBackingTrack,
     FlagDefaults[FlagKeys.ToolBackingTrack],
   );
+  const toolVoicings = await client.getBooleanValue(
+    FlagKeys.ToolVoicings,
+    FlagDefaults[FlagKeys.ToolVoicings],
+  );
 
   context.locals.flags = {
     demoNewBanner,
@@ -190,6 +194,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     trainers,
     toolSightReading,
     toolBackingTrack,
+    toolVoicings,
   };
   context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
   return next();
