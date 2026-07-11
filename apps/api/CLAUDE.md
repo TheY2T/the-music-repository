@@ -78,8 +78,9 @@ write-side features:
   `ZodValidationPipe` yields **422 problem+json with `errors[]`** on invalid bodies.
 - **RBAC:** every route uses `@RequirePermissions({ resource: [actions] })` (editor can't delete —
   `content:delete` is admin-only).
-- **Media upload = presigned PUT:** `MediaLibrary.presignPutUrl` + bucket CORS (set in `ensureBucket`,
-  applied on boot via `OnApplicationBootstrap`). Browser PUTs directly to MinIO.
+- **Media upload = presigned PUT:** `MediaLibrary.presignPutUrl`; browser PUTs directly to MinIO
+  (default CORS is permissive; `ensureBucket` also does a **best-effort** `PutBucketCors`, swallowed
+  when the storage returns `NotImplemented` so it never breaks bucket setup / seeding).
 - **List responses wrap in `{ items }`** to match the contract; `POST .../publish` sets `@HttpCode(200)`
   (Nest defaults POST to 201).
 

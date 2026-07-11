@@ -1,8 +1,36 @@
 import {
   ApiProvider,
   type ContentDetail as ContentDetailDto,
+  type ContentSummary,
   useGetContentBySlug,
+  useGetRelatedContent,
 } from '@TheY2T/tmr-api-client';
+
+function RelatedSection({ slug }: { slug: string }) {
+  const { data } = useGetRelatedContent(slug);
+  const items = data?.status === 200 ? (data.data.items as ContentSummary[]) : [];
+  if (!items.length) {
+    return null;
+  }
+  return (
+    <section className="space-y-3 border-t border-border pt-6">
+      <h2 className="font-semibold">Related</h2>
+      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((item) => (
+          <li key={item.slug}>
+            <a
+              href={`/catalogue/${item.slug}`}
+              className="flex h-full flex-col gap-1 rounded-lg border border-border p-3 transition-colors hover:bg-muted"
+            >
+              <span className="font-mono text-xs text-muted-foreground">{item.type}</span>
+              <span className="font-medium leading-snug">{item.title}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 function Detail({ slug }: { slug: string }) {
   const { data, isLoading } = useGetContentBySlug(slug);
@@ -68,6 +96,8 @@ function Detail({ slug }: { slug: string }) {
           {item.license ? <p>License: {item.license}</p> : null}
         </footer>
       ) : null}
+
+      <RelatedSection slug={slug} />
     </article>
   );
 }

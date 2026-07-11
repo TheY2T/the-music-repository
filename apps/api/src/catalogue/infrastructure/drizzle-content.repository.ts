@@ -45,6 +45,31 @@ export class DrizzleContentRepository extends ContentRepository {
     return Promise.all(rows.map((row) => this.hydrate(row)));
   }
 
+  async findRelated(slug: string, limit: number): Promise<ContentItem[]> {
+    const source = await this.getBySlug(slug);
+    if (!source || source.status !== 'published') {
+      return [];
+    }
+    // Overlap = count of shared taxonomy slugs (genre/instrument/topic). At seed scale, scoring in
+    // memory over the published set is simpler and cheaper than a multi-join SQL ranking query.
+    const sourceTaxonomy = new Set(
+      [...source.genres, ...source.instruments, ...source.topics].map((ref) => ref.slug),
+    );
+    const published = await this.findAllPublished();
+    return published
+      .filter((item) => item.slug !== slug)
+      .map((item) => ({
+        item,
+        overlap: [...item.genres, ...item.instruments, ...item.topics].filter((ref) =>
+          sourceTaxonomy.has(ref.slug),
+        ).length,
+      }))
+      .filter((scored) => scored.overlap > 0)
+      .sort((a, b) => b.overlap - a.overlap || a.item.title.localeCompare(b.item.title))
+      .slice(0, limit)
+      .map((scored) => scored.item);
+  }
+
   private async hydrate(row: ContentRow): Promise<ContentItem> {
     const [genreRefs, instrumentRefs, topicRefs, tagRefs, media] = await Promise.all([
       this.taxonomy(contentGenres, contentGenres.genreId, genres, row.id),

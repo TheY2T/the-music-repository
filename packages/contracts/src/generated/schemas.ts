@@ -125,6 +125,34 @@ export const GetContentBySlugResponse = zod.object({
 }).describe('Full detail view of a catalogue item.')
 
 
+export const GetRelatedContentParams = zod.object({
+  "slug": zod.string()
+})
+
+export const GetRelatedContentResponse = zod.object({
+  "items": zod.array(zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'))
+}).describe('Related items — published content sharing genre\/instrument\/topic, ranked by overlap.')
+
+
 /**
  * List every content item (all statuses) for the admin table.
  */

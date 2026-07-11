@@ -17,7 +17,8 @@ taxonomy — all RBAC-gated and spec-first, with writes reindexed into search im
   datalist suggestions; unknown slugs are auto-created), and (edit mode) **Publish / Unpublish /
   Delete** + a **media uploader**.
 - **Media upload** is a two-step presigned PUT: the API reserves a row + returns an upload URL, the
-  browser PUTs the file **directly to MinIO** (bucket CORS is configured on boot).
+  browser PUTs the file **directly to MinIO** (whose default CORS is permissive; the app also tries a
+  best-effort `PutBucketCors` on boot, ignored where the storage doesn't implement it).
 - Published items appear immediately in `/catalogue` (reindex-on-write).
 
 ## Data model

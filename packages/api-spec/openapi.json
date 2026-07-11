@@ -180,6 +180,36 @@
         ]
       }
     },
+    "/catalogue/items/{slug}/related": {
+      "get": {
+        "operationId": "getRelatedContent",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelatedContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "catalogue"
+        ]
+      }
+    },
     "/content": {
       "get": {
         "operationId": "listContent",
@@ -1236,6 +1266,21 @@
           }
         },
         "description": "RFC 9457 Problem Details (`application/problem+json`)."
+      },
+      "RelatedContent": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentSummary"
+            }
+          }
+        },
+        "description": "Related items — published content sharing genre/instrument/topic, ranked by overlap."
       },
       "TaxonomyList": {
         "type": "object",

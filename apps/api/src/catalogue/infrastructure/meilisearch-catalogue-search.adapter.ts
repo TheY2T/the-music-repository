@@ -24,6 +24,10 @@ interface IndexDoc {
   genreSlugs: string[];
   instrumentSlugs: string[];
   topicSlugs: string[];
+  // Flattened taxonomy names — searchable, so "blues" or "piano" match by tag, not just title/summary.
+  genreNames: string[];
+  instrumentNames: string[];
+  topicNames: string[];
   genres: { slug: string; name: string }[];
   instruments: { slug: string; name: string }[];
   topics: { slug: string; name: string }[];
@@ -53,7 +57,8 @@ export class MeilisearchCatalogueSearch extends CatalogueSearch implements OnMod
   private async ensureIndex(): Promise<void> {
     await this.client.createIndex(INDEX_UID, { primaryKey: 'id' }).catch(() => undefined);
     await this.client.index(INDEX_UID).updateSettings({
-      searchableAttributes: ['title', 'summary'],
+      // Order = importance: a title hit outranks a summary hit, which outranks a taxonomy-name hit.
+      searchableAttributes: ['title', 'summary', 'genreNames', 'instrumentNames', 'topicNames'],
       filterableAttributes: [
         'genreSlugs',
         'instrumentSlugs',
@@ -144,6 +149,9 @@ function toIndexDoc(item: ContentItem): IndexDoc {
     genreSlugs: item.genres.map((g) => g.slug),
     instrumentSlugs: item.instruments.map((i) => i.slug),
     topicSlugs: item.topics.map((t) => t.slug),
+    genreNames: item.genres.map((g) => g.name),
+    instrumentNames: item.instruments.map((i) => i.name),
+    topicNames: item.topics.map((t) => t.name),
     genres: item.genres,
     instruments: item.instruments,
     topics: item.topics,

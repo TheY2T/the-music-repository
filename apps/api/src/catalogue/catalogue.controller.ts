@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { GetContentBySlugUseCase } from './application/use-cases/get-content-by-slug.use-case';
+import { GetRelatedContentUseCase } from './application/use-cases/get-related-content.use-case';
 import { SearchCatalogueUseCase } from './application/use-cases/search-catalogue.use-case';
 import type { CatalogueQuery } from './domain/content-item';
 
@@ -10,6 +11,7 @@ export class CatalogueController {
   constructor(
     private readonly searchCatalogue: SearchCatalogueUseCase,
     private readonly getContent: GetContentBySlugUseCase,
+    private readonly getRelated: GetRelatedContentUseCase,
   ) {}
 
   @Get('items')
@@ -20,6 +22,11 @@ export class CatalogueController {
   @Get('items/:slug')
   detail(@Param('slug') slug: string) {
     return this.getContent.execute(slug);
+  }
+
+  @Get('items/:slug/related')
+  async related(@Param('slug') slug: string) {
+    return { items: await this.getRelated.execute(slug) };
   }
 }
 

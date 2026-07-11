@@ -170,6 +170,16 @@ op getContentBySlug(@path slug: string): ContentDetail | {
   @body body: ProblemDetails;
 };
 
+/** Related items — published content sharing genre/instrument/topic, ranked by overlap. */
+model RelatedContent {
+  items: ContentSummary[];
+}
+
+@route("/catalogue/items/{slug}/related")
+@tag("catalogue")
+@get
+op getRelatedContent(@path slug: string): RelatedContent;
+
 // ===================== Admin CMS (Slice 2b) =====================
 // RBAC-gated authoring surface. Enforcement lives in NestJS guards; the contract documents shapes.
 

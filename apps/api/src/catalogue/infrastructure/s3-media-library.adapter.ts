@@ -58,23 +58,37 @@ export class S3MediaLibrary extends MediaLibrary implements OnApplicationBootstr
     } catch {
       await this.client.send(new CreateBucketCommand({ Bucket: this.bucket }));
     }
-    // Allow the web origins to PUT (presigned upload) and GET directly from the browser.
-    await this.client.send(
-      new PutBucketCorsCommand({
-        Bucket: this.bucket,
-        CORSConfiguration: {
-          CORSRules: [
-            {
-              AllowedMethods: ['GET', 'PUT'],
-              AllowedOrigins: this.corsOrigins,
-              AllowedHeaders: ['*'],
-              ExposeHeaders: ['ETag'],
-              MaxAgeSeconds: 3600,
-            },
-          ],
-        },
-      }),
-    );
+    await this.ensureCors();
+  }
+
+  /**
+   * Allow the web origins to PUT (presigned upload) + GET directly from the browser. Best-effort:
+   * some MinIO builds return `NotImplemented` for PutBucketCors, and MinIO's default CORS is already
+   * permissive — so a failure here must not break bucket setup / seeding.
+   */
+  private async ensureCors(): Promise<void> {
+    try {
+      await this.client.send(
+        new PutBucketCorsCommand({
+          Bucket: this.bucket,
+          CORSConfiguration: {
+            CORSRules: [
+              {
+                AllowedMethods: ['GET', 'PUT'],
+                AllowedOrigins: this.corsOrigins,
+                AllowedHeaders: ['*'],
+                ExposeHeaders: ['ETag'],
+                MaxAgeSeconds: 3600,
+              },
+            ],
+          },
+        }),
+      );
+    } catch {
+      this.logger.debug(
+        'PutBucketCors not applied (unsupported by this storage); relying on defaults.',
+      );
+    }
   }
 
   async putObject(key: string, body: Uint8Array, contentType: string): Promise<void> {

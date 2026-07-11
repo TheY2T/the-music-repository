@@ -3,6 +3,7 @@ import { CatalogueSearch } from './application/ports/catalogue-search.port';
 import { ContentRepository } from './application/ports/content-repository.port';
 import { MediaLibrary } from './application/ports/media-library.port';
 import { GetContentBySlugUseCase } from './application/use-cases/get-content-by-slug.use-case';
+import { GetRelatedContentUseCase } from './application/use-cases/get-related-content.use-case';
 import { SearchCatalogueUseCase } from './application/use-cases/search-catalogue.use-case';
 import { CatalogueController } from './catalogue.controller';
 import { CatalogueReindexService } from './infrastructure/catalogue-reindex.service';
@@ -20,6 +21,7 @@ import { S3MediaLibrary } from './infrastructure/s3-media-library.adapter';
   providers: [
     SearchCatalogueUseCase,
     GetContentBySlugUseCase,
+    GetRelatedContentUseCase,
     CatalogueReindexService,
     { provide: ContentRepository, useClass: DrizzleContentRepository },
     { provide: CatalogueSearch, useClass: MeilisearchCatalogueSearch },
