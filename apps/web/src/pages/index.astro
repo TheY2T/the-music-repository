@@ -8,6 +8,7 @@ const user = Astro.locals.user;
 const canAuthor = adminCms && (user?.role === 'admin' || user?.role === 'editor');
 const showFavorites = favorites && !!user;
 const showProgress = progress && !!user;
+const showDrills = Astro.locals.flags.trainers && !!user;
 const {
   toolKeyboard,
   toolCircleOfFifths,
@@ -80,6 +81,12 @@ const showTools =
                     <>
                       {' · '}
                       <a href="/me/progress" class="underline">My progress</a>
+                    </>
+                  )}
+                  {showDrills && (
+                    <>
+                      {' · '}
+                      <a href="/drills" class="underline">Drills</a>
                     </>
                   )}
                   {showFavorites && (

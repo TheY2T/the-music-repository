@@ -513,6 +513,59 @@ op logPractice(@body body: PracticeInput): {
   @body body: ProgressSummary;
 };
 
+// ===================== Trainers / SRS reviews (Phase 4) =====================
+// Spaced-repetition (SM-2) state per user + deck + card. Decks are defined client-side; the server
+// only tracks scheduling. Auth-gated in NestJS.
+
+/** SM-2 scheduling state for a single card. */
+model ReviewState {
+  card: string;
+  easeFactor: float32;
+  intervalDays: int32;
+  repetitions: int32;
+  dueAt: string;
+}
+
+model DeckReviews {
+  cards: ReviewState[];
+}
+
+model DeckSummary {
+  deck: string;
+  learned: int32;
+  due: int32;
+}
+
+model ReviewSummary {
+  decks: DeckSummary[];
+}
+
+/** A recall grade: 0–5 (SM-2). Typically Again=2, Good=4, Easy=5. */
+model ReviewGrade {
+  quality: int32;
+}
+
+/** Per-deck learned + due counts for the current user. */
+@route("/me/reviews")
+@tag("reviews")
+@get
+op getReviewSummary(): ReviewSummary;
+
+/** All stored review states for a deck (the client computes new/due from its deck definition). */
+@route("/me/reviews/{deck}")
+@tag("reviews")
+@get
+op getDeckReviews(@path deck: string): DeckReviews;
+
+/** Grade a card; applies SM-2 and returns the updated state. */
+@route("/me/reviews/{deck}/{card}")
+@tag("reviews")
+@post
+op gradeCard(@path deck: string, @path card: string, @body body: ReviewGrade): {
+  @statusCode statusCode: 201;
+  @body body: ReviewState;
+};
+
 // ===================== Info View / help topics (Phase 2) =====================
 // Context-sensitive help: elements tagged `data-help="<slug>"` show the matching topic.
 

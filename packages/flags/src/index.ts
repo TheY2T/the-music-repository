@@ -59,6 +59,8 @@ export const FlagKeys = {
   ToolEarTrainer: 'tools.ear-trainer',
   /** Phase 3 — beat sequencer tool. */
   ToolSequencer: 'tools.sequencer',
+  /** Phase 4 — SRS trainers / drills. */
+  Trainers: 'trainers.srs',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -86,4 +88,5 @@ export const FlagDefaults = {
   [FlagKeys.ToolStaff]: true,
   [FlagKeys.ToolEarTrainer]: true,
   [FlagKeys.ToolSequencer]: true,
+  [FlagKeys.Trainers]: true,
 } satisfies Record<FlagKey, boolean>;

@@ -49,6 +49,7 @@ adapters for the technology.
 | `collections/` | `CollectionRepository` | `DrizzleCollectionRepository` |
 | `progress/` | `ProgressRepository` | `DrizzleProgressRepository` |
 | `help/` | `HelpTopicRepository` | `DrizzleHelpTopicRepository` |
+| `reviews/` | `ReviewRepository` | `DrizzleReviewRepository` (SM-2 domain fn) |
 
 Cross-feature reuse is via module imports (e.g. `authoring`/`favorites` import `CatalogueModule` for
 `ContentRepository`/`MediaLibrary`/`CatalogueReindexService`, and `auth` for `CurrentUser`) — never by

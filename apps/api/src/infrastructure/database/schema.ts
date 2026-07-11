@@ -1,4 +1,12 @@
-import { integer, pgTable, primaryKey, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import {
+  doublePrecision,
+  integer,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+  uuid,
+} from 'drizzle-orm/pg-core';
 import { user } from '../../auth/auth-schema';
 
 /**
@@ -185,6 +193,24 @@ export const practiceSessions = pgTable('practice_sessions', {
   minutes: integer('minutes').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
+// --- Trainers (Phase 4): SM-2 spaced-repetition state per user + deck + card. ---
+export const reviewCards = pgTable(
+  'review_cards',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    deck: text('deck').notNull(),
+    card: text('card').notNull(),
+    easeFactor: doublePrecision('ease_factor').notNull().default(2.5),
+    intervalDays: integer('interval_days').notNull().default(0),
+    repetitions: integer('repetitions').notNull().default(0),
+    dueAt: timestamp('due_at', { withTimezone: true }).notNull().defaultNow(),
+    lastReviewedAt: timestamp('last_reviewed_at', { withTimezone: true }),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.deck, t.card] })],
+);
 
 // --- Info View (Phase 2): context-sensitive help topics keyed by slug (e.g. a term or skill_topic). ---
 export const helpTopics = pgTable('help_topics', {

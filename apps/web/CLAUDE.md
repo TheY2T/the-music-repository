@@ -79,10 +79,18 @@ src/
 
 - Client-side only — no API. `src/lib/music-theory.ts` (pure 12-TET helpers) + `src/lib/audio.ts`
   (dependency-free Web Audio player + `scheduleClick` for the metronome's lookahead scheduler).
-- Twelve tools live under `pages/tools/` (keyboard, fretboard, circle of fifths, scale explorer, chord
-  builder, chord identifier, mode explorer, progression builder, metronome, tuner, interval explorer,
-  staff reader), each gated on its `tools.*` flag (redirect to `/tools` when off). New tools drop into
-  the `/tools` hub the same way. Tool terms carry `data-help` to feed the Info View.
+- Fourteen tools live under `pages/tools/` (keyboard, fretboard, circle of fifths, scale explorer,
+  chord builder, chord identifier, mode explorer, progression builder, metronome, tuner, interval
+  explorer, staff reader, ear trainer, beat sequencer), each gated on its `tools.*` flag (redirect to
+  `/tools` when off). New tools drop into the `/tools` hub the same way. Tool terms carry `data-help`
+  to feed the Info View.
+
+## Trainers / drills (Phase 4)
+
+- SRS drills at `/drills` (gated on `trainers.srs` + login). **Decks are client-side**
+  (`src/lib/drill-decks.ts`): card key + `play(card)` (question audio, reusing Phase-3 audio/theory) +
+  `answer(card)`. `src/lib/reviews-api.ts` calls the SM-2 backend; `DrillsHub` + `ReviewSession` islands.
+  The server only stores scheduling state (see ADR 0014) — add a deck without touching the backend.
 
 ## Feature flags
 

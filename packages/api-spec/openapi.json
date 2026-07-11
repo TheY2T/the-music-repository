@@ -28,6 +28,9 @@
       "name": "progress"
     },
     {
+      "name": "reviews"
+    },
+    {
       "name": "help"
     }
   ],
@@ -1151,6 +1154,108 @@
         ]
       }
     },
+    "/me/reviews": {
+      "get": {
+        "operationId": "getReviewSummary",
+        "description": "Per-deck learned + due counts for the current user.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewSummary"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "reviews"
+        ]
+      }
+    },
+    "/me/reviews/{deck}": {
+      "get": {
+        "operationId": "getDeckReviews",
+        "description": "All stored review states for a deck (the client computes new/due from its deck definition).",
+        "parameters": [
+          {
+            "name": "deck",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeckReviews"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "reviews"
+        ]
+      }
+    },
+    "/me/reviews/{deck}/{card}": {
+      "post": {
+        "operationId": "gradeCard",
+        "description": "Grade a card; applies SM-2 and returns the updated state.",
+        "parameters": [
+          {
+            "name": "deck",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "card",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewState"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "reviews"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewGrade"
+              }
+            }
+          }
+        }
+      }
+    },
     "/taxonomy/{dimension}": {
       "get": {
         "operationId": "listTaxonomy",
@@ -1788,6 +1893,41 @@
         },
         "description": "Create/replace payload for a content item. Taxonomy is given as slug arrays."
       },
+      "DeckReviews": {
+        "type": "object",
+        "required": [
+          "cards"
+        ],
+        "properties": {
+          "cards": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewState"
+            }
+          }
+        }
+      },
+      "DeckSummary": {
+        "type": "object",
+        "required": [
+          "deck",
+          "learned",
+          "due"
+        ],
+        "properties": {
+          "deck": {
+            "type": "string"
+          },
+          "learned": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "due": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "FacetValue": {
         "type": "object",
         "required": [
@@ -2179,6 +2319,64 @@
           }
         },
         "description": "Related items — published content sharing genre/instrument/topic, ranked by overlap."
+      },
+      "ReviewGrade": {
+        "type": "object",
+        "required": [
+          "quality"
+        ],
+        "properties": {
+          "quality": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "A recall grade: 0–5 (SM-2). Typically Again=2, Good=4, Easy=5."
+      },
+      "ReviewState": {
+        "type": "object",
+        "required": [
+          "card",
+          "easeFactor",
+          "intervalDays",
+          "repetitions",
+          "dueAt"
+        ],
+        "properties": {
+          "card": {
+            "type": "string"
+          },
+          "easeFactor": {
+            "type": "number",
+            "format": "float"
+          },
+          "intervalDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "repetitions": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dueAt": {
+            "type": "string"
+          }
+        },
+        "description": "SM-2 scheduling state for a single card."
+      },
+      "ReviewSummary": {
+        "type": "object",
+        "required": [
+          "decks"
+        ],
+        "properties": {
+          "decks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeckSummary"
+            }
+          }
+        }
       },
       "TaxonomyList": {
         "type": "object",

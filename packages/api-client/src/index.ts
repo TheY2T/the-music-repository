@@ -9,5 +9,6 @@ export * from './generated/health/health';
 export * from './generated/help/help';
 export * from './generated/model';
 export * from './generated/progress/progress';
+export * from './generated/reviews/reviews';
 export { customFetch } from './mutator/custom-fetch';
 export { ApiProvider, createQueryClient } from './provider';

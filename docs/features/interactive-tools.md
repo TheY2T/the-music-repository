@@ -1,10 +1,10 @@
 # Feature: Interactive tools
 
-- **Phase:** 3 (Slices A–F) · **Status:** shipped
+- **Phase:** 3 (Slices A–G) · **Status:** shipped
 - **Flag keys:** one `tools.*` flag per tool — `tools.keyboard`, `tools.fretboard`,
   `tools.circle-of-fifths`, `tools.chords`, `tools.scale-explorer`, `tools.chord-id`, `tools.modes`,
-  `tools.progression`, `tools.metronome`, `tools.tuner`, `tools.intervals`, `tools.staff` (from
-  `@TheY2T/tmr-flags`). Default on.
+  `tools.progression`, `tools.metronome`, `tools.tuner`, `tools.intervals`, `tools.staff`,
+  `tools.ear-trainer`, `tools.sequencer` (from `@TheY2T/tmr-flags`). Default on.
 
 ## Purpose
 
@@ -41,6 +41,10 @@ staff notation) drop into the same `/tools` hub behind their own flags.
   interval name; play **melodic** or **harmonic**.
 - `/tools/staff` — a **staff note reader**: an SVG **treble staff** (with clef + ledger lines) of the
   natural notes C4–C6; click a note to hear and name it.
+- `/tools/ear-trainer` — an **interval ear-training quiz**: hear a random interval, guess it, get
+  instant feedback (correct answer revealed) and a running session score.
+- `/tools/sequencer` — a **beat sequencer**: a 3-track (kick/snare/hi-hat) × 16-step grid with
+  **synthesised drums** and an adjustable-tempo loop (shares the metronome's lookahead scheduler).
 - Every tool page renders the **Info View** (Phase 2) and tags terms with `data-help` (e.g. "Highlight
   scale" → `scales`, "Chord type" → `chords`), so the tools contribute to the same contextual glossary.
 
@@ -51,8 +55,8 @@ No backend — everything is computed in the browser (no API, no DB):
 - `apps/web/src/lib/music-theory.ts` — pure 12-TET helpers: note names, `midiToFrequency`, scale
   formulas + `stepPattern`, circle-of-fifths table + `diatonicChords`, guitar tuning, chord formulas +
   `intervalLabel`, and `identifyChords` (reverse notes→chord across all roots/inversions).
-- `apps/web/src/lib/audio.ts` — a dependency-free Web Audio note player (triangle osc + soft envelope;
-  resumes the context on the first user gesture).
+- `apps/web/src/lib/audio.ts` — a dependency-free Web Audio engine: note player, metronome
+  `scheduleClick`, and `scheduleDrum` (kick/snare/hi-hat synthesis) for the sequencer.
 - `MODES` (seven modes + characteristic note) and `diatonicChords` (now with playable `pitchClasses`).
 - Islands `PianoKeyboard.tsx`, `GuitarFretboard.tsx`, `CircleOfFifths.tsx`, `ChordBuilder.tsx`,
   `ScaleExplorer.tsx`, `ChordIdentifier.tsx`, `ModeExplorer.tsx`, `ProgressionBuilder.tsx`

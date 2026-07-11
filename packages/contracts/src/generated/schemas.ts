@@ -974,6 +974,57 @@ export const MarkIncompleteResponse = zod.void()
 
 
 /**
+ * Per-deck learned + due counts for the current user.
+ */
+export const GetReviewSummaryResponse = zod.object({
+  "decks": zod.array(zod.object({
+  "deck": zod.string(),
+  "learned": zod.number(),
+  "due": zod.number()
+}))
+})
+
+
+/**
+ * All stored review states for a deck (the client computes new/due from its deck definition).
+ */
+export const GetDeckReviewsParams = zod.object({
+  "deck": zod.string()
+})
+
+export const GetDeckReviewsResponse = zod.object({
+  "cards": zod.array(zod.object({
+  "card": zod.string(),
+  "easeFactor": zod.number(),
+  "intervalDays": zod.number(),
+  "repetitions": zod.number(),
+  "dueAt": zod.string()
+}).describe('SM-2 scheduling state for a single card.'))
+})
+
+
+/**
+ * Grade a card; applies SM-2 and returns the updated state.
+ */
+export const GradeCardParams = zod.object({
+  "deck": zod.string(),
+  "card": zod.string()
+})
+
+export const GradeCardBody = zod.object({
+  "quality": zod.number()
+}).describe('A recall grade: 0–5 (SM-2). Typically Again=2, Good=4, Easy=5.')
+
+export const GradeCardResponse = zod.object({
+  "card": zod.string(),
+  "easeFactor": zod.number(),
+  "intervalDays": zod.number(),
+  "repetitions": zod.number(),
+  "dueAt": zod.string()
+}).describe('SM-2 scheduling state for a single card.')
+
+
+/**
  * List taxonomy terms for a dimension (`genres` | `instruments` | `topics` | `tags`).
  */
 export const ListTaxonomyParams = zod.object({
