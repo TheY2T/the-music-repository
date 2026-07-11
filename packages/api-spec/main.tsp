@@ -538,6 +538,9 @@ model DeckSummary {
 
 model ReviewSummary {
   decks: DeckSummary[];
+  totalDue: int32;
+  reviewsToday: int32;
+  streakDays: int32;
 }
 
 /** A recall grade: 0–5 (SM-2). Typically Again=2, Good=4, Easy=5. */

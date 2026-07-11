@@ -212,6 +212,15 @@ export const reviewCards = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.deck, t.card] })],
 );
 
+/** One row per graded card — the review activity log (streaks + daily counts). */
+export const reviewLog = pgTable('review_log', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  reviewedAt: timestamp('reviewed_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 // --- Info View (Phase 2): context-sensitive help topics keyed by slug (e.g. a term or skill_topic). ---
 export const helpTopics = pgTable('help_topics', {
   id: uuid('id').primaryKey().defaultRandom(),

@@ -1,12 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { applySm2, defaultReviewState, type ReviewState } from '../domain/sm2';
-import { type DeckCount, ReviewRepository, type StoredCard } from './ports/review-repository.port';
+import { currentStreakDays } from '../domain/streak';
+import {
+  ReviewRepository,
+  type ReviewSummaryView,
+  type StoredCard,
+} from './ports/review-repository.port';
 
 @Injectable()
 export class GetReviewSummaryUseCase {
   constructor(private readonly reviews: ReviewRepository) {}
-  execute(userId: string): Promise<DeckCount[]> {
-    return this.reviews.summary(userId, new Date());
+
+  async execute(userId: string): Promise<ReviewSummaryView> {
+    const now = new Date();
+    const [decks, dateKeys, reviewsToday] = await Promise.all([
+      this.reviews.summary(userId, now),
+      this.reviews.activityDateKeys(userId),
+      this.reviews.reviewsToday(userId, now),
+    ]);
+    return {
+      decks,
+      totalDue: decks.reduce((sum, d) => sum + d.due, 0),
+      reviewsToday,
+      streakDays: currentStreakDays(dateKeys, now),
+    };
   }
 }
 
@@ -27,6 +44,7 @@ export class GradeCardUseCase {
     const current = (await this.reviews.get(userId, deck, card)) ?? defaultReviewState(now);
     const next = applySm2(current, quality, now);
     await this.reviews.save(userId, deck, card, next);
+    await this.reviews.recordReview(userId, now);
     return next;
   }
 }

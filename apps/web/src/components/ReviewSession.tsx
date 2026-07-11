@@ -1,63 +1,84 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { findDeck } from '@/lib/drill-decks';
+import { DECKS, findDeck } from '@/lib/drill-decks';
 import { getDeckReviews, gradeCard } from '@/lib/reviews-api';
 
-const SESSION_LIMIT = 10;
+const SESSION_LIMIT = 12;
 const GRADES = [
   { label: 'Again', quality: 2, className: 'border-red-500 text-red-600' },
   { label: 'Good', quality: 4, className: 'border-green-600 text-green-700' },
   { label: 'Easy', quality: 5, className: 'border-blue-500 text-blue-600' },
 ];
 
-export default function ReviewSession({ deckKey }: { deckKey: string }) {
-  const deck = findDeck(deckKey);
-  const [queue, setQueue] = useState<string[] | null>(null);
+interface QueueItem {
+  deckKey: string;
+  card: string;
+}
+
+/** Single-deck (due + new) when `deckKey` is set; otherwise all due cards across every deck. */
+export default function ReviewSession({ deckKey }: { deckKey?: string }) {
+  const [queue, setQueue] = useState<QueueItem[] | null>(null);
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [reviewed, setReviewed] = useState(0);
   const [busy, setBusy] = useState(false);
 
-  // Build the session queue: due cards first, then new (unseen) cards, capped.
   useEffect(() => {
-    if (!deck) {
-      return;
-    }
-    getDeckReviews(deck.key).then((states) => {
+    async function build() {
       const now = Date.now();
-      const seen = new Set(states.map((s) => s.card));
-      const due = states.filter((s) => new Date(s.dueAt).getTime() <= now).map((s) => s.card);
-      const fresh = deck.cards.filter((c) => !seen.has(c));
-      setQueue([...due, ...fresh].slice(0, SESSION_LIMIT));
-    });
-  }, [deck]);
-
-  // Auto-play aural cards (silent until the first user gesture unlocks audio). Visual (reading) decks
-  // show a prompt instead and are not auto-played.
-  useEffect(() => {
-    if (deck?.play && !deck.prompt && queue && index < queue.length) {
-      deck.play(queue[index]);
+      if (deckKey) {
+        const deck = findDeck(deckKey);
+        if (!deck) {
+          setQueue([]);
+          return;
+        }
+        const states = await getDeckReviews(deckKey);
+        const seen = new Set(states.map((s) => s.card));
+        const due = states.filter((s) => new Date(s.dueAt).getTime() <= now).map((s) => s.card);
+        const fresh = deck.cards.filter((c) => !seen.has(c));
+        setQueue([...due, ...fresh].slice(0, SESSION_LIMIT).map((card) => ({ deckKey, card })));
+        return;
+      }
+      // Cross-deck: due cards only, across every deck.
+      const items: QueueItem[] = [];
+      for (const deck of DECKS) {
+        const states = await getDeckReviews(deck.key);
+        for (const s of states) {
+          if (new Date(s.dueAt).getTime() <= now) {
+            items.push({ deckKey: deck.key, card: s.card });
+          }
+        }
+      }
+      setQueue(items.slice(0, SESSION_LIMIT));
     }
-  }, [deck, queue, index]);
+    build();
+  }, [deckKey]);
 
-  if (!deck) {
-    return <p className="text-sm text-red-500">Unknown deck.</p>;
-  }
+  const item = queue && index < queue.length ? queue[index] : undefined;
+  const deck = item ? findDeck(item.deckKey) : undefined;
+
+  // Auto-play aural cards (silent until the first gesture); visual decks show a prompt instead.
+  useEffect(() => {
+    if (item && deck?.play && !deck.prompt) {
+      deck.play(item.card);
+    }
+  }, [item, deck]);
+
   if (!queue) {
     return <p className="text-sm text-muted-foreground">Loading…</p>;
   }
   if (queue.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        Nothing due right now — come back later, or{' '}
+        Nothing to review right now — come back later, or{' '}
         <a href="/drills" className="underline">
-          pick another deck
+          pick a deck
         </a>
         .
       </p>
     );
   }
-  if (index >= queue.length) {
+  if (!item || !deck) {
     return (
       <div className="space-y-4">
         <p className="text-lg font-medium">Session complete — reviewed {reviewed} cards. 🎉</p>
@@ -65,28 +86,17 @@ export default function ReviewSession({ deckKey }: { deckKey: string }) {
           <a href="/drills">
             <Button variant="outline">Back to drills</Button>
           </a>
-          <Button
-            onClick={() => {
-              setIndex(0);
-              setReviewed(0);
-              setRevealed(false);
-            }}
-          >
-            Go again
-          </Button>
         </div>
       </div>
     );
   }
 
-  const card = queue[index];
-
   async function grade(quality: number) {
-    if (!deck) {
+    if (!item) {
       return;
     }
     setBusy(true);
-    await gradeCard(deck.key, card, quality);
+    await gradeCard(item.deckKey, item.card, quality);
     setBusy(false);
     setReviewed((r) => r + 1);
     setRevealed(false);
@@ -97,12 +107,15 @@ export default function ReviewSession({ deckKey }: { deckKey: string }) {
     <div className="space-y-6">
       <p className="text-sm text-muted-foreground">
         Card {index + 1} of {queue.length}
+        {!deckKey ? (
+          <span className="ml-2 rounded bg-muted px-1.5 py-0.5">{deck.title}</span>
+        ) : null}
       </p>
 
-      {deck.prompt ? <div className="flex justify-center">{deck.prompt(card)}</div> : null}
+      {deck.prompt ? <div className="flex justify-center">{deck.prompt(item.card)}</div> : null}
       {deck.play ? (
         <div className="flex justify-center">
-          <Button variant="outline" size="lg" onClick={() => deck.play?.(card)}>
+          <Button variant="outline" size="lg" onClick={() => deck.play?.(item.card)}>
             ▶ Play
           </Button>
         </div>
@@ -110,7 +123,7 @@ export default function ReviewSession({ deckKey }: { deckKey: string }) {
 
       {revealed ? (
         <div className="space-y-4 text-center">
-          <div className="text-2xl font-bold">{deck.answer(card)}</div>
+          <div className="text-2xl font-bold">{deck.answer(item.card)}</div>
           <div className="flex justify-center gap-3">
             {GRADES.map((g) => (
               <Button

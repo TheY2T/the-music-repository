@@ -1,4 +1,11 @@
-import type { DeckSummary, ReviewState } from '@TheY2T/tmr-api-client';
+import type { ReviewState, ReviewSummary } from '@TheY2T/tmr-api-client';
+
+const EMPTY_SUMMARY: ReviewSummary = {
+  decks: [],
+  totalDue: 0,
+  reviewsToday: 0,
+  streakDays: 0,
+};
 
 const API_BASE = import.meta.env.PUBLIC_API_BASE_URL ?? 'http://localhost:3000';
 
@@ -14,9 +21,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T | null> {
   return (await response.json()) as T;
 }
 
-export async function getReviewSummary(): Promise<DeckSummary[]> {
-  const data = await request<{ decks: DeckSummary[] }>('/me/reviews');
-  return data?.decks ?? [];
+export async function getReviewSummary(): Promise<ReviewSummary> {
+  return (await request<ReviewSummary>('/me/reviews')) ?? EMPTY_SUMMARY;
 }
 
 export async function getDeckReviews(deck: string): Promise<ReviewState[]> {

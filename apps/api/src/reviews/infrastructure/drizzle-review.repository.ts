@@ -1,13 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { and, eq, lte, sql } from 'drizzle-orm';
+import { and, eq, gte, lte, sql } from 'drizzle-orm';
 import { DATABASE, type Database } from '../../infrastructure/database/database.module';
-import { reviewCards } from '../../infrastructure/database/schema';
+import { reviewCards, reviewLog } from '../../infrastructure/database/schema';
 import {
   type DeckCount,
   ReviewRepository,
   type StoredCard,
 } from '../application/ports/review-repository.port';
 import type { ReviewState } from '../domain/sm2';
+import { toDateKey } from '../domain/streak';
 
 @Injectable()
 export class DrizzleReviewRepository extends ReviewRepository {
@@ -84,5 +85,28 @@ export class DrizzleReviewRepository extends ReviewRepository {
       .where(eq(reviewCards.userId, userId))
       .groupBy(reviewCards.deck);
     return rows.map((r) => ({ deck: r.deck, learned: Number(r.learned), due: Number(r.due) }));
+  }
+
+  async recordReview(userId: string, at: Date): Promise<void> {
+    await this.db.insert(reviewLog).values({ userId, reviewedAt: at });
+  }
+
+  async activityDateKeys(userId: string): Promise<string[]> {
+    const rows = await this.db
+      .select({ at: reviewLog.reviewedAt })
+      .from(reviewLog)
+      .where(eq(reviewLog.userId, userId));
+    return [...new Set(rows.map((r) => toDateKey(r.at)))];
+  }
+
+  async reviewsToday(userId: string, now: Date): Promise<number> {
+    const startOfDay = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+    );
+    const [row] = await this.db
+      .select({ count: sql<number>`count(*)` })
+      .from(reviewLog)
+      .where(and(eq(reviewLog.userId, userId), gte(reviewLog.reviewedAt, startOfDay)));
+    return Number(row?.count ?? 0);
   }
 }

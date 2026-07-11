@@ -10,10 +10,13 @@ right time and persist per user — the learning system on top of the Phase-3 to
 
 ## UX behaviour
 
-- `/drills` — hub of decks (login-gated) showing **due / new / learned** counts per deck.
-- `/drills/{deck}` — a review session: hear the question (**▶ Play**, auto-plays after the first
-  gesture), **Show answer**, then self-grade **Again / Good / Easy** → the next card. A session runs
-  through due + new cards (capped) and ends with a summary.
+- `/drills` — hub (login-gated) with a **stats header** (day streak 🔥, reviewed today, due now), a
+  **▶ Review N due** button (cross-deck, when anything is due), and per-deck **due / new / learned**.
+- `/drills/{deck}` — a single-deck session (due + new cards, capped).
+- `/drills/review` — a **cross-deck** session of all due cards (each card shows its deck).
+- A session: hear/read the question (**▶ Play** for aural, auto-plays after the first gesture; a
+  rendered prompt for visual), **Show answer**, then self-grade **Again / Good / Easy** → the next card;
+  ends with a summary.
 - Four decks ship — **aural** (a **▶ Play** question): Interval recognition, Chord quality, Scale
   degrees; and **visual/reading** (a rendered prompt, no audio): Note reading (a note on the treble
   staff). All questions are generated client-side, reusing the Phase-3 audio + theory + staff code.
@@ -23,7 +26,8 @@ right time and persist per user — the learning system on top of the Phase-3 to
 ## Data model
 
 `review_cards` — SM-2 state per `(user_id, deck, card)`: `ease_factor`, `interval_days`, `repetitions`,
-`due_at`, `last_reviewed_at`. Migration `drizzle/0007_*`. See **ADR 0014**.
+`due_at`, `last_reviewed_at`. `review_log` — one row per grade (`user_id`, `reviewed_at`) for the streak
++ daily count. Migrations `drizzle/0007_*`, `0008_*`. See **ADR 0014**.
 
 ## API contract
 
@@ -32,12 +36,14 @@ Paths from TypeSpec (tag `reviews`), generated hooks/types in `@TheY2T/tmr-api-c
 
 | Route | Result |
 |---|---|
-| `GET /me/reviews` | `{ decks: [{ deck, learned, due }] }` |
+| `GET /me/reviews` | `{ decks: [{ deck, learned, due }], totalDue, reviewsToday, streakDays }` |
 | `GET /me/reviews/{deck}` | `{ cards: ReviewState[] }` — stored states (client derives new/due) |
 | `POST /me/reviews/{deck}/{card}` | 201 → updated `ReviewState` (applies SM-2 to `{quality}`) |
 
-Hexagonal: pure `applySm2` domain fn; `ReviewRepository` port ← `DrizzleReviewRepository`. Decks are
-**client-side** (`apps/web/src/lib/drill-decks.ts`) — the backend only schedules.
+Grading also appends to `review_log`; the summary use-case computes `streakDays` (pure `currentStreakDays`
+domain fn) + `reviewsToday` + `totalDue`. Hexagonal: pure `applySm2` domain fn; `ReviewRepository` port ←
+`DrizzleReviewRepository`. Decks are **client-side** (`apps/web/src/lib/drill-decks.tsx`) — the backend
+only schedules.
 
 ## Tests
 

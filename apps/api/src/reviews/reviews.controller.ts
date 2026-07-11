@@ -31,8 +31,8 @@ export class ReviewsController {
 
   @Get('me/reviews')
   @RequireAuth()
-  async summary() {
-    return { decks: await this.getSummary.execute(this.currentUser.require().id) };
+  summary() {
+    return this.getSummary.execute(this.currentUser.require().id);
   }
 
   @Get('me/reviews/:deck')

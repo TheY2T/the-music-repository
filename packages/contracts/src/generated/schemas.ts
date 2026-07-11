@@ -981,7 +981,10 @@ export const GetReviewSummaryResponse = zod.object({
   "deck": zod.string(),
   "learned": zod.number(),
   "due": zod.number()
-}))
+})),
+  "totalDue": zod.number(),
+  "reviewsToday": zod.number(),
+  "streakDays": zod.number()
 })
 
 

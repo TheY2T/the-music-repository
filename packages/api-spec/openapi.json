@@ -2367,7 +2367,10 @@
       "ReviewSummary": {
         "type": "object",
         "required": [
-          "decks"
+          "decks",
+          "totalDue",
+          "reviewsToday",
+          "streakDays"
         ],
         "properties": {
           "decks": {
@@ -2375,6 +2378,18 @@
             "items": {
               "$ref": "#/components/schemas/DeckSummary"
             }
+          },
+          "totalDue": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reviewsToday": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "streakDays": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
