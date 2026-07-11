@@ -26,6 +26,7 @@ declare namespace App {
       toolEarTrainer: boolean;
       toolSequencer: boolean;
       trainers: boolean;
+      toolSightReading: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {

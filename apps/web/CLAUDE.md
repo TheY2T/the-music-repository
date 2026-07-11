@@ -79,11 +79,11 @@ src/
 
 - Client-side only — no API. `src/lib/music-theory.ts` (pure 12-TET helpers) + `src/lib/audio.ts`
   (dependency-free Web Audio player + `scheduleClick` for the metronome's lookahead scheduler).
-- Fourteen tools live under `pages/tools/` (keyboard, fretboard, circle of fifths, scale explorer,
+- Fifteen tools live under `pages/tools/` (keyboard, fretboard, circle of fifths, scale explorer,
   chord builder, chord identifier, mode explorer, progression builder, metronome, tuner, interval
-  explorer, staff reader, ear trainer, beat sequencer), each gated on its `tools.*` flag (redirect to
-  `/tools` when off). New tools drop into the `/tools` hub the same way. Tool terms carry `data-help`
-  to feed the Info View.
+  explorer, staff reader, ear trainer, beat sequencer, sight-reading), each gated on its `tools.*` flag
+  (redirect to `/tools` when off). New tools drop into the `/tools` hub the same way. Tool terms carry
+  `data-help` to feed the Info View. `StaffSequence` renders a row of notes for the staff/sight-reading tools.
 
 ## Trainers / drills (Phase 4)
 

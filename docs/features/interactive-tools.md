@@ -45,6 +45,9 @@ staff notation) drop into the same `/tools` hub behind their own flags.
   instant feedback (correct answer revealed) and a running session score.
 - `/tools/sequencer` — a **beat sequencer**: a 3-track (kick/snare/hi-hat) × 16-step grid with
   **synthesised drums** and an adjustable-tempo loop (shares the metronome's lookahead scheduler).
+- `/tools/sight-reading` — a **sight-reading generator**: generates a singable C-major melody (by note
+  count + stepwise/small-leap motion) on the treble staff; **Play** to check, **New melody** to
+  regenerate, **Reveal note names** to self-check. (`StaffSequence` renders a row of notes with ledgers.)
 - Every tool page renders the **Info View** (Phase 2) and tags terms with `data-help` (e.g. "Highlight
   scale" → `scales`, "Chord type" → `chords`), so the tools contribute to the same contextual glossary.
 
