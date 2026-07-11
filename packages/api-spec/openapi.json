@@ -23,6 +23,9 @@
     },
     {
       "name": "favorites"
+    },
+    {
+      "name": "progress"
     }
   ],
   "paths": {
@@ -891,6 +894,106 @@
         ]
       }
     },
+    "/me/practice": {
+      "post": {
+        "operationId": "logPractice",
+        "description": "Record a practice session.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressSummary"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "progress"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PracticeInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/progress": {
+      "get": {
+        "operationId": "getProgress",
+        "description": "The current user's progress dashboard.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressSummary"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "progress"
+        ]
+      }
+    },
+    "/me/progress/{slug}": {
+      "post": {
+        "operationId": "markComplete",
+        "description": "Mark a content item complete for the current user.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "progress"
+        ]
+      },
+      "delete": {
+        "operationId": "markIncomplete",
+        "description": "Mark a content item not complete.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "progress"
+        ]
+      }
+    },
     "/taxonomy/{dimension}": {
       "get": {
         "operationId": "listTaxonomy",
@@ -1102,6 +1205,32 @@
             }
           }
         }
+      },
+      "CollectionProgress": {
+        "type": "object",
+        "required": [
+          "slug",
+          "title",
+          "totalItems",
+          "completedItems"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completedItems": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "Progress for a single collection."
       },
       "CollectionSummary": {
         "type": "object",
@@ -1723,6 +1852,22 @@
         },
         "description": "A presigned PUT ticket the browser uploads the bytes to."
       },
+      "PracticeInput": {
+        "type": "object",
+        "required": [
+          "minutes"
+        ],
+        "properties": {
+          "contentSlug": {
+            "type": "string"
+          },
+          "minutes": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "Log a practice session (optionally tied to a content item)."
+      },
       "ProblemDetails": {
         "type": "object",
         "required": [
@@ -1767,6 +1912,43 @@
           }
         },
         "description": "RFC 9457 Problem Details (`application/problem+json`)."
+      },
+      "ProgressSummary": {
+        "type": "object",
+        "required": [
+          "completedCount",
+          "completedSlugs",
+          "currentStreakDays",
+          "totalPracticeMinutes",
+          "collections"
+        ],
+        "properties": {
+          "completedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completedSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "currentStreakDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPracticeMinutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "collections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionProgress"
+            }
+          }
+        },
+        "description": "Dashboard summary for the current user."
       },
       "RelatedContent": {
         "type": "object",

@@ -97,8 +97,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.Collections,
     FlagDefaults[FlagKeys.Collections],
   );
+  const progress = await client.getBooleanValue(FlagKeys.Progress, FlagDefaults[FlagKeys.Progress]);
 
-  context.locals.flags = { demoNewBanner, authEnabled, adminCms, favorites, collections };
+  context.locals.flags = { demoNewBanner, authEnabled, adminCms, favorites, collections, progress };
   context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
   return next();
 });

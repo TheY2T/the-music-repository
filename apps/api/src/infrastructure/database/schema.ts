@@ -160,3 +160,28 @@ export const collectionItems = pgTable(
   },
   (t) => [primaryKey({ columns: [t.collectionId, t.contentId] })],
 );
+
+// --- Progress (Phase 2): per-user completion + practice sessions (streaks / practice time). ---
+export const contentProgress = pgTable(
+  'content_progress',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    contentId: uuid('content_id')
+      .notNull()
+      .references(() => contentItems.id, { onDelete: 'cascade' }),
+    completedAt: timestamp('completed_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.contentId] })],
+);
+
+export const practiceSessions = pgTable('practice_sessions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  contentId: uuid('content_id').references(() => contentItems.id, { onDelete: 'set null' }),
+  minutes: integer('minutes').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});

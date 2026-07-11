@@ -1,10 +1,13 @@
 ---
+import CompleteButton from '@/components/CompleteButton.tsx';
 import ContentDetail from '@/components/ContentDetail.tsx';
 import FavoriteButton from '@/components/FavoriteButton.tsx';
 import '@/styles/global.css';
 
 const { slug = '' } = Astro.params;
-const showFavorite = Astro.locals.flags.favorites && !!Astro.locals.user;
+const loggedIn = !!Astro.locals.user;
+const showFavorite = Astro.locals.flags.favorites && loggedIn;
+const showComplete = Astro.locals.flags.progress && loggedIn;
 ---
 
 <html lang="en">
@@ -24,7 +27,10 @@ const showFavorite = Astro.locals.flags.favorites && !!Astro.locals.user;
     <main class="mx-auto max-w-3xl space-y-6 p-8">
       <div class="flex items-center justify-between">
         <a href="/catalogue" class="text-sm text-muted-foreground underline">← Catalogue</a>
-        {showFavorite && <FavoriteButton client:load slug={slug} />}
+        <div class="flex items-center gap-3">
+          {showComplete && <CompleteButton client:load slug={slug} />}
+          {showFavorite && <FavoriteButton client:load slug={slug} />}
+        </div>
       </div>
       <ContentDetail client:load slug={slug} />
     </main>

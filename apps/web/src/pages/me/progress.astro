@@ -1,0 +1,35 @@
+---
+import ProgressDashboard from '@/components/ProgressDashboard.tsx';
+import '@/styles/global.css';
+
+if (!Astro.locals.flags.progress) {
+  return Astro.redirect('/');
+}
+if (!Astro.locals.user) {
+  return Astro.redirect('/signin?redirect=/me/progress');
+}
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My progress — The Music Repository</title>
+    <script is:inline>
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body>
+    <main class="mx-auto max-w-3xl space-y-6 p-8">
+      <header class="space-y-1">
+        <a href="/" class="text-sm text-muted-foreground underline">← Home</a>
+        <h1 class="text-3xl font-bold">My progress</h1>
+      </header>
+      <ProgressDashboard client:load />
+    </main>
+  </body>
+</html>

@@ -47,6 +47,7 @@ adapters for the technology.
 | `authoring/` | `ContentAuthoring`, `TaxonomyCatalog` | `DrizzleContentAuthoring`, `DrizzleTaxonomyCatalog` |
 | `favorites/` | `FavoritesRepository` | `DrizzleFavoritesRepository` |
 | `collections/` | `CollectionRepository` | `DrizzleCollectionRepository` |
+| `progress/` | `ProgressRepository` | `DrizzleProgressRepository` |
 
 Cross-feature reuse is via module imports (e.g. `authoring`/`favorites` import `CatalogueModule` for
 `ContentRepository`/`MediaLibrary`/`CatalogueReindexService`, and `auth` for `CurrentUser`) — never by

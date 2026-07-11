@@ -41,5 +41,6 @@ import { DrizzleCollectionRepository } from './infrastructure/drizzle-collection
     DeleteCollectionUseCase,
     { provide: CollectionRepository, useClass: DrizzleCollectionRepository },
   ],
+  exports: [CollectionRepository],
 })
 export class CollectionsModule {}

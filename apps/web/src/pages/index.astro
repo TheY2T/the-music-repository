@@ -3,10 +3,11 @@ import FlagBanner from '@/components/FlagBanner.tsx';
 import HealthCard from '@/components/HealthCard.tsx';
 import '@/styles/global.css';
 
-const { demoNewBanner, authEnabled, adminCms, favorites, collections } = Astro.locals.flags;
+const { demoNewBanner, authEnabled, adminCms, favorites, collections, progress } = Astro.locals.flags;
 const user = Astro.locals.user;
 const canAuthor = adminCms && (user?.role === 'admin' || user?.role === 'editor');
 const showFavorites = favorites && !!user;
+const showProgress = progress && !!user;
 ---
 
 <html lang="en">
@@ -43,6 +44,12 @@ const showFavorites = favorites && !!user;
               (user ? (
                 <span class="text-sm text-muted-foreground">
                   {user.name || user.email}
+                  {showProgress && (
+                    <>
+                      {' · '}
+                      <a href="/me/progress" class="underline">My progress</a>
+                    </>
+                  )}
                   {showFavorites && (
                     <>
                       {' · '}

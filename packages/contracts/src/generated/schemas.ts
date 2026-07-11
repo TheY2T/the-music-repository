@@ -849,6 +849,65 @@ export const RemoveFavoriteResponse = zod.void()
 
 
 /**
+ * Record a practice session.
+ */
+export const LogPracticeBody = zod.object({
+  "contentSlug": zod.string().optional(),
+  "minutes": zod.number()
+}).describe('Log a practice session (optionally tied to a content item).')
+
+export const LogPracticeResponse = zod.object({
+  "completedCount": zod.number(),
+  "completedSlugs": zod.array(zod.string()),
+  "currentStreakDays": zod.number(),
+  "totalPracticeMinutes": zod.number(),
+  "collections": zod.array(zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "totalItems": zod.number(),
+  "completedItems": zod.number()
+}).describe('Progress for a single collection.'))
+}).describe('Dashboard summary for the current user.')
+
+
+/**
+ * The current user's progress dashboard.
+ */
+export const GetProgressResponse = zod.object({
+  "completedCount": zod.number(),
+  "completedSlugs": zod.array(zod.string()),
+  "currentStreakDays": zod.number(),
+  "totalPracticeMinutes": zod.number(),
+  "collections": zod.array(zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "totalItems": zod.number(),
+  "completedItems": zod.number()
+}).describe('Progress for a single collection.'))
+}).describe('Dashboard summary for the current user.')
+
+
+/**
+ * Mark a content item complete for the current user.
+ */
+export const MarkCompleteParams = zod.object({
+  "slug": zod.string()
+})
+
+export const MarkCompleteResponse = zod.void()
+
+
+/**
+ * Mark a content item not complete.
+ */
+export const MarkIncompleteParams = zod.object({
+  "slug": zod.string()
+})
+
+export const MarkIncompleteResponse = zod.void()
+
+
+/**
  * List taxonomy terms for a dimension (`genres` | `instruments` | `topics` | `tags`).
  */
 export const ListTaxonomyParams = zod.object({

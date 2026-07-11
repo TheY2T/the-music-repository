@@ -455,3 +455,60 @@ op addFavorite(@path slug: string): {
 op removeFavorite(@path slug: string): {
   @statusCode statusCode: 204;
 };
+
+// ===================== Progress (Phase 2) =====================
+// Per-user learning progress: completion, streaks, and practice time. Auth-gated in NestJS.
+
+/** Progress for a single collection. */
+model CollectionProgress {
+  slug: string;
+  title: string;
+  totalItems: int32;
+  completedItems: int32;
+}
+
+/** Dashboard summary for the current user. */
+model ProgressSummary {
+  completedCount: int32;
+  completedSlugs: string[];
+  currentStreakDays: int32;
+  totalPracticeMinutes: int32;
+  collections: CollectionProgress[];
+}
+
+/** Log a practice session (optionally tied to a content item). */
+model PracticeInput {
+  contentSlug?: string;
+  minutes: int32;
+}
+
+/** The current user's progress dashboard. */
+@route("/me/progress")
+@tag("progress")
+@get
+op getProgress(): ProgressSummary;
+
+/** Mark a content item complete for the current user. */
+@route("/me/progress/{slug}")
+@tag("progress")
+@post
+op markComplete(@path slug: string): {
+  @statusCode statusCode: 204;
+};
+
+/** Mark a content item not complete. */
+@route("/me/progress/{slug}")
+@tag("progress")
+@delete
+op markIncomplete(@path slug: string): {
+  @statusCode statusCode: 204;
+};
+
+/** Record a practice session. */
+@route("/me/practice")
+@tag("progress")
+@post
+op logPractice(@body body: PracticeInput): {
+  @statusCode statusCode: 201;
+  @body body: ProgressSummary;
+};

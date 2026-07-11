@@ -11,6 +11,7 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { FeatureFlagsModule } from './flags/feature-flags.module';
 import { HealthModule } from './health/health.module';
 import { DatabaseModule } from './infrastructure/database/database.module';
+import { ProgressModule } from './progress/progress.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { DatabaseModule } from './infrastructure/database/database.module';
     AuthoringModule,
     FavoritesModule,
     CollectionsModule,
+    ProgressModule,
   ],
 })
 export class AppModule {}

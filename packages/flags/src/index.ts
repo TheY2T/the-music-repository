@@ -27,6 +27,8 @@ export const FlagKeys = {
   Favorites: 'personalization.favorites',
   /** Phase 2 — gates collections (courses / learning paths) browse + admin. */
   Collections: 'learning.collections',
+  /** Phase 2 — gates progress tracking (completion, streaks, dashboard). */
+  Progress: 'learning.progress',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -38,4 +40,5 @@ export const FlagDefaults = {
   [FlagKeys.AdminCms]: true,
   [FlagKeys.Favorites]: true,
   [FlagKeys.Collections]: true,
+  [FlagKeys.Progress]: true,
 } satisfies Record<FlagKey, boolean>;

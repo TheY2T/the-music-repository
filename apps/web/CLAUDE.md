@@ -61,6 +61,12 @@ src/
   `CollectionForm` (ordered content slugs, one per line; save = update metadata + `setItems`). API via
   `collectionsAdminApi` in `src/lib/admin-api.ts`.
 
+## Progress (Phase 2)
+
+- `src/lib/progress-api.ts` — credentialed get/mark/log helpers.
+- `CompleteButton.tsx` (detail-page toggle) + `ProgressDashboard.tsx` (`/me/progress`: stats,
+  per-collection bars, log-practice form). Gated on `learning.progress` + login.
+
 ## Feature flags
 
 - **SSR:** `src/middleware.ts` sets the flagd provider and evaluates flags per request into
