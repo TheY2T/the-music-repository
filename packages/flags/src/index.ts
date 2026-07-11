@@ -35,6 +35,10 @@ export const FlagKeys = {
   ToolKeyboard: 'tools.keyboard',
   /** Phase 3 — circle of fifths explorer tool. */
   ToolCircleOfFifths: 'tools.circle-of-fifths',
+  /** Phase 3 — interactive guitar fretboard tool. */
+  ToolFretboard: 'tools.fretboard',
+  /** Phase 3 — chord builder tool. */
+  ToolChords: 'tools.chords',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -50,4 +54,6 @@ export const FlagDefaults = {
   [FlagKeys.InfoView]: true,
   [FlagKeys.ToolKeyboard]: true,
   [FlagKeys.ToolCircleOfFifths]: true,
+  [FlagKeys.ToolFretboard]: true,
+  [FlagKeys.ToolChords]: true,
 } satisfies Record<FlagKey, boolean>;

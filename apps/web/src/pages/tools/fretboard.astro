@@ -1,0 +1,35 @@
+---
+import GuitarFretboard from '@/components/GuitarFretboard.tsx';
+import InfoView from '@/components/InfoView.tsx';
+import '@/styles/global.css';
+
+if (!Astro.locals.flags.toolFretboard) {
+  return Astro.redirect('/tools');
+}
+const showInfoView = Astro.locals.flags.infoView;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Guitar fretboard — The Music Repository</title>
+    <script is:inline>
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body>
+    <main class="mx-auto max-w-5xl space-y-6 p-8">
+      <header class="space-y-1">
+        <a href="/tools" class="text-sm text-muted-foreground underline">← Tools</a>
+        <h1 class="text-3xl font-bold">Guitar fretboard</h1>
+      </header>
+      <GuitarFretboard client:load />
+    </main>
+    {showInfoView && <InfoView client:idle />}
+  </body>
+</html>

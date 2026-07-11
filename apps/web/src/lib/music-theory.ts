@@ -93,3 +93,41 @@ export function describeAccidentals(accidentals: number): string {
   const kind = accidentals > 0 ? 'sharp' : 'flat';
   return `${count} ${kind}${count === 1 ? '' : 's'}`;
 }
+
+// --- Guitar fretboard ---
+
+/** Standard tuning, high string first: E4 B3 G3 D3 A2 E2 (MIDI). */
+export const STANDARD_TUNING = [64, 59, 55, 50, 45, 40];
+export const STANDARD_TUNING_NAMES = ['E', 'B', 'G', 'D', 'A', 'E'];
+
+/** Frets that carry an inlay marker on a standard fretboard. */
+export const FRET_MARKERS = new Set([3, 5, 7, 9, 12, 15]);
+
+// --- Chords ---
+
+export interface ChordDefinition {
+  key: string;
+  name: string;
+  /** Semitone offsets from the root. */
+  intervals: number[];
+}
+
+export const CHORDS: ChordDefinition[] = [
+  { key: 'major', name: 'Major', intervals: [0, 4, 7] },
+  { key: 'minor', name: 'Minor', intervals: [0, 3, 7] },
+  { key: 'diminished', name: 'Diminished', intervals: [0, 3, 6] },
+  { key: 'augmented', name: 'Augmented', intervals: [0, 4, 8] },
+  { key: 'sus2', name: 'Suspended 2nd', intervals: [0, 2, 7] },
+  { key: 'sus4', name: 'Suspended 4th', intervals: [0, 5, 7] },
+  { key: 'major-7', name: 'Major 7th', intervals: [0, 4, 7, 11] },
+  { key: 'minor-7', name: 'Minor 7th', intervals: [0, 3, 7, 10] },
+  { key: 'dominant-7', name: 'Dominant 7th', intervals: [0, 4, 7, 10] },
+  { key: 'diminished-7', name: 'Diminished 7th', intervals: [0, 3, 6, 9] },
+];
+
+const INTERVAL_LABELS = ['R', '♭2', '2', '♭3', '3', '4', '♭5', '5', '♯5', '6', '♭7', '7'];
+
+/** Scale-degree label for a semitone offset (0 = root). */
+export function intervalLabel(semitones: number): string {
+  return INTERVAL_LABELS[((semitones % 12) + 12) % 12];
+}

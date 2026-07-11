@@ -1,7 +1,7 @@
 ---
 import '@/styles/global.css';
 
-const { toolKeyboard, toolCircleOfFifths } = Astro.locals.flags;
+const { toolKeyboard, toolCircleOfFifths, toolFretboard, toolChords } = Astro.locals.flags;
 const tools = [
   {
     href: '/tools/keyboard',
@@ -10,10 +10,22 @@ const tools = [
     enabled: toolKeyboard,
   },
   {
+    href: '/tools/fretboard',
+    title: 'Guitar fretboard',
+    summary: 'Standard-tuning fretboard; hear notes and see scale shapes.',
+    enabled: toolFretboard,
+  },
+  {
     href: '/tools/circle-of-fifths',
     title: 'Circle of fifths',
     summary: 'Explore keys, signatures, and diatonic chords.',
     enabled: toolCircleOfFifths,
+  },
+  {
+    href: '/tools/chords',
+    title: 'Chord builder',
+    summary: 'Build any chord; see its notes and hear it.',
+    enabled: toolChords,
   },
 ].filter((tool) => tool.enabled);
 

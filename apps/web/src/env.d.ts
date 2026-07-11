@@ -13,6 +13,8 @@ declare namespace App {
       infoView: boolean;
       toolKeyboard: boolean;
       toolCircleOfFifths: boolean;
+      toolFretboard: boolean;
+      toolChords: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {
