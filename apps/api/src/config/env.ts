@@ -19,6 +19,12 @@ export const envSchema = z.object({
   S3_ACCESS_KEY_ID: z.string().default('tmr'),
   S3_SECRET_ACCESS_KEY: z.string().default('tmrsecret'),
   S3_BUCKET: z.string().default('tmr-media'),
+
+  // Auth (Slice 2, Better Auth). Dev defaults are local-only — never reuse in production.
+  BETTER_AUTH_SECRET: z.string().min(1).default('dev-insecure-secret-change-me-please-32chars'),
+  BETTER_AUTH_URL: z.string().default('http://localhost:3000'),
+  // Comma-separated. Origins allowed to send credentialed requests + accept auth cookies.
+  TRUSTED_ORIGINS: z.string().default('http://localhost:4321,http://localhost:3000'),
 });
 
 export type Env = z.infer<typeof envSchema>;

@@ -5,7 +5,15 @@ declare namespace App {
     /** Feature-flag values evaluated once per request in middleware (see src/middleware.ts). */
     flags: {
       demoNewBanner: boolean;
+      authEnabled: boolean;
     };
+    /** Authenticated user resolved per request from the API session, or null when anonymous. */
+    user: {
+      id: string;
+      email: string;
+      name: string;
+      role: string | null;
+    } | null;
   }
 }
 

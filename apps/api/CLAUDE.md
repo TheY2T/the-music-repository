@@ -44,9 +44,31 @@ the controller drops empties. MinIO presigned URLs use `S3_PUBLIC_ENDPOINT` so t
 with `@RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.X }] })`; evaluate imperatively via an
 injected `@OpenFeatureClient()` client. Keys come from `@TheY2T/tmr-flags`. See `src/flags/`.
 
+## Auth & RBAC (Slice 2, ADR 0013)
+
+Better Auth lives in `src/auth/` and owns `/api/auth/*`. Key rules:
+
+- **`bodyParser: false`** on `NestFactory.create` is **mandatory** (`main.ts`) — the @thallesp module
+  re-adds body parsing for non-auth routes. CORS is set once in `main.ts` from `TRUSTED_ORIGINS`
+  (exact origins + `credentials: true`); the module's own CORS is disabled.
+- **Global auth guard is disabled** (`disableGlobalAuthGuard: true`) so the public catalogue stays
+  anonymous. Protect a route by opting in: `@RequireAuth()` or `@RequirePermissions({ content: ['publish'] })`
+  from `src/auth/require-permissions.decorator.ts` (wrap the library's `AuthGuard` + `@UserHasPermission`).
+- **RBAC** is permission-based in `src/auth/access-control.ts` (roles `admin`/`editor`/`learner`).
+- **Read the acting user via the `CurrentUser` port** (`application/current-user.ts`), implemented by
+  the request-scoped `BetterAuthCurrentUser` adapter. **Never import `better-auth` in domain/application.**
+- **Tables** are hand-written in `src/auth/auth-schema.ts` (re-exported from `database/schema.ts`) so
+  **drizzle-kit** owns migrations — do **not** run `better-auth migrate`. Regenerate with `db:generate`.
+- **Seed dev users:** `pnpm --filter @TheY2T/tmr-api db:seed:auth` → `admin|editor|learner@local.dev` /
+  `password123` (**local only**).
+- **ESM interop:** `better-auth` + `@thallesp/nestjs-better-auth` are ESM-only; Node 22 `require(esm)`
+  loads them from the CJS build, and classic-`Node` tsc resolves their types (verified). No `paths`
+  mapping needed (unlike meilisearch).
+
 ## Config
 
 Env is validated at boot by Zod (`src/config/env.ts`) via `@nestjs/config`. Add new vars there.
+Auth vars: `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `TRUSTED_ORIGINS` (dev defaults are local-only).
 
 ## Commands
 

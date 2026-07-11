@@ -12,7 +12,8 @@
     "test": "vitest run --passWithNoTests",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:seed": "node dist/infrastructure/database/seed.js"
+    "db:seed": "node dist/infrastructure/database/seed.js",
+    "db:seed:auth": "node dist/infrastructure/database/seed-auth.js"
   },
   "dependencies": {
     "@TheY2T/tmr-contracts": "workspace:*",
@@ -23,6 +24,8 @@
     "@aws-sdk/client-s3": "catalog:",
     "@aws-sdk/s3-request-presigner": "catalog:",
     "@nestjs/common": "catalog:",
+    "@thallesp/nestjs-better-auth": "catalog:",
+    "better-auth": "catalog:",
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:",
     "@nestjs/platform-express": "catalog:",

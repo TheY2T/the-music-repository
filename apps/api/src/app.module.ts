@@ -1,6 +1,7 @@
 import { PlatformModule } from '@TheY2T/tmr-nest-platform';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 import { CatalogueModule } from './catalogue/catalogue.module';
 import { validateEnv } from './config/env';
 import { DemoModule } from './demo/demo.module';
@@ -20,6 +21,7 @@ import { DatabaseModule } from './infrastructure/database/database.module';
     // and the RFC 9457 Problem Details exception filter (§8–§9 of the plan).
     PlatformModule,
     DatabaseModule,
+    AuthModule,
     FeatureFlagsModule,
     HealthModule,
     DemoModule,

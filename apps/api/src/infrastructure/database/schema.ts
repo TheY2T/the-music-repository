@@ -113,3 +113,7 @@ export const contentTags = pgTable(
   },
   (t) => [primaryKey({ columns: [t.contentId, t.tagId] })],
 );
+
+// --- Auth (Slice 2): Better Auth tables live in `src/auth/auth-schema.ts`.
+// Re-exported here so drizzle-kit (and the shared Drizzle client) see one schema surface. ---
+export { account, session, user, verification } from '../../auth/auth-schema';

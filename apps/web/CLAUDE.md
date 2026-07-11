@@ -22,6 +22,17 @@ src/
 - Hydrate minimally: `client:load` only where immediately interactive; else `client:visible`/`idle`.
 - Static markup stays in `.astro`.
 
+## Auth (Slice 2, ADR 0013)
+
+- **Client:** `src/lib/auth-client.ts` (`createAuthClient` → `authClient.signIn/signOut/useSession`).
+  Points at the API (`PUBLIC_API_BASE_URL`), `credentials: 'include'` (cross-origin cookie in dev).
+- **SSR session:** `src/middleware.ts` forwards the request cookie to the API's `get-session` and sets
+  `Astro.locals.user` (null when anonymous). Gate a page with
+  `if (!Astro.locals.user) return Astro.redirect('/signin?redirect=…')`.
+- **Same-site cookie (dev):** web `:4321` and API `:3000` share the site (cookies ignore port), so the
+  `SameSite=Lax` session cookie reaches both. The gate is UX-only — the API re-authorizes mutations.
+- Sign-in island: `SignInForm.tsx`; sign-out: `SignOutButton.tsx`; gated page: `pages/admin/index.astro`.
+
 ## Feature flags
 
 - **SSR:** `src/middleware.ts` sets the flagd provider and evaluates flags per request into

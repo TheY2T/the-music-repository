@@ -7,6 +7,37 @@ const FLAGD_HOST = process.env.FLAGD_HOST ?? 'localhost';
 const FLAGD_PORT = Number(process.env.FLAGD_PORT ?? 8013);
 const CONNECTION_ERROR = /deadline|connect|unavailable|initialization/i;
 
+const API_BASE = process.env.PUBLIC_API_BASE_URL ?? 'http://localhost:3000';
+
+/**
+ * Resolve the session server-side by forwarding the request's cookies to the API's Better Auth
+ * `get-session`. Returns null for anonymous requests. The gate this feeds (`/admin`) is UX-only —
+ * the API re-authorizes every mutation.
+ */
+async function resolveSessionUser(cookie: string): Promise<App.Locals['user']> {
+  // Cheap short-circuit: no Better Auth cookie → definitely anonymous, skip the network hop.
+  if (!cookie.includes('better-auth')) {
+    return null;
+  }
+  try {
+    const response = await fetch(`${API_BASE}/api/auth/get-session`, { headers: { cookie } });
+    if (!response.ok) {
+      return null;
+    }
+    const data = (await response.json()) as {
+      user?: { id: string; email: string; name?: string; role?: string | null };
+    } | null;
+    if (!data?.user) {
+      return null;
+    }
+    const { id, email, name, role } = data.user;
+    return { id, email, name: name ?? '', role: role ?? null };
+  } catch {
+    // API unreachable → treat as anonymous rather than failing the page render.
+    return null;
+  }
+}
+
 /** Replaces flagd's noisy connection stack traces with a single actionable hint. */
 function createFlagdLogger(endpoint: string): Logger {
   let hintShown = false;
@@ -53,7 +84,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.DemoNewBanner,
     FlagDefaults[FlagKeys.DemoNewBanner],
   );
+  const authEnabled = await client.getBooleanValue(
+    FlagKeys.AuthEnabled,
+    FlagDefaults[FlagKeys.AuthEnabled],
+  );
 
-  context.locals.flags = { demoNewBanner };
+  context.locals.flags = { demoNewBanner, authEnabled };
+  context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
   return next();
 });

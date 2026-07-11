@@ -1,6 +1,14 @@
 {
   "$schema": "https://flagd.dev/schema/v0/flags.json",
   "flags": {
+    "auth.enabled": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "demo.new-banner": {
       "state": "ENABLED",
       "variants": {

@@ -1,0 +1,50 @@
+---
+import SignOutButton from '@/components/SignOutButton.tsx';
+import '@/styles/global.css';
+
+// SSR gate (UX only — the API re-authorizes every mutation). Anonymous → sign-in.
+const user = Astro.locals.user;
+if (!user) {
+  return Astro.redirect('/signin?redirect=/admin');
+}
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin — The Music Repository</title>
+    <script is:inline>
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body>
+    <main class="mx-auto max-w-4xl space-y-6 p-8">
+      <header class="flex items-center justify-between">
+        <div class="space-y-1">
+          <a href="/" class="text-sm text-muted-foreground underline">← Home</a>
+          <h1 class="text-3xl font-bold">Admin</h1>
+        </div>
+        <SignOutButton client:load />
+      </header>
+
+      <section class="rounded-lg border p-6">
+        <p class="text-sm text-muted-foreground">Signed in as</p>
+        <p class="text-lg font-medium">{user.name || user.email}</p>
+        <p class="text-sm text-muted-foreground">{user.email}</p>
+        <p class="mt-2 inline-block rounded-full bg-accent px-3 py-1 text-xs font-medium">
+          role: {user.role ?? 'learner'}
+        </p>
+      </section>
+
+      <section class="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
+        The content authoring CMS (create/edit/publish, media upload, taxonomy) arrives in Slice 2b.
+        This page proves the session gate: only authenticated users reach it.
+      </section>
+    </main>
+  </body>
+</html>

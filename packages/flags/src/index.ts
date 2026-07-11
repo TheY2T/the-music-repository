@@ -19,6 +19,8 @@ export interface FlagEvaluationContext {
 export const FlagKeys = {
   /** Phase 0 demo flag — proves the OpenFeature round-trip across API + web. */
   DemoNewBanner: 'demo.new-banner',
+  /** Slice 2a — surfaces auth entry points (sign-in, account) in the web app. */
+  AuthEnabled: 'auth.enabled',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -26,4 +28,5 @@ export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
 /** Fallback values used when the flag provider is unreachable. */
 export const FlagDefaults = {
   [FlagKeys.DemoNewBanner]: false,
+  [FlagKeys.AuthEnabled]: true,
 } satisfies Record<FlagKey, boolean>;

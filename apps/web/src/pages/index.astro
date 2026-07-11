@@ -3,7 +3,8 @@ import FlagBanner from '@/components/FlagBanner.tsx';
 import HealthCard from '@/components/HealthCard.tsx';
 import '@/styles/global.css';
 
-const { demoNewBanner } = Astro.locals.flags;
+const { demoNewBanner, authEnabled } = Astro.locals.flags;
+const user = Astro.locals.user;
 ---
 
 <html lang="en">
@@ -27,12 +28,26 @@ const { demoNewBanner } = Astro.locals.flags;
         <p class="text-muted-foreground">
           Phase 0 scaffold — Astro + NestJS + Postgres/Drizzle + OpenFeature.
         </p>
-        <a
-          href="/catalogue"
-          class="inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-        >
-          Browse the catalogue →
-        </a>
+        <div class="flex flex-wrap items-center gap-3">
+          <a
+            href="/catalogue"
+            class="inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+          >
+            Browse the catalogue →
+          </a>
+          {
+            authEnabled &&
+              (user ? (
+                <a href="/admin" class="text-sm underline">
+                  {user.name || user.email} · Admin
+                </a>
+              ) : (
+                <a href="/signin" class="text-sm underline">
+                  Sign in
+                </a>
+              ))
+          }
+        </div>
       </header>
 
       <FlagBanner client:load initial={demoNewBanner} />
