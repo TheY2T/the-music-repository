@@ -11,6 +11,7 @@ import {
   COLLECTIONS,
   CONTENT,
   GENRES,
+  HELP_TOPICS,
   INSTRUMENTS,
   makeMinimalPdf,
   SKILL_TOPICS,
@@ -154,6 +155,27 @@ async function main(): Promise<void> {
     }
   }
   log.log(`Seeded ${COLLECTIONS.length} collections.`);
+
+  for (const topic of HELP_TOPICS) {
+    await db
+      .insert(schema.helpTopics)
+      .values({
+        slug: topic.slug,
+        term: topic.term,
+        body: topic.body,
+        linkSlug: topic.linkSlug ?? null,
+      })
+      .onConflictDoUpdate({
+        target: schema.helpTopics.slug,
+        set: {
+          term: topic.term,
+          body: topic.body,
+          linkSlug: topic.linkSlug ?? null,
+          updatedAt: new Date(),
+        },
+      });
+  }
+  log.log(`Seeded ${HELP_TOPICS.length} help topics.`);
 
   await app.close();
   process.exit(0);

@@ -29,6 +29,8 @@ export const FlagKeys = {
   Collections: 'learning.collections',
   /** Phase 2 — gates progress tracking (completion, streaks, dashboard). */
   Progress: 'learning.progress',
+  /** Phase 2 — gates the Info View contextual helper (help topics on hover/focus). */
+  InfoView: 'learning.info-view',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -41,4 +43,5 @@ export const FlagDefaults = {
   [FlagKeys.Favorites]: true,
   [FlagKeys.Collections]: true,
   [FlagKeys.Progress]: true,
+  [FlagKeys.InfoView]: true,
 } satisfies Record<FlagKey, boolean>;

@@ -512,3 +512,60 @@ op logPractice(@body body: PracticeInput): {
   @statusCode statusCode: 201;
   @body body: ProgressSummary;
 };
+
+// ===================== Info View / help topics (Phase 2) =====================
+// Context-sensitive help: elements tagged `data-help="<slug>"` show the matching topic.
+
+model HelpTopic {
+  slug: string;
+  term: string;
+  body: string;
+  linkSlug?: string;
+}
+
+model HelpTopicList {
+  items: HelpTopic[];
+}
+
+model HelpTopicWriteInput {
+  slug: string;
+  term: string;
+  body: string;
+  linkSlug?: string;
+}
+
+/** All help topics (the web preloads these to answer hovers without per-term fetches). */
+@route("/help-topics")
+@tag("help")
+@get
+op listHelpTopics(): HelpTopicList;
+
+@route("/help-topics/{slug}")
+@tag("help")
+@get
+op getHelpTopic(@path slug: string): HelpTopic | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+// --- Admin authoring (RBAC-gated in NestJS) ---
+
+@route("/admin/help-topics")
+@tag("help")
+@post
+op createHelpTopic(@body body: HelpTopicWriteInput): {
+  @statusCode statusCode: 201;
+  @body body: HelpTopic;
+};
+
+@route("/admin/help-topics/{slug}")
+@tag("help")
+@put
+op updateHelpTopic(@path slug: string, @body body: HelpTopicWriteInput): HelpTopic;
+
+@route("/admin/help-topics/{slug}")
+@tag("help")
+@delete
+op deleteHelpTopic(@path slug: string): {
+  @statusCode statusCode: 204;
+};

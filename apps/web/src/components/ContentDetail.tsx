@@ -59,8 +59,18 @@ function Detail({ slug }: { slug: string }) {
         <h1 className="text-3xl font-bold">{item.title}</h1>
         {item.summary ? <p className="text-muted-foreground">{item.summary}</p> : null}
         <div className="flex flex-wrap gap-1">
-          {[...item.genres, ...item.instruments, ...item.topics].map((ref) => (
+          {[...item.genres, ...item.instruments].map((ref) => (
             <span key={ref.slug} className="rounded-full border border-border px-2 py-0.5 text-xs">
+              {ref.name}
+            </span>
+          ))}
+          {/* Topic chips opt into the Info View — hover/focus shows the help topic. */}
+          {item.topics.map((ref) => (
+            <span
+              key={ref.slug}
+              data-help={ref.slug}
+              className="rounded-full border border-border px-2 py-0.5 text-xs"
+            >
               {ref.name}
             </span>
           ))}

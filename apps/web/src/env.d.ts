@@ -10,6 +10,7 @@ declare namespace App {
       favorites: boolean;
       collections: boolean;
       progress: boolean;
+      infoView: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {

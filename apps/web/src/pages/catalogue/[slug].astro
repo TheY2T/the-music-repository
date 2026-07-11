@@ -2,12 +2,14 @@
 import CompleteButton from '@/components/CompleteButton.tsx';
 import ContentDetail from '@/components/ContentDetail.tsx';
 import FavoriteButton from '@/components/FavoriteButton.tsx';
+import InfoView from '@/components/InfoView.tsx';
 import '@/styles/global.css';
 
 const { slug = '' } = Astro.params;
 const loggedIn = !!Astro.locals.user;
 const showFavorite = Astro.locals.flags.favorites && loggedIn;
 const showComplete = Astro.locals.flags.progress && loggedIn;
+const showInfoView = Astro.locals.flags.infoView;
 ---
 
 <html lang="en">
@@ -34,5 +36,6 @@ const showComplete = Astro.locals.flags.progress && loggedIn;
       </div>
       <ContentDetail client:load slug={slug} />
     </main>
+    {showInfoView && <InfoView client:idle />}
   </body>
 </html>

@@ -37,13 +37,22 @@ const user = Astro.locals.user!;
         <SignOutButton client:load />
       </header>
 
-      {
-        Astro.locals.flags.collections && (
-          <a href="/admin/collections" class="inline-block text-sm underline">
-            Manage collections →
-          </a>
-        )
-      }
+      <div class="flex flex-wrap gap-4">
+        {
+          Astro.locals.flags.collections && (
+            <a href="/admin/collections" class="text-sm underline">
+              Manage collections →
+            </a>
+          )
+        }
+        {
+          Astro.locals.flags.infoView && (
+            <a href="/admin/help" class="text-sm underline">
+              Manage help topics →
+            </a>
+          )
+        }
+      </div>
 
       <AdminContentList client:load />
     </main>

@@ -43,6 +43,13 @@
       "when": 1783777675035,
       "tag": "0005_wise_the_watchers",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1783778630433,
+      "tag": "0006_rapid_vertigo",
+      "breakpoints": true
     }
   ]
 }

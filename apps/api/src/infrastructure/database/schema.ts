@@ -185,3 +185,14 @@ export const practiceSessions = pgTable('practice_sessions', {
   minutes: integer('minutes').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
+// --- Info View (Phase 2): context-sensitive help topics keyed by slug (e.g. a term or skill_topic). ---
+export const helpTopics = pgTable('help_topics', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  slug: text('slug').notNull().unique(),
+  term: text('term').notNull(),
+  body: text('body').notNull(), // short markdown definition
+  linkSlug: text('link_slug'), // optional catalogue content slug for "learn more"
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});

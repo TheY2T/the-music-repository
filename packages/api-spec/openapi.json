@@ -26,6 +26,9 @@
     },
     {
       "name": "progress"
+    },
+    {
+      "name": "help"
     }
   ],
   "paths": {
@@ -276,6 +279,98 @@
         },
         "tags": [
           "collections"
+        ]
+      }
+    },
+    "/admin/help-topics": {
+      "post": {
+        "operationId": "createHelpTopic",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HelpTopic"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "help"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HelpTopicWriteInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/help-topics/{slug}": {
+      "put": {
+        "operationId": "updateHelpTopic",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HelpTopic"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "help"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HelpTopicWriteInput"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteHelpTopic",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "help"
         ]
       }
     },
@@ -823,6 +918,68 @@
         },
         "tags": [
           "health"
+        ]
+      }
+    },
+    "/help-topics": {
+      "get": {
+        "operationId": "listHelpTopics",
+        "description": "All help topics (the web preloads these to answer hovers without per-term fetches).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HelpTopicList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "help"
+        ]
+      }
+    },
+    "/help-topics/{slug}": {
+      "get": {
+        "operationId": "getHelpTopic",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HelpTopic"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "help"
         ]
       }
     },
@@ -1757,6 +1914,64 @@
           }
         },
         "description": "Service health snapshot."
+      },
+      "HelpTopic": {
+        "type": "object",
+        "required": [
+          "slug",
+          "term",
+          "body"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "term": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "linkSlug": {
+            "type": "string"
+          }
+        }
+      },
+      "HelpTopicList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HelpTopic"
+            }
+          }
+        }
+      },
+      "HelpTopicWriteInput": {
+        "type": "object",
+        "required": [
+          "slug",
+          "term",
+          "body"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "term": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "linkSlug": {
+            "type": "string"
+          }
+        }
       },
       "MediaAsset": {
         "type": "object",

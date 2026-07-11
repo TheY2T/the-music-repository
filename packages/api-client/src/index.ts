@@ -6,6 +6,7 @@ export * from './generated/collections/collections';
 export * from './generated/demo/demo';
 export * from './generated/favorites/favorites';
 export * from './generated/health/health';
+export * from './generated/help/help';
 export * from './generated/model';
 export * from './generated/progress/progress';
 export { customFetch } from './mutator/custom-fetch';

@@ -67,6 +67,14 @@ src/
 - `CompleteButton.tsx` (detail-page toggle) + `ProgressDashboard.tsx` (`/me/progress`: stats,
   per-collection bars, log-practice form). Gated on `learning.progress` + login.
 
+## Info View (Phase 2)
+
+- `InfoView.tsx` — persistent, dismissible help panel; preloads `/help-topics` and resolves
+  `data-help="<slug>"` on hover/focus via **document event delegation** (works across islands).
+  Add `data-help` to any element; style comes from the global `[data-help]` rule. `src/lib/help-api.ts`
+  has the public list/get + `helpAdminApi`.
+- Admin: `/admin/help/*` (`AdminHelpList` + `HelpTopicForm`). Gated on `learning.info-view`.
+
 ## Feature flags
 
 - **SSR:** `src/middleware.ts` sets the flagd provider and evaluates flags per request into

@@ -10,6 +10,7 @@ import { DemoModule } from './demo/demo.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { FeatureFlagsModule } from './flags/feature-flags.module';
 import { HealthModule } from './health/health.module';
+import { HelpModule } from './help/help.module';
 import { DatabaseModule } from './infrastructure/database/database.module';
 import { ProgressModule } from './progress/progress.module';
 
@@ -34,6 +35,7 @@ import { ProgressModule } from './progress/progress.module';
     FavoritesModule,
     CollectionsModule,
     ProgressModule,
+    HelpModule,
   ],
 })
 export class AppModule {}

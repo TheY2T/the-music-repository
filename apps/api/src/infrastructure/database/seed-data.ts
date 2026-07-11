@@ -463,6 +463,73 @@ export const COLLECTIONS: SeedCollection[] = [
   },
 ];
 
+export interface SeedHelpTopic {
+  slug: string;
+  term: string;
+  body: string;
+  linkSlug?: string;
+}
+
+/** Info View help topics. Slugs match `skill_topic` slugs so topic chips resolve directly. */
+export const HELP_TOPICS: SeedHelpTopic[] = [
+  {
+    slug: 'scales',
+    term: 'Scale',
+    body: 'A **scale** is an ordered set of notes spanning an octave — the raw material of melody and technique.',
+    linkSlug: 'c-major-scale-two-octaves',
+  },
+  {
+    slug: 'chords',
+    term: 'Chord',
+    body: 'A **chord** is three or more notes sounded together; triads (three notes) are the most common.',
+    linkSlug: 'omt-diatonic-chords',
+  },
+  {
+    slug: 'arpeggios',
+    term: 'Arpeggio',
+    body: 'An **arpeggio** is a chord played one note at a time rather than all at once ("broken chord").',
+  },
+  {
+    slug: 'sight-reading',
+    term: 'Sight-reading',
+    body: 'Playing music **at first sight** from notation, without prior practice.',
+  },
+  {
+    slug: 'technique',
+    term: 'Technique',
+    body: 'The physical skills — finger independence, evenness, hand position — that let you play freely.',
+  },
+  {
+    slug: 'theory',
+    term: 'Music theory',
+    body: 'The study of how music works: pitch, rhythm, harmony, and form.',
+    linkSlug: 'omt-intervals',
+  },
+  {
+    slug: 'ear-training',
+    term: 'Ear training',
+    body: 'Learning to **recognise** intervals, chords, and rhythms by ear.',
+    linkSlug: 'interval-ear-training-primer',
+  },
+  {
+    slug: 'rhythm',
+    term: 'Rhythm',
+    body: 'How music is organised **in time** — beats, measures, and time signatures.',
+    linkSlug: 'omt-rhythm-and-meter',
+  },
+  {
+    slug: 'improvisation',
+    term: 'Improvisation',
+    body: 'Creating music **spontaneously**, often over a chord progression or scale.',
+  },
+  {
+    slug: 'modes',
+    term: 'Modes',
+    body: 'The seven scales (Ionian…Locrian) built by starting the major scale on each of its degrees.',
+    linkSlug: 'omt-modes-of-major',
+  },
+];
+
 /** Build a small but valid single-page PDF (with a correct xref) titled with the given text. */
 export function makeMinimalPdf(title: string): Uint8Array {
   const safe = title.replace(/[()\\]/g, ' ');

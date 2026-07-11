@@ -275,6 +275,47 @@ export const UnpublishCollectionResponse = zod.object({
 }).describe('Full collection with its ordered items.')
 
 
+export const CreateHelpTopicBody = zod.object({
+  "slug": zod.string(),
+  "term": zod.string(),
+  "body": zod.string(),
+  "linkSlug": zod.string().optional()
+})
+
+export const CreateHelpTopicResponse = zod.object({
+  "slug": zod.string(),
+  "term": zod.string(),
+  "body": zod.string(),
+  "linkSlug": zod.string().optional()
+})
+
+
+export const UpdateHelpTopicParams = zod.object({
+  "slug": zod.string()
+})
+
+export const UpdateHelpTopicBody = zod.object({
+  "slug": zod.string(),
+  "term": zod.string(),
+  "body": zod.string(),
+  "linkSlug": zod.string().optional()
+})
+
+export const UpdateHelpTopicResponse = zod.object({
+  "slug": zod.string(),
+  "term": zod.string(),
+  "body": zod.string(),
+  "linkSlug": zod.string().optional()
+})
+
+
+export const DeleteHelpTopicParams = zod.object({
+  "slug": zod.string()
+})
+
+export const DeleteHelpTopicResponse = zod.void()
+
+
 /**
  * Browse & search the catalogue with faceted filters.
  */
@@ -799,6 +840,31 @@ export const GetHealthResponse = zod.object({
   "database": zod.enum(['up', 'down'])
 })
 }).describe('Service health snapshot.')
+
+
+/**
+ * All help topics (the web preloads these to answer hovers without per-term fetches).
+ */
+export const ListHelpTopicsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "slug": zod.string(),
+  "term": zod.string(),
+  "body": zod.string(),
+  "linkSlug": zod.string().optional()
+}))
+})
+
+
+export const GetHelpTopicParams = zod.object({
+  "slug": zod.string()
+})
+
+export const GetHelpTopicResponse = zod.object({
+  "slug": zod.string(),
+  "term": zod.string(),
+  "body": zod.string(),
+  "linkSlug": zod.string().optional()
+})
 
 
 /**

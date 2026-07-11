@@ -1,0 +1,148 @@
+import type { HelpTopicWriteInput } from '@TheY2T/tmr-api-client';
+import { type FormEvent, useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { getHelpTopic, helpAdminApi } from '@/lib/help-api';
+
+const emptyForm = { slug: '', term: '', body: '', linkSlug: '' };
+
+export default function HelpTopicForm({ slug }: { slug?: string }) {
+  const isEdit = Boolean(slug);
+  const [form, setForm] = useState({ ...emptyForm });
+  const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!slug) {
+      return;
+    }
+    getHelpTopic(slug).then((topic) => {
+      if (topic) {
+        setForm({
+          slug: topic.slug,
+          term: topic.term,
+          body: topic.body,
+          linkSlug: topic.linkSlug ?? '',
+        });
+      }
+    });
+  }, [slug]);
+
+  function set<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  function payload(): HelpTopicWriteInput {
+    return {
+      slug: form.slug.trim(),
+      term: form.term.trim(),
+      body: form.body,
+      linkSlug: form.linkSlug.trim() || undefined,
+    };
+  }
+
+  async function onSave(event: FormEvent) {
+    event.preventDefault();
+    setBusy(true);
+    setError(null);
+    setNotice(null);
+    try {
+      if (isEdit && slug) {
+        await helpAdminApi.update(slug, payload());
+        setNotice('Saved.');
+      } else {
+        const created = await helpAdminApi.create(payload());
+        window.location.href = `/admin/help/${encodeURIComponent(created.slug)}/edit`;
+        return;
+      }
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const inputClass = 'w-full rounded-md border border-input bg-background px-3 py-2 text-sm';
+
+  return (
+    <div className="space-y-6">
+      {error ? (
+        <p role="alert" className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          {error}
+        </p>
+      ) : null}
+      {notice ? (
+        <p className="rounded-md bg-green-100 px-3 py-2 text-sm text-green-800 dark:bg-green-900 dark:text-green-100">
+          {notice}
+        </p>
+      ) : null}
+
+      <form onSubmit={onSave} className="space-y-4">
+        <label className="block space-y-1">
+          <span className="text-sm font-medium">Slug (matches a skill-topic or term)</span>
+          <input
+            className={inputClass}
+            value={form.slug}
+            readOnly={isEdit}
+            onChange={(e) => set('slug', e.target.value)}
+            placeholder="cadence"
+          />
+        </label>
+        <label className="block space-y-1">
+          <span className="text-sm font-medium">Term</span>
+          <input
+            className={inputClass}
+            value={form.term}
+            onChange={(e) => set('term', e.target.value)}
+          />
+        </label>
+        <label className="block space-y-1">
+          <span className="text-sm font-medium">Body (Markdown)</span>
+          <textarea
+            className={`${inputClass} h-32`}
+            value={form.body}
+            onChange={(e) => set('body', e.target.value)}
+          />
+        </label>
+        <label className="block space-y-1">
+          <span className="text-sm font-medium">Learn-more content slug (optional)</span>
+          <input
+            className={inputClass}
+            value={form.linkSlug}
+            onChange={(e) => set('linkSlug', e.target.value)}
+            placeholder="omt-diatonic-chords"
+          />
+        </label>
+
+        <div className="flex flex-wrap gap-3 border-t pt-4">
+          <Button type="submit" disabled={busy}>
+            {isEdit ? 'Save changes' : 'Create'}
+          </Button>
+          {isEdit && slug ? (
+            <Button
+              type="button"
+              variant="outline"
+              disabled={busy}
+              onClick={() => {
+                if (confirm('Delete this help topic?')) {
+                  setBusy(true);
+                  helpAdminApi
+                    .remove(slug)
+                    .then(() => {
+                      window.location.href = '/admin/help';
+                    })
+                    .catch((e: Error) => {
+                      setError(e.message);
+                      setBusy(false);
+                    });
+                }
+              }}
+            >
+              Delete
+            </Button>
+          ) : null}
+        </div>
+      </form>
+    </div>
+  );
+}
