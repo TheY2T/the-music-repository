@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "@TheY2T/tmr-config-typescript — base",
+  "extends": "../../tsconfig.base.json"
+}

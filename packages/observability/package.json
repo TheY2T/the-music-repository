@@ -1,0 +1,55 @@
+{
+  "name": "@TheY2T/tmr-observability",
+  "version": "0.0.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./otel": {
+      "types": "./dist/otel/otel.bootstrap.d.ts",
+      "default": "./dist/otel/otel.bootstrap.js"
+    }
+  },
+  "files": [
+    "dist",
+    "otel.d.ts"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "check-types": "tsc --noEmit",
+    "lint": "biome check .",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@nestjs/common": "catalog:",
+    "@nestjs/core": "catalog:",
+    "@opentelemetry/api": "catalog:",
+    "@opentelemetry/auto-instrumentations-node": "catalog:",
+    "@opentelemetry/exporter-metrics-otlp-grpc": "catalog:",
+    "@opentelemetry/exporter-trace-otlp-grpc": "catalog:",
+    "@opentelemetry/instrumentation-pino": "catalog:",
+    "@opentelemetry/resources": "catalog:",
+    "@opentelemetry/sdk-metrics": "catalog:",
+    "@opentelemetry/sdk-node": "catalog:",
+    "@opentelemetry/sdk-trace-base": "catalog:",
+    "@opentelemetry/semantic-conventions": "catalog:",
+    "nestjs-cls": "catalog:",
+    "nestjs-pino": "catalog:",
+    "pino": "catalog:",
+    "pino-http": "catalog:",
+    "pino-pretty": "catalog:",
+    "reflect-metadata": "catalog:",
+    "rxjs": "catalog:"
+  },
+  "devDependencies": {
+    "@TheY2T/tmr-config-typescript": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

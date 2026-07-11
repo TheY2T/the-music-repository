@@ -1,0 +1,10 @@
+# Lenient ruleset: validate OpenAPI structural correctness without opinionated style rules.
+# Tighten (e.g. require 4xx responses, operation summaries) as the API surface grows.
+extends:
+  - minimal
+
+rules:
+  operation-4xx-response: off
+  operation-operationId: warn
+  no-server-example.com: off
+  info-license: off

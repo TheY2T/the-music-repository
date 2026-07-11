@@ -1,0 +1,159 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "The Music Repository API",
+    "description": "The Music Repository API — the single source of truth for the HTTP contract.\nCompiles to OpenAPI 3.1 (`openapi.json`), which drives Orval (FE client + Zod) and the\nbackend Zod DTOs. Paths are declared ONLY here (never in NestJS decorators).",
+    "version": "0.0.0"
+  },
+  "tags": [
+    {
+      "name": "health"
+    },
+    {
+      "name": "demo"
+    }
+  ],
+  "paths": {
+    "/demo/error": {
+      "get": {
+        "operationId": "getDemoError",
+        "description": "Reference endpoint that always fails with a Problem Details 404 (proves the error pipeline).",
+        "parameters": [],
+        "responses": {
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "getHealth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthStatus"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "health"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HealthChecks": {
+        "type": "object",
+        "required": [
+          "database"
+        ],
+        "properties": {
+          "database": {
+            "type": "string",
+            "enum": [
+              "up",
+              "down"
+            ]
+          }
+        }
+      },
+      "HealthStatus": {
+        "type": "object",
+        "required": [
+          "status",
+          "service",
+          "version",
+          "uptimeSeconds",
+          "checks"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "degraded",
+              "down"
+            ]
+          },
+          "service": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "uptimeSeconds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "checks": {
+            "$ref": "#/components/schemas/HealthChecks"
+          }
+        },
+        "description": "Service health snapshot."
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "required": [
+          "type",
+          "title",
+          "status",
+          "code"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "URI identifying the problem category."
+          },
+          "title": {
+            "type": "string",
+            "description": "Short, stable, human summary of the problem type."
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "description": "HTTP status code."
+          },
+          "detail": {
+            "type": "string",
+            "description": "Human explanation of this occurrence."
+          },
+          "instance": {
+            "type": "string",
+            "description": "URI identifying this specific occurrence."
+          },
+          "code": {
+            "type": "string",
+            "description": "Stable machine-readable code — the programmatic contract."
+          },
+          "traceId": {
+            "type": "string",
+            "description": "W3C trace id for support correlation."
+          },
+          "docUrl": {
+            "type": "string",
+            "description": "Link to human documentation for this code."
+          }
+        },
+        "description": "RFC 9457 Problem Details (`application/problem+json`)."
+      }
+    }
+  }
+}

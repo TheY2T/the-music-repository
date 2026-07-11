@@ -1,0 +1,24 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.3/schema.json",
+  "extends": ["./packages/config-biome/base.json"],
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": true,
+    "includes": [
+      "**",
+      "!**/dist",
+      "!**/.astro",
+      "!**/node_modules",
+      "!**/drizzle",
+      "!**/.turbo",
+      "!**/generated",
+      "!**/openapi.json",
+      "!**/*.astro",
+      "!**/*.css"
+    ]
+  }
+}

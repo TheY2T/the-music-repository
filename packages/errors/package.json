@@ -1,0 +1,28 @@
+{
+  "name": "@TheY2T/tmr-errors",
+  "version": "0.0.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "check-types": "tsc --noEmit",
+    "lint": "biome check .",
+    "test": "vitest run --passWithNoTests"
+  },
+  "devDependencies": {
+    "@TheY2T/tmr-config-typescript": "workspace:*",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

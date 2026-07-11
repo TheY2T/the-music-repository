@@ -1,0 +1,19 @@
+{
+  "name": "@TheY2T/tmr-api-spec",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:openapi": "tsp compile .",
+    "lint-spec": "redocly lint openapi.json",
+    "check-types": "tsp compile . --no-emit",
+    "lint": "biome check .",
+    "test": "vitest run --passWithNoTests"
+  },
+  "devDependencies": {
+    "@redocly/cli": "catalog:",
+    "@typespec/compiler": "catalog:",
+    "@typespec/http": "catalog:",
+    "@typespec/openapi3": "catalog:"
+  }
+}

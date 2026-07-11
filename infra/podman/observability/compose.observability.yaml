@@ -1,0 +1,52 @@
+# Self-hosted, vendor-neutral observability stack (OTLP → Collector → Tempo/Loki/Prometheus → Grafana).
+# Run from repo root:  pnpm obs:up   (stop: pnpm obs:down)
+# Apps export OTLP to the collector at localhost:4317; Grafana is at http://localhost:3001.
+name: tmr-observability
+
+services:
+  otel-collector:
+    image: docker.io/otel/opentelemetry-collector-contrib:latest
+    command: ["--config=/etc/otel-collector.yaml"]
+    volumes:
+      - ./otel-collector.yaml:/etc/otel-collector.yaml:ro,Z
+    ports:
+      - "4317:4317" # OTLP gRPC (apps export here)
+      - "4318:4318" # OTLP HTTP
+      - "8889:8889" # Prometheus scrape (metrics out)
+    depends_on: [tempo, loki, prometheus]
+
+  tempo:
+    image: docker.io/grafana/tempo:latest
+    command: ["-config.file=/etc/tempo.yaml"]
+    volumes:
+      - ./tempo.yaml:/etc/tempo.yaml:ro,Z
+    ports:
+      - "3200:3200" # Tempo query API (Grafana data source)
+
+  loki:
+    image: docker.io/grafana/loki:latest
+    command: ["-config.file=/etc/loki/local-config.yaml"]
+    ports:
+      - "3100:3100"
+
+  prometheus:
+    image: docker.io/prom/prometheus:latest
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--web.enable-otlp-receiver"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro,Z
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: docker.io/grafana/grafana:latest
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    volumes:
+      - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/ds.yaml:ro,Z
+    ports:
+      - "3001:3000" # Grafana UI (3000 is the API on the host)
+    depends_on: [tempo, loki, prometheus]

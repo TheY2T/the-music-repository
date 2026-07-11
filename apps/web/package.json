@@ -1,0 +1,42 @@
+{
+  "name": "@TheY2T/tmr-web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check-types": "astro check",
+    "lint": "biome check . && eslint .",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@TheY2T/tmr-contracts": "workspace:*",
+    "@TheY2T/tmr-flags": "workspace:*",
+    "@astrojs/node": "catalog:",
+    "@astrojs/react": "catalog:",
+    "@openfeature/flagd-provider": "catalog:",
+    "@openfeature/react-sdk": "catalog:",
+    "@openfeature/server-sdk": "catalog:",
+    "@openfeature/web-sdk": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "astro": "catalog:",
+    "class-variance-authority": "catalog:",
+    "clsx": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "tailwind-merge": "catalog:",
+    "tailwindcss": "catalog:",
+    "tw-animate-css": "catalog:"
+  },
+  "devDependencies": {
+    "@TheY2T/tmr-config-eslint": "workspace:*",
+    "@astrojs/check": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

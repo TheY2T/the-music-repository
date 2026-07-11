@@ -1,0 +1,47 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "globalEnv": ["NODE_ENV"],
+  "globalPassThroughEnv": [
+    "DATABASE_URL",
+    "FLAGD_HOST",
+    "FLAGD_PORT",
+    "OFREP_BASE_URL",
+    "PUBLIC_OFREP_BASE_URL",
+    "PUBLIC_API_BASE_URL",
+    "API_BASE_URL",
+    "PORT"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".astro/**", "!.astro/types.d.ts"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "build:openapi": {
+      "outputs": ["openapi.json"]
+    },
+    "lint-spec": {
+      "dependsOn": ["build:openapi"],
+      "inputs": ["openapi.json"]
+    },
+    "generate": {
+      "dependsOn": ["^build:openapi"],
+      "inputs": ["orval.config.ts", "../api-spec/openapi.json"],
+      "outputs": ["src/generated/**"]
+    },
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "check-types": {
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"]
+    }
+  }
+}

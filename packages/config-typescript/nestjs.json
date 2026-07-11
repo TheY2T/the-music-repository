@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "@TheY2T/tmr-config-typescript — NestJS",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
+    "isolatedModules": false,
+    "verbatimModuleSyntax": false,
+    "declaration": false,
+    "declarationMap": false
+  }
+}

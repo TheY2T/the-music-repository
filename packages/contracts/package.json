@@ -1,0 +1,37 @@
+{
+  "name": "@TheY2T/tmr-contracts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "generate": "orval --config orval.config.ts",
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "check-types": "tsc --noEmit",
+    "lint": "biome check .",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@TheY2T/tmr-api-spec": "workspace:*",
+    "@TheY2T/tmr-config-typescript": "workspace:*",
+    "orval": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

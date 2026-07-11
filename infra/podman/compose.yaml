@@ -1,0 +1,72 @@
+# Single podman-compose stack: Postgres + flagd + API + web.
+# Run from the repo root:  podman compose -f infra/podman/compose.yaml up
+# Or just the deps for local dev:  podman compose -f infra/podman/compose.yaml up -d db flagd
+name: the-music-repository
+
+services:
+  db:
+    image: docker.io/library/postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-tmr}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tmr}
+      POSTGRES_DB: ${POSTGRES_DB:-tmr}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tmr} -d ${POSTGRES_DB:-tmr}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  flagd:
+    image: ghcr.io/open-feature/flagd:latest
+    # gRPC evaluation on 8013, OFREP (HTTP) on 8016. Flags hot-reload from the mounted file.
+    command: ["start", "--uri", "file:/etc/flagd/flags.json"]
+    ports:
+      - "8013:8013"
+      - "8016:8016"
+    volumes:
+      # :Z relabels for SELinux (Fedora/RHEL); harmless elsewhere.
+      - ../../flags/flags.json:/etc/flagd/flags.json:ro,Z
+
+  api:
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      DATABASE_URL: postgres://${POSTGRES_USER:-tmr}:${POSTGRES_PASSWORD:-tmr}@db:5432/${POSTGRES_DB:-tmr}
+      FLAGD_HOST: flagd
+      FLAGD_PORT: "8013"
+    depends_on:
+      db:
+        condition: service_healthy
+      flagd:
+        condition: service_started
+    ports:
+      - "3000:3000"
+
+  web:
+    build:
+      context: ../..
+      dockerfile: apps/web/Dockerfile
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "4321"
+      # Browser talks to the API on the host-published port.
+      PUBLIC_API_BASE_URL: http://localhost:3000
+      # SSR talks to flagd over the compose network.
+      FLAGD_HOST: flagd
+      FLAGD_PORT: "8013"
+    depends_on:
+      - api
+      - flagd
+    ports:
+      - "4321:4321"
+
+volumes:
+  pgdata:

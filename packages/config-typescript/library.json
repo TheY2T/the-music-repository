@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "@TheY2T/tmr-config-typescript — library (emits declarations)",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "composite": false,
+    "declaration": true,
+    "declarationMap": true
+  }
+}

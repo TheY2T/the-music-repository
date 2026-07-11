@@ -1,0 +1,37 @@
+---
+import FlagBanner from '@/components/FlagBanner.tsx';
+import HealthCard from '@/components/HealthCard.tsx';
+import '@/styles/global.css';
+
+const { demoNewBanner } = Astro.locals.flags;
+const apiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL ?? 'http://localhost:3000';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Music Repository</title>
+    <script is:inline>
+      // Apply theme before paint to avoid a flash (shadcn dark mode = `.dark` on <html>).
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body>
+    <main class="mx-auto max-w-2xl space-y-6 p-8">
+      <header class="space-y-1">
+        <h1 class="text-3xl font-bold">The Music Repository</h1>
+        <p class="text-muted-foreground">
+          Phase 0 scaffold — Astro + NestJS + Postgres/Drizzle + OpenFeature.
+        </p>
+      </header>
+
+      <FlagBanner client:load initial={demoNewBanner} />
+      <HealthCard client:load apiBaseUrl={apiBaseUrl} />
+    </main>
+  </body>
+</html>

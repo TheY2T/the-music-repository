@@ -1,0 +1,17 @@
+{
+  "name": "@TheY2T/tmr-config-eslint",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./astro": "./astro.js"
+  },
+  "dependencies": {
+    "typescript-eslint": "catalog:",
+    "eslint-plugin-astro": "catalog:"
+  },
+  "peerDependencies": {
+    "eslint": "catalog:"
+  }
+}

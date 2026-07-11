@@ -1,0 +1,16 @@
+{
+  "name": "@TheY2T/tmr-config-typescript",
+  "version": "0.0.0",
+  "private": true,
+  "files": [
+    "base.json",
+    "library.json",
+    "nestjs.json"
+  ],
+  "exports": {
+    "./base.json": "./base.json",
+    "./library.json": "./library.json",
+    "./nestjs.json": "./nestjs.json",
+    "./package.json": "./package.json"
+  }
+}
