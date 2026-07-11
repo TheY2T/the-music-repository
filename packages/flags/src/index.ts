@@ -55,6 +55,10 @@ export const FlagKeys = {
   ToolIntervals: 'tools.intervals',
   /** Phase 3 — staff-notation note reader tool. */
   ToolStaff: 'tools.staff',
+  /** Phase 3 — interval ear-training quiz tool. */
+  ToolEarTrainer: 'tools.ear-trainer',
+  /** Phase 3 — beat sequencer tool. */
+  ToolSequencer: 'tools.sequencer',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -80,4 +84,6 @@ export const FlagDefaults = {
   [FlagKeys.ToolTuner]: true,
   [FlagKeys.ToolIntervals]: true,
   [FlagKeys.ToolStaff]: true,
+  [FlagKeys.ToolEarTrainer]: true,
+  [FlagKeys.ToolSequencer]: true,
 } satisfies Record<FlagKey, boolean>;

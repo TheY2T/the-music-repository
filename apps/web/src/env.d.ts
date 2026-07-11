@@ -23,6 +23,8 @@ declare namespace App {
       toolTuner: boolean;
       toolIntervals: boolean;
       toolStaff: boolean;
+      toolEarTrainer: boolean;
+      toolSequencer: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {

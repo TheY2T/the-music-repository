@@ -14,6 +14,8 @@ const {
   toolTuner,
   toolIntervals,
   toolStaff,
+  toolEarTrainer,
+  toolSequencer,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -87,6 +89,18 @@ const tools = [
     title: 'Staff note reader',
     summary: 'Read notes on the treble staff; click to hear them.',
     enabled: toolStaff,
+  },
+  {
+    href: '/tools/ear-trainer',
+    title: 'Ear trainer',
+    summary: 'Train your ear: listen and name the interval.',
+    enabled: toolEarTrainer,
+  },
+  {
+    href: '/tools/sequencer',
+    title: 'Beat sequencer',
+    summary: 'Program a drum pattern and loop it.',
+    enabled: toolSequencer,
   },
 ].filter((tool) => tool.enabled);
 
