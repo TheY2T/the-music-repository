@@ -15,6 +15,8 @@ declare namespace App {
       toolCircleOfFifths: boolean;
       toolFretboard: boolean;
       toolChords: boolean;
+      toolScaleExplorer: boolean;
+      toolChordId: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {

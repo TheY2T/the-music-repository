@@ -115,6 +115,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.ToolChords,
     FlagDefaults[FlagKeys.ToolChords],
   );
+  const toolScaleExplorer = await client.getBooleanValue(
+    FlagKeys.ToolScaleExplorer,
+    FlagDefaults[FlagKeys.ToolScaleExplorer],
+  );
+  const toolChordId = await client.getBooleanValue(
+    FlagKeys.ToolChordId,
+    FlagDefaults[FlagKeys.ToolChordId],
+  );
 
   context.locals.flags = {
     demoNewBanner,
@@ -128,6 +136,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
     toolCircleOfFifths,
     toolFretboard,
     toolChords,
+    toolScaleExplorer,
+    toolChordId,
   };
   context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
   return next();

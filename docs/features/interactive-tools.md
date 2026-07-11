@@ -1,13 +1,13 @@
 # Feature: Interactive tools
 
-- **Phase:** 3 (Slices A–B) · **Status:** shipped
-- **Flag keys:** `tools.keyboard`, `tools.fretboard`, `tools.circle-of-fifths`, `tools.chords` (from
-  `@TheY2T/tmr-flags`). Default on.
+- **Phase:** 3 (Slices A–C) · **Status:** shipped
+- **Flag keys:** `tools.keyboard`, `tools.fretboard`, `tools.circle-of-fifths`, `tools.chords`,
+  `tools.scale-explorer`, `tools.chord-id` (from `@TheY2T/tmr-flags`). Default on.
 
 ## Purpose
 
-Client-side, audible music-theory tools — the interactive layer. More (scale explorer, reverse tools,
-trainers) drop into the same `/tools` hub behind their own flags.
+Client-side, audible music-theory tools — the interactive layer. More (reverse scale lookup, mode
+explorer, trainers) drop into the same `/tools` hub behind their own flags.
 
 ## UX behaviour
 
@@ -21,8 +21,12 @@ trainers) drop into the same `/tools` hub behind their own flags.
 - `/tools/circle-of-fifths` — an **interactive SVG circle**: 12 major keys (outer) + relative minors
   (inner); click a key to hear its tonic and show its **signature**, **relative minor**, and the seven
   **diatonic chords** (I–vii°).
+- `/tools/scale-explorer` — pick a root + scale → its **notes with scale-degree labels**, the
+  **whole/half step pattern** (e.g. major = W–W–H–W–W–W–H), and **Play ascending**.
 - `/tools/chords` — a **chord builder**: pick a root + quality (triads, 7ths, sus, dim) → the chord's
   **notes with scale-degree labels** + formula; **Play chord** (block) / **Arpeggiate**.
+- `/tools/chord-identifier` — a **reverse lookup**: toggle pitch classes → the matching chord name(s).
+  Inversion-aware (matches the pitch-class set, not the bass).
 - Every tool page renders the **Info View** (Phase 2) and tags terms with `data-help` (e.g. "Highlight
   scale" → `scales`, "Chord type" → `chords`), so the tools contribute to the same contextual glossary.
 
@@ -31,11 +35,13 @@ trainers) drop into the same `/tools` hub behind their own flags.
 No backend — everything is computed in the browser (no API, no DB):
 
 - `apps/web/src/lib/music-theory.ts` — pure 12-TET helpers: note names, `midiToFrequency`, scale
-  formulas, circle-of-fifths table + `diatonicChords`, guitar tuning, chord formulas + `intervalLabel`.
+  formulas + `stepPattern`, circle-of-fifths table + `diatonicChords`, guitar tuning, chord formulas +
+  `intervalLabel`, and `identifyChords` (reverse notes→chord across all roots/inversions).
 - `apps/web/src/lib/audio.ts` — a dependency-free Web Audio note player (triangle osc + soft envelope;
   resumes the context on the first user gesture).
-- Islands `PianoKeyboard.tsx`, `GuitarFretboard.tsx`, `CircleOfFifths.tsx`, `ChordBuilder.tsx`
-  (client:load). Flag-gated pages redirect to `/tools` when their tool is off.
+- Islands `PianoKeyboard.tsx`, `GuitarFretboard.tsx`, `CircleOfFifths.tsx`, `ChordBuilder.tsx`,
+  `ScaleExplorer.tsx`, `ChordIdentifier.tsx` (client:load). Flag-gated pages redirect to `/tools` when
+  their tool is off.
 
 ## Tests
 
@@ -44,4 +50,5 @@ No backend — everything is computed in the browser (no API, no DB):
   pentatonic highlights exactly A C D E G with root A emphasised, and the low-E string hits frets
   0·3·5·8·10·12·15. Circle defaults to C (no sharps/flats, rel. minor Am, chords C Dm Em F G Am B°);
   clicking A → 3 sharps / F♯m / A Bm C♯m D E F♯m G♯°. Chord builder: C Major → C E G (R·3·5); D Dominant
-  7th → D F♯ A C (R·3·5·♭7); Play/Arpeggiate run without error. All music-theory outcomes correct.
+  7th → D F♯ A C (R·3·5·♭7). Scale explorer: C Major → C D E F G A B, step pattern W–W–H–W–W–W–H. Chord
+  identifier: C·E·G → C Major; C·E·G·A → A Minor 7th (inversion-aware). All music-theory outcomes correct.

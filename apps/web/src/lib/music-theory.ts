@@ -131,3 +131,37 @@ const INTERVAL_LABELS = ['R', '♭2', '2', '♭3', '3', '4', '♭5', '5', '♯5'
 export function intervalLabel(semitones: number): string {
   return INTERVAL_LABELS[((semitones % 12) + 12) % 12];
 }
+
+/** Whole/half step pattern between successive scale degrees (wrapping to the octave). */
+export function stepPattern(intervals: number[]): string[] {
+  const steps: number[] = [];
+  for (let i = 1; i < intervals.length; i += 1) {
+    steps.push(intervals[i] - intervals[i - 1]);
+  }
+  steps.push(12 - intervals[intervals.length - 1]);
+  return steps.map((s) => (s === 1 ? 'H' : s === 2 ? 'W' : s === 3 ? 'W½' : `${s}`));
+}
+
+/**
+ * Reverse lookup: every chord (across all 12 roots) whose pitch classes exactly match `selected`.
+ * Inversions match naturally because we test the set, not the bass note.
+ */
+export function identifyChords(selected: Set<number>): string[] {
+  if (selected.size < 3) {
+    return [];
+  }
+  const matches: string[] = [];
+  for (let root = 0; root < 12; root += 1) {
+    for (const chord of CHORDS) {
+      if (chord.intervals.length !== selected.size) {
+        continue;
+      }
+      const pcs = chord.intervals.map((interval) => (root + interval) % 12);
+      if (pcs.every((pc) => selected.has(pc))) {
+        const flats = [1, 3, 5, 8, 10].includes(root);
+        matches.push(`${pitchName(root, flats)} ${chord.name}`);
+      }
+    }
+  }
+  return matches;
+}

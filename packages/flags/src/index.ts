@@ -39,6 +39,10 @@ export const FlagKeys = {
   ToolFretboard: 'tools.fretboard',
   /** Phase 3 — chord builder tool. */
   ToolChords: 'tools.chords',
+  /** Phase 3 — scale explorer tool. */
+  ToolScaleExplorer: 'tools.scale-explorer',
+  /** Phase 3 — reverse chord identifier tool. */
+  ToolChordId: 'tools.chord-id',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -56,4 +60,6 @@ export const FlagDefaults = {
   [FlagKeys.ToolCircleOfFifths]: true,
   [FlagKeys.ToolFretboard]: true,
   [FlagKeys.ToolChords]: true,
+  [FlagKeys.ToolScaleExplorer]: true,
+  [FlagKeys.ToolChordId]: true,
 } satisfies Record<FlagKey, boolean>;
