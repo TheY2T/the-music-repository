@@ -2,26 +2,33 @@ import {
   CreateBucketCommand,
   GetObjectCommand,
   HeadBucketCommand,
+  PutBucketCorsCommand,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, type OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MediaLibrary } from '../application/ports/media-library.port';
 
 @Injectable()
-export class S3MediaLibrary extends MediaLibrary {
+export class S3MediaLibrary extends MediaLibrary implements OnApplicationBootstrap {
+  private readonly logger = new Logger(S3MediaLibrary.name);
   private readonly client: S3Client;
   private readonly bucket: string;
   private readonly internalEndpoint: string;
   private readonly publicEndpoint: string;
+  private readonly corsOrigins: string[];
 
   constructor(config: ConfigService) {
     super();
     this.internalEndpoint = config.getOrThrow<string>('S3_ENDPOINT');
     this.publicEndpoint = config.get<string>('S3_PUBLIC_ENDPOINT') ?? this.internalEndpoint;
     this.bucket = config.get<string>('S3_BUCKET') ?? 'tmr-media';
+    this.corsOrigins = (config.get<string>('TRUSTED_ORIGINS') ?? 'http://localhost:4321')
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean);
     this.client = new S3Client({
       endpoint: this.internalEndpoint,
       region: config.get<string>('S3_REGION') ?? 'us-east-1',
@@ -33,12 +40,41 @@ export class S3MediaLibrary extends MediaLibrary {
     });
   }
 
+  /** Ensure the bucket + CORS exist on boot so browser presigned uploads work. Graceful if MinIO is down. */
+  async onApplicationBootstrap(): Promise<void> {
+    try {
+      await this.ensureBucket();
+    } catch {
+      this.logger.warn(
+        `Could not reach object storage at ${this.internalEndpoint} — media uploads/downloads ` +
+          'will fail until it is up. Start it with `pnpm infra:up`.',
+      );
+    }
+  }
+
   async ensureBucket(): Promise<void> {
     try {
       await this.client.send(new HeadBucketCommand({ Bucket: this.bucket }));
     } catch {
       await this.client.send(new CreateBucketCommand({ Bucket: this.bucket }));
     }
+    // Allow the web origins to PUT (presigned upload) and GET directly from the browser.
+    await this.client.send(
+      new PutBucketCorsCommand({
+        Bucket: this.bucket,
+        CORSConfiguration: {
+          CORSRules: [
+            {
+              AllowedMethods: ['GET', 'PUT'],
+              AllowedOrigins: this.corsOrigins,
+              AllowedHeaders: ['*'],
+              ExposeHeaders: ['ETag'],
+              MaxAgeSeconds: 3600,
+            },
+          ],
+        },
+      }),
+    );
   }
 
   async putObject(key: string, body: Uint8Array, contentType: string): Promise<void> {
@@ -53,7 +89,20 @@ export class S3MediaLibrary extends MediaLibrary {
       new GetObjectCommand({ Bucket: this.bucket, Key: storageKey }),
       { expiresIn: 3600 },
     );
-    // The SDK signs against the internal endpoint (e.g. minio:9000); rewrite to the browser-reachable host.
+    return this.toPublicUrl(url);
+  }
+
+  async presignPutUrl(storageKey: string, contentType: string): Promise<string> {
+    const url = await getSignedUrl(
+      this.client,
+      new PutObjectCommand({ Bucket: this.bucket, Key: storageKey, ContentType: contentType }),
+      { expiresIn: 3600 },
+    );
+    return this.toPublicUrl(url);
+  }
+
+  /** The SDK signs against the internal endpoint (e.g. minio:9000); rewrite to the browser-reachable host. */
+  private toPublicUrl(url: string): string {
     return this.internalEndpoint === this.publicEndpoint
       ? url
       : url.replace(this.internalEndpoint, this.publicEndpoint);

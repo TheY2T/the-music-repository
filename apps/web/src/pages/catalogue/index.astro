@@ -1,6 +1,8 @@
 ---
 import CatalogueBrowser from '@/components/CatalogueBrowser.tsx';
 import '@/styles/global.css';
+
+const showFavorites = Astro.locals.flags.favorites && !!Astro.locals.user;
 ---
 
 <html lang="en">
@@ -25,7 +27,7 @@ import '@/styles/global.css';
           Browse teaching materials and songs — filter by type, genre, instrument, and topic.
         </p>
       </header>
-      <CatalogueBrowser client:load />
+      <CatalogueBrowser client:load showFavorites={showFavorites} />
     </main>
   </body>
 </html>

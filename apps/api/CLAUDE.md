@@ -65,6 +65,24 @@ Better Auth lives in `src/auth/` and owns `/api/auth/*`. Key rules:
   loads them from the CJS build, and classic-`Node` tsc resolves their types (verified). No `paths`
   mapping needed (unlike meilisearch).
 
+## Admin CMS (Slice 2b, `src/authoring/`)
+
+Spec-first, RBAC-gated authoring built on the catalogue feature. Follow it as the template for
+write-side features:
+
+- **Ports:** `ContentAuthoring` (writes + admin list) and `TaxonomyCatalog`, bound to
+  `DrizzleContentAuthoring` / `DrizzleTaxonomyCatalog`. Reads reuse the catalogue `ContentRepository`;
+  the module imports `CatalogueModule` for `MediaLibrary` + `CatalogueReindexService`.
+- **Reindex-on-write:** update/publish/unpublish/delete call `CatalogueReindexService.reindex()`.
+- **DTOs:** `createZodDto(...)` over generated `@TheY2T/tmr-contracts` body schemas → the global
+  `ZodValidationPipe` yields **422 problem+json with `errors[]`** on invalid bodies.
+- **RBAC:** every route uses `@RequirePermissions({ resource: [actions] })` (editor can't delete —
+  `content:delete` is admin-only).
+- **Media upload = presigned PUT:** `MediaLibrary.presignPutUrl` + bucket CORS (set in `ensureBucket`,
+  applied on boot via `OnApplicationBootstrap`). Browser PUTs directly to MinIO.
+- **List responses wrap in `{ items }`** to match the contract; `POST .../publish` sets `@HttpCode(200)`
+  (Nest defaults POST to 201).
+
 ## Config
 
 Env is validated at boot by Zod (`src/config/env.ts`) via `@nestjs/config`. Add new vars there.

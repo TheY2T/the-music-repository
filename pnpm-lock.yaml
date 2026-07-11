@@ -138,6 +138,9 @@ catalogs:
     eslint-plugin-astro:
       specifier: ^1.3.1
       version: 1.7.0
+    marked:
+      specifier: ^15.0.7
+      version: 15.0.12
     meilisearch:
       specifier: ^0.59.0
       version: 0.59.0
@@ -372,6 +375,9 @@ importers:
       clsx:
         specifier: 'catalog:'
         version: 2.1.1
+      marked:
+        specifier: 'catalog:'
+        version: 15.0.12
       react:
         specifier: 'catalog:'
         version: 19.2.7
@@ -5488,6 +5494,11 @@ packages:
 
   markdown-it@14.3.0:
     resolution: {integrity: sha512-RCEsPjR+sr0x+AuYp601tKTkgFG4YEPLCzHST3cQ/fhlJkqAkz1L2/Qbp1j9qw5SBwQHFBoW8+hoN5xssOF0Tw==}
+    hasBin: true
+
+  marked@15.0.12:
+    resolution: {integrity: sha512-8dD6FusOQSrpv9Z1rdNMdlSgQOIP880DHqnohobOmYLElGEqAL/JvxvuxZO16r4HtjTlfPRDC1hbvxC9dPN2nA==}
+    engines: {node: '>= 18'}
     hasBin: true
 
   math-intrinsics@1.1.0:
@@ -12118,6 +12129,8 @@ snapshots:
       mdurl: 2.0.0
       punycode.js: 2.3.1
       uc.micro: 2.1.0
+
+  marked@15.0.12: {}
 
   math-intrinsics@1.1.0: {}
 

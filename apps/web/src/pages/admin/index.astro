@@ -1,12 +1,14 @@
 ---
+import AdminContentList from '@/components/AdminContentList.tsx';
 import SignOutButton from '@/components/SignOutButton.tsx';
+import { guardAdmin } from '@/lib/admin-guard';
 import '@/styles/global.css';
 
-// SSR gate (UX only — the API re-authorizes every mutation). Anonymous → sign-in.
-const user = Astro.locals.user;
-if (!user) {
-  return Astro.redirect('/signin?redirect=/admin');
+const redirect = guardAdmin(Astro);
+if (redirect) {
+  return redirect;
 }
+const user = Astro.locals.user!;
 ---
 
 <html lang="en">
@@ -23,28 +25,19 @@ if (!user) {
     </script>
   </head>
   <body>
-    <main class="mx-auto max-w-4xl space-y-6 p-8">
+    <main class="mx-auto max-w-5xl space-y-6 p-8">
       <header class="flex items-center justify-between">
         <div class="space-y-1">
           <a href="/" class="text-sm text-muted-foreground underline">← Home</a>
-          <h1 class="text-3xl font-bold">Admin</h1>
+          <h1 class="text-3xl font-bold">Content</h1>
+          <p class="text-sm text-muted-foreground">
+            Signed in as {user.name || user.email} · role: {user.role}
+          </p>
         </div>
         <SignOutButton client:load />
       </header>
 
-      <section class="rounded-lg border p-6">
-        <p class="text-sm text-muted-foreground">Signed in as</p>
-        <p class="text-lg font-medium">{user.name || user.email}</p>
-        <p class="text-sm text-muted-foreground">{user.email}</p>
-        <p class="mt-2 inline-block rounded-full bg-accent px-3 py-1 text-xs font-medium">
-          role: {user.role ?? 'learner'}
-        </p>
-      </section>
-
-      <section class="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
-        The content authoring CMS (create/edit/publish, media upload, taxonomy) arrives in Slice 2b.
-        This page proves the session gate: only authenticated users reach it.
-      </section>
+      <AdminContentList client:load />
     </main>
   </body>
 </html>

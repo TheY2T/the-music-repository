@@ -109,3 +109,42 @@ export function slugToLabel(slug: string): string {
   const text = slug.replace(/[-_]/g, ' ');
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
+
+/** Project a hydrated {@link ContentItem} into the list/card summary shape. */
+export function toContentSummaryView(item: ContentItem): ContentSummaryView {
+  return {
+    slug: item.slug,
+    title: item.title,
+    summary: item.summary ?? undefined,
+    type: item.type,
+    difficulty: item.difficulty ?? undefined,
+    visibility: item.visibility,
+    genres: item.genres,
+    instruments: item.instruments,
+    topics: item.topics,
+  };
+}
+
+/** Map a hydrated {@link ContentItem} + presigned media into the API detail shape. Shared by the
+ * catalogue read path and the authoring CMS so both emit an identical `ContentDetail`. */
+export function toContentDetailView(item: ContentItem, media: MediaView[]): ContentDetailView {
+  return {
+    slug: item.slug,
+    title: item.title,
+    summary: item.summary ?? undefined,
+    type: item.type,
+    difficulty: item.difficulty ?? undefined,
+    visibility: item.visibility,
+    genres: item.genres,
+    instruments: item.instruments,
+    topics: item.topics,
+    bodyMdx: item.bodyMdx ?? undefined,
+    source: item.source ?? undefined,
+    attribution: item.attribution ?? undefined,
+    license: item.license ?? undefined,
+    tags: item.tags,
+    media,
+    createdAt: item.createdAt.toISOString(),
+    updatedAt: item.updatedAt.toISOString(),
+  };
+}

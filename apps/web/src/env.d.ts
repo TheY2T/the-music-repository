@@ -6,6 +6,8 @@ declare namespace App {
     flags: {
       demoNewBanner: boolean;
       authEnabled: boolean;
+      adminCms: boolean;
+      favorites: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {

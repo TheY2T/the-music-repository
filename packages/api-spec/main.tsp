@@ -169,3 +169,167 @@ op getContentBySlug(@path slug: string): ContentDetail | {
   @statusCode statusCode: 404;
   @body body: ProblemDetails;
 };
+
+// ===================== Admin CMS (Slice 2b) =====================
+// RBAC-gated authoring surface. Enforcement lives in NestJS guards; the contract documents shapes.
+
+alias ContentStatus = "draft" | "review" | "published";
+alias MediaKind = "score_pdf" | "audio" | "image" | "midi" | "musicxml";
+
+/** Create/replace payload for a content item. Taxonomy is given as slug arrays. */
+model ContentWriteInput {
+  slug: string;
+  title: string;
+  summary?: string;
+  bodyMdx?: string;
+  type: ContentType;
+  visibility?: Visibility;
+  difficulty?: int32;
+  source?: string;
+  attribution?: string;
+  license?: string;
+  genres: string[];
+  instruments: string[];
+  topics: string[];
+  tags: string[];
+}
+
+/** Admin list row (any status). */
+model ContentAdminSummary {
+  slug: string;
+  title: string;
+  type: ContentType;
+  status: ContentStatus;
+  visibility: Visibility;
+  difficulty?: int32;
+  updatedAt: string;
+}
+
+model ContentAdminList {
+  items: ContentAdminSummary[];
+}
+
+/** Request a direct-to-storage upload slot for a media file. */
+model MediaUploadRequest {
+  filename: string;
+  mime: string;
+  kind: MediaKind;
+  license?: string;
+  attribution?: string;
+}
+
+/** A presigned PUT ticket the browser uploads the bytes to. */
+model MediaUploadTicket {
+  mediaId: string;
+  storageKey: string;
+  uploadUrl: string;
+}
+
+model TaxonomyWriteInput {
+  slug: string;
+  name: string;
+}
+
+model TaxonomyList {
+  items: TaxonomyRef[];
+}
+
+/** List every content item (all statuses) for the admin table. */
+@route("/content")
+@tag("authoring")
+@get
+op listContent(): ContentAdminList;
+
+/** Create a content item (starts as draft). */
+@route("/content")
+@tag("authoring")
+@post
+op createContent(@body body: ContentWriteInput): {
+  @statusCode statusCode: 201;
+  @body body: ContentDetail;
+};
+
+/** Fetch a content item of any status for editing. */
+@route("/content/{slug}")
+@tag("authoring")
+@get
+op getContentForEdit(@path slug: string): ContentDetail | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+/** Replace a content item (taxonomy + fields). */
+@route("/content/{slug}")
+@tag("authoring")
+@put
+op updateContent(@path slug: string, @body body: ContentWriteInput): ContentDetail;
+
+@route("/content/{slug}/publish")
+@tag("authoring")
+@post
+op publishContent(@path slug: string): ContentDetail;
+
+@route("/content/{slug}/unpublish")
+@tag("authoring")
+@post
+op unpublishContent(@path slug: string): ContentDetail;
+
+@route("/content/{slug}")
+@tag("authoring")
+@delete
+op deleteContent(@path slug: string): {
+  @statusCode statusCode: 204;
+};
+
+/** Reserve a media row + presigned PUT URL; the browser uploads bytes directly to storage. */
+@route("/content/{slug}/media")
+@tag("authoring")
+@post
+op requestMediaUpload(@path slug: string, @body body: MediaUploadRequest): {
+  @statusCode statusCode: 201;
+  @body body: MediaUploadTicket;
+};
+
+/** List taxonomy terms for a dimension (`genres` | `instruments` | `topics` | `tags`). */
+@route("/taxonomy/{dimension}")
+@tag("authoring")
+@get
+op listTaxonomy(@path dimension: string): TaxonomyList;
+
+/** Create (or upsert) a taxonomy term in a dimension. */
+@route("/taxonomy/{dimension}")
+@tag("authoring")
+@post
+op createTaxonomy(@path dimension: string, @body body: TaxonomyWriteInput): {
+  @statusCode statusCode: 201;
+  @body body: TaxonomyRef;
+};
+
+// ===================== Favorites (Slice 2c) =====================
+// Personalization: a signed-in user's bookmarked content. Auth-gated in NestJS.
+
+model FavoritesList {
+  items: ContentSummary[];
+}
+
+/** The current user's favorited content (published items). */
+@route("/me/favorites")
+@tag("favorites")
+@get
+op listFavorites(): FavoritesList;
+
+/** Add a content item to the current user's favorites. */
+@route("/me/favorites/{slug}")
+@tag("favorites")
+@post
+op addFavorite(@path slug: string): {
+  @statusCode statusCode: 204;
+};
+
+/** Remove a content item from the current user's favorites. */
+@route("/me/favorites/{slug}")
+@tag("favorites")
+@delete
+op removeFavorite(@path slug: string): {
+  @statusCode statusCode: 204;
+};

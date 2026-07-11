@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import type { ContentDetailView, ContentItem, MediaView } from '../../domain/content-item';
+import {
+  type ContentDetailView,
+  type MediaView,
+  toContentDetailView,
+} from '../../domain/content-item';
 import { ContentNotFoundError } from '../../domain/errors/content-not-found.error';
 import { ContentRepository } from '../ports/content-repository.port';
 import { MediaLibrary } from '../ports/media-library.port';
@@ -29,28 +33,6 @@ export class GetContentBySlugUseCase {
       })),
     );
 
-    return toDetailView(item, media);
+    return toContentDetailView(item, media);
   }
-}
-
-function toDetailView(item: ContentItem, media: MediaView[]): ContentDetailView {
-  return {
-    slug: item.slug,
-    title: item.title,
-    summary: item.summary ?? undefined,
-    type: item.type,
-    difficulty: item.difficulty ?? undefined,
-    visibility: item.visibility,
-    genres: item.genres,
-    instruments: item.instruments,
-    topics: item.topics,
-    bodyMdx: item.bodyMdx ?? undefined,
-    source: item.source ?? undefined,
-    attribution: item.attribution ?? undefined,
-    license: item.license ?? undefined,
-    tags: item.tags,
-    media,
-    createdAt: item.createdAt.toISOString(),
-    updatedAt: item.updatedAt.toISOString(),
-  };
 }

@@ -14,6 +14,12 @@
     },
     {
       "name": "catalogue"
+    },
+    {
+      "name": "authoring"
+    },
+    {
+      "name": "favorites"
     }
   ],
   "paths": {
@@ -174,6 +180,260 @@
         ]
       }
     },
+    "/content": {
+      "get": {
+        "operationId": "listContent",
+        "description": "List every content item (all statuses) for the admin table.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentAdminList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authoring"
+        ]
+      },
+      "post": {
+        "operationId": "createContent",
+        "description": "Create a content item (starts as draft).",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authoring"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContentWriteInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/content/{slug}": {
+      "get": {
+        "operationId": "getContentForEdit",
+        "description": "Fetch a content item of any status for editing.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authoring"
+        ]
+      },
+      "put": {
+        "operationId": "updateContent",
+        "description": "Replace a content item (taxonomy + fields).",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authoring"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContentWriteInput"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteContent",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "authoring"
+        ]
+      }
+    },
+    "/content/{slug}/media": {
+      "post": {
+        "operationId": "requestMediaUpload",
+        "description": "Reserve a media row + presigned PUT URL; the browser uploads bytes directly to storage.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaUploadTicket"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authoring"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MediaUploadRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/content/{slug}/publish": {
+      "post": {
+        "operationId": "publishContent",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authoring"
+        ]
+      }
+    },
+    "/content/{slug}/unpublish": {
+      "post": {
+        "operationId": "unpublishContent",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authoring"
+        ]
+      }
+    },
     "/demo/error": {
       "get": {
         "operationId": "getDemoError",
@@ -216,6 +476,144 @@
           "health"
         ]
       }
+    },
+    "/me/favorites": {
+      "get": {
+        "operationId": "listFavorites",
+        "description": "The current user's favorited content (published items).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FavoritesList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "favorites"
+        ]
+      }
+    },
+    "/me/favorites/{slug}": {
+      "post": {
+        "operationId": "addFavorite",
+        "description": "Add a content item to the current user's favorites.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "favorites"
+        ]
+      },
+      "delete": {
+        "operationId": "removeFavorite",
+        "description": "Remove a content item from the current user's favorites.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "favorites"
+        ]
+      }
+    },
+    "/taxonomy/{dimension}": {
+      "get": {
+        "operationId": "listTaxonomy",
+        "description": "List taxonomy terms for a dimension (`genres` | `instruments` | `topics` | `tags`).",
+        "parameters": [
+          {
+            "name": "dimension",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaxonomyList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authoring"
+        ]
+      },
+      "post": {
+        "operationId": "createTaxonomy",
+        "description": "Create (or upsert) a taxonomy term in a dimension.",
+        "parameters": [
+          {
+            "name": "dimension",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaxonomyRef"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authoring"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaxonomyWriteInput"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -253,6 +651,75 @@
           }
         },
         "description": "Paginated, faceted catalogue search result."
+      },
+      "ContentAdminList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentAdminSummary"
+            }
+          }
+        }
+      },
+      "ContentAdminSummary": {
+        "type": "object",
+        "required": [
+          "slug",
+          "title",
+          "type",
+          "status",
+          "visibility",
+          "updatedAt"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "lesson",
+              "song",
+              "score",
+              "exercise",
+              "technique",
+              "backing_track",
+              "tool_page"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "review",
+              "published"
+            ]
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "public",
+              "authed",
+              "premium"
+            ]
+          },
+          "difficulty": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "description": "Admin list row (any status)."
       },
       "ContentDetail": {
         "type": "object",
@@ -420,6 +887,90 @@
         },
         "description": "List/card view of a catalogue item."
       },
+      "ContentWriteInput": {
+        "type": "object",
+        "required": [
+          "slug",
+          "title",
+          "type",
+          "genres",
+          "instruments",
+          "topics",
+          "tags"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "bodyMdx": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "lesson",
+              "song",
+              "score",
+              "exercise",
+              "technique",
+              "backing_track",
+              "tool_page"
+            ]
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "public",
+              "authed",
+              "premium"
+            ]
+          },
+          "difficulty": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "source": {
+            "type": "string"
+          },
+          "attribution": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          },
+          "genres": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "instruments": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "topics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "Create/replace payload for a content item. Taxonomy is given as slug arrays."
+      },
       "FacetValue": {
         "type": "object",
         "required": [
@@ -483,6 +1034,20 @@
           }
         },
         "description": "Available facets for the current result set."
+      },
+      "FavoritesList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentSummary"
+            }
+          }
+        }
       },
       "HealthChecks": {
         "type": "object",
@@ -574,6 +1139,59 @@
         },
         "description": "A media file attached to a content item, with a ready-to-use (presigned) URL."
       },
+      "MediaUploadRequest": {
+        "type": "object",
+        "required": [
+          "filename",
+          "mime",
+          "kind"
+        ],
+        "properties": {
+          "filename": {
+            "type": "string"
+          },
+          "mime": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "score_pdf",
+              "audio",
+              "image",
+              "midi",
+              "musicxml"
+            ]
+          },
+          "license": {
+            "type": "string"
+          },
+          "attribution": {
+            "type": "string"
+          }
+        },
+        "description": "Request a direct-to-storage upload slot for a media file."
+      },
+      "MediaUploadTicket": {
+        "type": "object",
+        "required": [
+          "mediaId",
+          "storageKey",
+          "uploadUrl"
+        ],
+        "properties": {
+          "mediaId": {
+            "type": "string"
+          },
+          "storageKey": {
+            "type": "string"
+          },
+          "uploadUrl": {
+            "type": "string"
+          }
+        },
+        "description": "A presigned PUT ticket the browser uploads the bytes to."
+      },
       "ProblemDetails": {
         "type": "object",
         "required": [
@@ -619,6 +1237,20 @@
         },
         "description": "RFC 9457 Problem Details (`application/problem+json`)."
       },
+      "TaxonomyList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaxonomyRef"
+            }
+          }
+        }
+      },
       "TaxonomyRef": {
         "type": "object",
         "required": [
@@ -634,6 +1266,21 @@
           }
         },
         "description": "A taxonomy reference (genre / instrument / topic / tag)."
+      },
+      "TaxonomyWriteInput": {
+        "type": "object",
+        "required": [
+          "slug",
+          "name"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
       }
     }
   }

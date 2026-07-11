@@ -3,8 +3,10 @@ import FlagBanner from '@/components/FlagBanner.tsx';
 import HealthCard from '@/components/HealthCard.tsx';
 import '@/styles/global.css';
 
-const { demoNewBanner, authEnabled } = Astro.locals.flags;
+const { demoNewBanner, authEnabled, adminCms, favorites } = Astro.locals.flags;
 const user = Astro.locals.user;
+const canAuthor = adminCms && (user?.role === 'admin' || user?.role === 'editor');
+const showFavorites = favorites && !!user;
 ---
 
 <html lang="en">
@@ -38,9 +40,21 @@ const user = Astro.locals.user;
           {
             authEnabled &&
               (user ? (
-                <a href="/admin" class="text-sm underline">
-                  {user.name || user.email} · Admin
-                </a>
+                <span class="text-sm text-muted-foreground">
+                  {user.name || user.email}
+                  {showFavorites && (
+                    <>
+                      {' · '}
+                      <a href="/me/favorites" class="underline">My favorites</a>
+                    </>
+                  )}
+                  {canAuthor && (
+                    <>
+                      {' · '}
+                      <a href="/admin" class="underline">Admin</a>
+                    </>
+                  )}
+                </span>
               ) : (
                 <a href="/signin" class="text-sm underline">
                   Sign in

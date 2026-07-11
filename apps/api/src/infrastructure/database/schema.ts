@@ -1,4 +1,5 @@
 import { integer, pgTable, primaryKey, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { user } from '../../auth/auth-schema';
 
 /**
  * Catalogue schema (Phase 1). The repository core: content items + taxonomy + media assets.
@@ -117,3 +118,18 @@ export const contentTags = pgTable(
 // --- Auth (Slice 2): Better Auth tables live in `src/auth/auth-schema.ts`.
 // Re-exported here so drizzle-kit (and the shared Drizzle client) see one schema surface. ---
 export { account, session, user, verification } from '../../auth/auth-schema';
+
+// --- Favorites (Slice 2c): a user ↔ content bookmark. One row per (user, content). ---
+export const favorites = pgTable(
+  'favorites',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    contentId: uuid('content_id')
+      .notNull()
+      .references(() => contentItems.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.contentId] })],
+);

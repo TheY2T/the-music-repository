@@ -33,6 +33,26 @@ src/
   `SameSite=Lax` session cookie reaches both. The gate is UX-only — the API re-authorizes mutations.
 - Sign-in island: `SignInForm.tsx`; sign-out: `SignOutButton.tsx`; gated page: `pages/admin/index.astro`.
 
+## Admin CMS (Slice 2b)
+
+- **Pages** under `pages/admin/` (list + `content/new` + `content/[slug]/edit`), each gated by
+  `guardAdmin(Astro)` (`src/lib/admin-guard.ts`): checks the `admin.cms` flag + editor/admin role.
+- **Islands:** `AdminContentList.tsx`, `ContentForm.tsx` (Markdown editor + `marked` live preview,
+  taxonomy datalists, media uploader).
+- **API calls** go through `src/lib/admin-api.ts` — a typed, credentialed fetch wrapper over the CMS
+  endpoints (uses generated model types from `@TheY2T/tmr-api-client`). Media upload = request a
+  presigned ticket, then `uploadToTicket` PUTs the file straight to MinIO.
+- The generated `customFetch` mutator sends `credentials: 'include'` so authed hooks carry the cookie.
+
+## Favorites (Slice 2c)
+
+- **`src/lib/favorites-api.ts`** — credentialed list/add/remove helpers.
+- **`FavoriteHeart.tsx`** (presentational, optimistic) is reused by the catalogue grid
+  (`CatalogueBrowser` owns a favorited-slug `Set`, seeded via `listFavoriteSlugs`) and the detail-page
+  island **`FavoriteButton.tsx`**. **`MyFavorites.tsx`** backs `/me/favorites`.
+- Hearts/pages are gated on `Astro.locals.flags.favorites && !!Astro.locals.user` (props passed from
+  the page frontmatter). Anonymous users see no hearts.
+
 ## Feature flags
 
 - **SSR:** `src/middleware.ts` sets the flagd provider and evaluates flags per request into

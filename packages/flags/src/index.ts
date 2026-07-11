@@ -21,6 +21,10 @@ export const FlagKeys = {
   DemoNewBanner: 'demo.new-banner',
   /** Slice 2a — surfaces auth entry points (sign-in, account) in the web app. */
   AuthEnabled: 'auth.enabled',
+  /** Slice 2b — gates the admin authoring CMS (`/admin` content management). */
+  AdminCms: 'admin.cms',
+  /** Slice 2c — gates favorites (heart toggles + My favorites page). */
+  Favorites: 'personalization.favorites',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -29,4 +33,6 @@ export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
 export const FlagDefaults = {
   [FlagKeys.DemoNewBanner]: false,
   [FlagKeys.AuthEnabled]: true,
+  [FlagKeys.AdminCms]: true,
+  [FlagKeys.Favorites]: true,
 } satisfies Record<FlagKey, boolean>;

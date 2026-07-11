@@ -6,7 +6,8 @@
 export const customFetch = async <T>(url: string, options?: RequestInit): Promise<T> => {
   const env = (import.meta as unknown as { env?: Record<string, string | undefined> }).env;
   const base = env?.PUBLIC_API_BASE_URL ?? 'http://localhost:3000';
-  const response = await fetch(`${base}${url}`, options);
+  // Include credentials so the Better Auth session cookie rides along on authed (CMS/favorites) calls.
+  const response = await fetch(`${base}${url}`, { credentials: 'include', ...options });
   const data = response.headers.get('content-type')?.includes('json')
     ? await response.json()
     : await response.text();

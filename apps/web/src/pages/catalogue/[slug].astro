@@ -1,8 +1,10 @@
 ---
 import ContentDetail from '@/components/ContentDetail.tsx';
+import FavoriteButton from '@/components/FavoriteButton.tsx';
 import '@/styles/global.css';
 
 const { slug = '' } = Astro.params;
+const showFavorite = Astro.locals.flags.favorites && !!Astro.locals.user;
 ---
 
 <html lang="en">
@@ -20,7 +22,10 @@ const { slug = '' } = Astro.params;
   </head>
   <body>
     <main class="mx-auto max-w-3xl space-y-6 p-8">
-      <a href="/catalogue" class="text-sm text-muted-foreground underline">← Catalogue</a>
+      <div class="flex items-center justify-between">
+        <a href="/catalogue" class="text-sm text-muted-foreground underline">← Catalogue</a>
+        {showFavorite && <FavoriteButton client:load slug={slug} />}
+      </div>
       <ContentDetail client:load slug={slug} />
     </main>
   </body>

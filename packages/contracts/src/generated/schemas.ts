@@ -126,6 +126,315 @@ export const GetContentBySlugResponse = zod.object({
 
 
 /**
+ * List every content item (all statuses) for the admin table.
+ */
+export const ListContentResponse = zod.object({
+  "items": zod.array(zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "status": zod.enum(['draft', 'review', 'published']),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "difficulty": zod.number().optional(),
+  "updatedAt": zod.string()
+}).describe('Admin list row (any status).'))
+})
+
+
+/**
+ * Create a content item (starts as draft).
+ */
+export const CreateContentBody = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "visibility": zod.enum(['public', 'authed', 'premium']).optional(),
+  "difficulty": zod.number().optional(),
+  "source": zod.string().optional(),
+  "attribution": zod.string().optional(),
+  "license": zod.string().optional(),
+  "genres": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "topics": zod.array(zod.string()),
+  "tags": zod.array(zod.string())
+}).describe('Create\/replace payload for a content item. Taxonomy is given as slug arrays.')
+
+export const CreateContentResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "bodyMdx": zod.string().optional(),
+  "source": zod.string().optional(),
+  "attribution": zod.string().optional(),
+  "license": zod.string().optional(),
+  "tags": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "media": zod.array(zod.object({
+  "id": zod.string(),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'midi', 'musicxml']),
+  "url": zod.string(),
+  "filename": zod.string(),
+  "mime": zod.string(),
+  "license": zod.string().optional(),
+  "attribution": zod.string().optional()
+}).describe('A media file attached to a content item, with a ready-to-use (presigned) URL.')),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+}).describe('Full detail view of a catalogue item.')
+
+
+/**
+ * Fetch a content item of any status for editing.
+ */
+export const GetContentForEditParams = zod.object({
+  "slug": zod.string()
+})
+
+export const GetContentForEditResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "bodyMdx": zod.string().optional(),
+  "source": zod.string().optional(),
+  "attribution": zod.string().optional(),
+  "license": zod.string().optional(),
+  "tags": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "media": zod.array(zod.object({
+  "id": zod.string(),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'midi', 'musicxml']),
+  "url": zod.string(),
+  "filename": zod.string(),
+  "mime": zod.string(),
+  "license": zod.string().optional(),
+  "attribution": zod.string().optional()
+}).describe('A media file attached to a content item, with a ready-to-use (presigned) URL.')),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+}).describe('Full detail view of a catalogue item.')
+
+
+/**
+ * Replace a content item (taxonomy + fields).
+ */
+export const UpdateContentParams = zod.object({
+  "slug": zod.string()
+})
+
+export const UpdateContentBody = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "visibility": zod.enum(['public', 'authed', 'premium']).optional(),
+  "difficulty": zod.number().optional(),
+  "source": zod.string().optional(),
+  "attribution": zod.string().optional(),
+  "license": zod.string().optional(),
+  "genres": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "topics": zod.array(zod.string()),
+  "tags": zod.array(zod.string())
+}).describe('Create\/replace payload for a content item. Taxonomy is given as slug arrays.')
+
+export const UpdateContentResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "bodyMdx": zod.string().optional(),
+  "source": zod.string().optional(),
+  "attribution": zod.string().optional(),
+  "license": zod.string().optional(),
+  "tags": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "media": zod.array(zod.object({
+  "id": zod.string(),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'midi', 'musicxml']),
+  "url": zod.string(),
+  "filename": zod.string(),
+  "mime": zod.string(),
+  "license": zod.string().optional(),
+  "attribution": zod.string().optional()
+}).describe('A media file attached to a content item, with a ready-to-use (presigned) URL.')),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+}).describe('Full detail view of a catalogue item.')
+
+
+export const DeleteContentParams = zod.object({
+  "slug": zod.string()
+})
+
+export const DeleteContentResponse = zod.void()
+
+
+/**
+ * Reserve a media row + presigned PUT URL; the browser uploads bytes directly to storage.
+ */
+export const RequestMediaUploadParams = zod.object({
+  "slug": zod.string()
+})
+
+export const RequestMediaUploadBody = zod.object({
+  "filename": zod.string(),
+  "mime": zod.string(),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'midi', 'musicxml']),
+  "license": zod.string().optional(),
+  "attribution": zod.string().optional()
+}).describe('Request a direct-to-storage upload slot for a media file.')
+
+export const RequestMediaUploadResponse = zod.object({
+  "mediaId": zod.string(),
+  "storageKey": zod.string(),
+  "uploadUrl": zod.string()
+}).describe('A presigned PUT ticket the browser uploads the bytes to.')
+
+
+export const PublishContentParams = zod.object({
+  "slug": zod.string()
+})
+
+export const PublishContentResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "bodyMdx": zod.string().optional(),
+  "source": zod.string().optional(),
+  "attribution": zod.string().optional(),
+  "license": zod.string().optional(),
+  "tags": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "media": zod.array(zod.object({
+  "id": zod.string(),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'midi', 'musicxml']),
+  "url": zod.string(),
+  "filename": zod.string(),
+  "mime": zod.string(),
+  "license": zod.string().optional(),
+  "attribution": zod.string().optional()
+}).describe('A media file attached to a content item, with a ready-to-use (presigned) URL.')),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+}).describe('Full detail view of a catalogue item.')
+
+
+export const UnpublishContentParams = zod.object({
+  "slug": zod.string()
+})
+
+export const UnpublishContentResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "bodyMdx": zod.string().optional(),
+  "source": zod.string().optional(),
+  "attribution": zod.string().optional(),
+  "license": zod.string().optional(),
+  "tags": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "media": zod.array(zod.object({
+  "id": zod.string(),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'midi', 'musicxml']),
+  "url": zod.string(),
+  "filename": zod.string(),
+  "mime": zod.string(),
+  "license": zod.string().optional(),
+  "attribution": zod.string().optional()
+}).describe('A media file attached to a content item, with a ready-to-use (presigned) URL.')),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+}).describe('Full detail view of a catalogue item.')
+
+
+/**
  * Reference endpoint that always fails with a Problem Details 404 (proves the error pipeline).
  */
 export const GetDemoErrorResponse = zod.void()
@@ -140,3 +449,83 @@ export const GetHealthResponse = zod.object({
   "database": zod.enum(['up', 'down'])
 })
 }).describe('Service health snapshot.')
+
+
+/**
+ * The current user's favorited content (published items).
+ */
+export const ListFavoritesResponse = zod.object({
+  "items": zod.array(zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'))
+})
+
+
+/**
+ * Add a content item to the current user's favorites.
+ */
+export const AddFavoriteParams = zod.object({
+  "slug": zod.string()
+})
+
+export const AddFavoriteResponse = zod.void()
+
+
+/**
+ * Remove a content item from the current user's favorites.
+ */
+export const RemoveFavoriteParams = zod.object({
+  "slug": zod.string()
+})
+
+export const RemoveFavoriteResponse = zod.void()
+
+
+/**
+ * List taxonomy terms for a dimension (`genres` | `instruments` | `topics` | `tags`).
+ */
+export const ListTaxonomyParams = zod.object({
+  "dimension": zod.string()
+})
+
+export const ListTaxonomyResponse = zod.object({
+  "items": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+})
+
+
+/**
+ * Create (or upsert) a taxonomy term in a dimension.
+ */
+export const CreateTaxonomyParams = zod.object({
+  "dimension": zod.string()
+})
+
+export const CreateTaxonomyBody = zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+})
+
+export const CreateTaxonomyResponse = zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')

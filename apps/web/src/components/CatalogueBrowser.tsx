@@ -4,7 +4,9 @@ import {
   type SearchCatalogueType,
   useSearchCatalogue,
 } from '@TheY2T/tmr-api-client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import FavoriteHeart from '@/components/FavoriteHeart';
+import { listFavoriteSlugs } from '@/lib/favorites-api';
 
 function toggle(list: string[], value: string): string[] {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
@@ -48,12 +50,31 @@ function FacetGroup({
   );
 }
 
-function Browser() {
+function Browser({ showFavorites }: { showFavorites: boolean }) {
   const [q, setQ] = useState('');
   const [genre, setGenre] = useState<string[]>([]);
   const [instrument, setInstrument] = useState<string[]>([]);
   const [topic, setTopic] = useState<string[]>([]);
   const [type, setType] = useState<string | undefined>();
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (showFavorites) {
+      listFavoriteSlugs().then((slugs) => setFavorites(new Set(slugs)));
+    }
+  }, [showFavorites]);
+
+  function onFavoriteChange(slug: string, next: boolean) {
+    setFavorites((prev) => {
+      const updated = new Set(prev);
+      if (next) {
+        updated.add(slug);
+      } else {
+        updated.delete(slug);
+      }
+      return updated;
+    });
+  }
 
   const { data, isFetching } = useSearchCatalogue({
     q: q || undefined,
@@ -107,7 +128,16 @@ function Browser() {
         </p>
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {(result?.items ?? []).map((item) => (
-            <li key={item.slug}>
+            <li key={item.slug} className="relative">
+              {showFavorites ? (
+                <div className="absolute right-3 top-3 z-10">
+                  <FavoriteHeart
+                    slug={item.slug}
+                    favorited={favorites.has(item.slug)}
+                    onChange={onFavoriteChange}
+                  />
+                </div>
+              ) : null}
               <a
                 href={`/catalogue/${item.slug}`}
                 className="flex h-full flex-col gap-2 rounded-lg border border-border p-4 transition-colors hover:bg-muted"
@@ -143,10 +173,10 @@ function Browser() {
   );
 }
 
-export default function CatalogueBrowser() {
+export default function CatalogueBrowser({ showFavorites = false }: { showFavorites?: boolean }) {
   return (
     <ApiProvider>
-      <Browser />
+      <Browser showFavorites={showFavorites} />
     </ApiProvider>
   );
 }

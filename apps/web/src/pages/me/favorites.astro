@@ -1,0 +1,36 @@
+---
+import MyFavorites from '@/components/MyFavorites.tsx';
+import '@/styles/global.css';
+
+// Personalization: requires the flag on and an authenticated user.
+if (!Astro.locals.flags.favorites) {
+  return Astro.redirect('/');
+}
+if (!Astro.locals.user) {
+  return Astro.redirect('/signin?redirect=/me/favorites');
+}
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My favorites — The Music Repository</title>
+    <script is:inline>
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body>
+    <main class="mx-auto max-w-6xl space-y-6 p-8">
+      <header class="space-y-1">
+        <a href="/catalogue" class="text-sm text-muted-foreground underline">← Catalogue</a>
+        <h1 class="text-3xl font-bold">My favorites</h1>
+      </header>
+      <MyFavorites client:load />
+    </main>
+  </body>
+</html>
