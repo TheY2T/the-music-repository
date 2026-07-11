@@ -42,6 +42,7 @@
     "nestjs-pino": "catalog:",
     "pino": "catalog:",
     "pino-http": "catalog:",
+    "pino-opentelemetry-transport": "catalog:",
     "pino-pretty": "catalog:",
     "reflect-metadata": "catalog:",
     "rxjs": "catalog:"

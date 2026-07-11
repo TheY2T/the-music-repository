@@ -12,6 +12,26 @@ import { OtelTracerAdapter } from './tracing/otel-tracer.adapter';
 const isProd = process.env.NODE_ENV === 'production';
 
 /**
+ * Log transport targets: pretty console in dev, plus an OTLP exporter (→ Collector → Loki) whenever
+ * an OTLP endpoint is configured, so logs correlate with traces in Grafana by `trace_id`.
+ */
+function buildLogTransport() {
+  const targets: Array<{ target: string; options?: Record<string, unknown> }> = [];
+  if (!isProd) {
+    targets.push({ target: 'pino-pretty', options: { singleLine: true } });
+  }
+  if (process.env.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT || process.env.OTEL_EXPORTER_OTLP_ENDPOINT) {
+    targets.push({
+      target: 'pino-opentelemetry-transport',
+      options: {
+        resourceAttributes: { 'service.name': process.env.OTEL_SERVICE_NAME ?? 'tmr-api' },
+      },
+    });
+  }
+  return targets.length > 0 ? { targets } : undefined;
+}
+
+/**
  * Provides logging (Pino), tracing (OTEL), and request context (ALS via nestjs-cls) behind ports.
  * ClsModule's middleware seeds the per-request correlation id; the OTEL SDK must already be running
  * (preloaded via `--require`) so pino auto-injects `trace_id`/`span_id`.
@@ -46,7 +66,7 @@ const isProd = process.env.NODE_ENV === 'production';
           ignore: (req: { url?: string }) =>
             ['/health', '/metrics'].includes((req.url ?? '').split('?')[0] ?? ''),
         },
-        transport: isProd ? undefined : { target: 'pino-pretty', options: { singleLine: true } },
+        transport: buildLogTransport(),
       },
     }),
   ],

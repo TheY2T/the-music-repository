@@ -4,7 +4,6 @@ import HealthCard from '@/components/HealthCard.tsx';
 import '@/styles/global.css';
 
 const { demoNewBanner } = Astro.locals.flags;
-const apiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL ?? 'http://localhost:3000';
 ---
 
 <html lang="en">
@@ -31,7 +30,7 @@ const apiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL ?? 'http://localhost:3000
       </header>
 
       <FlagBanner client:load initial={demoNewBanner} />
-      <HealthCard client:load apiBaseUrl={apiBaseUrl} />
+      <HealthCard client:load />
     </main>
   </body>
 </html>
