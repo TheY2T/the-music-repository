@@ -1,13 +1,14 @@
 # Feature: Interactive tools
 
-- **Phase:** 3 (Slices A–C) · **Status:** shipped
+- **Phase:** 3 (Slices A–D) · **Status:** shipped
 - **Flag keys:** `tools.keyboard`, `tools.fretboard`, `tools.circle-of-fifths`, `tools.chords`,
-  `tools.scale-explorer`, `tools.chord-id` (from `@TheY2T/tmr-flags`). Default on.
+  `tools.scale-explorer`, `tools.chord-id`, `tools.modes`, `tools.progression` (from
+  `@TheY2T/tmr-flags`). Default on.
 
 ## Purpose
 
-Client-side, audible music-theory tools — the interactive layer. More (reverse scale lookup, mode
-explorer, trainers) drop into the same `/tools` hub behind their own flags.
+Client-side, audible music-theory tools — the interactive layer. More (ear-training drills, staff
+notation) drop into the same `/tools` hub behind their own flags.
 
 ## UX behaviour
 
@@ -27,6 +28,10 @@ explorer, trainers) drop into the same `/tools` hub behind their own flags.
   **notes with scale-degree labels** + formula; **Play chord** (block) / **Arpeggiate**.
 - `/tools/chord-identifier` — a **reverse lookup**: toggle pitch classes → the matching chord name(s).
   Inversion-aware (matches the pitch-class set, not the bass).
+- `/tools/modes` — a **mode explorer**: pick a root → all seven modes (Lydian → Locrian, bright to dark)
+  with their notes and **characteristic note**; play each.
+- `/tools/progression` — a **Roman-numeral progression builder**: pick a key → click diatonic chords to
+  build a progression; see the **Roman-numeral sequence** (e.g. I–V–vi–IV) + names; play it.
 - Every tool page renders the **Info View** (Phase 2) and tags terms with `data-help` (e.g. "Highlight
   scale" → `scales`, "Chord type" → `chords`), so the tools contribute to the same contextual glossary.
 
@@ -39,9 +44,10 @@ No backend — everything is computed in the browser (no API, no DB):
   `intervalLabel`, and `identifyChords` (reverse notes→chord across all roots/inversions).
 - `apps/web/src/lib/audio.ts` — a dependency-free Web Audio note player (triangle osc + soft envelope;
   resumes the context on the first user gesture).
+- `MODES` (seven modes + characteristic note) and `diatonicChords` (now with playable `pitchClasses`).
 - Islands `PianoKeyboard.tsx`, `GuitarFretboard.tsx`, `CircleOfFifths.tsx`, `ChordBuilder.tsx`,
-  `ScaleExplorer.tsx`, `ChordIdentifier.tsx` (client:load). Flag-gated pages redirect to `/tools` when
-  their tool is off.
+  `ScaleExplorer.tsx`, `ChordIdentifier.tsx`, `ModeExplorer.tsx`, `ProgressionBuilder.tsx`
+  (client:load). Flag-gated pages redirect to `/tools` when their tool is off.
 
 ## Tests
 
@@ -51,4 +57,6 @@ No backend — everything is computed in the browser (no API, no DB):
   0·3·5·8·10·12·15. Circle defaults to C (no sharps/flats, rel. minor Am, chords C Dm Em F G Am B°);
   clicking A → 3 sharps / F♯m / A Bm C♯m D E F♯m G♯°. Chord builder: C Major → C E G (R·3·5); D Dominant
   7th → D F♯ A C (R·3·5·♭7). Scale explorer: C Major → C D E F G A B, step pattern W–W–H–W–W–W–H. Chord
-  identifier: C·E·G → C Major; C·E·G·A → A Minor 7th (inversion-aware). All music-theory outcomes correct.
+  identifier: C·E·G → C Major; C·E·G·A → A Minor 7th (inversion-aware). Mode explorer: C root → 7 modes
+  Lydian→Locrian with correct notes (e.g. C Dorian = C D E♭ F G A B♭, ♮6). Progression builder: C key,
+  clicking I·V·vi·IV → "I(C) – V(G) – vi(Am) – IV(F)". All music-theory outcomes correct.

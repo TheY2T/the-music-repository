@@ -43,6 +43,10 @@ export const FlagKeys = {
   ToolScaleExplorer: 'tools.scale-explorer',
   /** Phase 3 — reverse chord identifier tool. */
   ToolChordId: 'tools.chord-id',
+  /** Phase 3 — mode explorer tool. */
+  ToolModes: 'tools.modes',
+  /** Phase 3 — Roman-numeral progression builder tool. */
+  ToolProgression: 'tools.progression',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -62,4 +66,6 @@ export const FlagDefaults = {
   [FlagKeys.ToolChords]: true,
   [FlagKeys.ToolScaleExplorer]: true,
   [FlagKeys.ToolChordId]: true,
+  [FlagKeys.ToolModes]: true,
+  [FlagKeys.ToolProgression]: true,
 } satisfies Record<FlagKey, boolean>;

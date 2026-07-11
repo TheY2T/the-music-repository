@@ -8,6 +8,8 @@ const {
   toolChords,
   toolScaleExplorer,
   toolChordId,
+  toolModes,
+  toolProgression,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -45,6 +47,18 @@ const tools = [
     title: 'Chord identifier',
     summary: 'Pick notes to name the chord (reverse lookup).',
     enabled: toolChordId,
+  },
+  {
+    href: '/tools/modes',
+    title: 'Mode explorer',
+    summary: 'The seven modes, brightest to darkest, with their colour notes.',
+    enabled: toolModes,
+  },
+  {
+    href: '/tools/progression',
+    title: 'Progression builder',
+    summary: 'Build a chord progression and see its Roman numerals.',
+    enabled: toolProgression,
   },
 ].filter((tool) => tool.enabled);
 

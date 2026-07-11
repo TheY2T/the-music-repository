@@ -69,19 +69,27 @@ export const CIRCLE_OF_FIFTHS: CircleEntry[] = [
 
 const MAJOR_ROMAN = ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii°'];
 const MAJOR_QUALITY = ['', 'm', 'm', '', '', 'm', '°'];
+const TRIAD_INTERVALS: Record<string, number[]> = { '': [0, 4, 7], m: [0, 3, 7], '°': [0, 3, 6] };
 
 export interface DiatonicChord {
   roman: string;
   name: string;
+  /** Triad pitch classes (0–11), for playback. */
+  pitchClasses: number[];
 }
 
 /** The seven diatonic triads of the major key on `rootPitchClass`. */
 export function diatonicChords(rootPitchClass: number, flats: boolean): DiatonicChord[] {
   const majorScale = [0, 2, 4, 5, 7, 9, 11];
-  return majorScale.map((interval, degree) => ({
-    roman: MAJOR_ROMAN[degree],
-    name: `${pitchName((rootPitchClass + interval) % 12, flats)}${MAJOR_QUALITY[degree]}`,
-  }));
+  return majorScale.map((interval, degree) => {
+    const quality = MAJOR_QUALITY[degree];
+    const chordRoot = (rootPitchClass + interval) % 12;
+    return {
+      roman: MAJOR_ROMAN[degree],
+      name: `${pitchName(chordRoot, flats)}${quality}`,
+      pitchClasses: TRIAD_INTERVALS[quality].map((i) => (chordRoot + i) % 12),
+    };
+  });
 }
 
 /** Describe a signature: `2 sharps`, `3 flats`, or `no sharps or flats`. */
@@ -141,6 +149,40 @@ export function stepPattern(intervals: number[]): string[] {
   steps.push(12 - intervals[intervals.length - 1]);
   return steps.map((s) => (s === 1 ? 'H' : s === 2 ? 'W' : s === 3 ? 'W½' : `${s}`));
 }
+
+export interface ModeDefinition {
+  key: string;
+  name: string;
+  intervals: number[];
+  /** The scale degree that gives the mode its colour. */
+  characteristic: string;
+}
+
+/** The seven modes of the major scale, ordered bright → dark. */
+export const MODES: ModeDefinition[] = [
+  { key: 'lydian', name: 'Lydian', intervals: [0, 2, 4, 6, 7, 9, 11], characteristic: '♯4' },
+  {
+    key: 'ionian',
+    name: 'Ionian (major)',
+    intervals: [0, 2, 4, 5, 7, 9, 11],
+    characteristic: 'major',
+  },
+  {
+    key: 'mixolydian',
+    name: 'Mixolydian',
+    intervals: [0, 2, 4, 5, 7, 9, 10],
+    characteristic: '♭7',
+  },
+  { key: 'dorian', name: 'Dorian', intervals: [0, 2, 3, 5, 7, 9, 10], characteristic: '♮6' },
+  {
+    key: 'aeolian',
+    name: 'Aeolian (minor)',
+    intervals: [0, 2, 3, 5, 7, 8, 10],
+    characteristic: '♭6',
+  },
+  { key: 'phrygian', name: 'Phrygian', intervals: [0, 1, 3, 5, 7, 8, 10], characteristic: '♭2' },
+  { key: 'locrian', name: 'Locrian', intervals: [0, 1, 3, 5, 6, 8, 10], characteristic: '♭5' },
+];
 
 /**
  * Reverse lookup: every chord (across all 12 roots) whose pitch classes exactly match `selected`.

@@ -17,6 +17,8 @@ declare namespace App {
       toolChords: boolean;
       toolScaleExplorer: boolean;
       toolChordId: boolean;
+      toolModes: boolean;
+      toolProgression: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {
