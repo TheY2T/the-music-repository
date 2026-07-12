@@ -711,6 +711,19 @@ op cancelSubscription(): {
   @statusCode statusCode: 204;
 };
 
+/** A payment-provider checkout session to redirect the user to. */
+model CheckoutSession {
+  /** URL to redirect the browser to (Stripe Checkout, or the mock checkout page in dev). */
+  url: string;
+}
+
+/** Start a subscription checkout — returns the URL to redirect to. Premium is granted by the
+ * provider webhook (`POST /billing/webhook`) on completion, not here. */
+@route("/me/checkout")
+@tag("monetization")
+@post
+op startCheckout(): CheckoutSession;
+
 // ===================== Classrooms (Phase 6, teacher mode) =====================
 // A teacher creates a classroom (join code); learners join; the teacher can grant premium to the class
 // (institutional/seat entitlement). Auth-gated in NestJS.

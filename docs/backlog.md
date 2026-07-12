@@ -79,11 +79,11 @@ These items extend that foundation. Tags: 💳 needs a payment provider (Stripe)
 
 | Idea | Notes | Effort | Value |
 |---|---|---|---|
-| 💳 **Stripe Checkout + webhook → `grantPremium`** | The natural next slice. `POST /me/checkout` creates a Stripe **Checkout Session** (behind a `CheckoutGateway` port; `StripeCheckoutGateway` adapter, `MockCheckoutGateway` for dev/CI) and returns its URL; the web `/upgrade` redirects there. A `POST /billing/webhook` endpoint verifies the **signature**, and on `checkout.session.completed` / `customer.subscription.created|updated|deleted` calls the existing `Entitlements.grantPremium` / `revokePremium`. Replaces the mock `activate`. | High | **High** |
-| 💳 **Subscription lifecycle** | Persist the Stripe `customer_id` + `subscription_id` (new columns/table); set `expires_at` from the billing period; renew on `invoice.paid`, revoke on `subscription.deleted` / `invoice.payment_failed` (with a grace period). The `expires_at` gate already exists in `DrizzleEntitlements.getPremium`. | Med | High |
+| ✅ **Stripe Checkout + webhook → `grantPremium`** | **Shipped** (ADR 0016) — `POST /me/checkout` (behind `CheckoutGateway` port; `MockCheckoutGateway` default, `StripeCheckoutGateway` ready when `STRIPE_SECRET_KEY` is set) returns a checkout URL; `/upgrade` redirects there. `POST /billing/webhook` verifies + normalizes the event and on `checkout.session.completed` / `customer.subscription.deleted` calls `Entitlements.grantPremium` / `revokePremium`. Verified curl + browser end-to-end. See `docs/features/billing.md` | High | **High** |
+| ◑ **Subscription lifecycle** | **Partial** — `checkout_sessions` persists `stripe_customer_id`/`stripe_subscription_id`; the mock sets a 30-day `expires_at` (honored by `DrizzleEntitlements.getPremium`). Still open: renew on `invoice.paid`, grace period on `invoice.payment_failed`, `expires_at` from the real billing period | Med | High |
 | 💳 **Customer/billing portal** | Stripe Billing Portal session (`POST /me/billing-portal`) so users manage card / cancel / invoices without us building UI. | Low | Med |
-| 🔗 **Webhook hardening** | Signature verification, **idempotency** (dedupe by event id — a `processed_webhooks` table), retry-safe handlers, raw-body handling (note: `bodyParser:false` + Better Auth already juggle body parsing — the webhook route needs the raw body). | Med | High (correctness) |
-| 🟢 **Config + env** | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, price IDs → add to `apps/api/src/config/env.ts` Zod schema (every env var the API reads lives there). Keep test-mode keys out of the repo. | Low | — |
+| ◑ **Webhook hardening** | **Idempotency shipped** (`processed_webhooks` table + `WebhookLedger` — replayed events are no-ops, verified). Signature verification is implemented in `StripeCheckoutGateway` (mock skips it). Still open: **raw-body capture** on the webhook route (`bodyParser:false` + Better Auth mean the exact bytes Stripe signs aren't captured yet) | Med | High (correctness) |
+| ✅ **Config + env** | **Shipped** — `STRIPE_SECRET_KEY?`, `STRIPE_PRICE_ID?`, `STRIPE_WEBHOOK_SECRET`, `WEB_BASE_URL` in `apps/api/src/config/env.ts` + `.env.example`. Unset secret → mock gateway | Low | — |
 
 **Why it slots in cleanly:** app code already depends on the `Entitlements` port, not on how a grant is
 created. Stripe becomes an *inbound adapter* (webhook → `grantPremium`) + an *outbound gateway*
@@ -112,6 +112,8 @@ created. Stripe becomes an *inbound adapter* (webhook → `grantPremium`) + an *
 
 ## Suggested Phase 6 first pick
 
-💳 **Stripe Checkout + webhook** (Group 6A) — it turns the mock checkout into real revenue and unlocks the
-lifecycle/seat-billing items. Gate it behind the existing `monetization.premium` flag and keep the
-`MockCheckoutGateway` as the default until keys are provisioned, so nothing breaks in dev/CI without Stripe.
+✅ **Stripe Checkout + webhook** (Group 6A) — **done** (ADR 0016): the `CheckoutGateway` port + mock
+default + `/billing/webhook` → `Entitlements` are shipped and verified end-to-end. The next picks are the
+remaining 6A follow-ups (raw-body capture + subscription lifecycle on `invoice.paid`, billing portal),
+then Groups **6B** (tiered plans, gift codes, audit log) and **6C** (seat billing, class assignments /
+progress overview). All slot in behind the same port; provisioning real Stripe test keys flips the gateway.

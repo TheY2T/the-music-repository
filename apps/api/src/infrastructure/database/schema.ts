@@ -255,6 +255,27 @@ export const entitlements = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.key] })],
 );
 
+// --- Billing (Phase 6): checkout sessions + webhook idempotency. A checkout session maps a provider
+// session back to the user (the mock resolves the user from here; real Stripe also uses
+// client_reference_id); it holds the Stripe customer/subscription ids for lifecycle events. ---
+export const checkoutSessions = pgTable('checkout_sessions', {
+  id: text('id').primaryKey(), // provider session id (mock uuid or Stripe cs_...)
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  provider: text('provider').notNull().default('mock'), // mock | stripe
+  status: text('status').notNull().default('pending'), // pending | completed | canceled
+  stripeCustomerId: text('stripe_customer_id'),
+  stripeSubscriptionId: text('stripe_subscription_id'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+// One row per processed webhook event id → idempotent handling (a provider may retry deliveries).
+export const processedWebhooks = pgTable('processed_webhooks', {
+  eventId: text('event_id').primaryKey(),
+  processedAt: timestamp('processed_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 // --- Classrooms (Phase 6, teacher mode): a teacher owns a classroom with a join code; learners join.
 //     `premium_granted` records that the teacher granted premium to the class (seat entitlement). ---
 export const classrooms = pgTable('classrooms', {

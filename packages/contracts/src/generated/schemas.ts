@@ -942,6 +942,15 @@ export const GetHelpTopicResponse = zod.object({
 
 
 /**
+ * Start a subscription checkout — returns the URL to redirect to. Premium is granted by the
+ * provider webhook (`POST /billing/webhook`) on completion, not here.
+ */
+export const StartCheckoutResponse = zod.object({
+  "url": zod.string().describe('URL to redirect the browser to (Stripe Checkout, or the mock checkout page in dev).')
+}).describe('A payment-provider checkout session to redirect the user to.')
+
+
+/**
  * Classrooms the current user owns or has joined.
  */
 export const ListClassroomsResponse = zod.object({

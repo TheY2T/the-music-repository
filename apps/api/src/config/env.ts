@@ -25,6 +25,14 @@ export const envSchema = z.object({
   BETTER_AUTH_URL: z.string().default('http://localhost:3000'),
   // Comma-separated. Origins allowed to send credentialed requests + accept auth cookies.
   TRUSTED_ORIGINS: z.string().default('http://localhost:4321,http://localhost:3000'),
+
+  // Billing (Phase 6). When STRIPE_SECRET_KEY is set the Stripe checkout gateway is used; otherwise
+  // the MockCheckoutGateway (dev/CI) — no keys, no charges. STRIPE_WEBHOOK_SECRET defaults to a
+  // non-sensitive dev value the mock ignores. WEB_BASE_URL builds checkout success/cancel URLs.
+  STRIPE_SECRET_KEY: z.string().optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().default('whsec_mock_dev_secret'),
+  STRIPE_PRICE_ID: z.string().optional(),
+  WEB_BASE_URL: z.string().default('http://localhost:4321'),
 });
 
 export type Env = z.infer<typeof envSchema>;

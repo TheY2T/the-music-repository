@@ -102,6 +102,17 @@ combines `CurrentUser` + `Entitlements` into **entitled = staff OR active premiu
   route-gates 404 while the imperative `getBooleanValue(default)` path still works.
 - The seed upsert updates `visibility`; mark premium items with `visibility: 'premium'` in `seed-data.ts`.
 
+**Billing (Stripe checkout + webhook, `src/billing/`, ADR 0016):** `CheckoutGateway` port bound by a
+factory to `MockCheckoutGateway` (default) or `StripeCheckoutGateway` (when `STRIPE_SECRET_KEY` is set).
+`POST /me/checkout` (in TypeSpec, `@RequireAuth` + `monetization.premium`) returns a redirect URL;
+`POST /billing/webhook` (NOT in TypeSpec — inbound provider endpoint like Better Auth, unauthenticated)
+verifies + normalizes the event and calls the existing `Entitlements.grantPremium`/`revokePremium`.
+Idempotency via `WebhookLedger` (`processed_webhooks`); session↔user via `CheckoutSessionStore`
+(`checkout_sessions`). **Raw-body caveat:** Stripe signature verification needs the exact bytes, but
+`bodyParser:false` + Better Auth mean `req.rawBody` isn't captured — the controller re-serializes the
+parsed body (fine for the mock, which skips signatures; add raw-body capture when real keys land). See
+`docs/features/billing.md`.
+
 **Classrooms (teacher mode, `src/classrooms/`, flag `education.classrooms`):** `ClassroomsRepository`
 ← `DrizzleClassrooms` (`classrooms` + `classroom_members`); use-cases in one `classrooms.use-cases.ts`;
 codes via `crypto.randomInt`. `GrantClassroomPremiumUseCase` imports the `Entitlements` port

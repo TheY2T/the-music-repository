@@ -31,3 +31,31 @@ export async function activatePremium(): Promise<SubscriptionStatus | null> {
 export async function cancelPremium(): Promise<void> {
   await fetch(`${API_BASE}/me/subscription`, { method: 'DELETE', credentials: 'include' });
 }
+
+/** Start a checkout — returns the provider URL to redirect the browser to (Stripe, or the mock
+ * checkout page in dev). Premium is granted by the webhook on completion, not here. */
+export async function startCheckout(): Promise<{ url: string } | null> {
+  const response = await fetch(`${API_BASE}/me/checkout`, {
+    method: 'POST',
+    credentials: 'include',
+  });
+  if (!response.ok) {
+    return null;
+  }
+  return (await response.json()) as { url: string };
+}
+
+/** Dev/mock only: the mock checkout page calls this to simulate the provider firing the
+ * `checkout.session.completed` webhook (real Stripe fires it server-side, never the browser). */
+export async function completeMockCheckout(sessionId: string): Promise<void> {
+  await fetch(`${API_BASE}/billing/webhook`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      id: `evt_${sessionId}`,
+      type: 'checkout.session.completed',
+      data: { object: { id: sessionId } },
+    }),
+  });
+}

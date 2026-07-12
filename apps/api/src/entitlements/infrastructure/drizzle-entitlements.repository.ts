@@ -31,13 +31,13 @@ export class DrizzleEntitlements extends Entitlements {
     return { source: row.source, grantedAt: row.grantedAt, expiresAt: row.expiresAt };
   }
 
-  async grantPremium(userId: string, source: string): Promise<void> {
+  async grantPremium(userId: string, source: string, expiresAt: Date | null = null): Promise<void> {
     await this.db
       .insert(entitlements)
-      .values({ userId, key: PREMIUM, source })
+      .values({ userId, key: PREMIUM, source, expiresAt })
       .onConflictDoUpdate({
         target: [entitlements.userId, entitlements.key],
-        set: { source, grantedAt: new Date(), expiresAt: null },
+        set: { source, grantedAt: new Date(), expiresAt },
       });
   }
 

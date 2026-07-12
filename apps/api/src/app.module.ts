@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { AuthoringModule } from './authoring/authoring.module';
+import { BillingModule } from './billing/billing.module';
 import { CatalogueModule } from './catalogue/catalogue.module';
 import { ClassroomsModule } from './classrooms/classrooms.module';
 import { CollectionsModule } from './collections/collections.module';
@@ -36,6 +37,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     DemoModule,
     CatalogueModule,
     EntitlementsModule,
+    BillingModule,
     AuthoringModule,
     FavoritesModule,
     CollectionsModule,

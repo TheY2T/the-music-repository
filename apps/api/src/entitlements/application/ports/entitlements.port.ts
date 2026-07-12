@@ -14,8 +14,8 @@ export interface EntitlementGrant {
 export abstract class Entitlements {
   /** The user's active premium grant, or null when absent/expired. */
   abstract getPremium(userId: string): Promise<EntitlementGrant | null>;
-  /** Grant (or refresh) premium. Idempotent. */
-  abstract grantPremium(userId: string, source: string): Promise<void>;
+  /** Grant (or refresh) premium. Idempotent. `expiresAt` null = no expiry (e.g. staff/manual). */
+  abstract grantPremium(userId: string, source: string, expiresAt?: Date | null): Promise<void>;
   /** Remove the user's premium grant. Idempotent. */
   abstract revokePremium(userId: string): Promise<void>;
 }

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import {
-  activatePremium,
   cancelPremium,
   getSubscription,
   type SubscriptionStatus,
+  startCheckout,
 } from '@/lib/subscription-api';
 
 export default function UpgradePanel() {
@@ -20,10 +20,13 @@ export default function UpgradePanel() {
     void refresh();
   }, []);
 
-  async function onActivate() {
+  async function onSubscribe() {
     setBusy(true);
-    await activatePremium();
-    await refresh();
+    const session = await startCheckout();
+    if (session?.url) {
+      window.location.href = session.url; // → provider checkout (Stripe, or the mock page in dev)
+      return;
+    }
     setBusy(false);
   }
 
@@ -76,17 +79,18 @@ export default function UpgradePanel() {
       ) : (
         <button
           type="button"
-          onClick={onActivate}
+          onClick={onSubscribe}
           disabled={busy}
           className="rounded-md bg-primary px-6 py-2 text-sm font-medium text-primary-foreground"
         >
-          {busy ? 'Working…' : 'Activate premium'}
+          {busy ? 'Redirecting…' : 'Subscribe'}
         </button>
       )}
 
       <p className="text-xs text-muted-foreground">
-        This is a <strong>mock checkout</strong> for local development — it grants the entitlement
-        directly, standing in for a payment provider's subscription. No card, no charge.
+        Checkout runs through a payment provider (Stripe). Until API keys are provisioned this uses
+        a <strong>mock checkout</strong> — no card, no charge — but the full flow (checkout →
+        provider webhook → entitlement grant) is exercised end-to-end.
       </p>
     </div>
   );
