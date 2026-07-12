@@ -83,6 +83,14 @@ export const FlagKeys = {
   ToolProgressionPlayer: 'tools.progression-player',
   /** Phase 5 — rhythm reading trainer. */
   ToolRhythm: 'tools.rhythm',
+  /** Phase 5 — CAGED system explorer. */
+  ToolCaged: 'tools.caged',
+  /** Phase 5 — scale-in-position boxes. */
+  ToolScaleBoxes: 'tools.scale-boxes',
+  /** Phase 5 — combined melody + chords song player. */
+  ToolSong: 'tools.song',
+  /** Phase 5 — chord-progression ear training. */
+  ToolProgressionEar: 'tools.progression-ear',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -122,4 +130,8 @@ export const FlagDefaults = {
   [FlagKeys.ToolArpeggio]: true,
   [FlagKeys.ToolProgressionPlayer]: true,
   [FlagKeys.ToolRhythm]: true,
+  [FlagKeys.ToolCaged]: true,
+  [FlagKeys.ToolScaleBoxes]: true,
+  [FlagKeys.ToolSong]: true,
+  [FlagKeys.ToolProgressionEar]: true,
 } satisfies Record<FlagKey, boolean>;

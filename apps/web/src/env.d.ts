@@ -37,6 +37,10 @@ declare namespace App {
       toolArpeggio: boolean;
       toolProgressionPlayer: boolean;
       toolRhythm: boolean;
+      toolCaged: boolean;
+      toolScaleBoxes: boolean;
+      toolSong: boolean;
+      toolProgressionEar: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {

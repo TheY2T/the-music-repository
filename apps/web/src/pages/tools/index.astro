@@ -27,6 +27,10 @@ const {
   toolArpeggio,
   toolProgressionPlayer,
   toolRhythm,
+  toolCaged,
+  toolScaleBoxes,
+  toolSong,
+  toolProgressionEar,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -178,6 +182,30 @@ const tools = [
     title: 'Rhythm trainer',
     summary: 'Read a rhythm and clap along over a steady click.',
     enabled: toolRhythm,
+  },
+  {
+    href: '/tools/caged',
+    title: 'CAGED explorer',
+    summary: 'One chord in five shapes up the neck.',
+    enabled: toolCaged,
+  },
+  {
+    href: '/tools/scale-boxes',
+    title: 'Scale positions',
+    summary: 'See any scale as a movable box on the fretboard.',
+    enabled: toolScaleBoxes,
+  },
+  {
+    href: '/tools/song',
+    title: 'Song player',
+    summary: 'Melody and chords together — play along.',
+    enabled: toolSong,
+  },
+  {
+    href: '/tools/progression-ear',
+    title: 'Progression ear training',
+    summary: 'Hear a chord progression and name it.',
+    enabled: toolProgressionEar,
   },
 ].filter((tool) => tool.enabled);
 

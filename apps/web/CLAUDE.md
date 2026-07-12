@@ -125,7 +125,12 @@ src/
 - Progression play-along at `/tools/progression-player` (`tools.progression-player`) — loops a chord
   progression one bar per chord (reuses the chord exports + `strumChord`).
 - Rhythm trainer at `/tools/rhythm` (`tools.rhythm`) — `RhythmTrainer.tsx` plays a one-bar rhythm over a
-  click, reusing `StaffSequence`'s note-value glyphs on the middle line. See `docs/features/play-along.md`.
+  click, reusing `StaffSequence`'s note-value glyphs on the middle line.
+- CAGED explorer `/tools/caged` (`tools.caged`) — 5 movable shapes for a major chord (C-major data +
+  uniform transpose). Scale positions `/tools/scale-boxes` (`tools.scale-boxes`) — fretboard box window.
+  Song player `/tools/song` (`tools.song`) — melody (StaffSequence) + per-bar `strumChord` accompaniment.
+  Progression ear-training `/tools/progression-ear` (`tools.progression-ear`) — `diatonicChords` quiz.
+  See `docs/features/play-along.md`.
 
 ## Trainers / drills (Phase 4)
 

@@ -35,6 +35,10 @@ const {
   toolArpeggio,
   toolProgressionPlayer,
   toolRhythm,
+  toolCaged,
+  toolScaleBoxes,
+  toolSong,
+  toolProgressionEar,
 } = Astro.locals.flags;
 const showTools =
   toolKeyboard ||
@@ -61,7 +65,11 @@ const showTools =
   toolFingerpicking ||
   toolArpeggio ||
   toolProgressionPlayer ||
-  toolRhythm;
+  toolRhythm ||
+  toolCaged ||
+  toolScaleBoxes ||
+  toolSong ||
+  toolProgressionEar;
 ---
 
 <html lang="en">

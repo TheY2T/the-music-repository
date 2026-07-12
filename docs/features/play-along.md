@@ -5,7 +5,9 @@
   `tools.notation-player` (`ToolNotationPlayer`), `tools.licks` (`ToolLicks`), `tools.chord-diagrams`
   (`ToolChordDiagrams`), `tools.strumming` (`ToolStrumming`), `tools.fingerpicking`
   (`ToolFingerpicking`), `tools.arpeggio` (`ToolArpeggio`), `tools.progression-player`
-  (`ToolProgressionPlayer`), `tools.rhythm` (`ToolRhythm`) — from `@TheY2T/tmr-flags`. Default on.
+  (`ToolProgressionPlayer`), `tools.rhythm` (`ToolRhythm`), `tools.caged` (`ToolCaged`),
+  `tools.scale-boxes` (`ToolScaleBoxes`), `tools.song` (`ToolSong`), `tools.progression-ear`
+  (`ToolProgressionEar`) — from `@TheY2T/tmr-flags`. Default on.
 
 ## Purpose
 
@@ -182,6 +184,32 @@ gallop, dotted) and Play to hear it — a woodblock per note over a steady metro
 note cursor moving through the bar. Reuses `StaffSequence`'s note-value glyphs (all notes on the middle
 line) so the rhythm is read on a staff; playback holds each note for its `beats`.
 
+## Slice R — CAGED explorer
+
+A new tool `/tools/caged` (`tools.caged`): shows a chosen major chord in all **five CAGED shapes**
+(C–A–G–E–D) up the neck as fret diagrams (self-contained windowed `ShapeDiagram` with a starting-fret
+label), click to strum. The five shapes are stored for C major and **transposed by a uniform semitone
+shift** (folded down an octave if past the 12th fret), which is valid because CAGED shapes are movable.
+
+## Slice S — Scale-in-position boxes
+
+A new tool `/tools/scale-boxes` (`tools.scale-boxes`): pick a **root + scale** and a **position** (a
+sliding 5-fret window), and the fretboard highlights just the scale notes in that box (roots emphasised),
+or the **whole neck**. Click any note to hear it. Reuses `SCALES` / `scalePitchClasses` / `STANDARD_TUNING`.
+
+## Slice T — Song player (melody + chords)
+
+A new tool `/tools/song` (`tools.song`): plays a **melody on the staff** with a **strummed chord under
+each bar** — the current chord is highlighted and the note cursor moves. Chords can be toggled off to
+practise the melody alone. `buildNotes` tags each melody note with its bar + downbeat flag; the player
+strums `chords[bar]` (via `strumChord`) on each bar's downbeat. Two songs (Ode to Joy, Twinkle).
+
+## Slice U — Progression ear-training
+
+A new tool `/tools/progression-ear` (`tools.progression-ear`): plays a random diatonic **progression** in
+C (block triads from `diatonicChords`), and you pick which of four it was (I–V–vi–IV, I–vi–IV–V, ii–V–I,
+I–IV–V) with instant feedback + a running score. Replay + Next.
+
 ## Tests
 
 - **Web (browser) — backing track:** the 12-bar-blues grid renders the textbook form in C —
@@ -229,6 +257,13 @@ line) so the rhythm is read on a staff; playback holds each note for its `beats`
   current-chord highlight bar by bar.
 - **Web (browser) — rhythm (Slice Q):** the syncopated bar renders 5 heads with 2 eighth-note flags; Play
   moves the note cursor through the bar over the click.
+- **Web (browser) — CAGED (Slice R):** C major renders the five shapes at their canonical positions
+  (starting frets 3/5/8/10 for A/G/E/D; C shape open) — verified visually.
+- **Web (browser) — scale boxes (Slice S):** A minor pentatonic at position 5 lights exactly A C D E G.
+- **Web (browser) — song (Slice T):** Ode to Joy shows chord bar C C G C + 15 melody notes; Play moves
+  the cursor and advances the current-chord highlight (chords strum under each bar).
+- **Web (browser) — progression ear (Slice U):** the four options render; a correct guess scores 1/1 with
+  "✓ Correct!" and Next resets.
 - Build/lint/check-types green across the workspace (25/25).
 
 ## Next slices (Phase 5 menu)
