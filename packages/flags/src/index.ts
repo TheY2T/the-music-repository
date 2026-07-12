@@ -69,6 +69,8 @@ export const FlagKeys = {
   ToolVoicings: 'tools.voicings',
   /** Phase 5 — notation-synced player (cursor highlight, tempo/loop/section). */
   ToolNotationPlayer: 'tools.notation-player',
+  /** Phase 5 — lick & turnaround library (guitar tab + audio). */
+  ToolLicks: 'tools.licks',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -101,4 +103,5 @@ export const FlagDefaults = {
   [FlagKeys.ToolBackingTrack]: true,
   [FlagKeys.ToolVoicings]: true,
   [FlagKeys.ToolNotationPlayer]: true,
+  [FlagKeys.ToolLicks]: true,
 } satisfies Record<FlagKey, boolean>;

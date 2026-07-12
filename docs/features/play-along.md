@@ -1,8 +1,9 @@
 # Feature: Play-along (Phase 5)
 
-- **Phase:** 5 · **Status:** shipped (Slice A + B + C)
+- **Phase:** 5 · **Status:** shipped (Slice A + B + C + D)
 - **Flag keys:** `tools.backing-track` (`ToolBackingTrack`), `tools.voicings` (`ToolVoicings`),
-  `tools.notation-player` (`ToolNotationPlayer`) — from `@TheY2T/tmr-flags`. Default on.
+  `tools.notation-player` (`ToolNotationPlayer`), `tools.licks` (`ToolLicks`) — from
+  `@TheY2T/tmr-flags`. Default on.
 
 ## Purpose
 
@@ -69,6 +70,18 @@ a single-line melody on the treble staff (reusing `StaffSequence`) and, on **Pla
   when looping, stops at the section end otherwise. Reuses `midiToFrequency` + `playTone` — client-side,
   no backend, no notation library. (A full MusicXML/multi-voice renderer remains a later enhancement.)
 
+## Slice D — Lick & turnaround library (`tools.licks`)
+
+`/tools/licks` — a curated library of guitar **licks and turnarounds** rendered as **interactive tab**
+(string names down the left, fret numbers in sequence; stacked numbers = a double-stop played together).
+Press **Play** to hear a lick with the active tab column highlighting in time; a **tempo** slider works
+it up to speed, and a **category** filter (Blues / Rock / Turnarounds) narrows the list.
+
+- Licks are curated data local to `LickLibrary.tsx` (`Step[]` of `{string, fret}`). Fret → pitch uses
+  the existing `STANDARD_TUNING`; playback reuses `playTone` on a ref-driven `setTimeout` step (one
+  active playback at a time). Includes: A minor pentatonic run, B.B. King-style lick, a Chuck-Berry
+  double-stop boogie, and an E blues turnaround (chromatic descent). No backend, no new deps.
+
 ## Tests
 
 - **Web (browser) — backing track:** the 12-bar-blues grid renders the textbook form in C —
@@ -83,10 +96,14 @@ a single-line melody on the treble staff (reusing `StaffSequence`) and, on **Pla
   `E E F G G F E D C C D E E D D`; pressing Play advances the cursor/highlight note-by-note in sync with
   the audio (0→1→2→3…). Setting the section to notes 5–8 confines playback to indices 4–7 and loops
   there ("Notes 5–8 of 15").
+- **Web (browser) — licks:** all four licks pitch-verify against standard tuning — A pentatonic run
+  `G E D C A G E D C A`, B.B. lick `C A G E D C`, boogie double-stops `D+A / C+G`, and the E turnaround
+  with both voices descending chromatically (`G F♯ F E` over `B A♯ A G♯`) resolving to E. Play advances
+  the highlighted tab column in sync (0→1→2→3→4).
 - Build/lint/check-types green across the workspace (25/25).
 
 ## Next slices (Phase 5 menu)
 
 - Notation player enhancements: MusicXML/multi-voice rendering, rhythms, transpose, soundfont audio.
 - Pitch-preserving tempo + loop/section on hosted audio recordings.
-- Lick / turnaround library with diagrams + tab.
+- More licks/voicings; bends & slides notation in the tab renderer.

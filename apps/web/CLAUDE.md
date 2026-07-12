@@ -100,7 +100,11 @@ src/
 - Notation player at `/tools/player` (gated on `tools.notation-player`). `NotationPlayer.tsx` renders a
   PD melody via `StaffSequence` (which gained a backward-compatible `activeIndex` prop for the cursor)
   and steps a recursive `setTimeout` cursor in sync with `playTone`; tempo / loop / section read from
-  refs so they change live. No notation library. See `docs/features/play-along.md`.
+  refs so they change live. No notation library.
+- Lick library at `/tools/licks` (gated on `tools.licks`). `LickLibrary.tsx` holds curated licks
+  (`Step[]` of `{string, fret}`) rendered as interactive tab (column highlight during playback);
+  fret→pitch via `STANDARD_TUNING`, playback via `playTone` on a ref-driven `setTimeout`. See
+  `docs/features/play-along.md`.
 
 ## Trainers / drills (Phase 4)
 

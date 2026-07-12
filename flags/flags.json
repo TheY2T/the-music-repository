@@ -201,6 +201,14 @@
       },
       "defaultVariant": "on"
     },
+    "tools.licks": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "demo.new-banner": {
       "state": "ENABLED",
       "variants": {

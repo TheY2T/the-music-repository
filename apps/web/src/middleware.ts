@@ -172,6 +172,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.ToolNotationPlayer,
     FlagDefaults[FlagKeys.ToolNotationPlayer],
   );
+  const toolLicks = await client.getBooleanValue(
+    FlagKeys.ToolLicks,
+    FlagDefaults[FlagKeys.ToolLicks],
+  );
 
   context.locals.flags = {
     demoNewBanner,
@@ -200,6 +204,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     toolBackingTrack,
     toolVoicings,
     toolNotationPlayer,
+    toolLicks,
   };
   context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
   return next();

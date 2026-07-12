@@ -30,6 +30,7 @@ declare namespace App {
       toolBackingTrack: boolean;
       toolVoicings: boolean;
       toolNotationPlayer: boolean;
+      toolLicks: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {

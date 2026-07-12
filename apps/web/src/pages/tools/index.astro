@@ -20,6 +20,7 @@ const {
   toolBackingTrack,
   toolVoicings,
   toolNotationPlayer,
+  toolLicks,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -129,6 +130,12 @@ const tools = [
     title: 'Notation player',
     summary: 'Play a melody on the staff with a moving cursor; slow, loop, and section it.',
     enabled: toolNotationPlayer,
+  },
+  {
+    href: '/tools/licks',
+    title: 'Lick library',
+    summary: 'Guitar licks and turnarounds in tab — hear them and work them up to speed.',
+    enabled: toolLicks,
   },
 ].filter((tool) => tool.enabled);
 
