@@ -111,6 +111,30 @@ export function scheduleTone(
   oscillator.stop(atTime + duration);
 }
 
+/** Play a tone that glides from `fromFreq` to `toFreq` — for guitar bends and slides. */
+export function playGlide(fromFreq: number, toFreq: number, duration = 0.6): void {
+  const ctx = getContext();
+  if (!ctx) {
+    return;
+  }
+  if (ctx.state === 'suspended') {
+    void ctx.resume();
+  }
+  const now = ctx.currentTime;
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+  oscillator.type = 'triangle';
+  oscillator.frequency.setValueAtTime(fromFreq, now);
+  // Reach the target partway through, then hold — reads as a bend/slide into the note.
+  oscillator.frequency.exponentialRampToValueAtTime(toFreq, now + duration * 0.5);
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.25, now + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+  oscillator.connect(gain).connect(ctx.destination);
+  oscillator.start(now);
+  oscillator.stop(now + duration);
+}
+
 /** Play a single tone at `frequency` Hz for `duration` seconds with a soft envelope. */
 export function playTone(frequency: number, duration = 0.7): void {
   const ctx = getContext();

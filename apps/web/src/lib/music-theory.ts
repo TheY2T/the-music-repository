@@ -194,6 +194,29 @@ export function trebleStaffNotes(): StaffNote[] {
   return notes;
 }
 
+export interface StaffPlacement {
+  /** Vertical staff step (E4 = 0); the accidental does not change the step. */
+  step: number;
+  /** Full note name for labels, e.g. "F♯4". */
+  label: string;
+  /** Accidental glyph to draw left of the note head, or '' for a natural. */
+  accidental: '' | '♯' | '♭';
+}
+
+/** Where a MIDI note sits on the treble staff, spelled with sharps or flats. */
+export function staffPlacement(midi: number, flats = false): StaffPlacement {
+  const pitchClass = ((midi % 12) + 12) % 12;
+  const octave = Math.floor(midi / 12) - 1;
+  const name = pitchName(pitchClass, flats);
+  const letter = name[0];
+  const accidental = (name.length > 1 ? name[1] : '') as '' | '♯' | '♭';
+  return {
+    step: LETTER_INDEX[letter] + octave * 7 - E4_DIATONIC,
+    label: `${name}${octave}`,
+    accidental,
+  };
+}
+
 /** Even staff steps (ledger lines) needed to reach a note below or above the five lines (0–8). */
 export function ledgerSteps(step: number): number[] {
   const lines: number[] = [];

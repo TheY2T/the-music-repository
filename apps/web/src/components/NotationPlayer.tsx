@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
 import { playTone } from '@/lib/audio';
-import { midiToFrequency, trebleStaffNotes } from '@/lib/music-theory';
+import {
+  midiToFrequency,
+  pitchName,
+  ROOT_CHOICES,
+  staffPlacement,
+  trebleStaffNotes,
+} from '@/lib/music-theory';
 
 // Name → staff position lookup for the treble naturals (C4–C6).
 const BY_NAME = new Map(trebleStaffNotes().map((n) => [n.name, n]));
@@ -10,12 +16,24 @@ interface PlayerNote extends StaffNoteDatum {
   midi: number;
 }
 
-function toNotes(names: string[]): PlayerNote[] {
+/** Build the (optionally transposed) melody, spelling accidentals with flats when transposing down. */
+function toNotes(names: string[], transpose: number): PlayerNote[] {
+  const flats = transpose < 0;
   return names.flatMap((name) => {
-    const note = BY_NAME.get(name);
-    return note ? [{ step: note.step, label: note.name, midi: note.midi }] : [];
+    const base = BY_NAME.get(name);
+    if (!base) {
+      return [];
+    }
+    const midi = base.midi + transpose;
+    const placement = staffPlacement(midi, flats);
+    return [
+      { step: placement.step, label: placement.label, accidental: placement.accidental, midi },
+    ];
   });
 }
+
+// The pieces are all in C major; transpose from C, staying within ±6 semitones for readability.
+const transposeForRoot = (root: number) => (root <= 6 ? root : root - 12);
 
 // Public-domain melodies (single-line, natural notes only).
 const PIECES = [
@@ -59,13 +77,14 @@ const PIECES = [
 
 export default function NotationPlayer() {
   const [pieceKey, setPieceKey] = useState('ode');
+  const [root, setRoot] = useState(0);
   const [bpm, setBpm] = useState(100);
   const [loop, setLoop] = useState(true);
   const [playing, setPlaying] = useState(false);
   const [active, setActive] = useState(-1);
 
   const piece = PIECES.find((p) => p.key === pieceKey) ?? PIECES[0];
-  const notes = toNotes(piece.names);
+  const notes = toNotes(piece.names, transposeForRoot(root));
   const lastIndex = notes.length - 1;
 
   const [loopStart, setLoopStart] = useState(0);
@@ -127,8 +146,8 @@ export default function NotationPlayer() {
       window.clearTimeout(timer);
       setActive(-1);
     };
-    // notes is derived from pieceKey; lastIndex effect stops playback on change.
-  }, [playing, pieceKey]);
+    // notes is derived from pieceKey + root; restart playback when either changes.
+  }, [playing, pieceKey, root]);
 
   return (
     <div className="space-y-5">
@@ -143,6 +162,22 @@ export default function NotationPlayer() {
             {PIECES.map((p) => (
               <option key={p.key} value={p.key}>
                 {p.title}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="space-y-1 text-sm">
+          <span className="block font-medium" data-help="scales">
+            Key (transpose)
+          </span>
+          <select
+            value={root}
+            onChange={(e) => setRoot(Number(e.target.value))}
+            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+          >
+            {ROOT_CHOICES.map((pc) => (
+              <option key={pc} value={pc}>
+                {pitchName(pc, transposeForRoot(pc) < 0)}
               </option>
             ))}
           </select>

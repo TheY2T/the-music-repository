@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { playTone } from '@/lib/audio';
+import { playGlide, playTone } from '@/lib/audio';
 import { midiToFrequency, STANDARD_TUNING } from '@/lib/music-theory';
 
 // String index 0 = high E … 5 = low E (matches STANDARD_TUNING order).
@@ -8,6 +8,21 @@ const STRING_LABELS = ['e', 'B', 'G', 'D', 'A', 'E'];
 interface TabNote {
   string: number;
   fret: number;
+  /** Bend up this many semitones (whole-step = 2). */
+  bend?: number;
+  /** Slide to this fret on the same string. */
+  slideTo?: number;
+}
+
+/** Tab cell text: "7" plain, "7b" bend, "5/7" slide. */
+function cellText(note: TabNote): string {
+  if (note.bend) {
+    return `${note.fret}b`;
+  }
+  if (note.slideTo !== undefined) {
+    return `${note.fret}/${note.slideTo}`;
+  }
+  return String(note.fret);
 }
 /** Each step is one rhythmic position; usually one note, sometimes a double-stop. */
 type Step = TabNote[];
@@ -78,6 +93,30 @@ const LICKS: Lick[] = [
     ],
   },
   {
+    key: 'bend-lick',
+    title: 'Blues bend lick',
+    context: 'Key of A — whole-step bend on the G string',
+    category: 'blues',
+    steps: [
+      [{ string: 1, fret: 8 }],
+      [{ string: 2, fret: 7, bend: 2 }],
+      [{ string: 1, fret: 5 }],
+      [{ string: 2, fret: 5 }],
+    ],
+  },
+  {
+    key: 'slide-lick',
+    title: 'Sliding rock lick',
+    context: 'Key of A — slide up the D string',
+    category: 'rock',
+    steps: [
+      [{ string: 3, fret: 5, slideTo: 7 }],
+      [{ string: 2, fret: 5 }],
+      [{ string: 2, fret: 7 }],
+      [{ string: 1, fret: 5 }],
+    ],
+  },
+  {
     key: 'e-turnaround',
     title: 'E blues turnaround',
     context: 'Key of E — chromatic descent, resolving to E',
@@ -124,7 +163,7 @@ function Tab({ steps, activeStep }: { steps: Step[]; activeStep: number }) {
       {steps.map((step, columnIndex) => (
         <div
           key={`col-${columnIndex}`}
-          className={`flex w-6 flex-col rounded ${
+          className={`flex w-10 flex-col rounded ${
             columnIndex === activeStep ? 'bg-blue-500/20' : ''
           }`}
         >
@@ -132,7 +171,7 @@ function Tab({ steps, activeStep }: { steps: Step[]; activeStep: number }) {
             const note = step.find((n) => n.string === stringIndex);
             return (
               <span key={label} className="flex h-5 items-center justify-center text-foreground">
-                {note ? note.fret : '–'}
+                {note ? cellText(note) : '–'}
               </span>
             );
           })}
@@ -167,7 +206,18 @@ export default function LickLibrary() {
       const step = lick.steps[i];
       const noteSeconds = (60 / bpmRef.current) * 0.9;
       for (const note of step) {
-        playTone(midiToFrequency(STANDARD_TUNING[note.string] + note.fret), noteSeconds);
+        const from = STANDARD_TUNING[note.string] + note.fret;
+        if (note.bend) {
+          playGlide(midiToFrequency(from), midiToFrequency(from + note.bend), noteSeconds);
+        } else if (note.slideTo !== undefined) {
+          playGlide(
+            midiToFrequency(from),
+            midiToFrequency(STANDARD_TUNING[note.string] + note.slideTo),
+            noteSeconds,
+          );
+        } else {
+          playTone(midiToFrequency(from), noteSeconds);
+        }
       }
       setPlaying({ lick: lick.key, step: i });
       i += 1;
@@ -235,7 +285,8 @@ export default function LickLibrary() {
       <p className="text-xs text-muted-foreground">
         Read the tab (string names on the left, fret numbers in sequence), press Play to hear it,
         then work it up to speed with the tempo slider. Numbers stacked in a column are played
-        together.
+        together; <span className="font-mono">7b</span> means bend up, and{' '}
+        <span className="font-mono">5/7</span> means slide from fret 5 to 7.
       </p>
     </div>
   );

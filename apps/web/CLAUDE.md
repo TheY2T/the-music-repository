@@ -103,8 +103,11 @@ src/
   refs so they change live. No notation library.
 - Lick library at `/tools/licks` (gated on `tools.licks`). `LickLibrary.tsx` holds curated licks
   (`Step[]` of `{string, fret}`) rendered as interactive tab (column highlight during playback);
-  fret→pitch via `STANDARD_TUNING`, playback via `playTone` on a ref-driven `setTimeout`. See
-  `docs/features/play-along.md`.
+  fret→pitch via `STANDARD_TUNING`, playback via `playTone` on a ref-driven `setTimeout`. Tab notes may
+  carry `bend`/`slideTo` (rendered `7b` / `5/7`, played via `playGlide`).
+- The notation player transposes via `staffPlacement(midi, flats)` (music-theory) — `StaffSequence`
+  renders the returned `accidental` (♯/♭) glyph. `audio.ts` has `playGlide(from, to, dur)` for
+  bends/slides. See `docs/features/play-along.md`.
 
 ## Trainers / drills (Phase 4)
 

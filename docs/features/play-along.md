@@ -82,6 +82,23 @@ it up to speed, and a **category** filter (Blues / Rock / Turnarounds) narrows t
   active playback at a time). Includes: A minor pentatonic run, B.B. King-style lick, a Chuck-Berry
   double-stop boogie, and an E blues turnaround (chromatic descent). No backend, no new deps.
 
+## Slice E — Transpose in the notation player
+
+The notation player (`/tools/player`) gained a **Key (transpose)** control (12 keys). The melody is
+recomputed from each note's MIDI + transpose and re-spelled via a new pure helper
+`staffPlacement(midi, flats)` in `music-theory.ts` (returns staff `step`, `label`, and `accidental`).
+`StaffSequence` now renders a **♯/♭ glyph** left of the note head (`StaffNoteDatum.accidental`, optional
+and backward-compatible). Transposing up spells with sharps, down with flats; the range stays within ±6
+semitones for readability. Changing key restarts playback in the new key.
+
+## Slice F — Bends & slides in the lick library
+
+The lick library (`/tools/licks`) gained articulations: a `TabNote` may carry `bend` (semitones) or
+`slideTo` (target fret). The tab renders **`7b`** (bend) and **`5/7`** (slide) notation, and playback
+uses a new **`playGlide(fromFreq, toFreq, duration)`** audio primitive (oscillator frequency ramp) so a
+bend/slide is actually heard gliding into pitch. Two new licks showcase them (Blues bend lick, Sliding
+rock lick).
+
 ## Tests
 
 - **Web (browser) — backing track:** the 12-bar-blues grid renders the textbook form in C —
@@ -100,10 +117,14 @@ it up to speed, and a **category** filter (Blues / Rock / Turnarounds) narrows t
   `G E D C A G E D C A`, B.B. lick `C A G E D C`, boogie double-stops `D+A / C+G`, and the E turnaround
   with both voices descending chromatically (`G F♯ F E` over `B A♯ A G♯`) resolving to E. Play advances
   the highlighted tab column in sync (0→1→2→3→4).
+- **Web (browser) — transpose (Slice E):** Ode to Joy in D renders `F♯ F♯ G A A G F♯ E D D E F♯ F♯ E E`
+  with ♯ glyphs before each F♯; key B (transpose −1) re-spells with flats (`E♭4` + ♭ glyph).
+- **Web (browser) — articulations (Slice F):** the tab shows `7b` (Blues bend lick) and `5/7` (Sliding
+  rock lick); Play glides the pitch and advances the column cursor without error.
 - Build/lint/check-types green across the workspace (25/25).
 
 ## Next slices (Phase 5 menu)
 
-- Notation player enhancements: MusicXML/multi-voice rendering, rhythms, transpose, soundfont audio.
+- Notation player: MusicXML/multi-voice rendering, note durations/rhythms, soundfont audio.
 - Pitch-preserving tempo + loop/section on hosted audio recordings.
-- More licks/voicings; bends & slides notation in the tab renderer.
+- More licks/voicings; hammer-on/pull-off notation.

@@ -10,6 +10,8 @@ const stepY = (step: number) => BASE_Y - step * HALF;
 export interface StaffNoteDatum {
   step: number;
   label: string;
+  /** Accidental glyph drawn left of the note head, or '' / undefined for a natural. */
+  accidental?: '' | '♯' | '♭';
 }
 
 /** A row of notes on a treble staff (clef + ledger lines). Reused by sight-reading + note tools. */
@@ -71,6 +73,17 @@ export default function StaffSequence({
                   strokeWidth={1.5}
                 />
               ))}
+              {note.accidental ? (
+                <text
+                  x={x - 14}
+                  y={stepY(note.step) + 5}
+                  textAnchor="middle"
+                  className={active ? 'fill-blue-600' : 'fill-foreground'}
+                  fontSize={18}
+                >
+                  {note.accidental}
+                </text>
+              ) : null}
               <ellipse
                 cx={x}
                 cy={stepY(note.step)}
