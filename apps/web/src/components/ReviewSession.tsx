@@ -1,5 +1,5 @@
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
-import { Badge, Button } from '@TheY2T/tmr-ui';
+import { Badge, Button, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { DECKS, findDeck } from '@/lib/drill-decks';
 import { getDeckReviews, gradeCard } from '@/lib/reviews-api';
@@ -82,7 +82,8 @@ export default function ReviewSession({ deckKey, locale }: { deckKey?: string; l
   if (!item || !deck) {
     return (
       <div className="space-y-4">
-        <p className="text-lg font-medium">
+        <p className="flex items-center gap-2 text-lg font-medium">
+          <Icon name="party-popper" className="size-5" />
           {t(locale, 'review.sessionComplete', { count: reviewed })}
         </p>
         <div className="flex gap-3">
@@ -121,7 +122,8 @@ export default function ReviewSession({ deckKey, locale }: { deckKey?: string; l
       {deck.play ? (
         <div className="flex justify-center">
           <Button variant="outline" size="lg" onClick={() => deck.play?.(item.card)}>
-            ▶ {t(locale, 'review.play')}
+            <Icon name="play" className="size-4" />
+            {t(locale, 'review.play')}
           </Button>
         </div>
       ) : null}

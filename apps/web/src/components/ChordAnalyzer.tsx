@@ -1,4 +1,4 @@
-import { Button, Card, Input, Select } from '@TheY2T/tmr-ui';
+import { Button, Card, Icon, Input, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import {
@@ -236,7 +236,8 @@ export default function ChordAnalyzer({ syncEnabled = false }: { syncEnabled?: b
           </div>
           <div className="flex gap-3">
             <Button type="button" onClick={playAll}>
-              ▶ Play progression
+              <Icon name="play" className="size-4" />
+              Play progression
             </Button>
             <span className="self-center font-mono text-sm text-muted-foreground">
               {chords.map((c) => analyzeChordInKey(keyRoot, c.root, c.quality).roman).join(' – ')}

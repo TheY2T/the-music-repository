@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { getAudioContext, scheduleDrum, scheduleTone } from '@/lib/audio';
 import { midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
@@ -288,7 +288,17 @@ export default function BackingTrack() {
         className="px-6"
         onClick={() => setRunning((r) => !r)}
       >
-        {running ? '■ Stop' : '▶ Play along'}
+        {running ? (
+          <>
+            <Icon name="square" className="size-3 fill-current" />
+            Stop
+          </>
+        ) : (
+          <>
+            <Icon name="play" className="size-4" />
+            Play along
+          </>
+        )}
       </Button>
       <p className="text-xs text-muted-foreground">
         Loops the chosen progression with drums, bass, and comping chords — jam over it on any

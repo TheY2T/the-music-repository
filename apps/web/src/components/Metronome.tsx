@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { getAudioContext, scheduleClick, scheduleTone } from '@/lib/audio';
 
@@ -226,7 +226,17 @@ export default function Metronome() {
           className="px-6"
           onClick={() => setRunning((r) => !r)}
         >
-          {running ? '■ Stop' : '▶ Start'}
+          {running ? (
+            <>
+              <Icon name="square" className="size-3 fill-current" />
+              Stop
+            </>
+          ) : (
+            <>
+              <Icon name="play" className="size-4" />
+              Start
+            </>
+          )}
         </Button>
       </div>
     </div>

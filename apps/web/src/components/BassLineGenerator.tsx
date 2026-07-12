@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { getAudioContext, scheduleDrum, scheduleTone } from '@/lib/audio';
 import { midiToFrequency, pitchName } from '@/lib/music-theory';
@@ -215,7 +215,17 @@ export default function BassLineGenerator() {
         className="px-6"
         onClick={() => setRunning((r) => !r)}
       >
-        {running ? '■ Stop' : '▶ Play'}
+        {running ? (
+          <>
+            <Icon name="square" className="size-3 fill-current" />
+            Stop
+          </>
+        ) : (
+          <>
+            <Icon name="play" className="size-4" />
+            Play
+          </>
+        )}
       </Button>
       <p className="text-xs text-muted-foreground">
         Generates a bass line under the progression — <strong>roots</strong>,{' '}

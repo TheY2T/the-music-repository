@@ -1,6 +1,6 @@
 import type { ContentSummary } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
-import { Badge, CardGrid } from '@TheY2T/tmr-ui';
+import { Badge, CardGrid, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { listFavorites } from '@/lib/favorites-api';
 
@@ -21,7 +21,8 @@ export default function MyFavorites({ locale }: { locale: Locale }) {
         <a href={localizedPath(locale, '/catalogue')} className="underline">
           {t(locale, 'myfav.catalogue')}
         </a>{' '}
-        {t(locale, 'myfav.emptyAfter')}
+        {t(locale, 'myfav.emptyAfter')}{' '}
+        <Icon name="heart" className="inline size-4 fill-current align-text-bottom text-red-500" />
       </p>
     );
   }

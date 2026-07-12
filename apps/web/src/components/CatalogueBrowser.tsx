@@ -5,7 +5,7 @@ import {
   useSearchCatalogue,
 } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
-import { Badge, CardGrid, Chip, SearchField } from '@TheY2T/tmr-ui';
+import { Badge, CardGrid, Chip, Icon, SearchField } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import FavoriteHeart from '@/components/FavoriteHeart';
 import { listFavoriteSlugs } from '@/lib/favorites-api';
@@ -162,7 +162,10 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
                     </span>
                   ) : null}
                   {item.locked ? (
-                    <Badge variant="warning">🔒 {tierLabel(locale, item.tier)}</Badge>
+                    <Badge variant="warning">
+                      <Icon name="lock" className="size-3" />
+                      {tierLabel(locale, item.tier)}
+                    </Badge>
                   ) : null}
                 </div>
                 <h2 className="font-semibold leading-snug">{item.title}</h2>

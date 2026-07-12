@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { getAudioContext, scheduleDrum } from '@/lib/audio';
 
@@ -155,7 +155,17 @@ export default function GrooveLibrary() {
         className="px-6"
         onClick={() => setRunning((r) => !r)}
       >
-        {running ? '■ Stop' : '▶ Play'}
+        {running ? (
+          <>
+            <Icon name="square" className="size-3 fill-current" />
+            Stop
+          </>
+        ) : (
+          <>
+            <Icon name="play" className="size-4" />
+            Play
+          </>
+        )}
       </Button>
       <p className="text-xs text-muted-foreground">
         Classic drum grooves (kick / snare / hi-hat over eighth notes) — loop them at any tempo to

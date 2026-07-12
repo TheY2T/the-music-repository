@@ -1,4 +1,4 @@
-import { Button, Card, Select } from '@TheY2T/tmr-ui';
+import { Button, Card, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
 import {
@@ -176,7 +176,7 @@ export default function Transposer() {
             </span>
           ))}
           <button type="button" onClick={() => play(chords)} className="text-sm underline">
-            ▶
+            <Icon name="play" className="size-4" label="Play" />
           </button>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -190,7 +190,7 @@ export default function Transposer() {
             </span>
           ))}
           <button type="button" onClick={() => play(transposed)} className="text-sm underline">
-            ▶
+            <Icon name="play" className="size-4" label="Play" />
           </button>
         </div>
       </div>

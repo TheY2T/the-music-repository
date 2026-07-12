@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
 import {
@@ -88,7 +88,8 @@ export default function ScaleExplorer() {
       </div>
 
       <Button type="button" onClick={playAscending}>
-        ▶ Play ascending
+        <Icon name="play" className="size-4" />
+        Play ascending
       </Button>
     </div>
   );

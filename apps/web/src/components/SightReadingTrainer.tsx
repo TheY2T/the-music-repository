@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
 import { playTone } from '@/lib/audio';
@@ -98,10 +98,12 @@ export default function SightReadingTrainer() {
 
       <div className="flex gap-3">
         <Button type="button" onClick={play}>
-          ▶ Play
+          <Icon name="play" className="size-4" />
+          Play
         </Button>
         <Button type="button" variant="outline" onClick={() => setSeed((s) => s + 1)}>
-          ↻ New melody
+          <Icon name="refresh" className="size-4" />
+          New melody
         </Button>
       </div>
       <p className="text-xs text-muted-foreground">

@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
 import { playTone } from '@/lib/audio';
@@ -73,7 +73,8 @@ export default function MelodicDictation() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-4">
         <Button type="button" onClick={play}>
-          ▶ Play melody
+          <Icon name="play" className="size-4" />
+          Play melody
         </Button>
         <label className="flex items-center gap-2 text-sm">
           Notes
@@ -143,7 +144,8 @@ export default function MelodicDictation() {
           onClick={() => setAnswer((a) => a.slice(0, -1))}
           disabled={!!checked || answer.length === 0}
         >
-          ← Backspace
+          <Icon name="arrow-left" className="size-4" />
+          Backspace
         </Button>
         <Button
           type="button"
@@ -157,7 +159,8 @@ export default function MelodicDictation() {
           Reveal
         </Button>
         <Button type="button" variant="outline" size="sm" onClick={() => newMelody()}>
-          ↻ New melody
+          <Icon name="refresh" className="size-4" />
+          New melody
         </Button>
       </div>
 
@@ -165,7 +168,14 @@ export default function MelodicDictation() {
         <p
           className={`text-sm font-medium ${checked.every(Boolean) ? 'text-green-600' : 'text-red-600'}`}
         >
-          {checked.every(Boolean) ? '✓ Perfect!' : 'Some notes were off — reveal to compare.'}
+          {checked.every(Boolean) ? (
+            <span className="inline-flex items-center gap-1">
+              <Icon name="check" className="size-4" />
+              Perfect!
+            </span>
+          ) : (
+            'Some notes were off — reveal to compare.'
+          )}
         </p>
       ) : null}
 

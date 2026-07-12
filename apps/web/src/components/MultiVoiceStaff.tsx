@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import {
@@ -218,7 +218,17 @@ export default function MultiVoiceStaff() {
         className="px-6"
         onClick={() => setRunning((r) => !r)}
       >
-        {running ? '■ Stop' : '▶ Play all'}
+        {running ? (
+          <>
+            <Icon name="square" className="size-3 fill-current" />
+            Stop
+          </>
+        ) : (
+          <>
+            <Icon name="play" className="size-4" />
+            Play all
+          </>
+        )}
       </Button>
       <p className="text-xs text-muted-foreground">
         The seven diatonic triads of the key, engraved as **stacked chords** on the staff (multiple

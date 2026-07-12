@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { INTERVAL_NAMES, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
@@ -70,7 +70,8 @@ export default function IntervalExplorer() {
 
       <div className="flex gap-3">
         <Button type="button" onClick={playMelodic}>
-          ▶ Melodic
+          <Icon name="play" className="size-4" />
+          Melodic
         </Button>
         <Button type="button" variant="outline" onClick={playHarmonic}>
           Harmonic

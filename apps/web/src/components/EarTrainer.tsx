@@ -1,4 +1,4 @@
-import { Button } from '@TheY2T/tmr-ui';
+import { Button, Icon } from '@TheY2T/tmr-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { INTERVAL_NAMES, midiToFrequency } from '@/lib/music-theory';
@@ -98,11 +98,13 @@ export default function EarTrainer() {
       <div className="flex flex-wrap items-center gap-4">
         {!started ? (
           <Button type="button" onClick={start}>
-            ▶ Start — play an interval
+            <Icon name="play" className="size-4" />
+            Start — play an interval
           </Button>
         ) : (
           <Button type="button" variant="outline" onClick={() => playInterval(question)}>
-            ↻ Replay
+            <Icon name="refresh" className="size-4" />
+            Replay
           </Button>
         )}
         <span className="text-sm text-muted-foreground">
@@ -115,12 +117,13 @@ export default function EarTrainer() {
 
       <p className="text-xs" data-help="keyboard">
         {midi.connected ? (
-          <span className="text-green-600 dark:text-green-400">
-            🎹 {midi.deviceName ?? 'MIDI'} connected — answer by playing the two notes.
+          <span className="inline-flex items-center gap-1 text-green-600 dark:text-green-400">
+            <Icon name="piano" className="size-4" /> {midi.deviceName ?? 'MIDI'} connected — answer
+            by playing the two notes.
           </span>
         ) : midi.supported ? (
-          <span className="text-muted-foreground">
-            🎹 Connect a MIDI keyboard to answer by playing.
+          <span className="inline-flex items-center gap-1 text-muted-foreground">
+            <Icon name="piano" className="size-4" /> Connect a MIDI keyboard to answer by playing.
           </span>
         ) : null}
       </p>
@@ -162,7 +165,8 @@ export default function EarTrainer() {
                 {isCorrect ? 'Correct!' : `It was ${INTERVAL_NAMES[question.semitones]}.`}
               </span>
               <Button type="button" onClick={next}>
-                Next →
+                Next
+                <Icon name="arrow-right" className="size-4" />
               </Button>
             </div>
           ) : null}

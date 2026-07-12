@@ -45,6 +45,15 @@ import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 - **Templates/pages** stay in `apps/web` (`BaseLayout.astro`, `src/pages/**`). `PageShell.astro` is the
   shared page container used INSIDE `BaseLayout`.
 
+## Icons
+
+Icons are Lucide, rendered through the **`Icon` atom** — never raw emoji/glyphs (ADR 0019 ·
+[icons.md](./icons.md)). React: `import { Icon } from '@TheY2T/tmr-ui'` → `<Icon name="lock"
+className="size-4" />`. `.astro`: `import Icon from '@TheY2T/tmr-ui/astro/Icon.astro'` (zero-JS inline
+SVG via `astro-icon` + `@iconify-json/lucide`). Add an icon by extending the registry in
+`packages/ui/src/components/ui/icon.tsx`. Decorative by default (`aria-hidden`); pass a localized
+`label` for meaningful icons. Music-notation glyphs (`♯♭♮♪♩`) stay unicode.
+
 ## Tokens
 
 `packages/design-tokens/src/tokens.css` defines `:root` + `.dark` variables; `theme.css` maps them to

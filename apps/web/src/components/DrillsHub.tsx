@@ -1,6 +1,6 @@
 import type { ReviewSummary } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
-import { Badge, Button, CardGrid, StatCard } from '@TheY2T/tmr-ui';
+import { Badge, Button, CardGrid, Icon, StatCard } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { DECKS } from '@/lib/drill-decks';
 import { getReviewSummary } from '@/lib/reviews-api';
@@ -21,7 +21,12 @@ export default function DrillsHub({ locale }: { locale: Locale }) {
         <div className="grid grid-cols-3 gap-3">
           <StatCard
             label={t(locale, 'drillhub.dayStreak')}
-            value={`${summary?.streakDays ?? 0}🔥`}
+            value={
+              <span className="inline-flex items-center gap-1.5">
+                {summary?.streakDays ?? 0}
+                <Icon name="flame" className="size-5 text-orange-500" />
+              </span>
+            }
           />
           <StatCard
             label={t(locale, 'drillhub.reviewedToday')}
@@ -31,7 +36,10 @@ export default function DrillsHub({ locale }: { locale: Locale }) {
         </div>
         {totalDue > 0 ? (
           <a href={localizedPath(locale, '/drills/review')} className="ml-auto">
-            <Button size="lg">▶ {t(locale, 'drillhub.reviewDue', { count: totalDue })}</Button>
+            <Button size="lg">
+              <Icon name="play" className="size-4" />
+              {t(locale, 'drillhub.reviewDue', { count: totalDue })}
+            </Button>
           </a>
         ) : null}
       </div>

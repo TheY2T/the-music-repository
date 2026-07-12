@@ -3,6 +3,7 @@ import FlagBanner from '@/components/FlagBanner.tsx';
 import HealthCard from '@/components/HealthCard.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import Icon from '@TheY2T/tmr-ui/astro/Icon.astro';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 const { demoNewBanner, authEnabled, adminCms, favorites, collections, progress } = Astro.locals.flags;
@@ -116,9 +117,10 @@ const showTools =
       <div class="flex flex-wrap items-center gap-3">
         <a
           href={localizedPath(locale, '/catalogue')}
-          class="inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+          class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
         >
-          {t(locale, 'nav.catalogue')} →
+          {t(locale, 'nav.catalogue')}
+          <Icon name="arrow-right" class="size-4" />
         </a>
         {
           collections && (

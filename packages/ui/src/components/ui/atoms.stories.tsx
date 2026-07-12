@@ -3,6 +3,7 @@ import { Badge } from './badge';
 import { Button } from './button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './card';
 import { Checkbox } from './checkbox';
+import { Icon, type IconName } from './icon';
 import { Input } from './input';
 import { Label } from './label';
 import { Progress } from './progress';
@@ -80,6 +81,47 @@ export const FormControls: Story = {
       <label htmlFor="subscribe" className="flex items-center gap-2 text-sm">
         <Checkbox id="subscribe" defaultChecked /> Subscribe
       </label>
+    </div>
+  ),
+};
+
+const ICON_NAMES: IconName[] = [
+  'arrow-left',
+  'arrow-right',
+  'check',
+  'flame',
+  'heart',
+  'lock',
+  'music',
+  'party-popper',
+  'piano',
+  'play',
+  'refresh',
+  'search',
+  'square',
+  'x',
+];
+
+export const Icons: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-wrap gap-4">
+        {ICON_NAMES.map((name) => (
+          <div key={name} className="flex w-20 flex-col items-center gap-1 text-muted-foreground">
+            <Icon name={name} className="size-6 text-foreground" />
+            <span className="text-xs">{name}</span>
+          </div>
+        ))}
+      </div>
+      <div className="flex items-center gap-4">
+        <Icon name="heart" className="size-4" />
+        <Icon name="heart" className="size-6 fill-current text-red-500" />
+        <Icon name="lock" className="size-8 text-warning" />
+        {/* Meaningful icon: labelled for assistive tech */}
+        <button type="button" className="rounded p-1 text-muted-foreground hover:text-foreground">
+          <Icon name="x" label="Close" className="size-4" />
+        </button>
+      </div>
     </div>
   ),
 };

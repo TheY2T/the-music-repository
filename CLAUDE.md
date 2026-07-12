@@ -40,6 +40,11 @@ Biome + thin ESLint · podman-compose deploy.
   shells) in `apps/web`. Both are **raw-source ESM** (not dual-build). Templates/pages stay in
   `apps/web`. Library components are presentational + i18n-by-prop (never call `t()` inside). Follow
   the **`add-ui-component`** skill. ADR 0018 · `docs/features/design-system.md`.
+- **Icons from the design system (web).** No emoji/unicode as icons in `apps/web` — use the **`Icon`
+  atom** from `@TheY2T/tmr-ui` (`<Icon name="lock" className="size-4" />`) in React, and
+  `@TheY2T/tmr-ui/astro/Icon.astro` in `.astro`. Both are Lucide; add an icon via the registry in
+  `packages/ui/src/components/ui/icon.tsx`. Never bake glyphs into i18n strings. Music-notation glyphs
+  (`♯♭♮♪♩`) are the sole exception. Follow **`add-ui-component`**. ADR 0018/0019 · `docs/features/icons.md`.
 - **Localize UI strings (web).** No hardcoded user-facing text in `apps/web` — add a key to
   `@TheY2T/tmr-i18n-locales` (English + `zh-Hans`) and render via `t(Astro.locals.locale, key)`; pass
   `locale` into islands as a prop. URL-prefix routing (`/zh/…`), gated by `platform.i18n`. Follow the

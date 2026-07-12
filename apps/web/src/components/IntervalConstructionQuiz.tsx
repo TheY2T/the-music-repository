@@ -1,4 +1,4 @@
-import { Button, Card } from '@TheY2T/tmr-ui';
+import { Button, Card, Icon } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { INTERVAL_NAMES, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
@@ -90,11 +90,22 @@ export default function IntervalConstructionQuiz() {
 
       {answered !== null ? (
         <div className="flex items-center gap-4">
-          <span className="text-sm font-medium">
-            {answered === targetPc ? '✓ Correct!' : `✗ It was ${pitchName(targetPc, flats)}`}
+          <span className="inline-flex items-center gap-1 text-sm font-medium">
+            {answered === targetPc ? (
+              <>
+                <Icon name="check" className="size-4" />
+                Correct!
+              </>
+            ) : (
+              <>
+                <Icon name="x" className="size-4" />
+                It was {pitchName(targetPc, flats)}
+              </>
+            )}
           </span>
           <Button type="button" variant="outline" onClick={next}>
-            Next →
+            Next
+            <Icon name="arrow-right" className="size-4" />
           </Button>
         </div>
       ) : (

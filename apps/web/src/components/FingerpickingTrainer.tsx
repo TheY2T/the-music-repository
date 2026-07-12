@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { ChordDiagram, GUITAR_CHORDS, TUNING_LOW_FIRST } from '@/components/ChordDiagrams';
 import { playTone } from '@/lib/audio';
@@ -173,7 +173,17 @@ export default function FingerpickingTrainer() {
         className="px-6"
         onClick={() => setRunning((r) => !r)}
       >
-        {running ? '■ Stop' : '▶ Play'}
+        {running ? (
+          <>
+            <Icon name="square" className="size-3 fill-current" />
+            Stop
+          </>
+        ) : (
+          <>
+            <Icon name="play" className="size-4" />
+            Play
+          </>
+        )}
       </Button>
       <p className="text-xs text-muted-foreground">
         Each slot shows the string plucked (E A D G B e, low to high; · = rest). Loops one bar of

@@ -27,6 +27,11 @@ src/
   utilities. `global.css` has `@source` globs pointing at the packages — if styles vanish, check them.
 - **i18n-by-prop:** library components take localized strings as props (never call `t()`); pass
   `t(locale, key)` results in. Add/extend components via the **`add-ui-component`** skill.
+- **Icons (ADR 0019, `docs/features/icons.md`):** no raw emoji/glyphs — use `<Icon name=… />` from
+  `@TheY2T/tmr-ui` in islands and `@TheY2T/tmr-ui/astro/Icon.astro` in `.astro` (both Lucide; add via
+  the registry in `packages/ui/src/components/ui/icon.tsx`). `PageShell` back-links draw their own
+  `arrow-left`. Music-notation glyphs (`♯♭♮♪♩`), hand-drawn rests, and guitar `○`/`×` + strum `↓↑·`
+  markers stay unicode — they are notation, not icons.
 
 ## Localization / i18n (ADR 0017, `docs/features/i18n.md`)
 

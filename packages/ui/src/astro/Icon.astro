@@ -1,0 +1,32 @@
+---
+/**
+ * Icon — the `.astro` counterpart of the React `Icon` atom. Renders a Lucide glyph as zero-JS inline
+ * SVG via astro-icon (`@iconify-json/lucide`). Same Lucide geometry as the React `<Icon>`, so an icon
+ * in a static header matches one inside a React island pixel-for-pixel. ADR 0019.
+ *
+ * Usage: `import Icon from '@TheY2T/tmr-ui/astro/Icon.astro';` then `<Icon name="arrow-left" />`.
+ * The consuming app must register the `icon()` integration in astro.config.mjs.
+ *
+ * `name` uses the same kebab-case names as the React registry (mapped to Iconify's `lucide:*`).
+ * Decorative by default (aria-hidden); pass an already-localized `label` for a meaningful icon.
+ */
+import { Icon as Iconify } from 'astro-icon/components';
+
+interface Props {
+  name: string;
+  class?: string;
+  size?: number | string;
+  label?: string;
+}
+
+const { name, class: className, size, label } = Astro.props;
+---
+
+<Iconify
+  name={`lucide:${name}`}
+  class:list={['shrink-0', className]}
+  {size}
+  aria-hidden={label ? undefined : 'true'}
+  aria-label={label}
+  role={label ? 'img' : undefined}
+/>

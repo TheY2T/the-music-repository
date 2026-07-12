@@ -1,4 +1,4 @@
-import { Chip, Select } from '@TheY2T/tmr-ui';
+import { Chip, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { intervalLabel, MODES, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
@@ -52,7 +52,8 @@ export default function ModeExplorer() {
                 onClick={() => playMode(mode.intervals)}
                 className="ml-auto text-sm underline"
               >
-                ▶ Play
+                <Icon name="play" className="size-4" />
+                Play
               </button>
             </div>
             <div className="mt-2 flex flex-wrap gap-1.5">

@@ -1,3 +1,4 @@
+import { Icon } from '@TheY2T/tmr-ui';
 import { Select } from '@TheY2T/tmr-ui/components/ui/select';
 import { ChordDiagram, GUITAR_CHORDS, TUNING_LOW_FIRST } from '@TheY2T/tmr-ui/music';
 import { useState } from 'react';
@@ -77,7 +78,10 @@ export default function ChordDiagrams() {
           >
             <span className="font-semibold">{chord.name}</span>
             <ChordDiagram chord={chord} />
-            <span className="text-xs text-muted-foreground">▶ Strum</span>
+            <span className="text-xs text-muted-foreground">
+              <Icon name="play" className="size-4" />
+              Strum
+            </span>
           </button>
         ))}
       </div>

@@ -1,4 +1,4 @@
-import { Button, Textarea } from '@TheY2T/tmr-ui';
+import { Button, Icon, Textarea } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { getAudioContext, scheduleTone } from '@/lib/audio';
 import { midiToFrequency } from '@/lib/music-theory';
@@ -261,7 +261,17 @@ export default function ScoreRenderer() {
           Render
         </Button>
         <Button type="button" onClick={() => (playing ? stop() : play())} disabled={!canPlay}>
-          {playing ? '■ Stop' : '▶ Play'}
+          {playing ? (
+            <>
+              <Icon name="square" className="size-3 fill-current" />
+              Stop
+            </>
+          ) : (
+            <>
+              <Icon name="play" className="size-4" />
+              Play
+            </>
+          )}
         </Button>
         <label className="flex items-center gap-2 text-sm">
           <span className="text-muted-foreground">Speed</span>

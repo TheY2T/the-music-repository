@@ -6,7 +6,7 @@ import {
   useGetRelatedContent,
 } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
-import { Badge, Card, CardGrid, Chip } from '@TheY2T/tmr-ui';
+import { Badge, Card, CardGrid, Chip, Icon } from '@TheY2T/tmr-ui';
 
 /** Localized label for a premium tier (`premium`/`pro`/`institution`; unknown → premium). */
 function tierLabel(locale: Locale, tier?: string | null): string {
@@ -86,8 +86,9 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
 
       {item.locked ? (
         <Card className="space-y-3 border-amber-500/40 bg-amber-500/10 p-6 text-center">
-          <p className="text-lg font-semibold">
-            🔒 {t(locale, 'content.lockedHeading', { tier: tierLabel(locale, item.tier) })}
+          <p className="flex items-center justify-center gap-2 text-lg font-semibold">
+            <Icon name="lock" className="size-5" />
+            {t(locale, 'content.lockedHeading', { tier: tierLabel(locale, item.tier) })}
           </p>
           <p className="text-sm text-muted-foreground">
             {item.tier && item.tier !== 'premium'

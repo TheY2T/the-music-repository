@@ -37,6 +37,16 @@ filesystems otherwise pass locally but break Linux containers).
 - Files keep the `application/ports/*.port.ts` / `infrastructure/*.adapter.ts` role markers (a discovery
   aid — the filename may mark the role; the identifier stays technology-free).
 
+## Icons (web UI — ADR 0019)
+
+- **No emoji/unicode as icons** in `apps/web`. Use the **`Icon` atom** from `@TheY2T/tmr-ui`
+  (`<Icon name="lock" className="size-4" />`) in React, and `@TheY2T/tmr-ui/astro/Icon.astro` in
+  `.astro`. Both are Lucide. Add an icon via the registry in `packages/ui/src/components/ui/icon.tsx`.
+- **Never bake glyphs into i18n strings** — render an icon beside the localized text.
+- **Exception:** music-notation glyphs (`♯ ♭ ♮ ♪ ♩`), hand-drawn SVG rests, guitar open-string
+  markers (`○`/`×`), strum-direction markers (`↓`/`↑`/`·`), and typographic arrows inside prose are
+  content/notation, not icons — leave them. See `docs/features/icons.md`.
+
 ## Localization / i18n (web UI strings — ADR 0017)
 
 - **No hardcoded user-facing strings** in `apps/web`. Every UI string goes through `t(locale, key)` from

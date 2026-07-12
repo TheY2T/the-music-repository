@@ -1,4 +1,4 @@
-import { Button } from '@TheY2T/tmr-ui';
+import { Button, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { getProgress, markComplete, markIncomplete } from '@/lib/progress-api';
 
@@ -30,7 +30,14 @@ export default function CompleteButton({ slug }: { slug: string }) {
 
   return (
     <Button variant={completed ? 'default' : 'outline'} size="sm" disabled={busy} onClick={toggle}>
-      {completed ? '✓ Completed' : 'Mark complete'}
+      {completed ? (
+        <>
+          <Icon name="check" className="size-4" />
+          Completed
+        </>
+      ) : (
+        'Mark complete'
+      )}
     </Button>
   );
 }

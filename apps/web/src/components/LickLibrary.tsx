@@ -1,4 +1,4 @@
-import { Button, Card, Select } from '@TheY2T/tmr-ui';
+import { Button, Card, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { playGlide, playTone } from '@/lib/audio';
 import { midiToFrequency, STANDARD_TUNING } from '@/lib/music-theory';
@@ -390,7 +390,8 @@ export default function LickLibrary() {
             </div>
             <Tab steps={lick.steps} activeStep={playing?.lick === lick.key ? playing.step : -1} />
             <Button type="button" size="sm" onClick={() => playLick(lick)}>
-              ▶ Play
+              <Icon name="play" className="size-4" />
+              Play
             </Button>
           </Card>
         ))}

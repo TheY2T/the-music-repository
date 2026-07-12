@@ -1,4 +1,4 @@
-import { Select } from '@TheY2T/tmr-ui';
+import { Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { diatonicChords, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
@@ -78,7 +78,8 @@ export default function ProgressionBuilder() {
           {progression.length ? (
             <>
               <button type="button" onClick={playProgression} className="text-sm underline">
-                ▶ Play
+                <Icon name="play" className="size-4" />
+                Play
               </button>
               <button
                 type="button"

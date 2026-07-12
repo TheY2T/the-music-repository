@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
 import {
@@ -92,7 +92,8 @@ export default function ChordBuilder() {
 
       <div className="flex gap-3">
         <Button type="button" onClick={playBlock}>
-          ▶ Play chord
+          <Icon name="play" className="size-4" />
+          Play chord
         </Button>
         <Button type="button" variant="outline" onClick={playArpeggio}>
           Arpeggiate

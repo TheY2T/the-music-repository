@@ -1,4 +1,4 @@
-import { Button } from '@TheY2T/tmr-ui';
+import { Button, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { CHORDS, midiToFrequency } from '@/lib/music-theory';
@@ -56,7 +56,8 @@ export default function ChordQualityEar() {
     <div className="space-y-5">
       <div className="flex items-center gap-4">
         <Button type="button" onClick={() => playChord(QUALITY_CHORDS[current].intervals, root)}>
-          ▶ Replay
+          <Icon name="play" className="size-4" />
+          Replay
         </Button>
         <span className="text-sm text-muted-foreground">
           Score: {score.correct}/{score.total}
@@ -96,11 +97,22 @@ export default function ChordQualityEar() {
 
       {answered !== null ? (
         <div className="flex items-center gap-4">
-          <span className="text-sm font-medium">
-            {answered === current ? '✓ Correct!' : `✗ It was ${QUALITY_CHORDS[current].name}`}
+          <span className="inline-flex items-center gap-1 text-sm font-medium">
+            {answered === current ? (
+              <>
+                <Icon name="check" className="size-4" />
+                Correct!
+              </>
+            ) : (
+              <>
+                <Icon name="x" className="size-4" />
+                It was {QUALITY_CHORDS[current].name}
+              </>
+            )}
           </span>
           <Button type="button" variant="outline" onClick={next}>
-            Next →
+            Next
+            <Icon name="arrow-right" className="size-4" />
           </Button>
         </div>
       ) : (

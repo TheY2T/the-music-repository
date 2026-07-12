@@ -1,3 +1,4 @@
+import { Icon } from '@TheY2T/tmr-ui';
 import { addFavorite, removeFavorite } from '@/lib/favorites-api';
 
 /**
@@ -34,9 +35,9 @@ export default function FavoriteHeart({
       aria-pressed={favorited}
       aria-label={favorited ? 'Remove from favorites' : 'Add to favorites'}
       title={favorited ? 'Remove from favorites' : 'Add to favorites'}
-      className={`text-lg leading-none transition-colors ${favorited ? 'text-red-500' : 'text-muted-foreground hover:text-red-500'} ${className ?? ''}`}
+      className={`leading-none transition-colors ${favorited ? 'text-red-500' : 'text-muted-foreground hover:text-red-500'} ${className ?? ''}`}
     >
-      {favorited ? '♥' : '♡'}
+      <Icon name="heart" className={`size-5 ${favorited ? 'fill-current' : ''}`} />
     </button>
   );
 }

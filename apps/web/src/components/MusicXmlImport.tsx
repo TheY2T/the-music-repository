@@ -1,4 +1,4 @@
-import { Button, Textarea } from '@TheY2T/tmr-ui';
+import { Button, Icon, Textarea } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
 import { playTone } from '@/lib/audio';
@@ -184,7 +184,17 @@ export default function MusicXmlImport() {
             className="px-6"
             onClick={() => setRunning((r) => !r)}
           >
-            {running ? '■ Stop' : '▶ Play'}
+            {running ? (
+              <>
+                <Icon name="square" className="size-3 fill-current" />
+                Stop
+              </>
+            ) : (
+              <>
+                <Icon name="play" className="size-4" />
+                Play
+              </>
+            )}
           </Button>
         </>
       )}

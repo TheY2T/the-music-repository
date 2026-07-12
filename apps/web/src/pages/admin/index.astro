@@ -4,6 +4,7 @@ import SignOutButton from '@/components/SignOutButton.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { guardAdmin } from '@/lib/admin-guard';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import Icon from '@TheY2T/tmr-ui/astro/Icon.astro';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 const redirect = guardAdmin(Astro);
@@ -28,15 +29,23 @@ const locale = Astro.locals.locale;
     <div class="flex flex-wrap gap-4">
       {
         Astro.locals.flags.collections && (
-          <a href={localizedPath(locale, '/admin/collections')} class="text-sm underline">
+          <a
+            href={localizedPath(locale, '/admin/collections')}
+            class="inline-flex items-center gap-1 text-sm underline"
+          >
             {t(locale, 'admin.manageCollections')}
+            <Icon name="arrow-right" class="size-4" />
           </a>
         )
       }
       {
         Astro.locals.flags.infoView && (
-          <a href={localizedPath(locale, '/admin/help')} class="text-sm underline">
+          <a
+            href={localizedPath(locale, '/admin/help')}
+            class="inline-flex items-center gap-1 text-sm underline"
+          >
             {t(locale, 'admin.manageHelp')}
+            <Icon name="arrow-right" class="size-4" />
           </a>
         )
       }

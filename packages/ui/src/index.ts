@@ -28,6 +28,7 @@ export {
   CardTitle,
 } from './components/ui/card';
 export { Checkbox, type CheckboxProps } from './components/ui/checkbox';
+export { Icon, type IconName, type IconProps } from './components/ui/icon';
 export { Input, type InputProps } from './components/ui/input';
 export { Label, type LabelProps } from './components/ui/label';
 export { Progress, type ProgressProps } from './components/ui/progress';

@@ -1,4 +1,4 @@
-import { Button, Card } from '@TheY2T/tmr-ui';
+import { Button, Card, Icon } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { CIRCLE_OF_FIFTHS, describeAccidentals } from '@/lib/music-theory';
 
@@ -109,11 +109,22 @@ export default function KeySignatureQuiz() {
 
       {answered !== null ? (
         <div className="flex items-center gap-4">
-          <span className="text-sm font-medium">
-            {answered === round.answer ? '✓ Correct!' : `✗ It was ${round.answer} major`}
+          <span className="inline-flex items-center gap-1 text-sm font-medium">
+            {answered === round.answer ? (
+              <>
+                <Icon name="check" className="size-4" />
+                Correct!
+              </>
+            ) : (
+              <>
+                <Icon name="x" className="size-4" />
+                It was {round.answer} major
+              </>
+            )}
           </span>
           <Button type="button" variant="outline" onClick={next}>
-            Next →
+            Next
+            <Icon name="arrow-right" className="size-4" />
           </Button>
         </div>
       ) : (

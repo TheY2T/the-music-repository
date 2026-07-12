@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { ChordDiagram, GUITAR_CHORDS, strumChord } from '@/components/ChordDiagrams';
 
@@ -162,7 +162,17 @@ export default function ProgressionPlayer() {
         className="px-6"
         onClick={() => setRunning((r) => !r)}
       >
-        {running ? '■ Stop' : '▶ Play'}
+        {running ? (
+          <>
+            <Icon name="square" className="size-3 fill-current" />
+            Stop
+          </>
+        ) : (
+          <>
+            <Icon name="play" className="size-4" />
+            Play
+          </>
+        )}
       </Button>
       <p className="text-xs text-muted-foreground">
         Loops the progression — one bar per chord — with your chosen strum. Follow the highlighted

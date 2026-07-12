@@ -1,5 +1,5 @@
 import { FlagKeys } from '@TheY2T/tmr-flags';
-import { Card } from '@TheY2T/tmr-ui';
+import { Card, Icon } from '@TheY2T/tmr-ui';
 import { OpenFeature, OpenFeatureProvider, useFlag } from '@openfeature/react-sdk';
 import { InMemoryProvider } from '@openfeature/web-sdk';
 
@@ -28,8 +28,11 @@ function ensureProvider(initial: boolean): void {
 function Banner() {
   const { value } = useFlag(FlagKeys.DemoNewBanner, false);
   return value ? (
-    <Card className="border-green-600/40 bg-green-600/10 p-4 text-sm">
-      🎉 The new banner is <strong>enabled</strong> (evaluated via OpenFeature react-sdk island).
+    <Card className="flex items-center gap-2 border-green-600/40 bg-green-600/10 p-4 text-sm">
+      <Icon name="party-popper" className="size-4 shrink-0" />
+      <span>
+        The new banner is <strong>enabled</strong> (evaluated via OpenFeature react-sdk island).
+      </span>
     </Card>
   ) : (
     <Card className="p-4 text-sm text-muted-foreground">

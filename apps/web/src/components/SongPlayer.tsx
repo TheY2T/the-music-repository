@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { GUITAR_CHORDS, strumChord } from '@/components/ChordDiagrams';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
@@ -198,7 +198,17 @@ export default function SongPlayer() {
         className="px-6"
         onClick={() => setRunning((r) => !r)}
       >
-        {running ? '■ Stop' : '▶ Play'}
+        {running ? (
+          <>
+            <Icon name="square" className="size-3 fill-current" />
+            Stop
+          </>
+        ) : (
+          <>
+            <Icon name="play" className="size-4" />
+            Play
+          </>
+        )}
       </Button>
       <p className="text-xs text-muted-foreground">
         Plays the melody on the staff with a strummed chord under each bar — the current chord is

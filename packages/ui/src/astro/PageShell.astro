@@ -10,6 +10,8 @@
  *
  * Strings are passed in already-localized (no i18n inside the library).
  */
+import Icon from './Icon.astro';
+
 interface Props {
   title?: string;
   subtitle?: string;
@@ -28,7 +30,11 @@ const hasHeader = Boolean(title || back || Astro.slots.has('actions'));
     hasHeader && (
       <header class="flex flex-col gap-1">
         {back && (
-          <a href={back.href} class="text-sm text-muted-foreground hover:text-foreground">
+          <a
+            href={back.href}
+            class="inline-flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+          >
+            <Icon name="arrow-left" class="size-4" />
             {back.label}
           </a>
         )}

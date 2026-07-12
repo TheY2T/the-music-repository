@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
 import { getAudioContext, playTone, scheduleClick } from '@/lib/audio';
@@ -295,7 +295,17 @@ export default function NotationPlayer() {
         className="px-6"
         onClick={() => setPlaying((p) => !p)}
       >
-        {playing ? '■ Stop' : '▶ Play'}
+        {playing ? (
+          <>
+            <Icon name="square" className="size-3 fill-current" />
+            Stop
+          </>
+        ) : (
+          <>
+            <Icon name="play" className="size-4" />
+            Play
+          </>
+        )}
       </Button>
       <p className="text-xs text-muted-foreground">
         Follow the moving cursor as each note sounds. Slow the tempo to learn a tricky passage, set

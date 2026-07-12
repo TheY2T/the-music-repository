@@ -1,4 +1,4 @@
-import { Button } from '@TheY2T/tmr-ui';
+import { Button, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { type DrumVoice, getAudioContext, scheduleDrum } from '@/lib/audio';
 
@@ -94,7 +94,17 @@ export default function BeatSequencer() {
           className="px-6"
           onClick={() => setRunning((r) => !r)}
         >
-          {running ? '■ Stop' : '▶ Play'}
+          {running ? (
+            <>
+              <Icon name="square" className="size-3 fill-current" />
+              Stop
+            </>
+          ) : (
+            <>
+              <Icon name="play" className="size-4" />
+              Play
+            </>
+          )}
         </Button>
         <label className="flex items-center gap-2 text-sm" data-help="rhythm">
           Tempo

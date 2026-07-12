@@ -1,5 +1,5 @@
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
-import { Card } from '@TheY2T/tmr-ui';
+import { Card, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { acceptInvitation } from '@/lib/classrooms-api';
 
@@ -22,7 +22,10 @@ export default function AcceptInvitation({ locale }: { locale: Locale }) {
         <p className="text-sm text-muted-foreground">{t(locale, 'invite.accepting')}</p>
       ) : state === 'done' ? (
         <>
-          <p className="text-lg font-semibold">{t(locale, 'invite.joined')}</p>
+          <p className="flex items-center gap-2 text-lg font-semibold">
+            <Icon name="check" className="size-5" />
+            {t(locale, 'invite.joined')}
+          </p>
           <a
             href={localizedPath(locale, '/classrooms')}
             className="inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"

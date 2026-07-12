@@ -1,4 +1,4 @@
-import { Button } from '@TheY2T/tmr-ui';
+import { Button, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import {
@@ -132,11 +132,22 @@ export default function FretboardNoteQuiz() {
 
       {answered !== null ? (
         <div className="flex items-center gap-4">
-          <span className="text-sm font-medium">
-            {answered === targetPc ? '✓ Correct!' : `✗ It was ${pitchName(targetPc)}`}
+          <span className="inline-flex items-center gap-1 text-sm font-medium">
+            {answered === targetPc ? (
+              <>
+                <Icon name="check" className="size-4" />
+                Correct!
+              </>
+            ) : (
+              <>
+                <Icon name="x" className="size-4" />
+                It was {pitchName(targetPc)}
+              </>
+            )}
           </span>
           <Button type="button" variant="outline" onClick={next}>
-            Next →
+            Next
+            <Icon name="arrow-right" className="size-4" />
           </Button>
         </div>
       ) : (

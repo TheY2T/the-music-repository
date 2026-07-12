@@ -1,5 +1,5 @@
 import { type Locale, t } from '@TheY2T/tmr-i18n';
-import { Button, Card } from '@TheY2T/tmr-ui';
+import { Button, Card, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import {
   cancelPremium,
@@ -50,7 +50,14 @@ export default function UpgradePanel({ locale }: { locale: Locale }) {
     <div className="space-y-6">
       <Card className={`p-6 ${premium ? 'border-green-600/40 bg-green-600/10' : ''}`}>
         <p className="text-lg font-semibold">
-          {premium ? t(locale, 'upgrade.premiumActive') : t(locale, 'upgrade.freePlan')}
+          {premium ? (
+            <span className="inline-flex items-center gap-1.5">
+              <Icon name="check" className="size-4" />
+              {t(locale, 'upgrade.premiumActive')}
+            </span>
+          ) : (
+            t(locale, 'upgrade.freePlan')
+          )}
         </p>
         <p className="mt-1 text-sm text-muted-foreground">
           {isStaff

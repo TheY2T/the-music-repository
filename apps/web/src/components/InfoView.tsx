@@ -1,4 +1,5 @@
 import type { HelpTopic } from '@TheY2T/tmr-api-client';
+import { Icon } from '@TheY2T/tmr-ui';
 import { marked } from 'marked';
 import { useEffect, useMemo, useState } from 'react';
 import { listHelpTopics } from '@/lib/help-api';
@@ -93,7 +94,7 @@ export default function InfoView() {
           title="Dismiss"
           className="rounded-md px-2 py-1 text-sm text-muted-foreground hover:bg-muted"
         >
-          ✕
+          <Icon name="x" className="size-4" />
         </button>
       </div>
     </aside>

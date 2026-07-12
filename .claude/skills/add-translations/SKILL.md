@@ -17,6 +17,11 @@ Edit **both** catalogues in `@TheY2T/tmr-i18n-locales`:
 Key naming: `domain.thing` (camelCase after the dot), e.g. `catalogue.search`, `upgrade.subtitle`.
 Interpolate with `{name}` placeholders: `"catalogue.results": "{count} results"`.
 
+**No glyphs in strings.** Never embed emoji or unicode icon-glyphs (`←`/`→` arrows, `✓`, `♥`, `🎉`,
+etc.) in a locale value. Keep the string plain text and render an `<Icon>` beside it in the component
+(ADR 0019 / `docs/features/icons.md`) — e.g. a back-link label is just "Tools", and `PageShell.astro`
+draws the leading `arrow-left`. (Music-notation glyphs like `♯♭♮` are the exception — see §4.)
+
 Rebuild the packages so the new keys/types are available:
 `pnpm --filter @TheY2T/tmr-i18n-locales --filter @TheY2T/tmr-i18n build`
 

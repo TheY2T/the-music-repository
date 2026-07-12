@@ -1,4 +1,4 @@
-import { Select } from '@TheY2T/tmr-ui';
+import { Icon, Select } from '@TheY2T/tmr-ui';
 import { useCallback, useMemo, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import {
@@ -110,14 +110,18 @@ export default function PianoKeyboard() {
 
       <div className="text-xs" data-help="keyboard">
         {!midi.supported ? (
-          <span className="text-muted-foreground">🎹 Web MIDI not supported in this browser.</span>
+          <span className="inline-flex items-center gap-1 text-muted-foreground">
+            <Icon name="piano" className="size-4" /> Web MIDI not supported in this browser.
+          </span>
         ) : midi.connected ? (
-          <span className="text-green-600 dark:text-green-400">
-            🎹 MIDI connected: {midi.deviceName ?? 'device'} — play your keyboard.
+          <span className="inline-flex items-center gap-1 text-green-600 dark:text-green-400">
+            <Icon name="piano" className="size-4" /> MIDI connected: {midi.deviceName ?? 'device'} —
+            play your keyboard.
           </span>
         ) : (
-          <span className="text-muted-foreground">
-            🎹 MIDI ready — connect a keyboard to play it live.
+          <span className="inline-flex items-center gap-1 text-muted-foreground">
+            <Icon name="piano" className="size-4" /> MIDI ready — connect a keyboard to play it
+            live.
           </span>
         )}
       </div>

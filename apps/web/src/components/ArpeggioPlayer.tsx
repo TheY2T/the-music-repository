@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { CHORDS, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
@@ -153,7 +153,17 @@ export default function ArpeggioPlayer() {
         className="px-6"
         onClick={() => setRunning((r) => !r)}
       >
-        {running ? '■ Stop' : '▶ Play'}
+        {running ? (
+          <>
+            <Icon name="square" className="size-3 fill-current" />
+            Stop
+          </>
+        ) : (
+          <>
+            <Icon name="play" className="size-4" />
+            Play
+          </>
+        )}
       </Button>
       <p className="text-xs text-muted-foreground">
         Arpeggiates the chord (one note at a time) in the chosen direction and loops it — follow the

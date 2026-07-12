@@ -1,4 +1,4 @@
-import { Button, Select } from '@TheY2T/tmr-ui';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
 import { playTone } from '@/lib/audio';
@@ -91,10 +91,12 @@ export default function Solfege() {
           </Select>
         </label>
         <Button type="button" onClick={play}>
-          ▶ Play
+          <Icon name="play" className="size-4" />
+          Play
         </Button>
         <Button type="button" variant="outline" onClick={() => setMelody(generate(6))}>
-          ↻ New melody
+          <Icon name="refresh" className="size-4" />
+          New melody
         </Button>
       </div>
 

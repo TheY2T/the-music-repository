@@ -29,7 +29,15 @@ From the package dir so the CLI uses its `components.json`:
 cd packages/ui && pnpm dlx shadcn@latest add <primitive>   # e.g. dialog, tabs, tooltip
 ```
 Tailwind v4 → `components.json` has `tailwind.config: ""`. Add any new Radix dep to the pnpm **catalog**
-in `pnpm-workspace.yaml` and reference `catalog:`. Icons: `lucide-react` (catalog).
+in `pnpm-workspace.yaml` and reference `catalog:`.
+
+**Icons: use the `Icon` atom, never raw emoji/glyphs** (ADR 0019 · `docs/features/icons.md`). In React,
+`import { Icon } from '@TheY2T/tmr-ui'` → `<Icon name="lock" className="size-4" />`; in `.astro`,
+`import Icon from '@TheY2T/tmr-ui/astro/Icon.astro'`. To add an icon, import it from `lucide-react` and
+add a kebab-case entry to the registry in `packages/ui/src/components/ui/icon.tsx` (typed `IconName`,
+tree-shake-safe). Decorative by default (`aria-hidden`); pass a localized `label` for meaningful icons.
+Size/color via Tailwind (`size-4`, `text-*`, `fill-current`). Do NOT hardcode emoji as icons in
+`apps/web`; music-notation glyphs (`♯♭♮♪♩`) are the sole exception.
 
 ## 2. Hand-author a molecule/organism
 

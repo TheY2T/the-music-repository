@@ -1,4 +1,4 @@
-import { Button, Card } from '@TheY2T/tmr-ui';
+import { Button, Card, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
 import { getAudioContext, playTone, scheduleClick } from '@/lib/audio';
@@ -89,7 +89,8 @@ export default function RhythmDictation() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-4">
         <Button type="button" onClick={playTarget}>
-          ▶ Play rhythm
+          <Icon name="play" className="size-4" />
+          Play rhythm
         </Button>
         <span className="text-sm text-muted-foreground">
           Score: {score.correct}/{score.total}
@@ -137,7 +138,8 @@ export default function RhythmDictation() {
           onClick={() => setAnswer((a) => a.slice(0, -1))}
           disabled={checked !== null || answer.length === 0}
         >
-          ← Backspace
+          <Icon name="arrow-left" className="size-4" />
+          Backspace
         </Button>
         <Button
           type="button"
@@ -151,13 +153,21 @@ export default function RhythmDictation() {
           Reveal
         </Button>
         <Button type="button" variant="outline" size="sm" onClick={reset}>
-          ↻ New rhythm
+          <Icon name="refresh" className="size-4" />
+          New rhythm
         </Button>
       </div>
 
       {checked !== null ? (
         <p className={`text-sm font-medium ${checked ? 'text-green-600' : 'text-red-600'}`}>
-          {checked ? '✓ Correct rhythm!' : 'Not quite — reveal to compare.'}
+          {checked ? (
+            <span className="inline-flex items-center gap-1">
+              <Icon name="check" className="size-4" />
+              Correct rhythm!
+            </span>
+          ) : (
+            'Not quite — reveal to compare.'
+          )}
         </p>
       ) : null}
 

@@ -1,4 +1,4 @@
-import { Button, Card, Select } from '@TheY2T/tmr-ui';
+import { Button, Card, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { CHORDS, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
@@ -224,7 +224,8 @@ export default function VoicingLibrary() {
                 className="h-auto py-1 text-xs"
                 onClick={() => playBlock(voicing.midis)}
               >
-                ▶ Play
+                <Icon name="play" className="size-4" />
+                Play
               </Button>
               <Button
                 type="button"

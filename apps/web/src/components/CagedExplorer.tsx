@@ -1,4 +1,4 @@
-import { Select } from '@TheY2T/tmr-ui';
+import { Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { TUNING_LOW_FIRST } from '@/components/ChordDiagrams';
 import { playTone } from '@/lib/audio';
@@ -164,7 +164,10 @@ export default function CagedExplorer() {
           >
             <span className="font-semibold">{s.shape} shape</span>
             <ShapeDiagram frets={s.frets} />
-            <span className="text-xs text-muted-foreground">▶ Strum</span>
+            <span className="text-xs text-muted-foreground">
+              <Icon name="play" className="size-4" />
+              Strum
+            </span>
           </button>
         ))}
       </div>
