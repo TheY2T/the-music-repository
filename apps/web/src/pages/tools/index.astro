@@ -19,6 +19,7 @@ const {
   toolSightReading,
   toolBackingTrack,
   toolVoicings,
+  toolNotationPlayer,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -122,6 +123,12 @@ const tools = [
     title: 'Voicing library',
     summary: 'See a chord’s inversions, drop-2/3, and shell voicings on the keyboard.',
     enabled: toolVoicings,
+  },
+  {
+    href: '/tools/player',
+    title: 'Notation player',
+    summary: 'Play a melody on the staff with a moving cursor; slow, loop, and section it.',
+    enabled: toolNotationPlayer,
   },
 ].filter((tool) => tool.enabled);
 

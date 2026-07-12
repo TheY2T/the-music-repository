@@ -96,7 +96,11 @@ src/
 - Voicing library at `/tools/voicings` (gated on `tools.voicings`). `VoicingLibrary.tsx` builds standard
   voicings (close, inversions, drop-2/3, shell for 7ths; open for triads) via pure array math local to
   the component (`invert`/`drop`) and renders each on a fixed 3-octave keyboard diagram with lit + named
-  tones + play/arpeggiate. See `docs/features/play-along.md`.
+  tones + play/arpeggiate.
+- Notation player at `/tools/player` (gated on `tools.notation-player`). `NotationPlayer.tsx` renders a
+  PD melody via `StaffSequence` (which gained a backward-compatible `activeIndex` prop for the cursor)
+  and steps a recursive `setTimeout` cursor in sync with `playTone`; tempo / loop / section read from
+  refs so they change live. No notation library. See `docs/features/play-along.md`.
 
 ## Trainers / drills (Phase 4)
 

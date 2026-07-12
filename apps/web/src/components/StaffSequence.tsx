@@ -16,9 +16,12 @@ export interface StaffNoteDatum {
 export default function StaffSequence({
   notes,
   showLabels = false,
+  activeIndex = -1,
 }: {
   notes: StaffNoteDatum[];
   showLabels?: boolean;
+  /** Index of the currently-sounding note to highlight (with a cursor). -1 for none. */
+  activeIndex?: number;
 }) {
   const width = START_X + Math.max(notes.length, 1) * SPACING + 20;
   return (
@@ -45,8 +48,18 @@ export default function StaffSequence({
         </text>
         {notes.map((note, index) => {
           const x = START_X + index * SPACING;
+          const active = index === activeIndex;
           return (
             <g key={`${note.label}-${index}`}>
+              {active ? (
+                <rect
+                  x={x - SPACING / 2}
+                  y={4}
+                  width={SPACING}
+                  height={142}
+                  className="fill-blue-500/15"
+                />
+              ) : null}
               {ledgerSteps(note.step).map((ledger) => (
                 <line
                   key={ledger}
@@ -58,7 +71,13 @@ export default function StaffSequence({
                   strokeWidth={1.5}
                 />
               ))}
-              <ellipse cx={x} cy={stepY(note.step)} rx={7.5} ry={5.5} className="fill-foreground" />
+              <ellipse
+                cx={x}
+                cy={stepY(note.step)}
+                rx={7.5}
+                ry={5.5}
+                className={active ? 'fill-blue-600' : 'fill-foreground'}
+              />
               {showLabels ? (
                 <text
                   x={x}

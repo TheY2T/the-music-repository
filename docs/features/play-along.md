@@ -1,8 +1,8 @@
 # Feature: Play-along (Phase 5)
 
-- **Phase:** 5 · **Status:** shipped (Slice A + B)
-- **Flag keys:** `tools.backing-track` (`ToolBackingTrack`), `tools.voicings` (`ToolVoicings`) — from
-  `@TheY2T/tmr-flags`. Default on.
+- **Phase:** 5 · **Status:** shipped (Slice A + B + C)
+- **Flag keys:** `tools.backing-track` (`ToolBackingTrack`), `tools.voicings` (`ToolVoicings`),
+  `tools.notation-player` (`ToolNotationPlayer`) — from `@TheY2T/tmr-flags`. Default on.
 
 ## Purpose
 
@@ -54,6 +54,21 @@ key is itself clickable to hear that single note.
   voices up an octave; `drop` lowers the *n*-th-from-top voice an octave) — no backend, no new deps.
   Reuses `midiToFrequency` + `playTone`. Pairs with the backing track: learn the chords you jam over.
 
+## Slice C — Notation-synced player (`tools.notation-player`)
+
+`/tools/player` — a lightweight **notation-synced player** with no heavy notation dependency: it renders
+a single-line melody on the treble staff (reusing `StaffSequence`) and, on **Play**, moves a **cursor**
+(highlight box + coloured note head) from note to note **in sync with the audio**.
+
+- Controls: **Piece** (public-domain melodies: Ode to Joy, Twinkle, Mary Had a Little Lamb, C major
+  scale — natural notes only), **Tempo** (40–200 BPM, live), **Loop** toggle, and a **section** (from /
+  to note) so you can drill just a passage. All adjustable while playing.
+- Implementation: `StaffSequence` gained an optional `activeIndex` prop (draws the cursor box + blue note
+  head; fully backward-compatible). `NotationPlayer.tsx` drives a recursive `setTimeout` step that reads
+  tempo/loop/section from refs so live changes take effect on the next note; wraps to the section start
+  when looping, stops at the section end otherwise. Reuses `midiToFrequency` + `playTone` — client-side,
+  no backend, no notation library. (A full MusicXML/multi-voice renderer remains a later enhancement.)
+
 ## Tests
 
 - **Web (browser) — backing track:** the 12-bar-blues grid renders the textbook form in C —
@@ -64,10 +79,14 @@ key is itself clickable to hear that single note.
 - **Web (browser) — voicings:** C major 7 → Close `C E G B`; 1st/2nd/3rd inversions put the 3rd/5th/7th
   in the bass (`E G B C`, `G B C E`, `B C E G`); Drop 2 `G C E B`, Drop 3 `E C G B`, Shell `C E B`. C
   major triad → Close `C E G`, inversions, Open (spread) `C G E`. Lit keys match the named tones.
+- **Web (browser) — notation player:** Ode to Joy renders on the staff as
+  `E E F G G F E D C C D E E D D`; pressing Play advances the cursor/highlight note-by-note in sync with
+  the audio (0→1→2→3…). Setting the section to notes 5–8 confines playback to indices 4–7 and loops
+  there ("Notes 5–8 of 15").
 - Build/lint/check-types green across the workspace (25/25).
 
 ## Next slices (Phase 5 menu)
 
-- Notation-synced player (cursor highlight) via a notation renderer + soundfont audio.
-- Pitch-preserving tempo, loop/section, transpose on hosted audio.
+- Notation player enhancements: MusicXML/multi-voice rendering, rhythms, transpose, soundfont audio.
+- Pitch-preserving tempo + loop/section on hosted audio recordings.
 - Lick / turnaround library with diagrams + tab.
