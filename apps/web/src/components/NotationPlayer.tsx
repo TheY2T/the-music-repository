@@ -19,7 +19,11 @@ interface PlayerNote extends StaffNoteDatum {
 /** Build the (optionally transposed) melody, spelling accidentals with flats when transposing down. */
 function toNotes(names: string[], beats: number[], transpose: number): PlayerNote[] {
   const flats = transpose < 0;
-  return names.flatMap((name, i) => {
+  return names.flatMap((name, i): PlayerNote[] => {
+    const noteBeats = beats[i] ?? 1;
+    if (name === 'R') {
+      return [{ step: 4, label: 'rest', beats: noteBeats, rest: true, midi: -1 }];
+    }
     const base = BY_NAME.get(name);
     if (!base) {
       return [];
@@ -31,7 +35,7 @@ function toNotes(names: string[], beats: number[], transpose: number): PlayerNot
         step: placement.step,
         label: placement.label,
         accidental: placement.accidental,
-        beats: beats[i] ?? 1,
+        beats: noteBeats,
         midi,
       },
     ];
@@ -82,6 +86,12 @@ const PIECES = [
     title: 'C major scale',
     names: ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'],
     beats: [1, 1, 1, 1, 1, 1, 1, 2],
+  },
+  {
+    key: 'rests',
+    title: 'Rhythm study (with rests)',
+    names: ['C4', 'R', 'E4', 'R', 'G4', 'R', 'C5'],
+    beats: [1, 1, 1, 1, 1, 1, 2],
   },
 ];
 
@@ -138,7 +148,9 @@ export default function NotationPlayer() {
       setActive(i);
       const secondsPerBeat = 60 / bpmRef.current;
       const beats = notes[i].beats ?? 1;
-      playTone(midiToFrequency(notes[i].midi), beats * secondsPerBeat * 0.9);
+      if (!notes[i].rest) {
+        playTone(midiToFrequency(notes[i].midi), beats * secondsPerBeat * 0.9);
+      }
       timer = window.setTimeout(
         () => {
           let next = i + 1;

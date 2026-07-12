@@ -14,6 +14,8 @@ export interface StaffNoteDatum {
   accidental?: '' | '♯' | '♭';
   /** Duration in beats (quarter = 1). When set, the note-value glyph (head/stem/flag/dot) is drawn. */
   beats?: number;
+  /** When true, draw a rest glyph (silent) instead of a note head. */
+  rest?: boolean;
 }
 
 const STEM_LEN = 34;
@@ -56,6 +58,53 @@ export default function StaffSequence({
         {notes.map((note, index) => {
           const x = START_X + index * SPACING;
           const active = index === activeIndex;
+          if (note.rest) {
+            const fillInk = active ? 'fill-blue-600' : 'fill-foreground';
+            const strokeInk = active ? 'stroke-blue-600' : 'stroke-foreground';
+            const beats = note.beats ?? 1;
+            return (
+              <g key={`rest-${index}`}>
+                {active ? (
+                  <rect
+                    x={x - SPACING / 2}
+                    y={4}
+                    width={SPACING}
+                    height={142}
+                    className="fill-blue-500/15"
+                  />
+                ) : null}
+                {beats >= 2 ? (
+                  // Half rest: a filled bar sitting on the middle line.
+                  <rect x={x - 8} y={stepY(4) - 6} width={16} height={5.5} className={fillInk} />
+                ) : beats <= 0.5 ? (
+                  // Eighth rest: a blob with a downward stroke.
+                  <>
+                    <circle cx={x - 1} cy={stepY(4.5)} r={2.8} className={fillInk} />
+                    <line
+                      x1={x + 1}
+                      x2={x - 4}
+                      y1={stepY(4.5)}
+                      y2={stepY(2)}
+                      className={strokeInk}
+                      strokeWidth={2}
+                    />
+                  </>
+                ) : (
+                  // Quarter rest: a jagged squiggle.
+                  <path
+                    d={`M ${x - 3} ${stepY(6.2)} L ${x + 3} ${stepY(5.2)} L ${x - 3} ${stepY(3.8)} L ${x + 3} ${stepY(2.8)} Q ${x - 4} ${stepY(2.2)} ${x + 2} ${stepY(1)}`}
+                    className={`fill-none ${strokeInk}`}
+                    strokeWidth={3}
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                  />
+                )}
+                {DOTTED.has(beats) ? (
+                  <circle cx={x + 12} cy={stepY(4)} r={2} className={fillInk} />
+                ) : null}
+              </g>
+            );
+          }
           return (
             <g key={`${note.label}-${index}`}>
               {active ? (

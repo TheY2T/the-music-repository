@@ -108,6 +108,21 @@ so existing consumers (sight-reading, staff reader) render exactly as before. Pl
 for `beats × secondsPerBeat`, so Ode to Joy's closing dotted-quarter / eighth / half rhythm is both seen
 and heard.
 
+## Slice H — Hammer-ons & pull-offs in the lick library
+
+`TabNote` gained `legatoTo` (target fret on the same string). The tab renders **`5h7`** (hammer-on) /
+**`7p5`** (pull-off) — the `h`/`p` is derived from the pitch direction — and playback sounds the first
+note then the second legato and softer (a delayed, quieter `playTone`). A new **Legato pentatonic lick**
+showcases it.
+
+## Slice I — Rests in the notation player
+
+A piece note can be a rest (name `'R'`). `StaffNoteDatum` gained a `rest` flag and `StaffSequence` draws
+the rest as **hand-drawn SVG** (a zigzag quarter rest, a bar half rest, a blob-and-stroke eighth rest,
+plus an augmentation dot) — unicode rest glyphs were dropped because the system font renders them as a
+striped block. Playback dwells for the rest's `beats` but plays nothing. A **Rhythm study (with rests)**
+piece demonstrates it.
+
 ## Tests
 
 - **Web (browser) — backing track:** the 12-bar-blues grid renders the textbook form in C —
@@ -134,6 +149,11 @@ and heard.
   (eighth), and 1 augmentation dot (dotted quarter); sight-reading (no `beats`) still renders 8 plain
   filled heads with no stems/flags/dots. Playback dwell is proportional — at 180 BPM the dotted quarter
   holds ~1.5× the quarter.
+- **Web (browser) — legato (Slice H):** the Legato pentatonic lick tab shows `5h7`, `5h7`, `5`, `8p5`;
+  Play sounds both notes of each pair and advances the column cursor.
+- **Web (browser) — rests (Slice I):** the Rhythm study renders 4 note heads with three drawn quarter
+  rests between them (verified visually — proper squiggles, not font tofu); playback advances the cursor
+  through the rest positions (indices 1·3·5) silently.
 - Build/lint/check-types green across the workspace (25/25).
 
 ## Next slices (Phase 5 menu)

@@ -108,8 +108,10 @@ src/
 - The notation player transposes via `staffPlacement(midi, flats)` (music-theory) — `StaffSequence`
   renders the returned `accidental` (♯/♭) glyph. `audio.ts` has `playGlide(from, to, dur)` for
   bends/slides. `StaffSequence` also takes an optional per-note `beats` → draws note-value glyphs
-  (open/filled head, stem, flag, dot); omit it and notes render as plain heads (backward-compatible).
-  See `docs/features/play-along.md`.
+  (open/filled head, stem, flag, dot); a `rest` note draws a hand-drawn SVG rest (quarter/half/eighth —
+  **not** unicode glyphs, which render as tofu in the system font). Omit `beats`/`rest` and notes render
+  as plain heads (backward-compatible). Lick tab notes also support `legatoTo` (`5h7`/`7p5`). See
+  `docs/features/play-along.md`.
 
 ## Trainers / drills (Phase 4)
 

@@ -12,15 +12,20 @@ interface TabNote {
   bend?: number;
   /** Slide to this fret on the same string. */
   slideTo?: number;
+  /** Hammer-on / pull-off to this fret on the same string (legato). */
+  legatoTo?: number;
 }
 
-/** Tab cell text: "7" plain, "7b" bend, "5/7" slide. */
+/** Tab cell text: "7" plain, "7b" bend, "5/7" slide, "5h7"/"7p5" hammer-on/pull-off. */
 function cellText(note: TabNote): string {
   if (note.bend) {
     return `${note.fret}b`;
   }
   if (note.slideTo !== undefined) {
     return `${note.fret}/${note.slideTo}`;
+  }
+  if (note.legatoTo !== undefined) {
+    return `${note.fret}${note.legatoTo > note.fret ? 'h' : 'p'}${note.legatoTo}`;
   }
   return String(note.fret);
 }
@@ -114,6 +119,18 @@ const LICKS: Lick[] = [
       [{ string: 2, fret: 5 }],
       [{ string: 2, fret: 7 }],
       [{ string: 1, fret: 5 }],
+    ],
+  },
+  {
+    key: 'legato-lick',
+    title: 'Legato pentatonic lick',
+    context: 'Key of A — hammer-ons and a pull-off',
+    category: 'blues',
+    steps: [
+      [{ string: 3, fret: 5, legatoTo: 7 }],
+      [{ string: 2, fret: 5, legatoTo: 7 }],
+      [{ string: 1, fret: 5 }],
+      [{ string: 1, fret: 8, legatoTo: 5 }],
     ],
   },
   {
@@ -215,6 +232,14 @@ export default function LickLibrary() {
             midiToFrequency(STANDARD_TUNING[note.string] + note.slideTo),
             noteSeconds,
           );
+        } else if (note.legatoTo !== undefined) {
+          // Hammer-on / pull-off: sound the first note, then the second legato and softer.
+          playTone(midiToFrequency(from), noteSeconds);
+          const target = STANDARD_TUNING[note.string] + note.legatoTo;
+          window.setTimeout(
+            () => playTone(midiToFrequency(target), noteSeconds * 0.6),
+            noteSeconds * 350,
+          );
         } else {
           playTone(midiToFrequency(from), noteSeconds);
         }
@@ -285,8 +310,9 @@ export default function LickLibrary() {
       <p className="text-xs text-muted-foreground">
         Read the tab (string names on the left, fret numbers in sequence), press Play to hear it,
         then work it up to speed with the tempo slider. Numbers stacked in a column are played
-        together; <span className="font-mono">7b</span> means bend up, and{' '}
-        <span className="font-mono">5/7</span> means slide from fret 5 to 7.
+        together; <span className="font-mono">7b</span> = bend up,{' '}
+        <span className="font-mono">5/7</span> = slide, and <span className="font-mono">5h7</span> /{' '}
+        <span className="font-mono">7p5</span> = hammer-on / pull-off.
       </p>
     </div>
   );
