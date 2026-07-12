@@ -12,7 +12,12 @@ export interface StaffNoteDatum {
   label: string;
   /** Accidental glyph drawn left of the note head, or '' / undefined for a natural. */
   accidental?: '' | '♯' | '♭';
+  /** Duration in beats (quarter = 1). When set, the note-value glyph (head/stem/flag/dot) is drawn. */
+  beats?: number;
 }
+
+const STEM_LEN = 34;
+const DOTTED = new Set([0.75, 1.5, 3]);
 
 /** A row of notes on a treble staff (clef + ledger lines). Reused by sight-reading + note tools. */
 export default function StaffSequence({
@@ -84,13 +89,53 @@ export default function StaffSequence({
                   {note.accidental}
                 </text>
               ) : null}
-              <ellipse
-                cx={x}
-                cy={stepY(note.step)}
-                rx={7.5}
-                ry={5.5}
-                className={active ? 'fill-blue-600' : 'fill-foreground'}
-              />
+              {(() => {
+                const y = stepY(note.step);
+                const beats = note.beats;
+                const fillClass = active ? 'fill-blue-600' : 'fill-foreground';
+                const strokeClass = active ? 'stroke-blue-600' : 'stroke-foreground';
+                const open = beats !== undefined && beats >= 2;
+                const showStem = beats !== undefined && beats < 4;
+                const flag = beats !== undefined && beats <= 0.5;
+                const dotted = beats !== undefined && DOTTED.has(beats);
+                const stemUp = note.step <= 4;
+                const stemX = x + (stemUp ? 7 : -7);
+                const stemTip = y + (stemUp ? -STEM_LEN : STEM_LEN);
+                return (
+                  <>
+                    <ellipse
+                      cx={x}
+                      cy={y}
+                      rx={7.5}
+                      ry={5.5}
+                      className={open ? `fill-transparent ${strokeClass}` : fillClass}
+                      strokeWidth={open ? 2 : 0}
+                    />
+                    {showStem ? (
+                      <line
+                        x1={stemX}
+                        x2={stemX}
+                        y1={y}
+                        y2={stemTip}
+                        className={strokeClass}
+                        strokeWidth={2}
+                      />
+                    ) : null}
+                    {flag ? (
+                      <path
+                        d={
+                          stemUp
+                            ? `M ${stemX} ${stemTip} q 11 6 6 18`
+                            : `M ${stemX} ${stemTip} q 11 -6 6 -18`
+                        }
+                        className={`fill-none ${strokeClass}`}
+                        strokeWidth={2.5}
+                      />
+                    ) : null}
+                    {dotted ? <circle cx={x + 13} cy={y - 3} r={2} className={fillClass} /> : null}
+                  </>
+                );
+              })()}
               {showLabels ? (
                 <text
                   x={x}

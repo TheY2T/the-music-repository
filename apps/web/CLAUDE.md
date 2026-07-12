@@ -107,7 +107,9 @@ src/
   carry `bend`/`slideTo` (rendered `7b` / `5/7`, played via `playGlide`).
 - The notation player transposes via `staffPlacement(midi, flats)` (music-theory) — `StaffSequence`
   renders the returned `accidental` (♯/♭) glyph. `audio.ts` has `playGlide(from, to, dur)` for
-  bends/slides. See `docs/features/play-along.md`.
+  bends/slides. `StaffSequence` also takes an optional per-note `beats` → draws note-value glyphs
+  (open/filled head, stem, flag, dot); omit it and notes render as plain heads (backward-compatible).
+  See `docs/features/play-along.md`.
 
 ## Trainers / drills (Phase 4)
 

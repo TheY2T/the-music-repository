@@ -17,9 +17,9 @@ interface PlayerNote extends StaffNoteDatum {
 }
 
 /** Build the (optionally transposed) melody, spelling accidentals with flats when transposing down. */
-function toNotes(names: string[], transpose: number): PlayerNote[] {
+function toNotes(names: string[], beats: number[], transpose: number): PlayerNote[] {
   const flats = transpose < 0;
-  return names.flatMap((name) => {
+  return names.flatMap((name, i) => {
     const base = BY_NAME.get(name);
     if (!base) {
       return [];
@@ -27,7 +27,13 @@ function toNotes(names: string[], transpose: number): PlayerNote[] {
     const midi = base.midi + transpose;
     const placement = staffPlacement(midi, flats);
     return [
-      { step: placement.step, label: placement.label, accidental: placement.accidental, midi },
+      {
+        step: placement.step,
+        label: placement.label,
+        accidental: placement.accidental,
+        beats: beats[i] ?? 1,
+        midi,
+      },
     ];
   });
 }
@@ -35,7 +41,7 @@ function toNotes(names: string[], transpose: number): PlayerNote[] {
 // The pieces are all in C major; transpose from C, staying within ±6 semitones for readability.
 const transposeForRoot = (root: number) => (root <= 6 ? root : root - 12);
 
-// Public-domain melodies (single-line, natural notes only).
+// Public-domain melodies (single-line, natural notes only), with per-note durations in beats.
 const PIECES = [
   {
     key: 'ode',
@@ -57,21 +63,25 @@ const PIECES = [
       'D4',
       'D4',
     ],
+    beats: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1.5, 0.5, 2],
   },
   {
     key: 'twinkle',
     title: 'Twinkle, Twinkle',
     names: ['C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4'],
+    beats: [1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2],
   },
   {
     key: 'mary',
     title: 'Mary Had a Little Lamb',
     names: ['E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4', 'D4', 'D4', 'D4', 'E4', 'G4', 'G4'],
+    beats: [1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2],
   },
   {
     key: 'scale',
     title: 'C major scale',
     names: ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'],
+    beats: [1, 1, 1, 1, 1, 1, 1, 2],
   },
 ];
 
@@ -84,7 +94,7 @@ export default function NotationPlayer() {
   const [active, setActive] = useState(-1);
 
   const piece = PIECES.find((p) => p.key === pieceKey) ?? PIECES[0];
-  const notes = toNotes(piece.names, transposeForRoot(root));
+  const notes = toNotes(piece.names, piece.beats, transposeForRoot(root));
   const lastIndex = notes.length - 1;
 
   const [loopStart, setLoopStart] = useState(0);
@@ -126,19 +136,24 @@ export default function NotationPlayer() {
     function step() {
       const i = idxRef.current;
       setActive(i);
-      playTone(midiToFrequency(notes[i].midi), (60 / bpmRef.current) * 0.9);
-      timer = window.setTimeout(() => {
-        let next = i + 1;
-        if (next > endRef.current) {
-          if (!loopRef.current) {
-            setPlaying(false);
-            return;
+      const secondsPerBeat = 60 / bpmRef.current;
+      const beats = notes[i].beats ?? 1;
+      playTone(midiToFrequency(notes[i].midi), beats * secondsPerBeat * 0.9);
+      timer = window.setTimeout(
+        () => {
+          let next = i + 1;
+          if (next > endRef.current) {
+            if (!loopRef.current) {
+              setPlaying(false);
+              return;
+            }
+            next = startRef.current;
           }
-          next = startRef.current;
-        }
-        idxRef.current = next;
-        step();
-      }, 60000 / bpmRef.current);
+          idxRef.current = next;
+          step();
+        },
+        beats * secondsPerBeat * 1000,
+      );
     }
 
     step();

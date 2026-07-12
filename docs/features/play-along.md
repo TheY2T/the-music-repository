@@ -99,6 +99,15 @@ uses a new **`playGlide(fromFreq, toFreq, duration)`** audio primitive (oscillat
 bend/slide is actually heard gliding into pitch. Two new licks showcase them (Blues bend lick, Sliding
 rock lick).
 
+## Slice G — Rhythm in the notation player
+
+The pieces now carry per-note **durations** (`beats`, quarter = 1). `StaffSequence` gained an optional
+`beats` field and draws the **note-value glyph** — filled vs **open** head (half+), **stem** (direction
+by staff position), **flag** (eighths), and **augmentation dot** (dotted values) — all gated on `beats`
+so existing consumers (sight-reading, staff reader) render exactly as before. Playback holds each note
+for `beats × secondsPerBeat`, so Ode to Joy's closing dotted-quarter / eighth / half rhythm is both seen
+and heard.
+
 ## Tests
 
 - **Web (browser) — backing track:** the 12-bar-blues grid renders the textbook form in C —
@@ -121,10 +130,14 @@ rock lick).
   with ♯ glyphs before each F♯; key B (transpose −1) re-spells with flats (`E♭4` + ♭ glyph).
 - **Web (browser) — articulations (Slice F):** the tab shows `7b` (Blues bend lick) and `5/7` (Sliding
   rock lick); Play glides the pitch and advances the column cursor without error.
+- **Web (browser) — rhythm (Slice G):** Ode to Joy renders 15 heads with 1 open half-note head, 1 flag
+  (eighth), and 1 augmentation dot (dotted quarter); sight-reading (no `beats`) still renders 8 plain
+  filled heads with no stems/flags/dots. Playback dwell is proportional — at 180 BPM the dotted quarter
+  holds ~1.5× the quarter.
 - Build/lint/check-types green across the workspace (25/25).
 
 ## Next slices (Phase 5 menu)
 
-- Notation player: MusicXML/multi-voice rendering, note durations/rhythms, soundfont audio.
+- Notation player: MusicXML/multi-voice rendering, rests & beaming, soundfont audio.
 - Pitch-preserving tempo + loop/section on hosted audio recordings.
 - More licks/voicings; hammer-on/pull-off notation.
