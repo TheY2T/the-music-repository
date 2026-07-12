@@ -131,8 +131,12 @@ src/
   Song player `/tools/song` (`tools.song`) — melody (StaffSequence) + per-bar `strumChord` accompaniment.
   Progression ear-training `/tools/progression-ear` (`tools.progression-ear`) — `diatonicChords` quiz.
   Chord ear-training `/tools/chord-quality-ear` (`tools.chord-quality-ear`) — name a chord's quality.
-  Fretboard quiz `/tools/fret-quiz` (`tools.fret-quiz`) — name a highlighted fret. See
-  `docs/features/play-along.md`.
+  Fretboard quiz `/tools/fret-quiz` (`tools.fret-quiz`) — name a highlighted fret.
+- **Dependency-free "heavy" tools:** MusicXML import `/tools/musicxml` (`tools.musicxml`) — `DOMParser`
+  → `StaffSequence`. Multi-voice engraving `/tools/multi-voice` (`tools.multi-voice`) — self-contained
+  stacked-notehead staff of diatonic triads. Practice player `/tools/practice-player`
+  (`tools.practice-player`) — `HTMLAudioElement.playbackRate` + `preservesPitch` (pitch-preserving) +
+  A–B loop, on a locally-loaded file. See `docs/features/play-along.md`.
 
 ## Trainers / drills (Phase 4)
 

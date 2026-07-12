@@ -33,6 +33,9 @@ const {
   toolProgressionEar,
   toolChordQualityEar,
   toolFretQuiz,
+  toolMusicXml,
+  toolMultiVoice,
+  toolPracticePlayer,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -220,6 +223,24 @@ const tools = [
     title: 'Fretboard quiz',
     summary: 'Name the highlighted note on the guitar neck.',
     enabled: toolFretQuiz,
+  },
+  {
+    href: '/tools/musicxml',
+    title: 'MusicXML import',
+    summary: 'Load a MusicXML score, render it, and play it back.',
+    enabled: toolMusicXml,
+  },
+  {
+    href: '/tools/multi-voice',
+    title: 'Chord engraving',
+    summary: 'Diatonic triads as stacked chords on the staff.',
+    enabled: toolMultiVoice,
+  },
+  {
+    href: '/tools/practice-player',
+    title: 'Practice player',
+    summary: 'Slow a track down (pitch-preserving) and loop a section.',
+    enabled: toolPracticePlayer,
   },
 ].filter((tool) => tool.enabled);
 

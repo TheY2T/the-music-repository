@@ -221,6 +221,18 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.ToolFretQuiz,
     FlagDefaults[FlagKeys.ToolFretQuiz],
   );
+  const toolMusicXml = await client.getBooleanValue(
+    FlagKeys.ToolMusicXml,
+    FlagDefaults[FlagKeys.ToolMusicXml],
+  );
+  const toolMultiVoice = await client.getBooleanValue(
+    FlagKeys.ToolMultiVoice,
+    FlagDefaults[FlagKeys.ToolMultiVoice],
+  );
+  const toolPracticePlayer = await client.getBooleanValue(
+    FlagKeys.ToolPracticePlayer,
+    FlagDefaults[FlagKeys.ToolPracticePlayer],
+  );
 
   context.locals.flags = {
     demoNewBanner,
@@ -262,6 +274,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
     toolProgressionEar,
     toolChordQualityEar,
     toolFretQuiz,
+    toolMusicXml,
+    toolMultiVoice,
+    toolPracticePlayer,
   };
   context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
   return next();

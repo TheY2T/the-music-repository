@@ -1,6 +1,6 @@
 # Feature: Play-along (Phase 5)
 
-- **Phase:** 5 · **Status:** shipped (Slices A–K)
+- **Phase:** 5 · **Status:** shipped (Slices A–Z)
 - **Flag keys:** `tools.backing-track` (`ToolBackingTrack`), `tools.voicings` (`ToolVoicings`),
   `tools.notation-player` (`ToolNotationPlayer`), `tools.licks` (`ToolLicks`), `tools.chord-diagrams`
   (`ToolChordDiagrams`), `tools.strumming` (`ToolStrumming`), `tools.fingerpicking`
@@ -8,7 +8,8 @@
   (`ToolProgressionPlayer`), `tools.rhythm` (`ToolRhythm`), `tools.caged` (`ToolCaged`),
   `tools.scale-boxes` (`ToolScaleBoxes`), `tools.song` (`ToolSong`), `tools.progression-ear`
   (`ToolProgressionEar`), `tools.chord-quality-ear` (`ToolChordQualityEar`), `tools.fret-quiz`
-  (`ToolFretQuiz`) — from `@TheY2T/tmr-flags`. Default on.
+  (`ToolFretQuiz`), `tools.musicxml` (`ToolMusicXml`), `tools.multi-voice` (`ToolMultiVoice`),
+  `tools.practice-player` (`ToolPracticePlayer`) — from `@TheY2T/tmr-flags`. Default on.
 
 ## Purpose
 
@@ -223,6 +224,29 @@ A new tool `/tools/fret-quiz` (`tools.fret-quiz`): highlights a random position 
 (strings × frets 0–12) and you pick the note name from the twelve pitch classes; the fret plays and
 reveals its name on answer. Reuses `STANDARD_TUNING` / `pitchName`.
 
+## Slice X — MusicXML import (dependency-free)
+
+A new tool `/tools/musicxml` (`tools.musicxml`): parses a **MusicXML** score with the browser's built-in
+`DOMParser` (no library) — reading `<divisions>`, `<note>`, `<pitch>` (step/octave/alter), `<duration>`,
+and `<rest/>` — maps it to `StaffNoteDatum`s (via `staffPlacement`, spelling by the `alter` sign) and
+renders it on `StaffSequence` with playback. Upload a `.musicxml`/`.xml` file, paste source, or load the
+built-in sample. Single-voice (secondary `<chord/>` notes skipped).
+
+## Slice Y — Multi-voice (chord) engraving (dependency-free)
+
+A new tool `/tools/multi-voice` (`tools.multi-voice`): a self-contained staff renderer that **stacks
+multiple noteheads per beat** — engraving the seven diatonic triads of a key as chords, with shared
+ledger lines and per-note accidentals, roman numerals, per-chord playback, and a play-through cursor.
+`toAscending` stacks each triad's pitch classes into ascending MIDI; reuses `diatonicChords` /
+`staffPlacement` / `ledgerSteps`.
+
+## Slice Z — Time-stretch practice player (dependency-free)
+
+A new tool `/tools/practice-player` (`tools.practice-player`): load a local audio file (via
+`URL.createObjectURL`) and practise with **pitch-preserving tempo** — `HTMLAudioElement.playbackRate`
+plus `preservesPitch` (standard + `moz`/`webkit` prefixes) — and an **A–B loop** (capture Set A / Set B,
+loop via the `timeupdate` handler). Everything runs locally; the file never leaves the browser.
+
 ## Tests
 
 - **Web (browser) — backing track:** the 12-bar-blues grid renders the textbook form in C —
@@ -281,6 +305,12 @@ reveals its name on answer. Reuses `STANDARD_TUNING` / `pitchName`.
   "✓ Correct!".
 - **Web (browser) — fret quiz (Slice W):** a random target (D string fret 10 = C) is named correctly →
   1/1, and the cell reveals "C" — the tool's answer matches independent tuning computation.
+- **Web (browser) — MusicXML (Slice X):** the sample parses to `C4 D4 E4 F♯4 G4 [rest] B♭4 C5` — 7
+  noteheads + 1 quarter-rest, with the ♯/♭ from `<alter>` — proving DOMParser pitch/accidental/rest handling.
+- **Web (browser) — multi-voice (Slice Y):** C major engraves 7 triads (I ii iii IV V vi vii° = C Dm Em
+  F G Am B°) as **21 stacked noteheads**; Play-all highlights advance.
+- **Web (browser) — practice player (Slice Z):** an uploaded WAV drives the `<audio>`; the speed slider
+  sets `playbackRate` (0.6×) and the toggle flips `preservesPitch` true→false; A–B loop buttons present.
 - Build/lint/check-types green across the workspace (25/25).
 
 ## Next slices (Phase 5 menu)

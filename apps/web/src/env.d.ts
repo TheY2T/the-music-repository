@@ -43,6 +43,9 @@ declare namespace App {
       toolProgressionEar: boolean;
       toolChordQualityEar: boolean;
       toolFretQuiz: boolean;
+      toolMusicXml: boolean;
+      toolMultiVoice: boolean;
+      toolPracticePlayer: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {

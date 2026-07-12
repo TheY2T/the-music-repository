@@ -41,6 +41,9 @@ const {
   toolProgressionEar,
   toolChordQualityEar,
   toolFretQuiz,
+  toolMusicXml,
+  toolMultiVoice,
+  toolPracticePlayer,
 } = Astro.locals.flags;
 const showTools =
   toolKeyboard ||
@@ -73,7 +76,10 @@ const showTools =
   toolSong ||
   toolProgressionEar ||
   toolChordQualityEar ||
-  toolFretQuiz;
+  toolFretQuiz ||
+  toolMusicXml ||
+  toolMultiVoice ||
+  toolPracticePlayer;
 ---
 
 <html lang="en">
