@@ -93,6 +93,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.Favorites,
     FlagDefaults[FlagKeys.Favorites],
   );
+  const savedProgressions = await client.getBooleanValue(
+    FlagKeys.SavedProgressions,
+    FlagDefaults[FlagKeys.SavedProgressions],
+  );
+  const toolPractice = await client.getBooleanValue(
+    FlagKeys.ToolPractice,
+    FlagDefaults[FlagKeys.ToolPractice],
+  );
   const collections = await client.getBooleanValue(
     FlagKeys.Collections,
     FlagDefaults[FlagKeys.Collections],
@@ -292,6 +300,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
     authEnabled,
     adminCms,
     favorites,
+    savedProgressions,
+    toolPractice,
     collections,
     progress,
     infoView,

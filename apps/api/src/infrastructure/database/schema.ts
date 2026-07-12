@@ -2,6 +2,7 @@ import {
   boolean,
   doublePrecision,
   integer,
+  jsonb,
   pgTable,
   primaryKey,
   text,
@@ -141,6 +142,22 @@ export const favorites = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.contentId] })],
+);
+
+// --- Saved progressions (Phase 5 backlog): a user's named chord progressions from the analyzer.
+// One row per (user, name); `chords` is a JSON array of { root, quality }. ---
+export const savedProgressions = pgTable(
+  'saved_progressions',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    keyRoot: integer('key_root').notNull(),
+    chords: jsonb('chords').notNull().$type<{ root: number; quality: string }[]>(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.name] })],
 );
 
 // --- Collections (Phase 2): ordered groupings — courses / learning paths / syllabi / song lists. ---

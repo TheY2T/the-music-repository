@@ -20,7 +20,7 @@ Status legend: 🟢 dependency-free · 📚 needs a client library · 💳 needs
 
 | Idea | Notes | Effort | Value |
 |---|---|---|---|
-| 🟢 **More content, not tools** | More songs (Song Player), licks/turnarounds (jazz ii-V, country, funk), voicings (9/13, quartal), CAGED for minor/7th chords, rhythm figures (triplets, 16ths, ties) | Low | Med |
+| 🟢 **More content, not tools** (ongoing) | Lick library extended with **jazz** (bebop ii–V–I), **country** (double-stop) and **funk** (16th-note) categories. Still room for more songs, 9/13/quartal voicings, minor/7th CAGED, rhythm figures — this is a perpetual "add content" line, not a one-time task | Low | Med |
 | ◑ **Web MIDI input** | **Mostly done** — `useMidiInput` hook (built-in Web MIDI, no dep) wired into the **keyboard** (notes light up + sound) and the **chord identifier** (hold a chord → live detection). Verified with a mocked device. Ear-trainer answer-by-playing done | Med | **High** |
 | ✅ **Metronome upgrades** | **Shipped** subdivisions (quarter/eighth/triplet/sixteenth) + polyrhythm layer + **tap-tempo** (averages recent tap intervals → BPM) in the metronome | Low | Med |
 
@@ -32,7 +32,7 @@ Status legend: 🟢 dependency-free · 📚 needs a client library · 💳 needs
 | ✅ **Sight-singing / solfège** | **Shipped** `/tools/solfege` — melody on the staff with movable-do solfège / scale-degree / note-name labels | Med | Med |
 | ✅ **Rhythm dictation** | **Shipped** `/tools/rhythm-dictation` — hear a one-bar rhythm, rebuild it from note values, Check/Reveal | Med | High |
 | ✅ **Key-signature & interval-construction quizzes** | **Both shipped** — `/tools/key-quiz` (name the major key from its signature) + `/tools/interval-quiz` (build a named interval above a given note, `tools.interval-quiz`) | Low | Med |
-| ✅ **Roman-numeral analyzer** | **Shipped** `/tools/analyzer` (`tools.analyzer`) — Roman numerals + Tonic/Predominant/Dominant function + borrowed-chord flag (`analyzeChordInKey`). Reharmonization suggestions still open | Med | High |
+| ✅ **Roman-numeral analyzer** | **Shipped** `/tools/analyzer` (`tools.analyzer`) — Roman numerals + Tonic/Predominant/Dominant function + borrowed-chord flag (`analyzeChordInKey`) + **reharmonization suggestions** (`reharmonizations`): per-chord tritone sub / relative maj-min / secondary dominant / modal interchange, each hearable + one-click apply | Med | High |
 | ✅ **Transposer / capo tool** | **Shipped** `/tools/transposer` (`tools.transposer`) — transpose a progression + capo suggestions (`capoSuggestions`) | Low | Med |
 | ✅ **Drum-pattern / groove library** | **Shipped** `/tools/grooves` — rock / pop / funk / half-time grooves (K/S/H) looped with a step cursor | Low | Med |
 | ✅ **Bass-line generator** | **Shipped** `/tools/bassline` (`tools.bassline`) — roots / root–fifth / walking (root·3rd·5th·chromatic-approach) bass over a progression, with per-beat display | Med | Med |
@@ -42,8 +42,8 @@ Status legend: 🟢 dependency-free · 📚 needs a client library · 💳 needs
 | Idea | Notes | Effort | Value |
 |---|---|---|---|
 | ✅ **"Practice room"** | **Shipped** `/tools/practice-room` (`tools.practice-room`) — a looping band (drums + walking bass + comping) over a chord progression with the current chord's guitar diagram shown and a beat cursor | High | High |
-| ✅ **Save & share user creations** | **Shipped (localStorage)** — the chord analyzer saves/loads named progressions via `src/lib/saved-progressions.ts` (`tmr.savedProgressions`); backend sync still open (bridges into Phase 6 personalization) | Med→High | High |
-| 🔗 **Practice streaks / session logging for tools** | Tie tool usage into the Phase 2 progress dashboard (touches the API) | Med | Med |
+| ✅ **Save & share user creations** | **Shipped** — the chord analyzer saves/loads named progressions to `localStorage` when anonymous, and **syncs to the signed-in user's account** via a spec-first hexagonal backend (`progressions/` feature, `ProgressionLibrary` port + Drizzle `saved_progressions`, `/me/progressions` PUT/GET/DELETE, `personalization.saved-progressions` flag). The bridge into Phase-6 personalization | Med→High | High |
+| ✅ **Practice streaks / session logging for tools** | **Shipped** — `ToolPracticeLogger.tsx` (invisible island on every `/tools/*` page, gated `learning.tool-practice` + `learning.progress` + signed-in) counts **active** (tab-visible) time and logs whole minutes via the existing `POST /me/practice`, feeding the Phase-2 dashboard's streak + total practice minutes. No new backend | Med | Med |
 
 ## Group 4 — Where we'd finally add a library (honest)
 
@@ -51,20 +51,19 @@ Status legend: 🟢 dependency-free · 📚 needs a client library · 💳 needs
 |---|---|---|---|
 | ✅ **Full score rendering** | **Shipped** `/tools/score` (`tools.score`) — **Verovio** (WASM, first library dep) engraves MusicXML/MEI to SVG; upload / edit-source / sample. Dynamic-imported so it never weighs down other tools | High | High |
 | ✅ **High-quality instrument playback** | **Shipped** `/tools/soundfont` (`tools.soundfont`) — sampled General-MIDI instruments via **smplr**, lazy-loaded, with **graceful fallback** to the oscillator engine when samples can't load (offline). Reuses `useMidiInput` | Med | High |
-| 📚 **Notation-synced playback of imported scores** | Moving cursor over a fully-engraved score → best paired with Verovio | High | High |
+| ✅ **Notation-synced playback of imported scores** | **Shipped** — `/tools/score` gained **Play** + a speed slider: Verovio's `renderToTimemap` + `getMIDIValuesForElement` schedule the audio (`scheduleTone`) and `getElementsAtTime` drives a red highlight cursor over the engraved SVG (per-note, synced). Reuses the Verovio toolkit already loaded for engraving | High | High |
 
 ---
 
 ## Suggested first picks (when we return here)
 
-The original three first-picks (Web MIDI, localStorage save/share, soundfont playback) are all **shipped**,
-as are both Group-4 library items (Verovio score rendering, smplr soundfonts). What's left as the next pick:
+**The entire Phase-5 backlog above (Groups 1–4) is now shipped** — including the two library items
+(Verovio score rendering + notation-synced playback, smplr soundfonts), analyzer reharmonization, the
+backend save/share sync, and tool-practice logging. The only remaining line is the perpetual "more
+content" one (add songs / voicings / CAGED shapes as desired).
 
-1. 📚 **Notation-synced playback of imported scores** — a moving cursor over a fully-engraved Verovio score
-   (pairs the shipped `/tools/score` engraver with the `/tools/player` cursor pattern). Highest remaining value.
-2. 🔗 **Backend save/share + practice-streak logging** — promote the localStorage progressions to the API and
-   tie tool usage into the Phase 2 progress dashboard (the personalization bridge into Phase 6).
-3. 🟢 **More content, not tools** — more songs, licks, voicings, CAGED for minor/7th shapes.
+The next substantive body of work is the **Phase 6 — Monetization extensions** below (the headline is
+Stripe wiring), which is gated on real payment-provider credentials.
 
 ---
 

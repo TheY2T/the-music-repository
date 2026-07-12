@@ -1081,6 +1081,50 @@ export const MarkIncompleteResponse = zod.void()
 
 
 /**
+ * The current user's saved progressions, most-recently-updated first.
+ */
+export const ListProgressionsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "name": zod.string(),
+  "keyRoot": zod.number(),
+  "chords": zod.array(zod.object({
+  "root": zod.number(),
+  "quality": zod.string()
+}).describe('One chord in a saved progression: root pitch-class (0–11) + quality key.')),
+  "updatedAt": zod.string()
+}).describe('A saved progression as returned to the client.'))
+})
+
+
+/**
+ * Create or replace a saved progression by name (idempotent upsert).
+ */
+export const SaveProgressionParams = zod.object({
+  "name": zod.string()
+})
+
+export const SaveProgressionBody = zod.object({
+  "keyRoot": zod.number(),
+  "chords": zod.array(zod.object({
+  "root": zod.number(),
+  "quality": zod.string()
+}).describe('One chord in a saved progression: root pitch-class (0–11) + quality key.'))
+}).describe('The body sent when saving\/updating a progression (keyed by name in the path).')
+
+export const SaveProgressionResponse = zod.void()
+
+
+/**
+ * Delete a saved progression by name.
+ */
+export const DeleteProgressionParams = zod.object({
+  "name": zod.string()
+})
+
+export const DeleteProgressionResponse = zod.void()
+
+
+/**
  * Per-deck learned + due counts for the current user.
  */
 export const GetReviewSummaryResponse = zod.object({

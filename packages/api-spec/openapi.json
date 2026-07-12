@@ -25,6 +25,9 @@
       "name": "favorites"
     },
     {
+      "name": "progressions"
+    },
+    {
       "name": "progress"
     },
     {
@@ -1303,6 +1306,84 @@
         },
         "tags": [
           "progress"
+        ]
+      }
+    },
+    "/me/progressions": {
+      "get": {
+        "operationId": "listProgressions",
+        "description": "The current user's saved progressions, most-recently-updated first.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedProgressionList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "progressions"
+        ]
+      }
+    },
+    "/me/progressions/{name}": {
+      "put": {
+        "operationId": "saveProgression",
+        "description": "Create or replace a saved progression by name (idempotent upsert).",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "progressions"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SavedProgressionInput"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteProgression",
+        "description": "Delete a saved progression by name.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "progressions"
         ]
       }
     },
@@ -2656,6 +2737,23 @@
         },
         "description": "Dashboard summary for the current user."
       },
+      "ProgressionChord": {
+        "type": "object",
+        "required": [
+          "root",
+          "quality"
+        ],
+        "properties": {
+          "root": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quality": {
+            "type": "string"
+          }
+        },
+        "description": "One chord in a saved progression: root pitch-class (0–11) + quality key."
+      },
       "RelatedContent": {
         "type": "object",
         "required": [
@@ -2743,6 +2841,68 @@
             "format": "int32"
           }
         }
+      },
+      "SavedProgressionInput": {
+        "type": "object",
+        "required": [
+          "keyRoot",
+          "chords"
+        ],
+        "properties": {
+          "keyRoot": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "chords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProgressionChord"
+            }
+          }
+        },
+        "description": "The body sent when saving/updating a progression (keyed by name in the path)."
+      },
+      "SavedProgressionList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SavedProgressionView"
+            }
+          }
+        }
+      },
+      "SavedProgressionView": {
+        "type": "object",
+        "required": [
+          "name",
+          "keyRoot",
+          "chords",
+          "updatedAt"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "keyRoot": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "chords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProgressionChord"
+            }
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "description": "A saved progression as returned to the client."
       },
       "SubscriptionStatus": {
         "type": "object",

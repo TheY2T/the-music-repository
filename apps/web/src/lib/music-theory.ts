@@ -236,6 +236,74 @@ export function capoSuggestions(tonicPc: number): CapoSuggestion[] {
   return out.sort((a, b) => a.fret - b.fret);
 }
 
+export interface ReharmSuggestion {
+  /** Short name of the substitution technique. */
+  label: string;
+  /** One-line reason it works. */
+  description: string;
+  /** Pitch class of the suggested chord's root. */
+  root: number;
+  /** Chord-quality key (see `CHORDS`). */
+  quality: string;
+}
+
+/**
+ * Common reharmonization moves for a chord in a major key — tritone subs for
+ * dominants, relative major/minor swaps, a secondary dominant approach, and
+ * parallel-minor modal interchange. Pure theory; the caller decides how to apply.
+ */
+export function reharmonizations(
+  keyRoot: number,
+  chordRoot: number,
+  chordKey: string,
+): ReharmSuggestion[] {
+  const out: ReharmSuggestion[] = [];
+  const degree = (((chordRoot - keyRoot) % 12) + 12) % 12;
+  const isDominant = chordKey === 'dominant-7' || (chordKey === 'major' && degree === 7);
+  const isMajorish = chordKey === 'major' || chordKey === 'major-7';
+  const isMinorish = chordKey === 'minor' || chordKey === 'minor-7';
+
+  if (isDominant) {
+    out.push({
+      label: 'Tritone sub',
+      description: 'Dominant 7th a tritone away — shares the 3rd & 7th',
+      root: (chordRoot + 6) % 12,
+      quality: 'dominant-7',
+    });
+  }
+  if (isMajorish) {
+    out.push({
+      label: 'Relative minor',
+      description: 'Minor 7th a 3rd below — two shared tones, darker colour',
+      root: (chordRoot + 9) % 12,
+      quality: 'minor-7',
+    });
+  }
+  if (isMinorish) {
+    out.push({
+      label: 'Relative major',
+      description: 'Major 7th a minor-3rd up — two shared tones, brighter',
+      root: (chordRoot + 3) % 12,
+      quality: 'major-7',
+    });
+  }
+  out.push({
+    label: 'Secondary dominant',
+    description: 'V7 of this chord — approach it from its own dominant',
+    root: (chordRoot + 7) % 12,
+    quality: 'dominant-7',
+  });
+  if (chordKey === 'major') {
+    out.push({
+      label: 'Modal interchange',
+      description: 'Borrow the parallel-minor version of this chord',
+      root: chordRoot,
+      quality: 'minor',
+    });
+  }
+  return out;
+}
+
 /** Full interval names for 0–12 semitones. */
 export const INTERVAL_NAMES = [
   'Perfect unison',

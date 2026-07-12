@@ -36,7 +36,7 @@ interface Lick {
   key: string;
   title: string;
   context: string;
-  category: 'blues' | 'rock' | 'turnaround';
+  category: 'blues' | 'rock' | 'turnaround' | 'jazz' | 'country' | 'funk';
   steps: Step[];
 }
 
@@ -158,12 +158,71 @@ const LICKS: Lick[] = [
       [{ string: 5, fret: 0 }],
     ],
   },
+  {
+    key: 'jazz-ii-v-i',
+    title: 'Bebop ii–V–I line',
+    context: 'Key of C — Dm7 → G7 → C, enclosing the 3rd',
+    category: 'jazz',
+    steps: [
+      [{ string: 2, fret: 7 }], // A (Dm7)
+      [{ string: 2, fret: 5 }], // G
+      [{ string: 3, fret: 7 }], // A
+      [{ string: 3, fret: 5 }], // G
+      [{ string: 3, fret: 4 }], // F# (G7 approach)
+      [{ string: 3, fret: 5 }], // G
+      [{ string: 2, fret: 5 }], // B (G7 3rd)
+      [{ string: 2, fret: 4 }], // Bb
+      [{ string: 2, fret: 5 }], // B → resolves to C
+      [{ string: 1, fret: 5 }], // E (C maj 3rd)
+    ],
+  },
+  {
+    key: 'country-double-stops',
+    title: 'Country double-stop lick',
+    context: 'Key of G — chicken-pickin’ 6ths with a bend',
+    category: 'country',
+    steps: [
+      [
+        { string: 1, fret: 8 },
+        { string: 3, fret: 7 },
+      ],
+      [
+        { string: 1, fret: 7, bend: 1 },
+        { string: 3, fret: 5 },
+      ],
+      [
+        { string: 1, fret: 5 },
+        { string: 3, fret: 4 },
+      ],
+      [{ string: 2, fret: 4 }],
+      [{ string: 2, fret: 5 }],
+    ],
+  },
+  {
+    key: 'funk-16ths',
+    title: 'Funk 16th-note lick',
+    context: 'Key of E — muted, syncopated single notes',
+    category: 'funk',
+    steps: [
+      [{ string: 3, fret: 2 }], // E
+      [{ string: 2, fret: 2 }], // A
+      [{ string: 2, fret: 4 }], // B
+      [{ string: 3, fret: 2 }], // E
+      [{ string: 2, fret: 2, legatoTo: 4 }], // A→B hammer
+      [{ string: 1, fret: 3 }], // G
+      [{ string: 1, fret: 2 }], // F#
+      [{ string: 2, fret: 4 }], // B
+    ],
+  },
 ];
 
 const CATEGORIES = [
   { key: 'all', label: 'All' },
   { key: 'blues', label: 'Blues licks' },
   { key: 'rock', label: 'Rock riffs' },
+  { key: 'jazz', label: 'Jazz lines' },
+  { key: 'country', label: 'Country' },
+  { key: 'funk', label: 'Funk' },
   { key: 'turnaround', label: 'Turnarounds' },
 ];
 

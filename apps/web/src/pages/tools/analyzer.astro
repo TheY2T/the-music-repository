@@ -1,12 +1,16 @@
 ---
 import ChordAnalyzer from '@/components/ChordAnalyzer.tsx';
 import InfoView from '@/components/InfoView.tsx';
+import ToolPracticeLogger from '@/components/ToolPracticeLogger.tsx';
 import '@/styles/global.css';
 
 if (!Astro.locals.flags.toolAnalyzer) {
   return Astro.redirect('/tools');
 }
 const showInfoView = Astro.locals.flags.infoView;
+const logPracticeEnabled =
+  Astro.locals.flags.toolPractice && Astro.locals.flags.progress && !!Astro.locals.user;
+const syncEnabled = Astro.locals.flags.savedProgressions && !!Astro.locals.user;
 ---
 
 <html lang="en">
@@ -29,8 +33,9 @@ const showInfoView = Astro.locals.flags.infoView;
         <h1 class="text-3xl font-bold">Chord analyzer</h1>
         <p class="text-muted-foreground">Roman numerals and harmonic function for any progression.</p>
       </header>
-      <ChordAnalyzer client:load />
+      <ChordAnalyzer client:load syncEnabled={syncEnabled} />
     </main>
     {showInfoView && <InfoView client:idle />}
+    {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}
   </body>
 </html>

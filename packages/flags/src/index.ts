@@ -25,10 +25,14 @@ export const FlagKeys = {
   AdminCms: 'admin.cms',
   /** Slice 2c — gates favorites (heart toggles + My favorites page). */
   Favorites: 'personalization.favorites',
+  /** Phase 5 backlog — gates cloud-synced saved chord progressions (chord analyzer). */
+  SavedProgressions: 'personalization.saved-progressions',
   /** Phase 2 — gates collections (courses / learning paths) browse + admin. */
   Collections: 'learning.collections',
   /** Phase 2 — gates progress tracking (completion, streaks, dashboard). */
   Progress: 'learning.progress',
+  /** Phase 5 backlog — logs active tool usage as practice time (feeds the progress dashboard). */
+  ToolPractice: 'learning.tool-practice',
   /** Phase 2 — gates the Info View contextual helper (help topics on hover/focus). */
   InfoView: 'learning.info-view',
   /** Phase 3 — interactive piano keyboard tool. */
@@ -139,8 +143,10 @@ export const FlagDefaults = {
   [FlagKeys.AuthEnabled]: true,
   [FlagKeys.AdminCms]: true,
   [FlagKeys.Favorites]: true,
+  [FlagKeys.SavedProgressions]: true,
   [FlagKeys.Collections]: true,
   [FlagKeys.Progress]: true,
+  [FlagKeys.ToolPractice]: true,
   [FlagKeys.InfoView]: true,
   [FlagKeys.ToolKeyboard]: true,
   [FlagKeys.ToolCircleOfFifths]: true,

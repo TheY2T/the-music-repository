@@ -1,5 +1,6 @@
 ---
 import InfoView from '@/components/InfoView.tsx';
+import ToolPracticeLogger from '@/components/ToolPracticeLogger.tsx';
 import PianoKeyboard from '@/components/PianoKeyboard.tsx';
 import '@/styles/global.css';
 
@@ -7,6 +8,8 @@ if (!Astro.locals.flags.toolKeyboard) {
   return Astro.redirect('/tools');
 }
 const showInfoView = Astro.locals.flags.infoView;
+const logPracticeEnabled =
+  Astro.locals.flags.toolPractice && Astro.locals.flags.progress && !!Astro.locals.user;
 ---
 
 <html lang="en">
@@ -31,5 +34,6 @@ const showInfoView = Astro.locals.flags.infoView;
       <PianoKeyboard client:load />
     </main>
     {showInfoView && <InfoView client:idle />}
+    {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}
   </body>
 </html>

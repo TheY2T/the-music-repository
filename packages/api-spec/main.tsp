@@ -458,6 +458,56 @@ op removeFavorite(@path slug: string): {
   @statusCode statusCode: 204;
 };
 
+// ===================== Saved progressions (Phase 5 backlog) =====================
+// Personalization: a signed-in user's saved chord progressions (from the chord analyzer). The
+// client keeps a localStorage copy for anonymous use; when signed in these sync to the account.
+
+/** One chord in a saved progression: root pitch-class (0–11) + quality key. */
+model ProgressionChord {
+  root: int32;
+  quality: string;
+}
+
+/** The body sent when saving/updating a progression (keyed by name in the path). */
+model SavedProgressionInput {
+  keyRoot: int32;
+  chords: ProgressionChord[];
+}
+
+/** A saved progression as returned to the client. */
+model SavedProgressionView {
+  name: string;
+  keyRoot: int32;
+  chords: ProgressionChord[];
+  updatedAt: string;
+}
+
+model SavedProgressionList {
+  items: SavedProgressionView[];
+}
+
+/** The current user's saved progressions, most-recently-updated first. */
+@route("/me/progressions")
+@tag("progressions")
+@get
+op listProgressions(): SavedProgressionList;
+
+/** Create or replace a saved progression by name (idempotent upsert). */
+@route("/me/progressions/{name}")
+@tag("progressions")
+@put
+op saveProgression(@path name: string, @body body: SavedProgressionInput): {
+  @statusCode statusCode: 204;
+};
+
+/** Delete a saved progression by name. */
+@route("/me/progressions/{name}")
+@tag("progressions")
+@delete
+op deleteProgression(@path name: string): {
+  @statusCode statusCode: 204;
+};
+
 // ===================== Progress (Phase 2) =====================
 // Per-user learning progress: completion, streaks, and practice time. Auth-gated in NestJS.
 

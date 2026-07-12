@@ -6,7 +6,13 @@ import {
   midiToFrequency,
   pitchName,
   ROOT_CHOICES,
+  reharmonizations,
 } from '@/lib/music-theory';
+import {
+  deleteRemoteProgression,
+  listRemoteProgressions,
+  saveRemoteProgression,
+} from '@/lib/progressions-api';
 import {
   deleteProgression,
   listSaved,
@@ -49,17 +55,43 @@ const ROLE_COLOR: Record<string, string> = {
   Dominant: 'text-red-600 dark:text-red-400',
 };
 
-export default function ChordAnalyzer() {
+/**
+ * @param syncEnabled When true (signed-in + `personalization.saved-progressions` flag), saved
+ *   progressions live on the user's account via the API; otherwise they persist to localStorage.
+ */
+export default function ChordAnalyzer({ syncEnabled = false }: { syncEnabled?: boolean }) {
   const [keyRoot, setKeyRoot] = useState(0);
   const [chords, setChords] = useState<ProgChord[]>(PRESETS[0].chords);
   const [addRoot, setAddRoot] = useState(0);
   const [addQuality, setAddQuality] = useState('major');
   const [saved, setSaved] = useState<SavedProgression[]>([]);
   const [saveName, setSaveName] = useState('');
+  const [reharmIndex, setReharmIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    setSaved(listSaved());
-  }, []);
+    if (syncEnabled) {
+      listRemoteProgressions().then(setSaved);
+    } else {
+      setSaved(listSaved());
+    }
+  }, [syncEnabled]);
+
+  async function persistSave(p: SavedProgression) {
+    if (syncEnabled) {
+      await saveRemoteProgression(p);
+      setSaved(await listRemoteProgressions());
+    } else {
+      setSaved(saveProgression(p));
+    }
+  }
+  async function persistDelete(name: string) {
+    if (syncEnabled) {
+      await deleteRemoteProgression(name);
+      setSaved(await listRemoteProgressions());
+    } else {
+      setSaved(deleteProgression(name));
+    }
+  }
 
   const flats = [1, 3, 5, 8, 10].includes(keyRoot);
 
@@ -172,20 +204,36 @@ export default function ChordAnalyzer() {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {chords.map((c, i) => {
               const a = analyzeChordInKey(keyRoot, c.root, c.quality);
+              const isOpen = reharmIndex === i;
               return (
-                <button
+                <div
                   key={`${c.root}-${c.quality}-${i}`}
-                  type="button"
-                  onClick={() => play(c)}
-                  className="flex flex-col items-center gap-0.5 rounded-lg border border-border p-3 hover:bg-muted"
+                  className={`flex flex-col items-center gap-0.5 rounded-lg border p-3 ${
+                    isOpen ? 'border-primary' : 'border-border'
+                  }`}
                 >
-                  <span className={`text-lg font-bold ${ROLE_COLOR[a.role] ?? ''}`}>{a.roman}</span>
-                  <span className="text-sm">{chordName(c)}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {a.role}
-                    {a.diatonic ? '' : ' · borrowed'}
-                  </span>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => play(c)}
+                    className="flex flex-col items-center gap-0.5"
+                  >
+                    <span className={`text-lg font-bold ${ROLE_COLOR[a.role] ?? ''}`}>
+                      {a.roman}
+                    </span>
+                    <span className="text-sm">{chordName(c)}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {a.role}
+                      {a.diatonic ? '' : ' · borrowed'}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setReharmIndex(isOpen ? null : i)}
+                    className="mt-1 text-xs text-muted-foreground underline"
+                  >
+                    {isOpen ? 'close' : '≈ reharmonize'}
+                  </button>
+                </div>
               );
             })}
           </div>
@@ -201,6 +249,57 @@ export default function ChordAnalyzer() {
               {chords.map((c) => analyzeChordInKey(keyRoot, c.root, c.quality).roman).join(' – ')}
             </span>
           </div>
+
+          {reharmIndex !== null && chords[reharmIndex] ? (
+            <div className="space-y-2 rounded-lg border border-primary/50 bg-muted/40 p-3">
+              <p className="text-sm font-medium">
+                Reharmonize <strong>{chordName(chords[reharmIndex])}</strong> — try a substitution:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {reharmonizations(
+                  keyRoot,
+                  chords[reharmIndex].root,
+                  chords[reharmIndex].quality,
+                ).map((s) => {
+                  const sub: ProgChord = { root: s.root, quality: s.quality };
+                  const roman = analyzeChordInKey(keyRoot, sub.root, sub.quality).roman;
+                  return (
+                    <div
+                      key={`${s.label}-${s.root}-${s.quality}`}
+                      className="flex flex-col gap-1 rounded-md border border-border bg-background p-2"
+                    >
+                      <span className="text-xs font-semibold">{s.label}</span>
+                      <span className="text-sm">
+                        {chordName(sub)} <span className="text-muted-foreground">({roman})</span>
+                      </span>
+                      <span className="max-w-48 text-xs text-muted-foreground">
+                        {s.description}
+                      </span>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => play(sub)}
+                          className="text-xs underline"
+                        >
+                          hear
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setChords((cs) => cs.map((c, i) => (i === reharmIndex ? sub : c)));
+                            setReharmIndex(null);
+                          }}
+                          className="text-xs font-medium text-primary underline"
+                        >
+                          apply
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
         </div>
       ) : (
         <p className="text-sm text-muted-foreground">Add chords to see their Roman numerals.</p>
@@ -220,7 +319,7 @@ export default function ChordAnalyzer() {
             type="button"
             onClick={() => {
               if (saveName.trim() && chords.length) {
-                setSaved(saveProgression({ name: saveName.trim(), keyRoot, chords }));
+                persistSave({ name: saveName.trim(), keyRoot, chords });
                 setSaveName('');
               }
             }}
@@ -248,7 +347,7 @@ export default function ChordAnalyzer() {
                 </span>
                 <button
                   type="button"
-                  onClick={() => setSaved(deleteProgression(p.name))}
+                  onClick={() => persistDelete(p.name)}
                   className="text-xs text-muted-foreground underline"
                 >
                   delete
@@ -258,7 +357,9 @@ export default function ChordAnalyzer() {
           </ul>
         ) : (
           <p className="text-xs text-muted-foreground">
-            Saved progressions persist in this browser.
+            {syncEnabled
+              ? 'Saved progressions sync to your account.'
+              : 'Saved progressions persist in this browser.'}
           </p>
         )}
       </div>

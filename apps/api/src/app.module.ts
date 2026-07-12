@@ -15,6 +15,7 @@ import { HealthModule } from './health/health.module';
 import { HelpModule } from './help/help.module';
 import { DatabaseModule } from './infrastructure/database/database.module';
 import { ProgressModule } from './progress/progress.module';
+import { ProgressionsModule } from './progressions/progressions.module';
 import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
@@ -40,6 +41,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     CollectionsModule,
     ClassroomsModule,
     ProgressModule,
+    ProgressionsModule,
     HelpModule,
     ReviewsModule,
   ],

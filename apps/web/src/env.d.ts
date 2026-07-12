@@ -8,8 +8,10 @@ declare namespace App {
       authEnabled: boolean;
       adminCms: boolean;
       favorites: boolean;
+      savedProgressions: boolean;
       collections: boolean;
       progress: boolean;
+      toolPractice: boolean;
       infoView: boolean;
       toolKeyboard: boolean;
       toolCircleOfFifths: boolean;

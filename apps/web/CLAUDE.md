@@ -66,6 +66,11 @@ src/
 - `src/lib/progress-api.ts` — credentialed get/mark/log helpers.
 - `CompleteButton.tsx` (detail-page toggle) + `ProgressDashboard.tsx` (`/me/progress`: stats,
   per-collection bars, log-practice form). Gated on `learning.progress` + login.
+- **Tool practice logging:** `ToolPracticeLogger.tsx` — an invisible `client:load` island on every
+  `/tools/*` page that counts **tab-visible** time and flushes whole minutes via `logPractice()`
+  (`POST /me/practice`), feeding the dashboard's streak + practice minutes. Each page computes
+  `logPracticeEnabled = flags.toolPractice && flags.progress && !!user` and renders the island only
+  then (`learning.tool-practice` flag). Wired identically into all tool pages next to `<InfoView>`.
 
 ## Info View (Phase 2)
 
@@ -124,6 +129,14 @@ src/
   one-at-a-time in a chosen direction (up/down/up-down).
 - Backlog tools (from `docs/backlog.md`): Chord analyzer `/tools/analyzer` (`tools.analyzer`,
   `analyzeChordInKey`) and Transposer & capo `/tools/transposer` (`tools.transposer`, `capoSuggestions`).
+  The analyzer also does **reharmonization** (`reharmonizations` in `music-theory.ts` — per-chord
+  tritone sub / relative maj-min / secondary dominant / modal interchange, hear + apply) and **saves
+  progressions to the account** when signed in: `src/lib/progressions-api.ts` (credentialed
+  `/me/progressions` PUT/GET/DELETE) behind the `personalization.saved-progressions` flag; the
+  `analyzer.astro` page passes `syncEnabled = savedProgressions && !!user` and `ChordAnalyzer` branches
+  between the API and `saved-progressions.ts` (localStorage) accordingly. See
+  `docs/features/saved-progressions.md`. Backend: `apps/api/src/progressions/` (`ProgressionLibrary`
+  port + Drizzle `saved_progressions`).
 - **Web MIDI:** `src/lib/use-midi-input.ts` (`useMidiInput` hook, built-in Web MIDI types, no dep) is
   wired into `PianoKeyboard` (live notes highlight + sound) and `ChordIdentifier` (held notes ∪ manual
   toggles → live detection). Reuse the hook elsewhere (ear-trainers). Verify MIDI in Playwright by
@@ -160,7 +173,11 @@ src/
   - Score rendering `/tools/score` (`tools.score`) — `ScoreRenderer.tsx` **dynamic-imports `verovio/esm`
     + `verovio/wasm`** (`new VerovioToolkit(await createModule())`) to engrave MusicXML/MEI → SVG
     (rendered via `dangerouslySetInnerHTML`; the markup is Verovio's own trusted output). Verovio ships
-    no types for its subpath exports → `src/verovio.d.ts` declares them.
+    no types for its subpath exports → `src/verovio.d.ts` declares them. **Notation-synced playback:**
+    a Play button + speed slider — `renderToTimemap` + `getMIDIValuesForElement` schedule the audio
+    (`scheduleTone`), and an rAF loop calls `getElementsAtTime(scoreMs)` to paint the sounding note ids
+    red on the engraved SVG (scoped to the container ref — Verovio emits a defs `<svg>` too). Note ids
+    from the toolkit match the SVG `g.note` ids.
   - Sampled instruments `/tools/soundfont` (`tools.soundfont`) — `SoundfontPlayer.tsx` over
     `src/lib/soundfont.ts`, which **lazily `import('smplr')`** and loads a GM `Soundfont`. Samples stream
     from a CDN, so `loadSoundfont` catches failures and returns `'fallback'`; `playNote` then uses the
