@@ -130,7 +130,9 @@ src/
   uniform transpose). Scale positions `/tools/scale-boxes` (`tools.scale-boxes`) — fretboard box window.
   Song player `/tools/song` (`tools.song`) — melody (StaffSequence) + per-bar `strumChord` accompaniment.
   Progression ear-training `/tools/progression-ear` (`tools.progression-ear`) — `diatonicChords` quiz.
-  See `docs/features/play-along.md`.
+  Chord ear-training `/tools/chord-quality-ear` (`tools.chord-quality-ear`) — name a chord's quality.
+  Fretboard quiz `/tools/fret-quiz` (`tools.fret-quiz`) — name a highlighted fret. See
+  `docs/features/play-along.md`.
 
 ## Trainers / drills (Phase 4)
 

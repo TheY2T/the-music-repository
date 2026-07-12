@@ -289,6 +289,22 @@
       },
       "defaultVariant": "on"
     },
+    "tools.chord-quality-ear": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
+    "tools.fret-quiz": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "demo.new-banner": {
       "state": "ENABLED",
       "variants": {

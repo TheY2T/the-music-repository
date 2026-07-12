@@ -91,6 +91,10 @@ export const FlagKeys = {
   ToolSong: 'tools.song',
   /** Phase 5 — chord-progression ear training. */
   ToolProgressionEar: 'tools.progression-ear',
+  /** Phase 5 — chord-quality ear training. */
+  ToolChordQualityEar: 'tools.chord-quality-ear',
+  /** Phase 5 — fretboard note-naming quiz. */
+  ToolFretQuiz: 'tools.fret-quiz',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -134,4 +138,6 @@ export const FlagDefaults = {
   [FlagKeys.ToolScaleBoxes]: true,
   [FlagKeys.ToolSong]: true,
   [FlagKeys.ToolProgressionEar]: true,
+  [FlagKeys.ToolChordQualityEar]: true,
+  [FlagKeys.ToolFretQuiz]: true,
 } satisfies Record<FlagKey, boolean>;

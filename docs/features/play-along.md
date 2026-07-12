@@ -7,7 +7,8 @@
   (`ToolFingerpicking`), `tools.arpeggio` (`ToolArpeggio`), `tools.progression-player`
   (`ToolProgressionPlayer`), `tools.rhythm` (`ToolRhythm`), `tools.caged` (`ToolCaged`),
   `tools.scale-boxes` (`ToolScaleBoxes`), `tools.song` (`ToolSong`), `tools.progression-ear`
-  (`ToolProgressionEar`) — from `@TheY2T/tmr-flags`. Default on.
+  (`ToolProgressionEar`), `tools.chord-quality-ear` (`ToolChordQualityEar`), `tools.fret-quiz`
+  (`ToolFretQuiz`) — from `@TheY2T/tmr-flags`. Default on.
 
 ## Purpose
 
@@ -210,6 +211,18 @@ A new tool `/tools/progression-ear` (`tools.progression-ear`): plays a random di
 C (block triads from `diatonicChords`), and you pick which of four it was (I–V–vi–IV, I–vi–IV–V, ii–V–I,
 I–IV–V) with instant feedback + a running score. Replay + Next.
 
+## Slice V — Chord-quality ear training
+
+A new tool `/tools/chord-quality-ear` (`tools.chord-quality-ear`): plays a chord on a random root (block
+then a quick arpeggio) and you name its **quality** from seven options (Major, Minor, Diminished,
+Augmented, Dominant/Major/Minor 7th) — instant feedback + running score. Reuses `CHORDS`.
+
+## Slice W — Fretboard note quiz
+
+A new tool `/tools/fret-quiz` (`tools.fret-quiz`): highlights a random position on the guitar neck
+(strings × frets 0–12) and you pick the note name from the twelve pitch classes; the fret plays and
+reveals its name on answer. Reuses `STANDARD_TUNING` / `pitchName`.
+
 ## Tests
 
 - **Web (browser) — backing track:** the 12-bar-blues grid renders the textbook form in C —
@@ -264,6 +277,10 @@ I–IV–V) with instant feedback + a running score. Replay + Next.
   the cursor and advances the current-chord highlight (chords strum under each bar).
 - **Web (browser) — progression ear (Slice U):** the four options render; a correct guess scores 1/1 with
   "✓ Correct!" and Next resets.
+- **Web (browser) — chord ear (Slice V):** seven quality options render; a correct guess scores 1/1 with
+  "✓ Correct!".
+- **Web (browser) — fret quiz (Slice W):** a random target (D string fret 10 = C) is named correctly →
+  1/1, and the cell reveals "C" — the tool's answer matches independent tuning computation.
 - Build/lint/check-types green across the workspace (25/25).
 
 ## Next slices (Phase 5 menu)

@@ -31,6 +31,8 @@ const {
   toolScaleBoxes,
   toolSong,
   toolProgressionEar,
+  toolChordQualityEar,
+  toolFretQuiz,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -206,6 +208,18 @@ const tools = [
     title: 'Progression ear training',
     summary: 'Hear a chord progression and name it.',
     enabled: toolProgressionEar,
+  },
+  {
+    href: '/tools/chord-quality-ear',
+    title: 'Chord ear training',
+    summary: 'Hear a chord and name its quality.',
+    enabled: toolChordQualityEar,
+  },
+  {
+    href: '/tools/fret-quiz',
+    title: 'Fretboard quiz',
+    summary: 'Name the highlighted note on the guitar neck.',
+    enabled: toolFretQuiz,
   },
 ].filter((tool) => tool.enabled);
 
