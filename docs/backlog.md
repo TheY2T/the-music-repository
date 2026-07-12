@@ -21,7 +21,7 @@ Status legend: 🟢 dependency-free · 📚 needs a client library · 💳 needs
 | Idea | Notes | Effort | Value |
 |---|---|---|---|
 | 🟢 **More content, not tools** | More songs (Song Player), licks/turnarounds (jazz ii-V, country, funk), voicings (9/13, quartal), CAGED for minor/7th chords, rhythm figures (triplets, 16ths, ties) | Low | Med |
-| ◑ **Web MIDI input** | **Started** — `useMidiInput` hook (built-in Web MIDI, no dep) wired into the **interactive keyboard**: live notes light up + sound, with a connection status line. Verified with a mocked device. Still to wire into chord identifier + ear-trainers | Med | **High** |
+| ◑ **Web MIDI input** | **Mostly done** — `useMidiInput` hook (built-in Web MIDI, no dep) wired into the **keyboard** (notes light up + sound) and the **chord identifier** (hold a chord → live detection). Verified with a mocked device. Ear-trainers (answer-by-playing) still open | Med | **High** |
 | 🟢 **Metronome upgrades** | Subdivisions, accent patterns, polyrhythm, tap-tempo — fold into the existing metronome | Low | Med |
 
 ## Group 2 — New dependency-free tools (medium effort)
@@ -35,7 +35,7 @@ Status legend: 🟢 dependency-free · 📚 needs a client library · 💳 needs
 | ✅ **Roman-numeral analyzer** | **Shipped** `/tools/analyzer` (`tools.analyzer`) — Roman numerals + Tonic/Predominant/Dominant function + borrowed-chord flag (`analyzeChordInKey`). Reharmonization suggestions still open | Med | High |
 | ✅ **Transposer / capo tool** | **Shipped** `/tools/transposer` (`tools.transposer`) — transpose a progression + capo suggestions (`capoSuggestions`) | Low | Med |
 | 🟢 **Drum-pattern / groove library** | Genre grooves on the existing sequencer engine | Low | Med |
-| 🟢 **Bass-line generator** | Walking / root-fifth bass over the backing track | Med | Med |
+| ✅ **Bass-line generator** | **Shipped** `/tools/bassline` (`tools.bassline`) — roots / root–fifth / walking (root·3rd·5th·chromatic-approach) bass over a progression, with per-beat display | Med | Med |
 
 ## Group 3 — Integrative / "make it feel like an app" (medium–high effort)
 

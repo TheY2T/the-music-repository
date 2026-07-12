@@ -105,6 +105,8 @@ export const FlagKeys = {
   ToolAnalyzer: 'tools.analyzer',
   /** Phase 5 — transposer + capo suggestions. */
   ToolTransposer: 'tools.transposer',
+  /** Phase 5 — bass-line generator (roots / root-fifth / walking). */
+  ToolBassline: 'tools.bassline',
   /** Phase 6 — premium entitlements gate `visibility=premium` content + the subscription flow. */
   Premium: 'monetization.premium',
   /** Phase 6 — teacher/classroom mode (create/join classrooms, grant premium to a class). */
@@ -159,6 +161,7 @@ export const FlagDefaults = {
   [FlagKeys.ToolPracticePlayer]: true,
   [FlagKeys.ToolAnalyzer]: true,
   [FlagKeys.ToolTransposer]: true,
+  [FlagKeys.ToolBassline]: true,
   [FlagKeys.Premium]: true,
   [FlagKeys.Classrooms]: true,
 } satisfies Record<FlagKey, boolean>;

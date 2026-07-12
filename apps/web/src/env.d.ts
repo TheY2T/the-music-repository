@@ -48,6 +48,7 @@ declare namespace App {
       toolPracticePlayer: boolean;
       toolAnalyzer: boolean;
       toolTransposer: boolean;
+      toolBassline: boolean;
       premium: boolean;
       classrooms: boolean;
     };

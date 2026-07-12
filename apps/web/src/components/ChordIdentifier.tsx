@@ -1,14 +1,36 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { identifyChords, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
+import { useMidiInput } from '@/lib/use-midi-input';
 
 const ROOT_MIDI = 60;
 
 export default function ChordIdentifier() {
   const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [midiHeld, setMidiHeld] = useState<Set<number>>(new Set());
 
-  const matches = identifyChords(selected);
-  const sorted = [...selected].sort((a, b) => a - b);
+  // Effective selection = manual toggles ∪ notes held on a MIDI keyboard.
+  const effective = new Set<number>([...selected, ...midiHeld]);
+  const matches = identifyChords(effective);
+  const sorted = [...effective].sort((a, b) => a - b);
+
+  // Live MIDI: held notes' pitch classes join the selection; detection updates in real time.
+  const onMidiNote = useCallback((midiNote: number, isOn: boolean) => {
+    const pc = midiNote % 12;
+    setMidiHeld((prev) => {
+      const next = new Set(prev);
+      if (isOn) {
+        next.add(pc);
+      } else {
+        next.delete(pc);
+      }
+      return next;
+    });
+    if (isOn) {
+      playTone(midiToFrequency(midiNote), 0.6);
+    }
+  }, []);
+  const midi = useMidiInput(onMidiNote);
 
   function toggle(pc: number) {
     setSelected((prev) => {
@@ -41,17 +63,32 @@ export default function ChordIdentifier() {
               type="button"
               key={pc}
               onClick={() => toggle(pc)}
-              aria-pressed={selected.has(pc)}
+              aria-pressed={effective.has(pc)}
               className={`h-10 w-12 rounded-md border text-sm font-medium ${
-                selected.has(pc)
+                effective.has(pc)
                   ? 'border-blue-600 bg-blue-500 text-white'
                   : 'border-border hover:bg-muted'
-              }`}
+              } ${midiHeld.has(pc) ? 'ring-2 ring-inset ring-green-400' : ''}`}
             >
               {pitchName(pc)}
             </button>
           ))}
         </div>
+        <p className="mt-2 text-xs" data-help="keyboard">
+          {!midi.supported ? (
+            <span className="text-muted-foreground">
+              🎹 Web MIDI not supported in this browser.
+            </span>
+          ) : midi.connected ? (
+            <span className="text-green-600 dark:text-green-400">
+              🎹 MIDI connected: {midi.deviceName ?? 'device'} — hold a chord to identify it.
+            </span>
+          ) : (
+            <span className="text-muted-foreground">
+              🎹 MIDI ready — connect a keyboard and hold a chord.
+            </span>
+          )}
+        </p>
       </div>
 
       <div className="space-y-2">
@@ -75,7 +112,7 @@ export default function ChordIdentifier() {
           ) : null}
         </div>
 
-        {selected.size < 3 ? (
+        {effective.size < 3 ? (
           <p className="text-sm text-muted-foreground">
             Pick at least three notes to name a chord.
           </p>

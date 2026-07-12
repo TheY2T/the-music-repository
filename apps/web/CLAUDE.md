@@ -125,8 +125,12 @@ src/
 - Backlog tools (from `docs/backlog.md`): Chord analyzer `/tools/analyzer` (`tools.analyzer`,
   `analyzeChordInKey`) and Transposer & capo `/tools/transposer` (`tools.transposer`, `capoSuggestions`).
 - **Web MIDI:** `src/lib/use-midi-input.ts` (`useMidiInput` hook, built-in Web MIDI types, no dep) is
-  wired into `PianoKeyboard` (live notes highlight green + sound + status line). Reuse the hook for the
-  chord identifier / ear-trainers.
+  wired into `PianoKeyboard` (live notes highlight + sound) and `ChordIdentifier` (held notes ∪ manual
+  toggles → live detection). Reuse the hook elsewhere (ear-trainers). Verify MIDI in Playwright by
+  mocking `navigator.requestMIDIAccess` via `addInitScript` (`browser_run_code_unsafe`) then dispatching
+  `onmidimessage`.
+- Bass-line generator `/tools/bassline` (`tools.bassline`) — roots / root-fifth / walking bass over a
+  progression (`scheduleTone` sine bass + hihat).
 - Progression play-along at `/tools/progression-player` (`tools.progression-player`) — loops a chord
   progression one bar per chord (reuses the chord exports + `strumChord`).
 - Rhythm trainer at `/tools/rhythm` (`tools.rhythm`) — `RhythmTrainer.tsx` plays a one-bar rhythm over a

@@ -345,6 +345,14 @@
       },
       "defaultVariant": "on"
     },
+    "tools.bassline": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "monetization.premium": {
       "state": "ENABLED",
       "variants": {

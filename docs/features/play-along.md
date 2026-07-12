@@ -321,11 +321,14 @@ Two of the Group-2 backlog tools shipped (dependency-free, reusing `music-theory
   shows its **Roman numeral** + **function** (Tonic / Predominant / Dominant, colour-coded), with
   non-diatonic chords flagged **borrowed**. New pure helper `analyzeChordInKey(keyRoot, chordRoot,
   chordKey)`. *Verified:* C: I–V–vi–IV → I(T)/V(D)/vi(T)/IV(P); B♭ in C → ♭VII "borrowed".
-- **Web MIDI input** (`/tools/keyboard`) — a shared `useMidiInput` hook (built-in Web MIDI API, no
-  dependency) wired into the interactive keyboard: incoming notes **light up green + sound**, a status
-  line shows the connected device, and it degrades gracefully with no device / no support. Note-off
-  clears the highlight. *Verified* with a mocked MIDI device (note-on → C4 highlighted + "Last note: C4";
-  note-off → cleared). Next: wire the same hook into the chord identifier + ear-trainers.
+- **Web MIDI input** — a shared `useMidiInput` hook (built-in Web MIDI API, no dependency) wired into
+  **two** tools: the interactive keyboard (`/tools/keyboard` — notes light up green + sound) and the
+  **chord identifier** (`/tools/chord-identifier` — held notes union with manual toggles → live chord
+  detection). Both show a device status line and degrade gracefully. *Verified* with a mocked MIDI
+  device: keyboard note-on → C4 highlighted + "Last note: C4"; chord identifier holding C-E-G → "C Major".
+- **Bass-line generator** `/tools/bassline` (`tools.bassline`) — generates a bass line under a progression
+  in three styles: **roots**, **root–fifth**, or a **walking** line (root · 3rd · 5th · chromatic approach
+  to the next chord), shown per beat with a moving cursor. *Verified:* walking over Dm (ii–V–I) → D F A F♯.
 - **Transposer & capo** `/tools/transposer` (`tools.transposer`) — transpose a progression by semitones
   (original vs transposed rows, both playable) + **capo suggestions** mapping the new key to open-chord
   shapes (C A G E D) via `capoSuggestions(tonicPc)`. *Verified:* C G Am F +2 → D A Bm G; capo D → no
