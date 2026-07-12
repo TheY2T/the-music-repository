@@ -79,6 +79,10 @@ export const FlagKeys = {
   ToolFingerpicking: 'tools.fingerpicking',
   /** Phase 5 — arpeggio pattern player. */
   ToolArpeggio: 'tools.arpeggio',
+  /** Phase 5 — chord-progression play-along (strum through a progression). */
+  ToolProgressionPlayer: 'tools.progression-player',
+  /** Phase 5 — rhythm reading trainer. */
+  ToolRhythm: 'tools.rhythm',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -116,4 +120,6 @@ export const FlagDefaults = {
   [FlagKeys.ToolStrumming]: true,
   [FlagKeys.ToolFingerpicking]: true,
   [FlagKeys.ToolArpeggio]: true,
+  [FlagKeys.ToolProgressionPlayer]: true,
+  [FlagKeys.ToolRhythm]: true,
 } satisfies Record<FlagKey, boolean>;

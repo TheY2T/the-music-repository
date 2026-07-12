@@ -121,7 +121,11 @@ src/
 - Fingerpicking trainer at `/tools/fingerpicking` (`tools.fingerpicking`) — `FingerpickingTrainer.tsx`
   loops per-string picking patterns (bass/alt-bass + treble) over a chord, reusing the chord exports.
 - Arpeggio player at `/tools/arpeggio` (`tools.arpeggio`) — `ArpeggioPlayer.tsx` loops a chord's tones
-  one-at-a-time in a chosen direction (up/down/up-down). See `docs/features/play-along.md`.
+  one-at-a-time in a chosen direction (up/down/up-down).
+- Progression play-along at `/tools/progression-player` (`tools.progression-player`) — loops a chord
+  progression one bar per chord (reuses the chord exports + `strumChord`).
+- Rhythm trainer at `/tools/rhythm` (`tools.rhythm`) — `RhythmTrainer.tsx` plays a one-bar rhythm over a
+  click, reusing `StaffSequence`'s note-value glyphs on the middle line. See `docs/features/play-along.md`.
 
 ## Trainers / drills (Phase 4)
 

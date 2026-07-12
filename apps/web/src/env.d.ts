@@ -35,6 +35,8 @@ declare namespace App {
       toolStrumming: boolean;
       toolFingerpicking: boolean;
       toolArpeggio: boolean;
+      toolProgressionPlayer: boolean;
+      toolRhythm: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {

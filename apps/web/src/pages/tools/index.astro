@@ -25,6 +25,8 @@ const {
   toolStrumming,
   toolFingerpicking,
   toolArpeggio,
+  toolProgressionPlayer,
+  toolRhythm,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -164,6 +166,18 @@ const tools = [
     title: 'Arpeggio player',
     summary: 'Arpeggiate any chord up, down, or both — and loop it.',
     enabled: toolArpeggio,
+  },
+  {
+    href: '/tools/progression-player',
+    title: 'Progression play-along',
+    summary: 'Strum through a chord progression, one bar per chord.',
+    enabled: toolProgressionPlayer,
+  },
+  {
+    href: '/tools/rhythm',
+    title: 'Rhythm trainer',
+    summary: 'Read a rhythm and clap along over a steady click.',
+    enabled: toolRhythm,
   },
 ].filter((tool) => tool.enabled);
 

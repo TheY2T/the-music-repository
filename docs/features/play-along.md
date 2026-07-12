@@ -4,7 +4,8 @@
 - **Flag keys:** `tools.backing-track` (`ToolBackingTrack`), `tools.voicings` (`ToolVoicings`),
   `tools.notation-player` (`ToolNotationPlayer`), `tools.licks` (`ToolLicks`), `tools.chord-diagrams`
   (`ToolChordDiagrams`), `tools.strumming` (`ToolStrumming`), `tools.fingerpicking`
-  (`ToolFingerpicking`), `tools.arpeggio` (`ToolArpeggio`) — from `@TheY2T/tmr-flags`. Default on.
+  (`ToolFingerpicking`), `tools.arpeggio` (`ToolArpeggio`), `tools.progression-player`
+  (`ToolProgressionPlayer`), `tools.rhythm` (`ToolRhythm`) — from `@TheY2T/tmr-flags`. Default on.
 
 ## Purpose
 
@@ -166,6 +167,21 @@ A new tool `/tools/arpeggio` (`tools.arpeggio`): pick a **root + chord quality**
 the current note highlighted. `arpeggioMidis` builds the ordered MIDI sequence (chord tones + the octave);
 up-&-down / down-&-up omit the repeated endpoints.
 
+## Slice P — Chord progression play-along
+
+A new tool `/tools/progression-player` (`tools.progression-player`): pick a **progression** (C–G–Am–F,
+C–Am–F–G, G–D–Em–C, Am–F–C–G), a **strum** pattern, and tempo, and loop the progression **one bar per
+chord** — the chords' diagrams show in a row with the current chord highlighted, plus the strum-slot
+cursor. Reuses `GUITAR_CHORDS` / `ChordDiagram` / `strumChord`. It's the song-level counterpart to the
+single-chord strumming trainer.
+
+## Slice Q — Rhythm trainer
+
+A new tool `/tools/rhythm` (`tools.rhythm`): pick a one-bar **rhythm** (quarters, eighths, syncopated,
+gallop, dotted) and Play to hear it — a woodblock per note over a steady metronome **Click** — with the
+note cursor moving through the bar. Reuses `StaffSequence`'s note-value glyphs (all notes on the middle
+line) so the rhythm is read on a staff; playback holds each note for its `beats`.
+
 ## Tests
 
 - **Web (browser) — backing track:** the 12-bar-blues grid renders the textbook form in C —
@@ -209,6 +225,10 @@ up-&-down / down-&-up omit the repeated endpoints.
   (bass/alt-bass + treble strings) and the highlight advances.
 - **Web (browser) — arpeggio (Slice O):** C major Up = `C E G C`; Up-&-down = `C E G C G E` (no repeated
   endpoints); the note cursor advances.
+- **Web (browser) — progression (Slice P):** the default shows C G Am F diagrams; Play advances the
+  current-chord highlight bar by bar.
+- **Web (browser) — rhythm (Slice Q):** the syncopated bar renders 5 heads with 2 eighth-note flags; Play
+  moves the note cursor through the bar over the click.
 - Build/lint/check-types green across the workspace (25/25).
 
 ## Next slices (Phase 5 menu)
