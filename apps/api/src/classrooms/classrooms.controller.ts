@@ -1,14 +1,17 @@
 import { FlagKeys } from '@TheY2T/tmr-flags';
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { RequireFlagsEnabled } from '@openfeature/nestjs-sdk';
 import { CurrentUser } from '../auth/application/current-user';
 import { RequireAuth } from '../auth/require-permissions.decorator';
 import {
+  ArchiveClassroomUseCase,
   CreateClassroomUseCase,
   GetClassroomUseCase,
   GrantClassroomPremiumUseCase,
   JoinClassroomUseCase,
+  LeaveClassroomUseCase,
   ListClassroomsUseCase,
+  RemoveMemberUseCase,
 } from './application/classrooms.use-cases';
 import { CreateClassroomDto, JoinClassroomDto } from './dto/classrooms.dto';
 
@@ -26,6 +29,9 @@ export class ClassroomsController {
     private readonly joinClassroom: JoinClassroomUseCase,
     private readonly getClassroom: GetClassroomUseCase,
     private readonly grantPremium: GrantClassroomPremiumUseCase,
+    private readonly leaveClassroom: LeaveClassroomUseCase,
+    private readonly removeMember: RemoveMemberUseCase,
+    private readonly archiveClassroom: ArchiveClassroomUseCase,
   ) {}
 
   @Get('me/classrooms')
@@ -63,5 +69,29 @@ export class ClassroomsController {
   @RequireAuth()
   grant(@Param('id') id: string) {
     return this.grantPremium.execute(id, this.currentUser.require().id);
+  }
+
+  @Post('classrooms/:id/leave')
+  @HttpCode(204)
+  @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.Classrooms }] })
+  @RequireAuth()
+  leave(@Param('id') id: string) {
+    return this.leaveClassroom.execute(id, this.currentUser.require().id);
+  }
+
+  @Delete('classrooms/:id/members/:memberId')
+  @HttpCode(204)
+  @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.Classrooms }] })
+  @RequireAuth()
+  remove(@Param('id') id: string, @Param('memberId') memberId: string) {
+    return this.removeMember.execute(id, this.currentUser.require().id, memberId);
+  }
+
+  @Post('classrooms/:id/archive')
+  @HttpCode(204)
+  @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.Classrooms }] })
+  @RequireAuth()
+  archive(@Param('id') id: string) {
+    return this.archiveClassroom.execute(id, this.currentUser.require().id);
   }
 }

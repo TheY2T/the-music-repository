@@ -29,7 +29,11 @@ server-side; the browser never touches `/billing/webhook`.
 | Route | Auth | Result |
 |---|---|---|
 | `POST /me/checkout` | `@RequireAuth` + `monetization.premium` | `{ url }` to redirect to (in TypeSpec) |
+| `POST /me/billing-portal` | `@RequireAuth` + `monetization.premium` | `{ url }` — manage card/cancel/invoices (mock → `/upgrade`; Stripe → real portal for the user's customer) |
 | `POST /billing/webhook` | none (signature) | `{ received: true }`; grants/revokes premium (NOT in TypeSpec — inbound provider endpoint, like Better Auth) |
+
+Webhook events handled: `checkout.session.completed` (first purchase → grant), **`invoice.paid` (renewal
+→ re-grant with a fresh period)**, `customer.subscription.deleted` (→ revoke). All idempotent by event id.
 
 `/me/subscription` (status) and `DELETE /me/subscription` (cancel) are unchanged (ADR 0015). The old
 `POST /me/subscription/activate` remains as a dev shortcut but the UI now uses checkout.

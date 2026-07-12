@@ -1,8 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { and, eq, gt, isNull, or } from 'drizzle-orm';
+import { and, desc, eq, gt, isNull, or } from 'drizzle-orm';
 import { DATABASE, type Database } from '../../infrastructure/database/database.module';
-import { entitlements } from '../../infrastructure/database/schema';
-import { type EntitlementGrant, Entitlements } from '../application/ports/entitlements.port';
+import { entitlementEvents, entitlements } from '../../infrastructure/database/schema';
+import {
+  type EntitlementEvent,
+  type EntitlementGrant,
+  Entitlements,
+} from '../application/ports/entitlements.port';
 
 const PREMIUM = 'premium';
 
@@ -39,11 +43,34 @@ export class DrizzleEntitlements extends Entitlements {
         target: [entitlements.userId, entitlements.key],
         set: { source, grantedAt: new Date(), expiresAt },
       });
+    await this.db
+      .insert(entitlementEvents)
+      .values({ userId, key: PREMIUM, action: 'grant', source });
   }
 
   async revokePremium(userId: string): Promise<void> {
-    await this.db
+    const [deleted] = await this.db
       .delete(entitlements)
-      .where(and(eq(entitlements.userId, userId), eq(entitlements.key, PREMIUM)));
+      .where(and(eq(entitlements.userId, userId), eq(entitlements.key, PREMIUM)))
+      .returning({ source: entitlements.source });
+    if (deleted) {
+      await this.db
+        .insert(entitlementEvents)
+        .values({ userId, key: PREMIUM, action: 'revoke', source: deleted.source });
+    }
+  }
+
+  async history(userId: string): Promise<EntitlementEvent[]> {
+    const rows = await this.db
+      .select()
+      .from(entitlementEvents)
+      .where(eq(entitlementEvents.userId, userId))
+      .orderBy(desc(entitlementEvents.createdAt));
+    return rows.map((r) => ({
+      key: r.key,
+      action: r.action as 'grant' | 'revoke',
+      source: r.source,
+      at: r.createdAt,
+    }));
   }
 }

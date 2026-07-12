@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { eq } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import { DATABASE, type Database } from '../../infrastructure/database/database.module';
 import { checkoutSessions } from '../../infrastructure/database/schema';
 import {
@@ -31,6 +31,16 @@ export class DrizzleCheckoutSessionStore extends CheckoutSessionStore {
       .select()
       .from(checkoutSessions)
       .where(eq(checkoutSessions.stripeSubscriptionId, subscriptionId))
+      .limit(1);
+    return row ?? null;
+  }
+
+  async findLatestCompletedByUser(userId: string): Promise<CheckoutSessionRecord | null> {
+    const [row] = await this.db
+      .select()
+      .from(checkoutSessions)
+      .where(and(eq(checkoutSessions.userId, userId), eq(checkoutSessions.status, 'completed')))
+      .orderBy(desc(checkoutSessions.createdAt))
       .limit(1);
     return row ?? null;
   }

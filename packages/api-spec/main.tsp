@@ -724,6 +724,74 @@ model CheckoutSession {
 @post
 op startCheckout(): CheckoutSession;
 
+/** A payment-provider billing-portal session (manage card / cancel / invoices). */
+model BillingPortalSession {
+  url: string;
+}
+
+/** Open the customer billing portal — returns the URL to redirect to. */
+@route("/me/billing-portal")
+@tag("monetization")
+@post
+op openBillingPortal(): BillingPortalSession;
+
+/** One entry in the entitlement audit log. */
+model EntitlementEvent {
+  key: string;
+  action: string;
+  source: string;
+  at: string;
+}
+
+model EntitlementHistory {
+  items: EntitlementEvent[];
+}
+
+/** The acting user's entitlement grant/revoke history (most-recent first). */
+@route("/me/entitlements/history")
+@tag("monetization")
+@get
+op getEntitlementHistory(): EntitlementHistory;
+
+// ----- Gift / redeem codes (Phase 6, 6B) -----
+
+/** Body for minting a gift code (staff only). */
+model CreateRedeemCodeInput {
+  /** Days the granted premium lasts; omit for no expiry. */
+  durationDays?: int32;
+  /** How many times the code can be redeemed (default 1). */
+  uses?: int32;
+}
+
+model RedeemCodeCreated {
+  code: string;
+}
+
+/** Body for redeeming a code. */
+model RedeemCodeInput {
+  code: string;
+}
+
+model RedeemResult {
+  redeemed: boolean;
+  expiresAt?: string;
+}
+
+/** Mint a gift/redeem code (staff only). */
+@route("/admin/redeem-codes")
+@tag("monetization")
+@post
+op createRedeemCode(@body body: CreateRedeemCodeInput): {
+  @statusCode statusCode: 201;
+  @body body: RedeemCodeCreated;
+};
+
+/** Redeem a gift code for the acting user → grants premium. */
+@route("/me/redeem")
+@tag("monetization")
+@post
+op redeemCode(@body body: RedeemCodeInput): RedeemResult;
+
 // ===================== Classrooms (Phase 6, teacher mode) =====================
 // A teacher creates a classroom (join code); learners join; the teacher can grant premium to the class
 // (institutional/seat entitlement). Auth-gated in NestJS.
@@ -740,6 +808,7 @@ model Classroom {
 }
 
 model ClassroomMember {
+  id: string;
   name: string;
   email: string;
 }
@@ -793,3 +862,27 @@ op getClassroom(@path id: string): ClassroomDetail;
 @tag("classrooms")
 @post
 op grantClassroomPremium(@path id: string): ClassroomDetail;
+
+/** Leave a classroom (a member removes themselves; the owner cannot leave — archive instead). */
+@route("/classrooms/{id}/leave")
+@tag("classrooms")
+@post
+op leaveClassroom(@path id: string): {
+  @statusCode statusCode: 204;
+};
+
+/** Remove a member from the classroom (owner only). */
+@route("/classrooms/{id}/members/{memberId}")
+@tag("classrooms")
+@delete
+op removeClassroomMember(@path id: string, @path memberId: string): {
+  @statusCode statusCode: 204;
+};
+
+/** Archive a classroom (owner only) — hides it from all rosters. */
+@route("/classrooms/{id}/archive")
+@tag("classrooms")
+@post
+op archiveClassroom(@path id: string): {
+  @statusCode statusCode: 204;
+};

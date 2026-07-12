@@ -116,8 +116,16 @@ parsed body (fine for the mock, which skips signatures; add raw-body capture whe
 **Classrooms (teacher mode, `src/classrooms/`, flag `education.classrooms`):** `ClassroomsRepository`
 ← `DrizzleClassrooms` (`classrooms` + `classroom_members`); use-cases in one `classrooms.use-cases.ts`;
 codes via `crypto.randomInt`. `GrantClassroomPremiumUseCase` imports the `Entitlements` port
-(EntitlementsModule) → `grantPremium(memberId, 'classroom')` per member. Same flag gotchas as monetization
-(method-level `@RequireFlagsEnabled`, reload flagd for the new key). See `docs/features/classrooms.md`.
+(EntitlementsModule) → `grantPremium(memberId, 'classroom')` per member. **Auto-grant:** `JoinClassroom`
+grants premium to a new joiner when the class is `premiumGranted`. **Roster:** leave (owner blocked),
+remove-member (owner), archive (owner; `archived_at`, filtered from `findByCode`/`listForUser`). Same
+flag gotchas as monetization (method-level `@RequireFlagsEnabled`, reload flagd). See `docs/features/classrooms.md`.
+
+**Gift/redeem codes (`src/redemption/`, 6B) + entitlement audit log:** `RedeemCodeStore` ←
+`DrizzleRedeemCodeStore` (`redeem_codes`); atomic `consume` (`UPDATE ... WHERE uses_remaining > 0
+RETURNING`). `CreateRedeemCode` is staff-only (checks `CurrentUser` roles → 403 `NOT_STAFF`); `RedeemCode`
+→ `Entitlements.grantPremium(_, 'redeem', expiresAt)`. `DrizzleEntitlements` appends to `entitlement_events`
+on every grant/revoke (all sources captured); `GET /me/entitlements/history`. See `docs/features/redemption.md`.
 
 ## Config
 

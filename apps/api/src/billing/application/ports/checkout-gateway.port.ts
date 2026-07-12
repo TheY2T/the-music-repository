@@ -32,4 +32,7 @@ export abstract class CheckoutGateway {
     rawBody: string,
     signature: string | undefined,
   ): Promise<BillingEvent | null>;
+  /** Create a billing-portal session (manage card / cancel / invoices) — returns where to send the
+   * browser. Mock returns the in-app subscription page. */
+  abstract createBillingPortalSession(userId: string): Promise<{ url: string }>;
 }

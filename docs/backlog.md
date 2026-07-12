@@ -80,8 +80,8 @@ These items extend that foundation. Tags: 💳 needs a payment provider (Stripe)
 | Idea | Notes | Effort | Value |
 |---|---|---|---|
 | ✅ **Stripe Checkout + webhook → `grantPremium`** | **Shipped** (ADR 0016) — `POST /me/checkout` (behind `CheckoutGateway` port; `MockCheckoutGateway` default, `StripeCheckoutGateway` ready when `STRIPE_SECRET_KEY` is set) returns a checkout URL; `/upgrade` redirects there. `POST /billing/webhook` verifies + normalizes the event and on `checkout.session.completed` / `customer.subscription.deleted` calls `Entitlements.grantPremium` / `revokePremium`. Verified curl + browser end-to-end. See `docs/features/billing.md` | High | **High** |
-| ◑ **Subscription lifecycle** | **Partial** — `checkout_sessions` persists `stripe_customer_id`/`stripe_subscription_id`; the mock sets a 30-day `expires_at` (honored by `DrizzleEntitlements.getPremium`). Still open: renew on `invoice.paid`, grace period on `invoice.payment_failed`, `expires_at` from the real billing period | Med | High |
-| 💳 **Customer/billing portal** | Stripe Billing Portal session (`POST /me/billing-portal`) so users manage card / cancel / invoices without us building UI. | Low | Med |
+| ◑ **Subscription lifecycle** | **Mostly shipped** — `checkout_sessions` persists `stripe_customer_id`/`stripe_subscription_id`; **`invoice.paid` → renewal** (both gateways re-grant with a fresh period; mock sets 30-day `expires_at`, honored by `DrizzleEntitlements.getPremium`); `customer.subscription.deleted` → revoke. Still open: `invoice.payment_failed` grace period, real `expires_at` from Stripe's period end | Med | High |
+| ✅ **Customer/billing portal** | **Shipped** — `POST /me/billing-portal` returns a portal URL (mock → the in-app `/upgrade` page; Stripe → `billingPortal.sessions.create` for the user's customer). Verified curl | Low | Med |
 | ◑ **Webhook hardening** | **Idempotency shipped** (`processed_webhooks` table + `WebhookLedger` — replayed events are no-ops, verified). Signature verification is implemented in `StripeCheckoutGateway` (mock skips it). Still open: **raw-body capture** on the webhook route (`bodyParser:false` + Better Auth mean the exact bytes Stripe signs aren't captured yet) | Med | High (correctness) |
 | ✅ **Config + env** | **Shipped** — `STRIPE_SECRET_KEY?`, `STRIPE_PRICE_ID?`, `STRIPE_WEBHOOK_SECRET`, `WEB_BASE_URL` in `apps/api/src/config/env.ts` + `.env.example`. Unset secret → mock gateway | Low | — |
 
@@ -95,9 +95,9 @@ created. Stripe becomes an *inbound adapter* (webhook → `grantPremium`) + an *
 |---|---|---|---|
 | 🔗 **Tiered plans** | More entitlement keys than `premium` (e.g. `pro`, `institution`); model content `visibility`/gates per tier. `entitlements.key` already supports this. | Med | Med |
 | 💳 **Trials, coupons, proration** | Stripe trial periods, promo codes, seat proration — mostly Stripe config once the webhook path exists. | Med | Med |
-| 🟢 **Gift / redeem codes** | Grant premium via a one-time code (no card) — a `redeem_codes` table → `grantPremium(source:'redeem')`. Mirrors the classroom join-code pattern. | Low | Med |
-| 🔗 **Entitlement audit log** | Record every grant/revoke (who, when, source, actor) for support + analytics — a `entitlement_events` table. | Low | Med |
-| 🔗 **Annual vs monthly, regional pricing** | Multiple Stripe price IDs surfaced on `/upgrade`. | Low | Low |
+| ✅ **Gift / redeem codes** | **Shipped** — `redemption/` feature (`redeem_codes` + `RedeemCodeStore`): staff mint codes (`POST /admin/redeem-codes`, 403 `NOT_STAFF` otherwise); `POST /me/redeem` atomically consumes a use → `grantPremium(source:'redeem')`. Multi-use + expiry supported. Verified curl (403/201/redeem/exhaustion 404) | Low | Med |
+| ✅ **Entitlement audit log** | **Shipped** — `entitlement_events` table; `DrizzleEntitlements` appends a `grant`/`revoke` row (key, source, at) on every change; `GET /me/entitlements/history`. Verified | Low | Med |
+| 🔗 **Annual vs monthly, regional pricing** | Multiple Stripe price IDs surfaced on `/upgrade`. (Needs Stripe.) Still open | Low | Low |
 
 ## Group 6C — Classroom / institution depth
 
@@ -106,14 +106,20 @@ created. Stripe becomes an *inbound adapter* (webhook → `grantPremium`) + an *
 | 💳 **Seat billing** | A teacher/school buys **N seats**; joining consumes a seat; billing via Stripe quantity. Extends `grant-premium` (currently unconditional) into metered seats with `expires_at`. | High | High |
 | 🔗 **Assign content to a class** | Teacher assigns content/collections/drills; students see an assignments list; ties into the Phase 2 progress dashboard. | Med | High |
 | 🔗 **Class progress overview** | Teacher dashboard: per-student completion/streaks across assigned material (reuses `content_progress` / reviews). | Med | High |
-| 🔗 **Teacher role + invitations** | Currently *any* authed user can create a classroom. Add a `teacher` capability/role, and email invitations (vs. open join code) with accept links. | Med | Med |
-| 🔗 **Auto-grant on join** | If a class has active seats/premium, new members get premium on join (today `grant-premium` only covers *current* members). | Low | Med |
-| 🔗 **Leave / remove member, transfer ownership, archive class** | Roster management gaps. | Low | Low |
+| 🔗 **Teacher role + invitations** | Currently *any* authed user can create a classroom. Add a `teacher` capability/role, and email invitations (vs. open join code) with accept links. Still open (email delivery not wired) | Med | Med |
+| ✅ **Auto-grant on join** | **Shipped** — `JoinClassroomUseCase` grants premium (`source:'classroom'`) to a new member when the class is already `premiumGranted`. Verified: learner joins a granted class → `premium:true source:classroom` | Low | Med |
+| ◑ **Leave / remove member, transfer ownership, archive class** | **Mostly shipped** — `POST /classrooms/{id}/leave` (owner blocked → 403), `DELETE /classrooms/{id}/members/{memberId}` (owner only), `POST /classrooms/{id}/archive` (owner only; archived hidden from all rosters). Transfer-ownership still open. Verified curl | Low | Low |
 
-## Suggested Phase 6 first pick
+## Phase 6 status
 
-✅ **Stripe Checkout + webhook** (Group 6A) — **done** (ADR 0016): the `CheckoutGateway` port + mock
-default + `/billing/webhook` → `Entitlements` are shipped and verified end-to-end. The next picks are the
-remaining 6A follow-ups (raw-body capture + subscription lifecycle on `invoice.paid`, billing portal),
-then Groups **6B** (tiered plans, gift codes, audit log) and **6C** (seat billing, class assignments /
-progress overview). All slot in behind the same port; provisioning real Stripe test keys flips the gateway.
+Most of Phase 6 is now shipped and verified with the mock gateway (no keys): **checkout + webhook**
+(ADR 0016), **billing portal**, **invoice.paid renewal**, **gift/redeem codes**, **entitlement audit
+log**, **classroom auto-grant on join**, and **roster management** (leave / remove / archive).
+
+**Remaining — genuinely gated on real Stripe test keys** (`STRIPE_SECRET_KEY` flips the gateway):
+raw-body capture on the webhook route (needed for Stripe signature bytes), `invoice.payment_failed`
+grace period + real period-end `expires_at`, trials/coupons/proration, annual/monthly price IDs, and
+**seat billing** (Stripe quantity). **Remaining — no keys needed** (larger follow-ons): tiered plan
+gating (`pro`/`institution`), teacher role + email invitations, assign-content-to-a-class + class
+progress overview, transfer classroom ownership. All slot in behind the existing `Entitlements` /
+`CheckoutGateway` ports.

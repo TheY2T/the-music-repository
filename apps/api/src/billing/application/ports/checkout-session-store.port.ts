@@ -13,6 +13,8 @@ export abstract class CheckoutSessionStore {
   abstract create(rec: { id: string; userId: string; provider: string }): Promise<void>;
   abstract findById(id: string): Promise<CheckoutSessionRecord | null>;
   abstract findBySubscriptionId(subscriptionId: string): Promise<CheckoutSessionRecord | null>;
+  /** The user's most recent completed session (holds the Stripe customer id for the portal). */
+  abstract findLatestCompletedByUser(userId: string): Promise<CheckoutSessionRecord | null>;
   abstract markCompleted(
     id: string,
     stripe: { customerId?: string; subscriptionId?: string },

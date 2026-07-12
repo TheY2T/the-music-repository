@@ -5,6 +5,7 @@ import { RequireFlagsEnabled } from '@openfeature/nestjs-sdk';
 import { CurrentUser } from '../auth/application/current-user';
 import { RequireAuth } from '../auth/require-permissions.decorator';
 import { HandleBillingWebhookUseCase } from './application/use-cases/handle-billing-webhook.use-case';
+import { OpenBillingPortalUseCase } from './application/use-cases/open-billing-portal.use-case';
 import { StartCheckoutUseCase } from './application/use-cases/start-checkout.use-case';
 
 /** The bits of the inbound request we read for the webhook. `rawBody` is present only when raw-body
@@ -26,6 +27,7 @@ export class BillingController {
     private readonly currentUser: CurrentUser,
     private readonly startCheckout: StartCheckoutUseCase,
     private readonly handleWebhook: HandleBillingWebhookUseCase,
+    private readonly openPortal: OpenBillingPortalUseCase,
   ) {}
 
   @Post('me/checkout')
@@ -38,6 +40,13 @@ export class BillingController {
       `${webBase}/upgrade?status=success`,
       `${webBase}/upgrade?status=cancel`,
     );
+  }
+
+  @Post('me/billing-portal')
+  @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.Premium }] })
+  @RequireAuth()
+  billingPortal(): Promise<{ url: string }> {
+    return this.openPortal.execute(this.currentUser.require().id);
   }
 
   @Post('billing/webhook')

@@ -6,6 +6,7 @@ import {
   ClassroomNotFoundError,
   InvalidJoinCodeError,
   NotClassroomOwnerError,
+  OwnerCannotLeaveError,
 } from '../domain/errors/classroom-errors';
 import { type ClassroomRow, ClassroomsRepository } from './ports/classrooms-repository.port';
 
@@ -60,7 +61,10 @@ export class ListClassroomsUseCase {
 
 @Injectable()
 export class JoinClassroomUseCase {
-  constructor(private readonly repository: ClassroomsRepository) {}
+  constructor(
+    private readonly repository: ClassroomsRepository,
+    private readonly entitlements: Entitlements,
+  ) {}
 
   async execute(userId: string, code: string): Promise<ClassroomView> {
     const row = await this.repository.findByCode(code.trim().toUpperCase());
@@ -69,9 +73,61 @@ export class JoinClassroomUseCase {
     }
     if (row.ownerId !== userId) {
       await this.repository.addMember(row.id, userId);
+      // Auto-grant: if the class already has premium, a new member inherits it on join.
+      if (row.premiumGranted) {
+        await this.entitlements.grantPremium(userId, 'classroom');
+      }
     }
     const memberCount = (await this.repository.memberIds(row.id)).length;
     return toView(row, userId, memberCount);
+  }
+}
+
+@Injectable()
+export class LeaveClassroomUseCase {
+  constructor(private readonly repository: ClassroomsRepository) {}
+
+  async execute(id: string, userId: string): Promise<void> {
+    const row = await this.repository.findById(id);
+    if (!row) {
+      throw new ClassroomNotFoundError(id);
+    }
+    if (row.ownerId === userId) {
+      throw new OwnerCannotLeaveError(id);
+    }
+    await this.repository.removeMember(id, userId);
+  }
+}
+
+@Injectable()
+export class RemoveMemberUseCase {
+  constructor(private readonly repository: ClassroomsRepository) {}
+
+  async execute(id: string, ownerId: string, memberId: string): Promise<void> {
+    const row = await this.repository.findById(id);
+    if (!row) {
+      throw new ClassroomNotFoundError(id);
+    }
+    if (row.ownerId !== ownerId) {
+      throw new NotClassroomOwnerError(id);
+    }
+    await this.repository.removeMember(id, memberId);
+  }
+}
+
+@Injectable()
+export class ArchiveClassroomUseCase {
+  constructor(private readonly repository: ClassroomsRepository) {}
+
+  async execute(id: string, ownerId: string): Promise<void> {
+    const row = await this.repository.findById(id);
+    if (!row) {
+      throw new ClassroomNotFoundError(id);
+    }
+    if (row.ownerId !== ownerId) {
+      throw new NotClassroomOwnerError(id);
+    }
+    await this.repository.archive(id);
   }
 }
 

@@ -50,6 +50,20 @@ export class StripeCheckoutGateway extends CheckoutGateway {
     return { url: session.url, sessionId: session.id };
   }
 
+  async createBillingPortalSession(userId: string): Promise<{ url: string }> {
+    const webBase = this.config.get<string>('WEB_BASE_URL') ?? 'http://localhost:4321';
+    const returnUrl = `${webBase}/upgrade`;
+    const latest = await this.sessions.findLatestCompletedByUser(userId);
+    if (!latest?.stripeCustomerId) {
+      return { url: returnUrl }; // no known Stripe customer yet — nothing to manage
+    }
+    const portal = await this.stripe.billingPortal.sessions.create({
+      customer: latest.stripeCustomerId,
+      return_url: returnUrl,
+    });
+    return { url: portal.url };
+  }
+
   async parseWebhookEvent(
     rawBody: string,
     signature: string | undefined,
@@ -79,6 +93,27 @@ export class StripeCheckoutGateway extends CheckoutGateway {
         expiresAt: null, // renewal/expiry handled by subscription lifecycle events (follow-up)
         stripeCustomerId: asId(session.customer),
         stripeSubscriptionId: subscriptionId,
+      };
+    }
+
+    if (event.type === 'invoice.paid') {
+      // Subscription renewal — extend premium for another billing period.
+      const invoice = event.data.object as Stripe.Invoice & {
+        subscription?: string | { id: string };
+      };
+      const subscriptionId = asId(invoice.subscription);
+      if (!subscriptionId) {
+        return null;
+      }
+      const session = await this.sessions.findBySubscriptionId(subscriptionId);
+      if (!session) {
+        return null;
+      }
+      return {
+        kind: 'activate',
+        eventId: event.id,
+        userId: session.userId,
+        expiresAt: null, // period end available on the subscription object (lifecycle follow-up)
       };
     }
 

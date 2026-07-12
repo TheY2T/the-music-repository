@@ -6,6 +6,7 @@ import { CheckoutGateway } from './application/ports/checkout-gateway.port';
 import { CheckoutSessionStore } from './application/ports/checkout-session-store.port';
 import { WebhookLedger } from './application/ports/webhook-ledger.port';
 import { HandleBillingWebhookUseCase } from './application/use-cases/handle-billing-webhook.use-case';
+import { OpenBillingPortalUseCase } from './application/use-cases/open-billing-portal.use-case';
 import { StartCheckoutUseCase } from './application/use-cases/start-checkout.use-case';
 import { BillingController } from './billing.controller';
 import { DrizzleCheckoutSessionStore } from './infrastructure/drizzle-checkout-session-store';
@@ -25,6 +26,7 @@ import { StripeCheckoutGateway } from './infrastructure/stripe-checkout.gateway'
   providers: [
     StartCheckoutUseCase,
     HandleBillingWebhookUseCase,
+    OpenBillingPortalUseCase,
     { provide: CheckoutSessionStore, useClass: DrizzleCheckoutSessionStore },
     { provide: WebhookLedger, useClass: DrizzleWebhookLedger },
     {

@@ -386,6 +386,38 @@
         ]
       }
     },
+    "/admin/redeem-codes": {
+      "post": {
+        "operationId": "createRedeemCode",
+        "description": "Mint a gift/redeem code (staff only).",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RedeemCodeCreated"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "monetization"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRedeemCodeInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/catalogue/items": {
       "get": {
         "operationId": "searchCatalogue",
@@ -636,6 +668,30 @@
         ]
       }
     },
+    "/classrooms/{id}/archive": {
+      "post": {
+        "operationId": "archiveClassroom",
+        "description": "Archive a classroom (owner only) — hides it from all rosters.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "classrooms"
+        ]
+      }
+    },
     "/classrooms/{id}/grant-premium": {
       "post": {
         "operationId": "grantClassroomPremium",
@@ -660,6 +716,62 @@
                 }
               }
             }
+          }
+        },
+        "tags": [
+          "classrooms"
+        ]
+      }
+    },
+    "/classrooms/{id}/leave": {
+      "post": {
+        "operationId": "leaveClassroom",
+        "description": "Leave a classroom (a member removes themselves; the owner cannot leave — archive instead).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "classrooms"
+        ]
+      }
+    },
+    "/classrooms/{id}/members/{memberId}": {
+      "delete": {
+        "operationId": "removeClassroomMember",
+        "description": "Remove a member from the classroom (owner only).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "memberId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
           }
         },
         "tags": [
@@ -1089,6 +1201,28 @@
         ]
       }
     },
+    "/me/billing-portal": {
+      "post": {
+        "operationId": "openBillingPortal",
+        "description": "Open the customer billing portal — returns the URL to redirect to.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingPortalSession"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "monetization"
+        ]
+      }
+    },
     "/me/checkout": {
       "post": {
         "operationId": "startCheckout",
@@ -1161,6 +1295,28 @@
             }
           }
         }
+      }
+    },
+    "/me/entitlements/history": {
+      "get": {
+        "operationId": "getEntitlementHistory",
+        "description": "The acting user's entitlement grant/revoke history (most-recent first).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntitlementHistory"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "monetization"
+        ]
       }
     },
     "/me/favorites": {
@@ -1409,6 +1565,38 @@
         ]
       }
     },
+    "/me/redeem": {
+      "post": {
+        "operationId": "redeemCode",
+        "description": "Redeem a gift code for the acting user → grants premium.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RedeemResult"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "monetization"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RedeemCodeInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/me/reviews": {
       "get": {
         "operationId": "getReviewSummary",
@@ -1641,6 +1829,18 @@
   },
   "components": {
     "schemas": {
+      "BillingPortalSession": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        },
+        "description": "A payment-provider billing-portal session (manage card / cancel / invoices)."
+      },
       "CatalogueList": {
         "type": "object",
         "required": [
@@ -1788,10 +1988,14 @@
       "ClassroomMember": {
         "type": "object",
         "required": [
+          "id",
           "name",
           "email"
         ],
         "properties": {
+          "id": {
+            "type": "string"
+          },
           "name": {
             "type": "string"
           },
@@ -2349,6 +2553,22 @@
           }
         }
       },
+      "CreateRedeemCodeInput": {
+        "type": "object",
+        "properties": {
+          "durationDays": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Days the granted premium lasts; omit for no expiry."
+          },
+          "uses": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How many times the code can be redeemed (default 1)."
+          }
+        },
+        "description": "Body for minting a gift code (staff only)."
+      },
       "DeckReviews": {
         "type": "object",
         "required": [
@@ -2381,6 +2601,44 @@
           "due": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "EntitlementEvent": {
+        "type": "object",
+        "required": [
+          "key",
+          "action",
+          "source",
+          "at"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "at": {
+            "type": "string"
+          }
+        },
+        "description": "One entry in the entitlement audit log."
+      },
+      "EntitlementHistory": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EntitlementEvent"
+            }
           }
         }
       },
@@ -2788,6 +3046,43 @@
           }
         },
         "description": "One chord in a saved progression: root pitch-class (0–11) + quality key."
+      },
+      "RedeemCodeCreated": {
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        }
+      },
+      "RedeemCodeInput": {
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "description": "Body for redeeming a code."
+      },
+      "RedeemResult": {
+        "type": "object",
+        "required": [
+          "redeemed"
+        ],
+        "properties": {
+          "redeemed": {
+            "type": "boolean"
+          },
+          "expiresAt": {
+            "type": "string"
+          }
+        }
       },
       "RelatedContent": {
         "type": "object",

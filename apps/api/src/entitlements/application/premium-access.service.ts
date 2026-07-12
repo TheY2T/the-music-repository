@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CurrentUser } from '../../auth/application/current-user';
 import type { AuthenticatedUser } from '../../auth/domain/authenticated-user';
-import { Entitlements } from './ports/entitlements.port';
+import { type EntitlementEvent, Entitlements } from './ports/entitlements.port';
 
 /** Staff always have full access to premium content (they author/manage it). */
 const STAFF_ROLES = ['admin', 'editor'];
@@ -66,5 +66,10 @@ export class PremiumAccessService {
   /** Cancel premium. */
   async cancel(): Promise<void> {
     await this.entitlements.revokePremium(this.currentUser.require().id);
+  }
+
+  /** The acting user's entitlement grant/revoke history (audit log). */
+  history(): Promise<EntitlementEvent[]> {
+    return this.entitlements.history(this.currentUser.require().id);
   }
 }

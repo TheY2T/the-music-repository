@@ -2,11 +2,14 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { EntitlementsModule } from '../entitlements/entitlements.module';
 import {
+  ArchiveClassroomUseCase,
   CreateClassroomUseCase,
   GetClassroomUseCase,
   GrantClassroomPremiumUseCase,
   JoinClassroomUseCase,
+  LeaveClassroomUseCase,
   ListClassroomsUseCase,
+  RemoveMemberUseCase,
 } from './application/classrooms.use-cases';
 import { ClassroomsRepository } from './application/ports/classrooms-repository.port';
 import { ClassroomsController } from './classrooms.controller';
@@ -25,6 +28,9 @@ import { DrizzleClassrooms } from './infrastructure/drizzle-classrooms.repositor
     JoinClassroomUseCase,
     GetClassroomUseCase,
     GrantClassroomPremiumUseCase,
+    LeaveClassroomUseCase,
+    RemoveMemberUseCase,
+    ArchiveClassroomUseCase,
     { provide: ClassroomsRepository, useClass: DrizzleClassrooms },
   ],
 })

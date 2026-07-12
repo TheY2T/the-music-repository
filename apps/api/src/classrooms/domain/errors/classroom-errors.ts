@@ -20,3 +20,10 @@ export class NotClassroomOwnerError extends ForbiddenError {
     super(`Only the classroom owner may perform this action.`, { id });
   }
 }
+
+export class OwnerCannotLeaveError extends ForbiddenError {
+  readonly code = 'CLASSROOM_OWNER_CANNOT_LEAVE';
+  constructor(id: string) {
+    super(`The owner cannot leave their classroom — archive it instead.`, { id });
+  }
+}

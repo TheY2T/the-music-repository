@@ -43,7 +43,19 @@ education path into monetization: a teacher (or school) unlocks premium for thei
   (`media:1`).
 - Build/lint/check-types green (25/25); spec regenerated; migration `0010`.
 
+## Roster depth + auto-grant (Phase 6, 6C — shipped)
+
+- **Auto-grant on join:** `JoinClassroomUseCase` grants premium (`source:'classroom'`) to a new member
+  when the class is already `premiumGranted` — so joiners *after* a grant inherit it, not just members
+  present at grant time. Verified: learner joins a granted class → `premium:true source:classroom`.
+- **Roster management:** `POST /classrooms/{id}/leave` (a member removes themselves; the **owner is
+  blocked → 403**, archive instead), `DELETE /classrooms/{id}/members/{memberId}` (owner only),
+  `POST /classrooms/{id}/archive` (owner only — sets `archived_at`; archived classrooms are hidden from
+  every roster: `findByCode`/`listForUser` filter `archived_at IS NULL`). `ClassroomMember` now carries
+  `id` so the owner can target a member for removal. Verified curl (403 owner-leave / 204 remove /
+  403 non-owner-archive / 204 archive / hidden from list).
+
 ## Next (Phase 6 later)
 
-- Assign content/collections/drills to a classroom; class progress overview; expiring class seats
-  (`expires_at` on the entitlement); real payment-provider seat billing.
+- Assign content/collections/drills to a classroom; class progress overview; transfer ownership;
+  expiring class seats via real payment-provider seat billing (Stripe quantity).

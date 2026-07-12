@@ -39,6 +39,12 @@ export class MockCheckoutGateway extends CheckoutGateway {
     return { url: `${webBase}/upgrade/checkout?${params.toString()}`, sessionId };
   }
 
+  async createBillingPortalSession(): Promise<{ url: string }> {
+    // No real provider portal in dev — send the user to the in-app subscription page (cancel lives there).
+    const webBase = this.config.get<string>('WEB_BASE_URL') ?? 'http://localhost:4321';
+    return { url: `${webBase}/upgrade` };
+  }
+
   async parseWebhookEvent(rawBody: string): Promise<BillingEvent | null> {
     const payload = JSON.parse(rawBody) as {
       id?: string;
@@ -54,7 +60,9 @@ export class MockCheckoutGateway extends CheckoutGateway {
     if (!session) {
       return null;
     }
-    if (payload.type === 'checkout.session.completed') {
+    // `checkout.session.completed` (first purchase) + `invoice.paid` (renewal) both (re)grant with a
+    // fresh 30-day period — the idempotency key (event id) makes each a distinct renewal.
+    if (payload.type === 'checkout.session.completed' || payload.type === 'invoice.paid') {
       await this.sessions.markCompleted(sessionId, {});
       return {
         kind: 'activate',

@@ -17,6 +17,7 @@ import { HelpModule } from './help/help.module';
 import { DatabaseModule } from './infrastructure/database/database.module';
 import { ProgressModule } from './progress/progress.module';
 import { ProgressionsModule } from './progressions/progressions.module';
+import { RedemptionModule } from './redemption/redemption.module';
 import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
@@ -38,6 +39,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     CatalogueModule,
     EntitlementsModule,
     BillingModule,
+    RedemptionModule,
     AuthoringModule,
     FavoritesModule,
     CollectionsModule,

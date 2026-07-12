@@ -323,6 +323,19 @@ export const DeleteHelpTopicResponse = zod.void()
 
 
 /**
+ * Mint a gift/redeem code (staff only).
+ */
+export const CreateRedeemCodeBody = zod.object({
+  "durationDays": zod.number().optional().describe('Days the granted premium lasts; omit for no expiry.'),
+  "uses": zod.number().optional().describe('How many times the code can be redeemed (default 1).')
+}).describe('Body for minting a gift code (staff only).')
+
+export const CreateRedeemCodeResponse = zod.object({
+  "code": zod.string()
+})
+
+
+/**
  * Browse & search the catalogue with faceted filters.
  */
 export const SearchCatalogueQueryParams = zod.object({
@@ -501,10 +514,21 @@ export const GetClassroomResponse = zod.object({
   "role": zod.enum(['owner', 'member']).describe('The acting user\'s relationship to the classroom.'),
   "premiumGranted": zod.boolean().describe('True once the teacher has granted premium to the class.'),
   "members": zod.array(zod.object({
+  "id": zod.string(),
   "name": zod.string(),
   "email": zod.string()
 }))
 })
+
+
+/**
+ * Archive a classroom (owner only) — hides it from all rosters.
+ */
+export const ArchiveClassroomParams = zod.object({
+  "id": zod.string()
+})
+
+export const ArchiveClassroomResponse = zod.void()
 
 
 /**
@@ -522,10 +546,32 @@ export const GrantClassroomPremiumResponse = zod.object({
   "role": zod.enum(['owner', 'member']).describe('The acting user\'s relationship to the classroom.'),
   "premiumGranted": zod.boolean().describe('True once the teacher has granted premium to the class.'),
   "members": zod.array(zod.object({
+  "id": zod.string(),
   "name": zod.string(),
   "email": zod.string()
 }))
 })
+
+
+/**
+ * Leave a classroom (a member removes themselves; the owner cannot leave — archive instead).
+ */
+export const LeaveClassroomParams = zod.object({
+  "id": zod.string()
+})
+
+export const LeaveClassroomResponse = zod.void()
+
+
+/**
+ * Remove a member from the classroom (owner only).
+ */
+export const RemoveClassroomMemberParams = zod.object({
+  "id": zod.string(),
+  "memberId": zod.string()
+})
+
+export const RemoveClassroomMemberResponse = zod.void()
 
 
 /**
@@ -942,6 +988,14 @@ export const GetHelpTopicResponse = zod.object({
 
 
 /**
+ * Open the customer billing portal — returns the URL to redirect to.
+ */
+export const OpenBillingPortalResponse = zod.object({
+  "url": zod.string()
+}).describe('A payment-provider billing-portal session (manage card \/ cancel \/ invoices).')
+
+
+/**
  * Start a subscription checkout — returns the URL to redirect to. Premium is granted by the
  * provider webhook (`POST /billing/webhook`) on completion, not here.
  */
@@ -979,6 +1033,19 @@ export const CreateClassroomResponse = zod.object({
   "memberCount": zod.number(),
   "role": zod.enum(['owner', 'member']).describe('The acting user\'s relationship to the classroom.'),
   "premiumGranted": zod.boolean().describe('True once the teacher has granted premium to the class.')
+})
+
+
+/**
+ * The acting user's entitlement grant/revoke history (most-recent first).
+ */
+export const GetEntitlementHistoryResponse = zod.object({
+  "items": zod.array(zod.object({
+  "key": zod.string(),
+  "action": zod.string(),
+  "source": zod.string(),
+  "at": zod.string()
+}).describe('One entry in the entitlement audit log.'))
 })
 
 
@@ -1131,6 +1198,19 @@ export const DeleteProgressionParams = zod.object({
 })
 
 export const DeleteProgressionResponse = zod.void()
+
+
+/**
+ * Redeem a gift code for the acting user → grants premium.
+ */
+export const RedeemCodeBody = zod.object({
+  "code": zod.string()
+}).describe('Body for redeeming a code.')
+
+export const RedeemCodeResponse = zod.object({
+  "redeemed": zod.boolean(),
+  "expiresAt": zod.string().optional()
+})
 
 
 /**

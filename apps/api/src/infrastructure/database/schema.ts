@@ -276,6 +276,30 @@ export const processedWebhooks = pgTable('processed_webhooks', {
   processedAt: timestamp('processed_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+// Entitlement audit log (Phase 6, 6B): every grant/revoke — for support + analytics. Append-only.
+export const entitlementEvents = pgTable('entitlement_events', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  key: text('key').notNull(), // e.g. 'premium'
+  action: text('action').notNull(), // grant | revoke
+  source: text('source').notNull(), // subscription | classroom | redeem | staff | manual
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+// Gift / redeem codes (Phase 6, 6B): a one-time (or multi-use) code that grants an entitlement, no
+// card. Mirrors the classroom join-code pattern.
+export const redeemCodes = pgTable('redeem_codes', {
+  code: text('code').primaryKey(),
+  key: text('key').notNull().default('premium'),
+  source: text('source').notNull().default('redeem'),
+  durationDays: integer('duration_days'), // null = no expiry
+  usesRemaining: integer('uses_remaining').notNull().default(1),
+  createdBy: text('created_by').references(() => user.id, { onDelete: 'set null' }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 // --- Classrooms (Phase 6, teacher mode): a teacher owns a classroom with a join code; learners join.
 //     `premium_granted` records that the teacher granted premium to the class (seat entitlement). ---
 export const classrooms = pgTable('classrooms', {
@@ -286,6 +310,7 @@ export const classrooms = pgTable('classrooms', {
     .references(() => user.id, { onDelete: 'cascade' }),
   joinCode: text('join_code').notNull().unique(),
   premiumGranted: boolean('premium_granted').notNull().default(false),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 

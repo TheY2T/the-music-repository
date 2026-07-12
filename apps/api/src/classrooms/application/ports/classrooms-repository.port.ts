@@ -18,6 +18,10 @@ export abstract class ClassroomsRepository {
   abstract findByCode(code: string): Promise<ClassroomRow | null>;
   /** Idempotent. */
   abstract addMember(classroomId: string, userId: string): Promise<void>;
+  /** Remove a member (idempotent). */
+  abstract removeMember(classroomId: string, userId: string): Promise<void>;
+  /** Soft-delete: hide the classroom from all rosters. */
+  abstract archive(classroomId: string): Promise<void>;
   abstract isOwnerOrMember(classroomId: string, userId: string): Promise<boolean>;
   /** Classrooms the user owns or has joined, each with its member count. */
   abstract listForUser(userId: string): Promise<{ row: ClassroomRow; memberCount: number }[]>;

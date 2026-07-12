@@ -34,4 +34,19 @@ export class SubscriptionController {
   cancel() {
     return this.premiumAccess.cancel();
   }
+
+  @Get('me/entitlements/history')
+  @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.Premium }] })
+  @RequireAuth()
+  async history() {
+    const events = await this.premiumAccess.history();
+    return {
+      items: events.map((e) => ({
+        key: e.key,
+        action: e.action,
+        source: e.source,
+        at: e.at.toISOString(),
+      })),
+    };
+  }
 }

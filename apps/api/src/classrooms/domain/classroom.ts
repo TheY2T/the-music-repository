@@ -10,6 +10,7 @@ export interface ClassroomView {
 }
 
 export interface ClassroomMemberView {
+  id: string;
   name: string;
   email: string;
 }
