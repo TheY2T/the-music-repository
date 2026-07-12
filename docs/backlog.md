@@ -1,11 +1,13 @@
 # Extended Features Backlog
 
 Ideas captured for **review after all phases (0 → 6) are complete**. Nothing here is committed work — it
-is a parking lot of candidate extensions, primarily for **Phase 5 (play-along & practice tools)** but
-some bridge into other phases. Each item notes rough **effort**, **value**, and whether it holds our
-**dependency-free, client-side** pattern or would need a library.
+is a parking lot of candidate extensions. The first half covers **Phase 5 (play-along & practice tools)**;
+the **Phase 6 — Monetization extensions** section at the bottom covers Stripe wiring, plans/pricing, and
+classroom/institution depth. Each item notes rough **effort**, **value**, and its dependency/backend
+footprint.
 
-Status legend: 🟢 dependency-free · 📚 needs a library · 🔗 touches the backend/other phases.
+Status legend: 🟢 dependency-free · 📚 needs a client library · 💳 needs a payment provider (Stripe) ·
+🔗 touches the backend/other phases.
 
 > Context: Phase 5 shipped Slices A–Z (19 play-along tools; 34 total in the `/tools` hub), all
 > client-side and dependency-free — including MusicXML import, multi-voice engraving, and a
@@ -58,3 +60,54 @@ Status legend: 🟢 dependency-free · 📚 needs a library · 🔗 touches the 
 1. 🟢 **Web MIDI input** — highest-leverage dependency-free addition; upgrades many existing tools at once.
 2. 🔗 **localStorage save/share** — natural bridge toward Phase 6 (monetization gates *personalized* features).
 3. 📚 **Soundfont playback** — the single biggest perceived-quality jump, if/when we accept a library.
+
+---
+
+# Phase 6 — Monetization extensions
+
+Phase 6 shipped two slices — **premium entitlements** (locked-preview gating + a *mock* checkout, ADR 0015)
+and **teacher/classroom mode** (seat entitlements). The `entitlements` table + `Entitlements` port were
+deliberately shaped for real billing: `source`, `granted_at`, `expires_at`, and a grant keyed per user.
+These items extend that foundation. Tags: 💳 needs a payment provider (Stripe) + its keys · 🔗 backend ·
+🟢 self-contained.
+
+## Group 6A — Real payment integration (the headline: Stripe wiring)
+
+| Idea | Notes | Effort | Value |
+|---|---|---|---|
+| 💳 **Stripe Checkout + webhook → `grantPremium`** | The natural next slice. `POST /me/checkout` creates a Stripe **Checkout Session** (behind a `CheckoutGateway` port; `StripeCheckoutGateway` adapter, `MockCheckoutGateway` for dev/CI) and returns its URL; the web `/upgrade` redirects there. A `POST /billing/webhook` endpoint verifies the **signature**, and on `checkout.session.completed` / `customer.subscription.created|updated|deleted` calls the existing `Entitlements.grantPremium` / `revokePremium`. Replaces the mock `activate`. | High | **High** |
+| 💳 **Subscription lifecycle** | Persist the Stripe `customer_id` + `subscription_id` (new columns/table); set `expires_at` from the billing period; renew on `invoice.paid`, revoke on `subscription.deleted` / `invoice.payment_failed` (with a grace period). The `expires_at` gate already exists in `DrizzleEntitlements.getPremium`. | Med | High |
+| 💳 **Customer/billing portal** | Stripe Billing Portal session (`POST /me/billing-portal`) so users manage card / cancel / invoices without us building UI. | Low | Med |
+| 🔗 **Webhook hardening** | Signature verification, **idempotency** (dedupe by event id — a `processed_webhooks` table), retry-safe handlers, raw-body handling (note: `bodyParser:false` + Better Auth already juggle body parsing — the webhook route needs the raw body). | Med | High (correctness) |
+| 🟢 **Config + env** | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, price IDs → add to `apps/api/src/config/env.ts` Zod schema (every env var the API reads lives there). Keep test-mode keys out of the repo. | Low | — |
+
+**Why it slots in cleanly:** app code already depends on the `Entitlements` port, not on how a grant is
+created. Stripe becomes an *inbound adapter* (webhook → `grantPremium`) + an *outbound gateway*
+(`CheckoutGateway`). The mock checkout stays as the dev/CI adapter so tests never call Stripe.
+
+## Group 6B — Plans, pricing & entitlements depth
+
+| Idea | Notes | Effort | Value |
+|---|---|---|---|
+| 🔗 **Tiered plans** | More entitlement keys than `premium` (e.g. `pro`, `institution`); model content `visibility`/gates per tier. `entitlements.key` already supports this. | Med | Med |
+| 💳 **Trials, coupons, proration** | Stripe trial periods, promo codes, seat proration — mostly Stripe config once the webhook path exists. | Med | Med |
+| 🟢 **Gift / redeem codes** | Grant premium via a one-time code (no card) — a `redeem_codes` table → `grantPremium(source:'redeem')`. Mirrors the classroom join-code pattern. | Low | Med |
+| 🔗 **Entitlement audit log** | Record every grant/revoke (who, when, source, actor) for support + analytics — a `entitlement_events` table. | Low | Med |
+| 🔗 **Annual vs monthly, regional pricing** | Multiple Stripe price IDs surfaced on `/upgrade`. | Low | Low |
+
+## Group 6C — Classroom / institution depth
+
+| Idea | Notes | Effort | Value |
+|---|---|---|---|
+| 💳 **Seat billing** | A teacher/school buys **N seats**; joining consumes a seat; billing via Stripe quantity. Extends `grant-premium` (currently unconditional) into metered seats with `expires_at`. | High | High |
+| 🔗 **Assign content to a class** | Teacher assigns content/collections/drills; students see an assignments list; ties into the Phase 2 progress dashboard. | Med | High |
+| 🔗 **Class progress overview** | Teacher dashboard: per-student completion/streaks across assigned material (reuses `content_progress` / reviews). | Med | High |
+| 🔗 **Teacher role + invitations** | Currently *any* authed user can create a classroom. Add a `teacher` capability/role, and email invitations (vs. open join code) with accept links. | Med | Med |
+| 🔗 **Auto-grant on join** | If a class has active seats/premium, new members get premium on join (today `grant-premium` only covers *current* members). | Low | Med |
+| 🔗 **Leave / remove member, transfer ownership, archive class** | Roster management gaps. | Low | Low |
+
+## Suggested Phase 6 first pick
+
+💳 **Stripe Checkout + webhook** (Group 6A) — it turns the mock checkout into real revenue and unlocks the
+lifecycle/seat-billing items. Gate it behind the existing `monetization.premium` flag and keep the
+`MockCheckoutGateway` as the default until keys are provisioned, so nothing breaks in dev/CI without Stripe.
