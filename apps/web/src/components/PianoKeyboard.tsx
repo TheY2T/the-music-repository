@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import {
   midiToFrequency,
@@ -7,6 +7,7 @@ import {
   SCALES,
   scalePitchClasses,
 } from '@/lib/music-theory';
+import { useMidiInput } from '@/lib/use-midi-input';
 
 const START_MIDI = 60; // C4
 const KEY_COUNT = 24; // two octaves
@@ -26,6 +27,7 @@ export default function PianoKeyboard() {
   const [root, setRoot] = useState<number | null>(null);
   const [scaleKey, setScaleKey] = useState('major');
   const [lastNote, setLastNote] = useState<string | null>(null);
+  const [midiActive, setMidiActive] = useState<Set<number>>(new Set());
 
   const scale = SCALES.find((s) => s.key === scaleKey) ?? SCALES[0];
   const highlighted = useMemo(
@@ -38,6 +40,24 @@ export default function PianoKeyboard() {
     playTone(midiToFrequency(midi));
     setLastNote(`${pitchName(midi % 12, flats)}${Math.floor(midi / 12) - 1}`);
   }
+
+  // Live MIDI input: sound + highlight incoming notes.
+  const onMidiNote = useCallback((midi: number, isOn: boolean) => {
+    setMidiActive((prev) => {
+      const next = new Set(prev);
+      if (isOn) {
+        next.add(midi);
+      } else {
+        next.delete(midi);
+      }
+      return next;
+    });
+    if (isOn) {
+      playTone(midiToFrequency(midi));
+      setLastNote(`${pitchName(midi % 12)}${Math.floor(midi / 12) - 1}`);
+    }
+  }, []);
+  const midi = useMidiInput(onMidiNote);
 
   const inScale = (midi: number) => highlighted.has(midi % 12);
 
@@ -87,6 +107,20 @@ export default function PianoKeyboard() {
         </div>
       </div>
 
+      <div className="text-xs" data-help="keyboard">
+        {!midi.supported ? (
+          <span className="text-muted-foreground">🎹 Web MIDI not supported in this browser.</span>
+        ) : midi.connected ? (
+          <span className="text-green-600 dark:text-green-400">
+            🎹 MIDI connected: {midi.deviceName ?? 'device'} — play your keyboard.
+          </span>
+        ) : (
+          <span className="text-muted-foreground">
+            🎹 MIDI ready — connect a keyboard to play it live.
+          </span>
+        )}
+      </div>
+
       <div className="relative flex h-44 select-none rounded-lg border border-border bg-neutral-100 p-1">
         {whiteMidis.map((midi) => (
           <button
@@ -97,7 +131,7 @@ export default function PianoKeyboard() {
             style={{ width: `${whiteWidthPct}%` }}
             className={`relative flex items-end justify-center rounded-b border border-neutral-300 pb-1 text-xs ${
               inScale(midi) ? 'bg-blue-200 text-blue-900' : 'bg-white text-neutral-500'
-            }`}
+            } ${midiActive.has(midi) ? 'ring-2 ring-inset ring-green-500' : ''}`}
           >
             {showLabels ? pitchName(midi % 12, flats) : null}
           </button>
@@ -115,7 +149,7 @@ export default function PianoKeyboard() {
             }}
             className={`absolute top-1 z-10 flex h-[62%] items-end justify-center rounded-b pb-1 text-[10px] ${
               inScale(midi) ? 'bg-blue-500 text-white' : 'bg-neutral-800 text-neutral-300'
-            }`}
+            } ${midiActive.has(midi) ? 'ring-2 ring-inset ring-green-400' : ''}`}
           >
             {showLabels ? pitchName(midi % 12, flats) : null}
           </button>

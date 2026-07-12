@@ -124,6 +124,9 @@ src/
   one-at-a-time in a chosen direction (up/down/up-down).
 - Backlog tools (from `docs/backlog.md`): Chord analyzer `/tools/analyzer` (`tools.analyzer`,
   `analyzeChordInKey`) and Transposer & capo `/tools/transposer` (`tools.transposer`, `capoSuggestions`).
+- **Web MIDI:** `src/lib/use-midi-input.ts` (`useMidiInput` hook, built-in Web MIDI types, no dep) is
+  wired into `PianoKeyboard` (live notes highlight green + sound + status line). Reuse the hook for the
+  chord identifier / ear-trainers.
 - Progression play-along at `/tools/progression-player` (`tools.progression-player`) — loops a chord
   progression one bar per chord (reuses the chord exports + `strumChord`).
 - Rhythm trainer at `/tools/rhythm` (`tools.rhythm`) — `RhythmTrainer.tsx` plays a one-bar rhythm over a

@@ -21,7 +21,7 @@ Status legend: 🟢 dependency-free · 📚 needs a client library · 💳 needs
 | Idea | Notes | Effort | Value |
 |---|---|---|---|
 | 🟢 **More content, not tools** | More songs (Song Player), licks/turnarounds (jazz ii-V, country, funk), voicings (9/13, quartal), CAGED for minor/7th chords, rhythm figures (triplets, 16ths, ties) | Low | Med |
-| 🟢 **Web MIDI input** | Web MIDI API (built-in) → play a real keyboard / MIDI-guitar into the keyboard, chord identifier, and ear-trainers. Upgrades *every* existing input tool at once | Med | **High** |
+| ◑ **Web MIDI input** | **Started** — `useMidiInput` hook (built-in Web MIDI, no dep) wired into the **interactive keyboard**: live notes light up + sound, with a connection status line. Verified with a mocked device. Still to wire into chord identifier + ear-trainers | Med | **High** |
 | 🟢 **Metronome upgrades** | Subdivisions, accent patterns, polyrhythm, tap-tempo — fold into the existing metronome | Low | Med |
 
 ## Group 2 — New dependency-free tools (medium effort)
