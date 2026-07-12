@@ -10,6 +10,7 @@ const showFavorites = favorites && !!user;
 const showProgress = progress && !!user;
 const showDrills = Astro.locals.flags.trainers && !!user;
 const showUpgrade = Astro.locals.flags.premium && !!user;
+const showClassrooms = Astro.locals.flags.classrooms && !!user;
 const {
   toolKeyboard,
   toolCircleOfFifths,
@@ -140,6 +141,12 @@ const showTools =
                     <>
                       {' · '}
                       <a href="/upgrade" class="underline">Premium</a>
+                    </>
+                  )}
+                  {showClassrooms && (
+                    <>
+                      {' · '}
+                      <a href="/classrooms" class="underline">Classrooms</a>
                     </>
                   )}
                   {canAuthor && (

@@ -337,6 +337,14 @@
       },
       "defaultVariant": "on"
     },
+    "education.classrooms": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "demo.new-banner": {
       "state": "ENABLED",
       "variants": {

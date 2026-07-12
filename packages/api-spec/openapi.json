@@ -35,6 +35,9 @@
     },
     {
       "name": "monetization"
+    },
+    {
+      "name": "classrooms"
     }
   ],
   "paths": {
@@ -567,6 +570,100 @@
         ]
       }
     },
+    "/classrooms/join": {
+      "post": {
+        "operationId": "joinClassroom",
+        "description": "Join a classroom by its code.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Classroom"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "classrooms"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JoinClassroomInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/classrooms/{id}": {
+      "get": {
+        "operationId": "getClassroom",
+        "description": "A classroom with its roster (owner or member only).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassroomDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "classrooms"
+        ]
+      }
+    },
+    "/classrooms/{id}/grant-premium": {
+      "post": {
+        "operationId": "grantClassroomPremium",
+        "description": "Grant premium to every current member of the classroom (owner only).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassroomDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "classrooms"
+        ]
+      }
+    },
     "/collections": {
       "get": {
         "operationId": "listCollections",
@@ -987,6 +1084,58 @@
         "tags": [
           "help"
         ]
+      }
+    },
+    "/me/classrooms": {
+      "get": {
+        "operationId": "listClassrooms",
+        "description": "Classrooms the current user owns or has joined.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassroomList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "classrooms"
+        ]
+      },
+      "post": {
+        "operationId": "createClassroom",
+        "description": "Create a classroom (the caller becomes its teacher/owner).",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Classroom"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "classrooms"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateClassroomInput"
+              }
+            }
+          }
+        }
       }
     },
     "/me/favorites": {
@@ -1422,6 +1571,118 @@
           }
         },
         "description": "Paginated, faceted catalogue search result."
+      },
+      "Classroom": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "joinCode",
+          "memberCount",
+          "role",
+          "premiumGranted"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "joinCode": {
+            "type": "string"
+          },
+          "memberCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "owner",
+              "member"
+            ],
+            "description": "The acting user's relationship to the classroom."
+          },
+          "premiumGranted": {
+            "type": "boolean",
+            "description": "True once the teacher has granted premium to the class."
+          }
+        }
+      },
+      "ClassroomDetail": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "joinCode",
+          "memberCount",
+          "role",
+          "premiumGranted",
+          "members"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "joinCode": {
+            "type": "string"
+          },
+          "memberCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "owner",
+              "member"
+            ],
+            "description": "The acting user's relationship to the classroom."
+          },
+          "premiumGranted": {
+            "type": "boolean",
+            "description": "True once the teacher has granted premium to the class."
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassroomMember"
+            }
+          }
+        }
+      },
+      "ClassroomList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Classroom"
+            }
+          }
+        }
+      },
+      "ClassroomMember": {
+        "type": "object",
+        "required": [
+          "name",
+          "email"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
       },
       "CollectionDetail": {
         "type": "object",
@@ -1961,6 +2222,17 @@
         },
         "description": "Create/replace payload for a content item. Taxonomy is given as slug arrays."
       },
+      "CreateClassroomInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "DeckReviews": {
         "type": "object",
         "required": [
@@ -2177,6 +2449,17 @@
             "type": "string"
           },
           "linkSlug": {
+            "type": "string"
+          }
+        }
+      },
+      "JoinClassroomInput": {
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
             "type": "string"
           }
         }

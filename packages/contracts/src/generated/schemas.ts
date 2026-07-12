@@ -470,6 +470,65 @@ export const GetRelatedContentResponse = zod.object({
 
 
 /**
+ * Join a classroom by its code.
+ */
+export const JoinClassroomBody = zod.object({
+  "code": zod.string()
+})
+
+export const JoinClassroomResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "joinCode": zod.string(),
+  "memberCount": zod.number(),
+  "role": zod.enum(['owner', 'member']).describe('The acting user\'s relationship to the classroom.'),
+  "premiumGranted": zod.boolean().describe('True once the teacher has granted premium to the class.')
+})
+
+
+/**
+ * A classroom with its roster (owner or member only).
+ */
+export const GetClassroomParams = zod.object({
+  "id": zod.string()
+})
+
+export const GetClassroomResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "joinCode": zod.string(),
+  "memberCount": zod.number(),
+  "role": zod.enum(['owner', 'member']).describe('The acting user\'s relationship to the classroom.'),
+  "premiumGranted": zod.boolean().describe('True once the teacher has granted premium to the class.'),
+  "members": zod.array(zod.object({
+  "name": zod.string(),
+  "email": zod.string()
+}))
+})
+
+
+/**
+ * Grant premium to every current member of the classroom (owner only).
+ */
+export const GrantClassroomPremiumParams = zod.object({
+  "id": zod.string()
+})
+
+export const GrantClassroomPremiumResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "joinCode": zod.string(),
+  "memberCount": zod.number(),
+  "role": zod.enum(['owner', 'member']).describe('The acting user\'s relationship to the classroom.'),
+  "premiumGranted": zod.boolean().describe('True once the teacher has granted premium to the class.'),
+  "members": zod.array(zod.object({
+  "name": zod.string(),
+  "email": zod.string()
+}))
+})
+
+
+/**
  * Browse published collections.
  */
 export const ListCollectionsResponse = zod.object({
@@ -879,6 +938,38 @@ export const GetHelpTopicResponse = zod.object({
   "term": zod.string(),
   "body": zod.string(),
   "linkSlug": zod.string().optional()
+})
+
+
+/**
+ * Classrooms the current user owns or has joined.
+ */
+export const ListClassroomsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "joinCode": zod.string(),
+  "memberCount": zod.number(),
+  "role": zod.enum(['owner', 'member']).describe('The acting user\'s relationship to the classroom.'),
+  "premiumGranted": zod.boolean().describe('True once the teacher has granted premium to the class.')
+}))
+})
+
+
+/**
+ * Create a classroom (the caller becomes its teacher/owner).
+ */
+export const CreateClassroomBody = zod.object({
+  "name": zod.string()
+})
+
+export const CreateClassroomResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "joinCode": zod.string(),
+  "memberCount": zod.number(),
+  "role": zod.enum(['owner', 'member']).describe('The acting user\'s relationship to the classroom.'),
+  "premiumGranted": zod.boolean().describe('True once the teacher has granted premium to the class.')
 })
 
 

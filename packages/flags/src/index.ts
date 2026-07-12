@@ -103,6 +103,8 @@ export const FlagKeys = {
   ToolPracticePlayer: 'tools.practice-player',
   /** Phase 6 — premium entitlements gate `visibility=premium` content + the subscription flow. */
   Premium: 'monetization.premium',
+  /** Phase 6 — teacher/classroom mode (create/join classrooms, grant premium to a class). */
+  Classrooms: 'education.classrooms',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -152,4 +154,5 @@ export const FlagDefaults = {
   [FlagKeys.ToolMultiVoice]: true,
   [FlagKeys.ToolPracticePlayer]: true,
   [FlagKeys.Premium]: true,
+  [FlagKeys.Classrooms]: true,
 } satisfies Record<FlagKey, boolean>;

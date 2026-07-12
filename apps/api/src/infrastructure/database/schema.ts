@@ -1,4 +1,5 @@
 import {
+  boolean,
   doublePrecision,
   integer,
   pgTable,
@@ -235,6 +236,33 @@ export const entitlements = pgTable(
     expiresAt: timestamp('expires_at', { withTimezone: true }),
   },
   (t) => [primaryKey({ columns: [t.userId, t.key] })],
+);
+
+// --- Classrooms (Phase 6, teacher mode): a teacher owns a classroom with a join code; learners join.
+//     `premium_granted` records that the teacher granted premium to the class (seat entitlement). ---
+export const classrooms = pgTable('classrooms', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  ownerId: text('owner_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  joinCode: text('join_code').notNull().unique(),
+  premiumGranted: boolean('premium_granted').notNull().default(false),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const classroomMembers = pgTable(
+  'classroom_members',
+  {
+    classroomId: uuid('classroom_id')
+      .notNull()
+      .references(() => classrooms.id, { onDelete: 'cascade' }),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    joinedAt: timestamp('joined_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.classroomId, t.userId] })],
 );
 
 // --- Info View (Phase 2): context-sensitive help topics keyed by slug (e.g. a term or skill_topic). ---

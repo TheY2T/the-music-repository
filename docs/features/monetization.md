@@ -55,7 +55,12 @@ Two seed items are `visibility: 'premium'` — `czerny-op-599-no-1` (with a gate
   the premium item renders its score; staff see it unlocked.
 - Build/lint/check-types green across the workspace (25/25); spec regenerated.
 
+## Related
+
+- **Teacher/classroom mode (Slice 2)** grants premium at the class level — a teacher grants a `premium`
+  entitlement (`source: 'classroom'`) to every member. See `docs/features/classrooms.md`.
+
 ## Next (Phase 6 later)
 
 - Real payment provider (Stripe checkout + webhook → `grantPremium`); the port/table already carry
-  `source` + `expires_at`. Teacher/classroom mode.
+  `source` + `expires_at`.

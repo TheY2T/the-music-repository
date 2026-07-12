@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { AuthoringModule } from './authoring/authoring.module';
 import { CatalogueModule } from './catalogue/catalogue.module';
+import { ClassroomsModule } from './classrooms/classrooms.module';
 import { CollectionsModule } from './collections/collections.module';
 import { validateEnv } from './config/env';
 import { DemoModule } from './demo/demo.module';
@@ -37,6 +38,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     AuthoringModule,
     FavoritesModule,
     CollectionsModule,
+    ClassroomsModule,
     ProgressModule,
     HelpModule,
     ReviewsModule,

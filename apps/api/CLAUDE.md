@@ -102,6 +102,12 @@ combines `CurrentUser` + `Entitlements` into **entitled = staff OR active premiu
   route-gates 404 while the imperative `getBooleanValue(default)` path still works.
 - The seed upsert updates `visibility`; mark premium items with `visibility: 'premium'` in `seed-data.ts`.
 
+**Classrooms (teacher mode, `src/classrooms/`, flag `education.classrooms`):** `ClassroomsRepository`
+← `DrizzleClassrooms` (`classrooms` + `classroom_members`); use-cases in one `classrooms.use-cases.ts`;
+codes via `crypto.randomInt`. `GrantClassroomPremiumUseCase` imports the `Entitlements` port
+(EntitlementsModule) → `grantPremium(memberId, 'classroom')` per member. Same flag gotchas as monetization
+(method-level `@RequireFlagsEnabled`, reload flagd for the new key). See `docs/features/classrooms.md`.
+
 ## Config
 
 Env is validated at boot by Zod (`src/config/env.ts`) via `@nestjs/config`. Add new vars there.

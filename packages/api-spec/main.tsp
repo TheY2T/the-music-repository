@@ -660,3 +660,73 @@ op activateSubscription(): SubscriptionStatus;
 op cancelSubscription(): {
   @statusCode statusCode: 204;
 };
+
+// ===================== Classrooms (Phase 6, teacher mode) =====================
+// A teacher creates a classroom (join code); learners join; the teacher can grant premium to the class
+// (institutional/seat entitlement). Auth-gated in NestJS.
+
+model Classroom {
+  id: string;
+  name: string;
+  joinCode: string;
+  memberCount: int32;
+  /** The acting user's relationship to the classroom. */
+  role: "owner" | "member";
+  /** True once the teacher has granted premium to the class. */
+  premiumGranted: boolean;
+}
+
+model ClassroomMember {
+  name: string;
+  email: string;
+}
+
+model ClassroomDetail {
+  ...Classroom;
+  members: ClassroomMember[];
+}
+
+model ClassroomList {
+  items: Classroom[];
+}
+
+model CreateClassroomInput {
+  name: string;
+}
+
+model JoinClassroomInput {
+  code: string;
+}
+
+/** Classrooms the current user owns or has joined. */
+@route("/me/classrooms")
+@tag("classrooms")
+@get
+op listClassrooms(): ClassroomList;
+
+/** Create a classroom (the caller becomes its teacher/owner). */
+@route("/me/classrooms")
+@tag("classrooms")
+@post
+op createClassroom(@body body: CreateClassroomInput): {
+  @statusCode statusCode: 201;
+  @body body: Classroom;
+};
+
+/** Join a classroom by its code. */
+@route("/classrooms/join")
+@tag("classrooms")
+@post
+op joinClassroom(@body body: JoinClassroomInput): Classroom;
+
+/** A classroom with its roster (owner or member only). */
+@route("/classrooms/{id}")
+@tag("classrooms")
+@get
+op getClassroom(@path id: string): ClassroomDetail;
+
+/** Grant premium to every current member of the classroom (owner only). */
+@route("/classrooms/{id}/grant-premium")
+@tag("classrooms")
+@post
+op grantClassroomPremium(@path id: string): ClassroomDetail;

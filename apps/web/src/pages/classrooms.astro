@@ -1,0 +1,39 @@
+---
+import ClassroomsManager from '@/components/ClassroomsManager.tsx';
+import '@/styles/global.css';
+
+// Teacher mode: requires the flag on and an authenticated user.
+if (!Astro.locals.flags.classrooms) {
+  return Astro.redirect('/');
+}
+if (!Astro.locals.user) {
+  return Astro.redirect('/signin?redirect=/classrooms');
+}
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Classrooms — The Music Repository</title>
+    <script is:inline>
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body>
+    <main class="mx-auto max-w-3xl space-y-6 p-8">
+      <header class="space-y-1">
+        <a href="/" class="text-sm text-muted-foreground underline">← Home</a>
+        <h1 class="text-3xl font-bold">Classrooms</h1>
+        <p class="text-muted-foreground">
+          Create a class, share the join code, and grant premium to your students.
+        </p>
+      </header>
+      <ClassroomsManager client:load />
+    </main>
+  </body>
+</html>
