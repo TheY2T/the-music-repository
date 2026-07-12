@@ -329,6 +329,22 @@
       },
       "defaultVariant": "on"
     },
+    "tools.analyzer": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
+    "tools.transposer": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "monetization.premium": {
       "state": "ENABLED",
       "variants": {

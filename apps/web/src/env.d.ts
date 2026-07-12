@@ -46,6 +46,8 @@ declare namespace App {
       toolMusicXml: boolean;
       toolMultiVoice: boolean;
       toolPracticePlayer: boolean;
+      toolAnalyzer: boolean;
+      toolTransposer: boolean;
       premium: boolean;
       classrooms: boolean;
     };

@@ -36,6 +36,8 @@ const {
   toolMusicXml,
   toolMultiVoice,
   toolPracticePlayer,
+  toolAnalyzer,
+  toolTransposer,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -241,6 +243,18 @@ const tools = [
     title: 'Practice player',
     summary: 'Slow a track down (pitch-preserving) and loop a section.',
     enabled: toolPracticePlayer,
+  },
+  {
+    href: '/tools/analyzer',
+    title: 'Chord analyzer',
+    summary: 'Roman numerals and harmonic function for any progression.',
+    enabled: toolAnalyzer,
+  },
+  {
+    href: '/tools/transposer',
+    title: 'Transposer & capo',
+    summary: 'Transpose a progression and find easy capo positions.',
+    enabled: toolTransposer,
   },
 ].filter((tool) => tool.enabled);
 

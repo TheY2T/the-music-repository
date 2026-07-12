@@ -313,8 +313,21 @@ loop via the `timeupdate` handler). Everything runs locally; the file never leav
   sets `playbackRate` (0.6×) and the toggle flips `preservesPitch` true→false; A–B loop buttons present.
 - Build/lint/check-types green across the workspace (25/25).
 
+## Backlog extensions (from `docs/backlog.md`)
+
+Two of the Group-2 backlog tools shipped (dependency-free, reusing `music-theory.ts`):
+
+- **Chord analyzer** `/tools/analyzer` (`tools.analyzer`) — build a progression in a key; each chord
+  shows its **Roman numeral** + **function** (Tonic / Predominant / Dominant, colour-coded), with
+  non-diatonic chords flagged **borrowed**. New pure helper `analyzeChordInKey(keyRoot, chordRoot,
+  chordKey)`. *Verified:* C: I–V–vi–IV → I(T)/V(D)/vi(T)/IV(P); B♭ in C → ♭VII "borrowed".
+- **Transposer & capo** `/tools/transposer` (`tools.transposer`) — transpose a progression by semitones
+  (original vs transposed rows, both playable) + **capo suggestions** mapping the new key to open-chord
+  shapes (C A G E D) via `capoSuggestions(tonicPc)`. *Verified:* C G Am F +2 → D A Bm G; capo D → no
+  capo / Capo 2 (C shapes) / Capo 5 (A) / Capo 7 (G).
+
 ## Next slices (Phase 5 menu)
 
 - Notation player: MusicXML/multi-voice rendering, rests & beaming, soundfont audio.
 - Pitch-preserving tempo + loop/section on hosted audio recordings.
-- More licks/voicings; hammer-on/pull-off notation.
+- More backlog tools: Web MIDI input, melodic/rhythm dictation, groove/bass-line generators.

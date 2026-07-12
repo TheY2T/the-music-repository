@@ -122,6 +122,8 @@ src/
   loops per-string picking patterns (bass/alt-bass + treble) over a chord, reusing the chord exports.
 - Arpeggio player at `/tools/arpeggio` (`tools.arpeggio`) — `ArpeggioPlayer.tsx` loops a chord's tones
   one-at-a-time in a chosen direction (up/down/up-down).
+- Backlog tools (from `docs/backlog.md`): Chord analyzer `/tools/analyzer` (`tools.analyzer`,
+  `analyzeChordInKey`) and Transposer & capo `/tools/transposer` (`tools.transposer`, `capoSuggestions`).
 - Progression play-along at `/tools/progression-player` (`tools.progression-player`) — loops a chord
   progression one bar per chord (reuses the chord exports + `strumChord`).
 - Rhythm trainer at `/tools/rhythm` (`tools.rhythm`) — `RhythmTrainer.tsx` plays a one-bar rhythm over a

@@ -32,8 +32,8 @@ Status legend: 🟢 dependency-free · 📚 needs a client library · 💳 needs
 | 🟢 **Sight-singing / solfège trainer** | Scale degrees on a staff, movable-do | Med | Med |
 | 🟢 **Rhythm dictation / tap-to-match** | A rhythm plays; tap it back → timing-accuracy scoring | Med | High |
 | 🟢 **Key-signature & interval-construction quizzes** | Round out the quiz family | Low | Med |
-| 🟢 **Nashville-number / Roman-numeral analyzer** | Type a progression → functional analysis + a reharmonization suggestion | Med | High |
-| 🟢 **Transposer / capo tool** | Transpose a chart; find capo positions | Low | Med |
+| ✅ **Roman-numeral analyzer** | **Shipped** `/tools/analyzer` (`tools.analyzer`) — Roman numerals + Tonic/Predominant/Dominant function + borrowed-chord flag (`analyzeChordInKey`). Reharmonization suggestions still open | Med | High |
+| ✅ **Transposer / capo tool** | **Shipped** `/tools/transposer` (`tools.transposer`) — transpose a progression + capo suggestions (`capoSuggestions`) | Low | Med |
 | 🟢 **Drum-pattern / groove library** | Genre grooves on the existing sequencer engine | Low | Med |
 | 🟢 **Bass-line generator** | Walking / root-fifth bass over the backing track | Med | Med |
 

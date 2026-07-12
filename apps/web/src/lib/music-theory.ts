@@ -140,6 +140,102 @@ export function intervalLabel(semitones: number): string {
   return INTERVAL_LABELS[((semitones % 12) + 12) % 12];
 }
 
+// --- Functional / Roman-numeral analysis ---
+
+const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
+// Semitone-from-tonic → scale degree number + accidental (major-key spelling).
+const DEGREE_BY_SEMITONE: { num: number; accidental: '' | '♭' | '♯' }[] = [
+  { num: 1, accidental: '' },
+  { num: 2, accidental: '♭' },
+  { num: 2, accidental: '' },
+  { num: 3, accidental: '♭' },
+  { num: 3, accidental: '' },
+  { num: 4, accidental: '' },
+  { num: 5, accidental: '♭' },
+  { num: 5, accidental: '' },
+  { num: 6, accidental: '♭' },
+  { num: 6, accidental: '' },
+  { num: 7, accidental: '♭' },
+  { num: 7, accidental: '' },
+];
+// Diatonic triad quality of each major-scale degree.
+const MAJOR_KEY_QUALITIES = ['major', 'minor', 'minor', 'major', 'major', 'minor', 'diminished'];
+const FUNCTION_BY_DEGREE = [
+  'Tonic',
+  'Predominant',
+  'Tonic',
+  'Predominant',
+  'Dominant',
+  'Tonic',
+  'Dominant',
+];
+// Roman-numeral suffix per chord quality key.
+const ROMAN_SUFFIX: Record<string, string> = {
+  major: '',
+  minor: '',
+  diminished: '°',
+  augmented: '+',
+  sus2: 'sus2',
+  sus4: 'sus4',
+  'major-7': 'maj7',
+  'minor-7': '7',
+  'dominant-7': '7',
+  'diminished-7': '°7',
+};
+const LOWERCASE_QUALITIES = new Set(['minor', 'diminished', 'minor-7', 'diminished-7']);
+
+export interface ChordAnalysis {
+  roman: string;
+  /** Harmonic function: Tonic / Predominant / Dominant. */
+  role: string;
+  diatonic: boolean;
+}
+
+/** Analyse a chord's Roman numeral + function within a major key. */
+export function analyzeChordInKey(
+  keyRoot: number,
+  chordRoot: number,
+  chordKey: string,
+): ChordAnalysis {
+  const semis = (((chordRoot - keyRoot) % 12) + 12) % 12;
+  const { num, accidental } = DEGREE_BY_SEMITONE[semis];
+  const base = ROMAN_NUMERALS[num - 1];
+  const numeral = LOWERCASE_QUALITIES.has(chordKey) ? base.toLowerCase() : base;
+  const roman = `${accidental}${numeral}${ROMAN_SUFFIX[chordKey] ?? ''}`;
+
+  const baseQuality = chordKey.startsWith('minor')
+    ? 'minor'
+    : chordKey.startsWith('diminished')
+      ? 'diminished'
+      : chordKey === 'augmented'
+        ? 'augmented'
+        : 'major';
+  const diatonic = accidental === '' && baseQuality === MAJOR_KEY_QUALITIES[num - 1];
+  return { roman, role: FUNCTION_BY_DEGREE[num - 1], diatonic };
+}
+
+// Easy open-chord keys on guitar (CAGED tonics): C, A, G, E, D.
+const OPEN_SHAPE_KEYS = [0, 9, 7, 4, 2];
+
+export interface CapoSuggestion {
+  fret: number;
+  shapeKey: number;
+}
+
+/** Capo positions (fret 0–7) that let a song in `tonicPc` be played with open-chord shapes. */
+export function capoSuggestions(tonicPc: number): CapoSuggestion[] {
+  const seen = new Set<number>();
+  const out: CapoSuggestion[] = [];
+  for (const shapeKey of OPEN_SHAPE_KEYS) {
+    const fret = (((tonicPc - shapeKey) % 12) + 12) % 12;
+    if (fret <= 7 && !seen.has(fret)) {
+      seen.add(fret);
+      out.push({ fret, shapeKey });
+    }
+  }
+  return out.sort((a, b) => a.fret - b.fret);
+}
+
 /** Full interval names for 0–12 semitones. */
 export const INTERVAL_NAMES = [
   'Perfect unison',
