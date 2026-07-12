@@ -6,7 +6,15 @@ import { CatalogueSearch } from '../ports/catalogue-search.port';
 export class SearchCatalogueUseCase {
   constructor(private readonly search: CatalogueSearch) {}
 
-  execute(query: CatalogueQuery): Promise<CatalogueResult> {
-    return this.search.search(query);
+  /** `entitled` = the viewer may access premium content; premium items are flagged `locked` otherwise. */
+  async execute(query: CatalogueQuery, entitled: boolean): Promise<CatalogueResult> {
+    const result = await this.search.search(query);
+    return {
+      ...result,
+      items: result.items.map((item) => ({
+        ...item,
+        locked: item.visibility === 'premium' && !entitled,
+      })),
+    };
   }
 }

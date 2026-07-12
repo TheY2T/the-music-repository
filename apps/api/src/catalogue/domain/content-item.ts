@@ -45,6 +45,8 @@ export interface ContentSummaryView {
   type: string;
   difficulty?: number;
   visibility: string;
+  /** True when this premium item is withheld from the current viewer (Phase 6). */
+  locked?: boolean;
   genres: TaxonomyRef[];
   instruments: TaxonomyRef[];
   topics: TaxonomyRef[];
@@ -146,5 +148,17 @@ export function toContentDetailView(item: ContentItem, media: MediaView[]): Cont
     media,
     createdAt: item.createdAt.toISOString(),
     updatedAt: item.updatedAt.toISOString(),
+  };
+}
+
+/**
+ * A locked preview of premium content for a non-entitled viewer: metadata is visible, but the paywalled
+ * payload (`bodyMdx` + `media`) is withheld and `locked` is set. Media is never presigned.
+ */
+export function toLockedContentDetailView(item: ContentItem): ContentDetailView {
+  return {
+    ...toContentDetailView(item, []),
+    bodyMdx: undefined,
+    locked: true,
   };
 }

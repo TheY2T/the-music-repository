@@ -84,6 +84,24 @@ write-side features:
 - **List responses wrap in `{ items }`** to match the contract; `POST .../publish` sets `@HttpCode(200)`
   (Nest defaults POST to 201).
 
+## Monetization / entitlements (Phase 6, ADR 0015)
+
+Premium gating lives in `src/entitlements/`. `Entitlements` port (`getPremium`/`grantPremium`/
+`revokePremium`) ← `DrizzleEntitlements` (`entitlements` table); request-scoped `PremiumAccessService`
+combines `CurrentUser` + `Entitlements` into **entitled = staff OR active premium grant**.
+`SubscriptionController` exposes `/me/subscription` (get/activate/cancel — a **mock checkout**), gated by
+`monetization.premium` via **method-level** `@RequireFlagsEnabled` (class-level drops route mapping).
+
+- **Catalogue gating** = locked preview: the controller resolves `entitled` (flag + `PremiumAccessService`)
+  and passes a plain boolean into the pure `SearchCatalogue`/`GetContentBySlug` use-cases; premium items
+  get `locked` + (detail) `bodyMdx`/media withheld (`toLockedContentDetailView`).
+- **Reading the viewer on public routes:** the catalogue is anonymous, so use `ResolveOptionalAuth()`
+  (wraps the library's `@OptionalAuth()`) — resolves the session when present, never rejects anon. Plain
+  `@RequireAuth()` still can't populate `CurrentUser` on an otherwise-public route.
+- **New flag keys need flagd reloaded** (`docker compose … restart flagd`) or `@RequireFlagsEnabled`
+  route-gates 404 while the imperative `getBooleanValue(default)` path still works.
+- The seed upsert updates `visibility`; mark premium items with `visibility: 'premium'` in `seed-data.ts`.
+
 ## Config
 
 Env is validated at boot by Zod (`src/config/env.ts`) via `@nestjs/config`. Add new vars there.

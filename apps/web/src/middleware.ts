@@ -233,6 +233,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.ToolPracticePlayer,
     FlagDefaults[FlagKeys.ToolPracticePlayer],
   );
+  const premium = await client.getBooleanValue(FlagKeys.Premium, FlagDefaults[FlagKeys.Premium]);
 
   context.locals.flags = {
     demoNewBanner,
@@ -277,6 +278,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     toolMusicXml,
     toolMultiVoice,
     toolPracticePlayer,
+    premium,
   };
   context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
   return next();

@@ -3,6 +3,7 @@ import {
   type ContentDetailView,
   type MediaView,
   toContentDetailView,
+  toLockedContentDetailView,
 } from '../../domain/content-item';
 import { ContentNotFoundError } from '../../domain/errors/content-not-found.error';
 import { ContentRepository } from '../ports/content-repository.port';
@@ -15,10 +16,16 @@ export class GetContentBySlugUseCase {
     private readonly media: MediaLibrary,
   ) {}
 
-  async execute(slug: string): Promise<ContentDetailView> {
+  /** `entitled` = the viewer may access premium content; otherwise premium returns a locked preview. */
+  async execute(slug: string, entitled: boolean): Promise<ContentDetailView> {
     const item = await this.repository.getBySlug(slug);
     if (!item || item.status !== 'published') {
       throw new ContentNotFoundError(slug);
+    }
+
+    // Premium content for a non-entitled viewer: metadata only, no body/media (never presigned).
+    if (item.visibility === 'premium' && !entitled) {
+      return toLockedContentDetailView(item);
     }
 
     const media: MediaView[] = await Promise.all(

@@ -82,8 +82,11 @@ export class MeilisearchCatalogueSearch extends CatalogueSearch implements OnMod
   }
 
   async search(query: CatalogueQuery): Promise<CatalogueResult> {
-    // Per-facet OR (nested arrays), across-facet AND. Only public content is searchable here.
-    const filter: (string | string[])[] = ["visibility = 'public'"];
+    // Per-facet OR (nested arrays), across-facet AND. All published visibilities are searchable;
+    // premium items surface as locked previews (the use-case sets `locked` per the viewer's entitlement).
+    const filter: (string | string[])[] = [
+      ["visibility = 'public'", "visibility = 'authed'", "visibility = 'premium'"],
+    ];
     if (query.type) {
       filter.push(`type = '${query.type}'`);
     }

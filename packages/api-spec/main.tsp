@@ -103,6 +103,8 @@ model ContentSummary {
   type: ContentType;
   difficulty?: int32;
   visibility: Visibility;
+  /** True when this is premium content the current viewer is not entitled to (body/media withheld). */
+  locked?: boolean;
   genres: TaxonomyRef[];
   instruments: TaxonomyRef[];
   topics: TaxonomyRef[];
@@ -623,5 +625,38 @@ op updateHelpTopic(@path slug: string, @body body: HelpTopicWriteInput): HelpTop
 @tag("help")
 @delete
 op deleteHelpTopic(@path slug: string): {
+  @statusCode statusCode: 204;
+};
+
+// ===================== Monetization (Phase 6) =====================
+// Premium entitlements gate `visibility: "premium"` content. The subscription endpoints are a local,
+// mock stand-in for a payment provider's checkout + webhook (no real billing wired yet). Auth-gated.
+
+/** The current user's premium-entitlement status. */
+model SubscriptionStatus {
+  premium: boolean;
+  /** How premium was granted: "subscription" (mock checkout), "staff" (admin/editor), or "none". */
+  source: string;
+  /** ISO timestamp premium was granted, when applicable. */
+  since?: string;
+}
+
+/** The current user's subscription/entitlement status. */
+@route("/me/subscription")
+@tag("monetization")
+@get
+op getSubscription(): SubscriptionStatus;
+
+/** Activate premium (mock checkout — stands in for a payment-provider webhook). */
+@route("/me/subscription/activate")
+@tag("monetization")
+@post
+op activateSubscription(): SubscriptionStatus;
+
+/** Cancel premium. */
+@route("/me/subscription")
+@tag("monetization")
+@delete
+op cancelSubscription(): {
   @statusCode statusCode: 204;
 };

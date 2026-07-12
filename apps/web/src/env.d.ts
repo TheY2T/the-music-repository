@@ -46,6 +46,7 @@ declare namespace App {
       toolMusicXml: boolean;
       toolMultiVoice: boolean;
       toolPracticePlayer: boolean;
+      premium: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {

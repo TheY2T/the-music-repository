@@ -7,6 +7,7 @@ import { CatalogueModule } from './catalogue/catalogue.module';
 import { CollectionsModule } from './collections/collections.module';
 import { validateEnv } from './config/env';
 import { DemoModule } from './demo/demo.module';
+import { EntitlementsModule } from './entitlements/entitlements.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { FeatureFlagsModule } from './flags/feature-flags.module';
 import { HealthModule } from './health/health.module';
@@ -32,6 +33,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     HealthModule,
     DemoModule,
     CatalogueModule,
+    EntitlementsModule,
     AuthoringModule,
     FavoritesModule,
     CollectionsModule,

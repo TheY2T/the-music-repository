@@ -1,5 +1,10 @@
 import { applyDecorators, UseGuards } from '@nestjs/common';
-import { AuthGuard, type PermissionCheck, UserHasPermission } from '@thallesp/nestjs-better-auth';
+import {
+  AuthGuard,
+  OptionalAuth,
+  type PermissionCheck,
+  UserHasPermission,
+} from '@thallesp/nestjs-better-auth';
 
 /**
  * Route protection helpers. The global auth guard is disabled (public catalogue stays anonymous), so
@@ -10,6 +15,15 @@ import { AuthGuard, type PermissionCheck, UserHasPermission } from '@thallesp/ne
 /** Require an authenticated session (any role). Anonymous → 401. */
 export function RequireAuth(): ReturnType<typeof applyDecorators> {
   return applyDecorators(UseGuards(AuthGuard));
+}
+
+/**
+ * Resolve the session when present but never reject anonymous — for otherwise-public routes that adapt
+ * to the acting user (e.g. the catalogue gating premium content by entitlement). Populates the request
+ * so the `CurrentUser` port sees a logged-in user.
+ */
+export function ResolveOptionalAuth(): ReturnType<typeof applyDecorators> {
+  return applyDecorators(UseGuards(AuthGuard), OptionalAuth());
 }
 
 /**

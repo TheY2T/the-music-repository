@@ -46,6 +46,7 @@ export const CreateCollectionResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -84,6 +85,7 @@ export const GetCollectionForEditResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -130,6 +132,7 @@ export const UpdateCollectionResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -182,6 +185,7 @@ export const SetCollectionItemsResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -220,6 +224,7 @@ export const PublishCollectionResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -258,6 +263,7 @@ export const UnpublishCollectionResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -338,6 +344,7 @@ export const SearchCatalogueResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -398,6 +405,7 @@ export const GetContentBySlugResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -444,6 +452,7 @@ export const GetRelatedContentResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -499,6 +508,7 @@ export const GetCollectionBySlugResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -559,6 +569,7 @@ export const CreateContentResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -607,6 +618,7 @@ export const GetContentForEditResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -672,6 +684,7 @@ export const UpdateContentResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -746,6 +759,7 @@ export const PublishContentResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -791,6 +805,7 @@ export const UnpublishContentResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -878,6 +893,7 @@ export const ListFavoritesResponse = zod.object({
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "difficulty": zod.number().optional(),
   "visibility": zod.enum(['public', 'authed', 'premium']),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
   "genres": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -1025,6 +1041,32 @@ export const GradeCardResponse = zod.object({
   "repetitions": zod.number(),
   "dueAt": zod.string()
 }).describe('SM-2 scheduling state for a single card.')
+
+
+/**
+ * The current user's subscription/entitlement status.
+ */
+export const GetSubscriptionResponse = zod.object({
+  "premium": zod.boolean(),
+  "source": zod.string().describe('How premium was granted: \"subscription\" (mock checkout), \"staff\" (admin\/editor), or \"none\".'),
+  "since": zod.string().optional().describe('ISO timestamp premium was granted, when applicable.')
+}).describe('The current user\'s premium-entitlement status.')
+
+
+/**
+ * Cancel premium.
+ */
+export const CancelSubscriptionResponse = zod.void()
+
+
+/**
+ * Activate premium (mock checkout — stands in for a payment-provider webhook).
+ */
+export const ActivateSubscriptionResponse = zod.object({
+  "premium": zod.boolean(),
+  "source": zod.string().describe('How premium was granted: \"subscription\" (mock checkout), \"staff\" (admin\/editor), or \"none\".'),
+  "since": zod.string().optional().describe('ISO timestamp premium was granted, when applicable.')
+}).describe('The current user\'s premium-entitlement status.')
 
 
 /**

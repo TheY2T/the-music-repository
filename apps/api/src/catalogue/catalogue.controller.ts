@@ -1,4 +1,9 @@
+import { FlagDefaults, FlagKeys } from '@TheY2T/tmr-flags';
 import { Controller, Get, Param, Query } from '@nestjs/common';
+import { OpenFeatureClient } from '@openfeature/nestjs-sdk';
+import type { Client } from '@openfeature/server-sdk';
+import { ResolveOptionalAuth } from '../auth/require-permissions.decorator';
+import { PremiumAccessService } from '../entitlements/application/premium-access.service';
 import { GetContentBySlugUseCase } from './application/use-cases/get-content-by-slug.use-case';
 import { GetRelatedContentUseCase } from './application/use-cases/get-related-content.use-case';
 import { SearchCatalogueUseCase } from './application/use-cases/search-catalogue.use-case';
@@ -12,16 +17,29 @@ export class CatalogueController {
     private readonly searchCatalogue: SearchCatalogueUseCase,
     private readonly getContent: GetContentBySlugUseCase,
     private readonly getRelated: GetRelatedContentUseCase,
+    private readonly premiumAccess: PremiumAccessService,
+    @OpenFeatureClient() private readonly flags: Client,
   ) {}
 
+  /** May the current viewer access premium content? True for everyone when gating is flagged off. */
+  private async resolveEntitled(): Promise<boolean> {
+    const gatingOn = await this.flags.getBooleanValue(
+      FlagKeys.Premium,
+      FlagDefaults[FlagKeys.Premium],
+    );
+    return gatingOn ? this.premiumAccess.isEntitled() : true;
+  }
+
   @Get('items')
-  search(@Query() query: RawQuery) {
-    return this.searchCatalogue.execute(normalizeQuery(query));
+  @ResolveOptionalAuth()
+  async search(@Query() query: RawQuery) {
+    return this.searchCatalogue.execute(normalizeQuery(query), await this.resolveEntitled());
   }
 
   @Get('items/:slug')
-  detail(@Param('slug') slug: string) {
-    return this.getContent.execute(slug);
+  @ResolveOptionalAuth()
+  async detail(@Param('slug') slug: string) {
+    return this.getContent.execute(slug, await this.resolveEntitled());
   }
 
   @Get('items/:slug/related')

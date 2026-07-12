@@ -145,6 +145,15 @@ src/
   `answer(card)`. `src/lib/reviews-api.ts` calls the SM-2 backend; `DrillsHub` + `ReviewSession` islands.
   The server only stores scheduling state (see ADR 0014) — add a deck without touching the backend.
 
+## Monetization / premium (Phase 6)
+
+- `src/lib/subscription-api.ts` — credentialed `getSubscription`/`activatePremium`/`cancelPremium`.
+- `UpgradePanel.tsx` backs `/upgrade` (gated on `premium` flag + login) — a **mock checkout** (Free →
+  Activate → Premium active/Cancel; staff see a note, no button).
+- Premium gating is driven by the API's `item.locked`: a 🔒 Premium badge on catalogue cards
+  (`CatalogueBrowser`) and a locked upgrade panel on the detail page (`ContentDetail`). No client-side
+  entitlement logic — the API decides. Home shows a "Premium" link when logged in + flag on.
+
 ## Feature flags
 
 - **SSR:** `src/middleware.ts` sets the flagd provider and evaluates flags per request into

@@ -77,27 +77,45 @@ function Detail({ slug }: { slug: string }) {
         </div>
       </header>
 
-      {pdf ? (
-        <section className="space-y-2">
-          <h2 className="font-semibold">Score</h2>
-          <iframe
-            title={pdf.filename}
-            src={pdf.url}
-            className="h-[600px] w-full rounded-lg border border-border"
-          />
-          <a href={pdf.url} target="_blank" rel="noreferrer" className="text-sm underline">
-            Open / download PDF
+      {item.locked ? (
+        <section className="space-y-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-6 text-center">
+          <p className="text-lg font-semibold">🔒 Premium content</p>
+          <p className="text-sm text-muted-foreground">
+            Subscribe to unlock the full score, recording, and lesson for this and every premium
+            item.
+          </p>
+          <a
+            href="/upgrade"
+            className="inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+          >
+            Upgrade to premium
           </a>
         </section>
-      ) : null}
+      ) : (
+        <>
+          {pdf ? (
+            <section className="space-y-2">
+              <h2 className="font-semibold">Score</h2>
+              <iframe
+                title={pdf.filename}
+                src={pdf.url}
+                className="h-[600px] w-full rounded-lg border border-border"
+              />
+              <a href={pdf.url} target="_blank" rel="noreferrer" className="text-sm underline">
+                Open / download PDF
+              </a>
+            </section>
+          ) : null}
 
-      {audio ? (
-        <section className="space-y-2">
-          <h2 className="font-semibold">Recording</h2>
-          {/* biome-ignore lint/a11y/useMediaCaption: public-domain recordings have no captions. */}
-          <audio controls src={audio.url} className="w-full" />
-        </section>
-      ) : null}
+          {audio ? (
+            <section className="space-y-2">
+              <h2 className="font-semibold">Recording</h2>
+              {/* biome-ignore lint/a11y/useMediaCaption: public-domain recordings have no captions. */}
+              <audio controls src={audio.url} className="w-full" />
+            </section>
+          ) : null}
+        </>
+      )}
 
       {item.attribution || item.license || item.source ? (
         <footer className="space-y-1 rounded-lg border border-border p-4 text-sm text-muted-foreground">

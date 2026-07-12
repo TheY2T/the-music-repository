@@ -9,6 +9,7 @@ const canAuthor = adminCms && (user?.role === 'admin' || user?.role === 'editor'
 const showFavorites = favorites && !!user;
 const showProgress = progress && !!user;
 const showDrills = Astro.locals.flags.trainers && !!user;
+const showUpgrade = Astro.locals.flags.premium && !!user;
 const {
   toolKeyboard,
   toolCircleOfFifths,
@@ -133,6 +134,12 @@ const showTools =
                     <>
                       {' · '}
                       <a href="/me/favorites" class="underline">My favorites</a>
+                    </>
+                  )}
+                  {showUpgrade && (
+                    <>
+                      {' · '}
+                      <a href="/upgrade" class="underline">Premium</a>
                     </>
                   )}
                   {canAuthor && (

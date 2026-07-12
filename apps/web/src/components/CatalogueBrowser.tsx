@@ -149,6 +149,11 @@ function Browser({ showFavorites }: { showFavorites: boolean }) {
                   {item.difficulty ? (
                     <span className="text-xs text-muted-foreground">Grade {item.difficulty}</span>
                   ) : null}
+                  {item.locked ? (
+                    <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400">
+                      🔒 Premium
+                    </span>
+                  ) : null}
                 </div>
                 <h2 className="font-semibold leading-snug">{item.title}</h2>
                 {item.summary ? (

@@ -52,6 +52,8 @@ export interface SeedContent {
   attribution: string;
   license: string;
   withPdf?: boolean;
+  /** Phase 6 — `premium` gates the item behind an entitlement; defaults to `public`. */
+  visibility?: string;
 }
 
 const PD = 'Public Domain';
@@ -100,6 +102,8 @@ export const CONTENT: SeedContent[] = [
     source: 'Czerny',
     attribution: 'Carl Czerny',
     license: PD,
+    visibility: 'premium',
+    withPdf: true,
   },
   {
     slug: 'omt-intervals',
@@ -128,6 +132,7 @@ export const CONTENT: SeedContent[] = [
     source: 'Open Music Theory',
     attribution: 'Open Music Theory (CC BY-SA 4.0)',
     license: 'CC BY-SA 4.0',
+    visibility: 'premium',
   },
   {
     slug: 'greensleeves-trad',

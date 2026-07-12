@@ -32,6 +32,9 @@
     },
     {
       "name": "help"
+    },
+    {
+      "name": "monetization"
     }
   ],
   "paths": {
@@ -1256,6 +1259,63 @@
         }
       }
     },
+    "/me/subscription": {
+      "get": {
+        "operationId": "getSubscription",
+        "description": "The current user's subscription/entitlement status.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionStatus"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "monetization"
+        ]
+      },
+      "delete": {
+        "operationId": "cancelSubscription",
+        "description": "Cancel premium.",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "monetization"
+        ]
+      }
+    },
+    "/me/subscription/activate": {
+      "post": {
+        "operationId": "activateSubscription",
+        "description": "Activate premium (mock checkout — stands in for a payment-provider webhook).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionStatus"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "monetization"
+        ]
+      }
+    },
     "/taxonomy/{dimension}": {
       "get": {
         "operationId": "listTaxonomy",
@@ -1692,6 +1752,10 @@
               "premium"
             ]
           },
+          "locked": {
+            "type": "boolean",
+            "description": "True when this is premium content the current viewer is not entitled to (body/media withheld)."
+          },
           "genres": {
             "type": "array",
             "items": {
@@ -1787,6 +1851,10 @@
               "authed",
               "premium"
             ]
+          },
+          "locked": {
+            "type": "boolean",
+            "description": "True when this is premium content the current viewer is not entitled to (body/media withheld)."
           },
           "genres": {
             "type": "array",
@@ -2392,6 +2460,27 @@
             "format": "int32"
           }
         }
+      },
+      "SubscriptionStatus": {
+        "type": "object",
+        "required": [
+          "premium",
+          "source"
+        ],
+        "properties": {
+          "premium": {
+            "type": "boolean"
+          },
+          "source": {
+            "type": "string",
+            "description": "How premium was granted: \"subscription\" (mock checkout), \"staff\" (admin/editor), or \"none\"."
+          },
+          "since": {
+            "type": "string",
+            "description": "ISO timestamp premium was granted, when applicable."
+          }
+        },
+        "description": "The current user's premium-entitlement status."
       },
       "TaxonomyList": {
         "type": "object",

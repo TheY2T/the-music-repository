@@ -101,6 +101,8 @@ export const FlagKeys = {
   ToolMultiVoice: 'tools.multi-voice',
   /** Phase 5 — pitch-preserving time-stretch practice player. */
   ToolPracticePlayer: 'tools.practice-player',
+  /** Phase 6 — premium entitlements gate `visibility=premium` content + the subscription flow. */
+  Premium: 'monetization.premium',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -149,4 +151,5 @@ export const FlagDefaults = {
   [FlagKeys.ToolMusicXml]: true,
   [FlagKeys.ToolMultiVoice]: true,
   [FlagKeys.ToolPracticePlayer]: true,
+  [FlagKeys.Premium]: true,
 } satisfies Record<FlagKey, boolean>;

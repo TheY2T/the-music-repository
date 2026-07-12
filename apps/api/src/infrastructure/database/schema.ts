@@ -221,6 +221,22 @@ export const reviewLog = pgTable('review_log', {
   reviewedAt: timestamp('reviewed_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+// --- Entitlements (Phase 6): premium access grants per user (e.g. `premium`). A grant is a local
+//     stand-in for a payment-provider subscription; `expires_at` null = no expiry. ---
+export const entitlements = pgTable(
+  'entitlements',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    key: text('key').notNull(), // e.g. 'premium'
+    source: text('source').notNull().default('subscription'), // subscription | staff | manual
+    grantedAt: timestamp('granted_at', { withTimezone: true }).notNull().defaultNow(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.key] })],
+);
+
 // --- Info View (Phase 2): context-sensitive help topics keyed by slug (e.g. a term or skill_topic). ---
 export const helpTopics = pgTable('help_topics', {
   id: uuid('id').primaryKey().defaultRandom(),
