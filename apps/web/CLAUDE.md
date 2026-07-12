@@ -150,6 +150,24 @@ src/
   stacked-notehead staff of diatonic triads. Practice player `/tools/practice-player`
   (`tools.practice-player`) — `HTMLAudioElement.playbackRate` + `preservesPitch` (pitch-preserving) +
   A–B loop, on a locally-loaded file. See `docs/features/play-along.md`.
+- **Integrative + library tools (latest backlog batch):** Interval-construction quiz `/tools/interval-quiz`
+  (`tools.interval-quiz`). Practice room `/tools/practice-room` (`tools.practice-room`) — a looping
+  band (drums + walking bass + comping) over a progression with the current chord diagram + beat cursor,
+  reusing `scheduleDrum`/`scheduleTone` + the chord-diagram exports. The metronome gained **tap-tempo**;
+  the chord analyzer saves/loads named progressions to `localStorage` via `src/lib/saved-progressions.ts`
+  (`tmr.savedProgressions`).
+- **The two library tools (first runtime deps in web):**
+  - Score rendering `/tools/score` (`tools.score`) — `ScoreRenderer.tsx` **dynamic-imports `verovio/esm`
+    + `verovio/wasm`** (`new VerovioToolkit(await createModule())`) to engrave MusicXML/MEI → SVG
+    (rendered via `dangerouslySetInnerHTML`; the markup is Verovio's own trusted output). Verovio ships
+    no types for its subpath exports → `src/verovio.d.ts` declares them.
+  - Sampled instruments `/tools/soundfont` (`tools.soundfont`) — `SoundfontPlayer.tsx` over
+    `src/lib/soundfont.ts`, which **lazily `import('smplr')`** and loads a GM `Soundfont`. Samples stream
+    from a CDN, so `loadSoundfont` catches failures and returns `'fallback'`; `playNote` then uses the
+    oscillator engine (`playTone`) so the keyboard always sounds. Also plays live `useMidiInput`.
+  - **Vite gotcha:** after `pnpm add`-ing a browser library (verovio/smplr), the running Astro dev
+    server must be restarted (or `rm -rf apps/web/node_modules/.vite`) so Vite re-optimizes deps —
+    otherwise islands fail to hydrate with `504 Outdated Optimize Dep` / `_jsxDEV is not a function`.
 
 ## Trainers / drills (Phase 4)
 

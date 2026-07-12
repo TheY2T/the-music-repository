@@ -353,6 +353,30 @@
       },
       "defaultVariant": "on"
     },
+    "tools.interval-quiz": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
+    "tools.practice-room": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
+    "tools.score": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "monetization.premium": {
       "state": "ENABLED",
       "variants": {
@@ -441,6 +465,14 @@
           }
         ]
       }
+    },
+    "tools.soundfont": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
     }
   }
 }

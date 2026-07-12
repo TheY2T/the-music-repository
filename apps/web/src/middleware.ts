@@ -265,6 +265,22 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.ToolKeyQuiz,
     FlagDefaults[FlagKeys.ToolKeyQuiz],
   );
+  const toolIntervalQuiz = await client.getBooleanValue(
+    FlagKeys.ToolIntervalQuiz,
+    FlagDefaults[FlagKeys.ToolIntervalQuiz],
+  );
+  const toolPracticeRoom = await client.getBooleanValue(
+    FlagKeys.ToolPracticeRoom,
+    FlagDefaults[FlagKeys.ToolPracticeRoom],
+  );
+  const toolScore = await client.getBooleanValue(
+    FlagKeys.ToolScore,
+    FlagDefaults[FlagKeys.ToolScore],
+  );
+  const toolSoundfont = await client.getBooleanValue(
+    FlagKeys.ToolSoundfont,
+    FlagDefaults[FlagKeys.ToolSoundfont],
+  );
   const premium = await client.getBooleanValue(FlagKeys.Premium, FlagDefaults[FlagKeys.Premium]);
   const classrooms = await client.getBooleanValue(
     FlagKeys.Classrooms,
@@ -322,6 +338,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
     toolGrooves,
     toolSolfege,
     toolKeyQuiz,
+    toolIntervalQuiz,
+    toolPracticeRoom,
+    toolScore,
+    toolSoundfont,
     premium,
     classrooms,
   };

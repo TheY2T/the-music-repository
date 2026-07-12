@@ -117,6 +117,14 @@ export const FlagKeys = {
   ToolSolfege: 'tools.solfege',
   /** Phase 5 — key-signature quiz. */
   ToolKeyQuiz: 'tools.key-quiz',
+  /** Phase 5 — interval-construction quiz. */
+  ToolIntervalQuiz: 'tools.interval-quiz',
+  /** Phase 5 — combined practice room (jam station). */
+  ToolPracticeRoom: 'tools.practice-room',
+  /** Phase 5 — full score rendering via Verovio (WASM). */
+  ToolScore: 'tools.score',
+  /** Phase 5 — sampled General-MIDI instrument playback (smplr soundfonts). */
+  ToolSoundfont: 'tools.soundfont',
   /** Phase 6 — premium entitlements gate `visibility=premium` content + the subscription flow. */
   Premium: 'monetization.premium',
   /** Phase 6 — teacher/classroom mode (create/join classrooms, grant premium to a class). */
@@ -177,6 +185,10 @@ export const FlagDefaults = {
   [FlagKeys.ToolGrooves]: true,
   [FlagKeys.ToolSolfege]: true,
   [FlagKeys.ToolKeyQuiz]: true,
+  [FlagKeys.ToolIntervalQuiz]: true,
+  [FlagKeys.ToolPracticeRoom]: true,
+  [FlagKeys.ToolScore]: true,
+  [FlagKeys.ToolSoundfont]: true,
   [FlagKeys.Premium]: true,
   [FlagKeys.Classrooms]: true,
 } satisfies Record<FlagKey, boolean>;

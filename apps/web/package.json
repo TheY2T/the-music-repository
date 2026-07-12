@@ -29,9 +29,11 @@
     "marked": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "smplr": "^1.0.0",
     "tailwind-merge": "catalog:",
     "tailwindcss": "catalog:",
-    "tw-animate-css": "catalog:"
+    "tw-animate-css": "catalog:",
+    "verovio": "^6.2.0"
   },
   "devDependencies": {
     "@TheY2T/tmr-config-eslint": "workspace:*",

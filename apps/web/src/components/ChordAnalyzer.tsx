@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import {
   analyzeChordInKey,
@@ -7,6 +7,12 @@ import {
   pitchName,
   ROOT_CHOICES,
 } from '@/lib/music-theory';
+import {
+  deleteProgression,
+  listSaved,
+  type SavedProgression,
+  saveProgression,
+} from '@/lib/saved-progressions';
 
 interface ProgChord {
   root: number;
@@ -48,6 +54,12 @@ export default function ChordAnalyzer() {
   const [chords, setChords] = useState<ProgChord[]>(PRESETS[0].chords);
   const [addRoot, setAddRoot] = useState(0);
   const [addQuality, setAddQuality] = useState('major');
+  const [saved, setSaved] = useState<SavedProgression[]>([]);
+  const [saveName, setSaveName] = useState('');
+
+  useEffect(() => {
+    setSaved(listSaved());
+  }, []);
 
   const flats = [1, 3, 5, 8, 10].includes(keyRoot);
 
@@ -193,6 +205,64 @@ export default function ChordAnalyzer() {
       ) : (
         <p className="text-sm text-muted-foreground">Add chords to see their Roman numerals.</p>
       )}
+
+      {/* Save / load (localStorage) */}
+      <div className="space-y-2 rounded-lg border border-border p-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm font-medium">Save progression:</span>
+          <input
+            value={saveName}
+            onChange={(e) => setSaveName(e.target.value)}
+            placeholder="Name"
+            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              if (saveName.trim() && chords.length) {
+                setSaved(saveProgression({ name: saveName.trim(), keyRoot, chords }));
+                setSaveName('');
+              }
+            }}
+            className="rounded-md bg-primary px-3 py-1 text-sm font-medium text-primary-foreground"
+          >
+            Save
+          </button>
+        </div>
+        {saved.length ? (
+          <ul className="space-y-1 text-sm">
+            {saved.map((p) => (
+              <li key={p.name} className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setKeyRoot(p.keyRoot);
+                    setChords(p.chords);
+                  }}
+                  className="underline"
+                >
+                  {p.name}
+                </button>
+                <span className="text-xs text-muted-foreground">
+                  {pitchName(p.keyRoot)} · {p.chords.length} chords
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSaved(deleteProgression(p.name))}
+                  className="text-xs text-muted-foreground underline"
+                >
+                  delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-xs text-muted-foreground">
+            Saved progressions persist in this browser.
+          </p>
+        )}
+      </div>
+
       <p className="text-xs text-muted-foreground">
         Each chord's <strong>Roman numeral</strong> and <strong>function</strong> (Tonic /
         Predominant / Dominant) within the key — non-diatonic chords are flagged "borrowed". Colour

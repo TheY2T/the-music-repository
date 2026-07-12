@@ -44,6 +44,10 @@ const {
   toolGrooves,
   toolSolfege,
   toolKeyQuiz,
+  toolIntervalQuiz,
+  toolPracticeRoom,
+  toolScore,
+  toolSoundfont,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -297,6 +301,30 @@ const tools = [
     title: 'Key signature quiz',
     summary: 'Name the major key from its signature.',
     enabled: toolKeyQuiz,
+  },
+  {
+    href: '/tools/interval-quiz',
+    title: 'Interval construction',
+    summary: 'Build the interval above a given note.',
+    enabled: toolIntervalQuiz,
+  },
+  {
+    href: '/tools/practice-room',
+    title: 'Practice room',
+    summary: 'Jam over a looping band with the chord shapes shown.',
+    enabled: toolPracticeRoom,
+  },
+  {
+    href: '/tools/score',
+    title: 'Score rendering',
+    summary: 'Full music engraving from MusicXML / MEI (Verovio).',
+    enabled: toolScore,
+  },
+  {
+    href: '/tools/soundfont',
+    title: 'Sampled instruments',
+    summary: 'Play a keyboard with real General-MIDI instrument samples.',
+    enabled: toolSoundfont,
   },
 ].filter((tool) => tool.enabled);
 

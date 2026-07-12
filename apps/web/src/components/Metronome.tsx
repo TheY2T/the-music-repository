@@ -32,6 +32,28 @@ export default function Metronome() {
   const nextNoteTimeRef = useRef(0);
   const beatRef = useRef(0);
   const subPosRef = useRef(0);
+  const tapsRef = useRef<number[]>([]);
+
+  // Tap tempo: average the last few tap intervals into a BPM.
+  function tap() {
+    const now = performance.now();
+    const taps = tapsRef.current;
+    if (taps.length && now - taps[taps.length - 1] > 2000) {
+      taps.length = 0; // long gap → start a new count
+    }
+    taps.push(now);
+    if (taps.length > 4) {
+      taps.shift();
+    }
+    if (taps.length >= 2) {
+      let sum = 0;
+      for (let i = 1; i < taps.length; i += 1) {
+        sum += taps[i] - taps[i - 1];
+      }
+      const detected = Math.round(60000 / (sum / (taps.length - 1)));
+      setBpm(Math.max(40, Math.min(240, detected)));
+    }
+  }
 
   useEffect(() => {
     bpmRef.current = bpm;
@@ -194,6 +216,13 @@ export default function Metronome() {
             ))}
           </select>
         </label>
+        <button
+          type="button"
+          onClick={tap}
+          className="rounded-md border border-border px-4 py-2 text-sm font-medium"
+        >
+          Tap tempo
+        </button>
         <button
           type="button"
           onClick={() => setRunning((r) => !r)}

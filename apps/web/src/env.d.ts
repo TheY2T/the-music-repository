@@ -54,6 +54,10 @@ declare namespace App {
       toolGrooves: boolean;
       toolSolfege: boolean;
       toolKeyQuiz: boolean;
+      toolIntervalQuiz: boolean;
+      toolPracticeRoom: boolean;
+      toolScore: boolean;
+      toolSoundfont: boolean;
       premium: boolean;
       classrooms: boolean;
     };

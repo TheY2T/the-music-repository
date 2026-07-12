@@ -343,6 +343,28 @@ Two of the Group-2 backlog tools shipped (dependency-free, reusing `music-theory
   with movable-do solfège / scale degrees / note names. *Verified:* fa sol mi… ↔ 4 5 3….
 - **Key-signature quiz** `/tools/key-quiz` (`tools.key-quiz`) — name the major key from its signature
   (count + ordered accidental names). *Verified:* 2 flats → B♭ major, graded correct.
+- **Interval-construction quiz** `/tools/interval-quiz` (`tools.interval-quiz`) — build a named interval
+  above a given note by picking the target pitch class; plays the interval on answer. *Verified:*
+  Major 7th above A♭ → G, graded correct.
+- **Practice room** `/tools/practice-room` (`tools.practice-room`) — a looping "band" (drums + walking
+  bass + comping chords) over a chord progression, with the current chord's guitar diagram shown and a
+  per-beat cursor. Reuses `scheduleDrum`/`scheduleTone` + the chord-diagram exports. *Verified:*
+  C–G–Am–F row + diagram, beats advance.
+- **Score rendering** `/tools/score` (`tools.score`) — **Verovio** (WASM) engraves MusicXML/MEI to SVG
+  (multi-voice, beaming, slurs, dynamics the minimal engraver can't do); upload / edit-source / load
+  sample. The **first library dependency**; dynamic-imported so it doesn't weigh down other tools.
+  *Verified:* sample MusicXML → an 840×112 SVG with note glyphs.
+- **Sampled instruments** `/tools/soundfont` (`tools.soundfont`) — a playable keyboard driven by
+  sampled General-MIDI instruments (piano, guitar, strings, organ…) via **smplr** soundfonts,
+  lazy-loaded, with a **graceful fallback** to the oscillator engine when samples can't load; also
+  plays live `useMidiInput`. *Verified:* CDN load → "Sampled instrument ready" + C4; CDN blocked →
+  "using the built-in synth" and the keyboard still sounds.
+- **Metronome tap-tempo** — the metronome (`/tools/metronome`) gained a **Tap tempo** button that
+  averages the last few tap intervals (`performance.now`) → BPM (clamped 40–240), alongside the
+  subdivision + polyrhythm layers. *Verified:* 5 taps @ 500 ms → 119 BPM.
+- **Save & load progressions** — the chord analyzer (`/tools/analyzer`) saves/loads named progressions
+  to `localStorage` via `src/lib/saved-progressions.ts` (key `tmr.savedProgressions`). *Verified:*
+  save persists across reload; delete works.
 - **Bass-line generator** `/tools/bassline` (`tools.bassline`) — generates a bass line under a progression
   in three styles: **roots**, **root–fifth**, or a **walking** line (root · 3rd · 5th · chromatic approach
   to the next chord), shown per beat with a moving cursor. *Verified:* walking over Dm (ii–V–I) → D F A F♯.
@@ -353,6 +375,11 @@ Two of the Group-2 backlog tools shipped (dependency-free, reusing `music-theory
 
 ## Next slices (Phase 5 menu)
 
-- Notation player: MusicXML/multi-voice rendering, rests & beaming, soundfont audio.
-- Pitch-preserving tempo + loop/section on hosted audio recordings.
-- More backlog tools: Web MIDI input, melodic/rhythm dictation, groove/bass-line generators.
+All of the original Phase-5 "heavy" items and the full backlog through Group 4 are now shipped —
+including the two that finally accept a library (**Verovio** score rendering, **smplr** soundfonts).
+What remains as the next pick:
+
+- **Notation-synced playback of an imported score** — a moving cursor over a fully-engraved Verovio
+  score (pairs `/tools/score` with the `/tools/player` cursor pattern).
+- Backend save/share of user creations + practice-streak logging (bridges into Phase 2 progress / Phase 6).
+- More content, not tools: more songs, licks, voicings, CAGED for minor/7th shapes.
