@@ -33,6 +33,8 @@ declare namespace App {
       toolLicks: boolean;
       toolChordDiagrams: boolean;
       toolStrumming: boolean;
+      toolFingerpicking: boolean;
+      toolArpeggio: boolean;
     };
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {

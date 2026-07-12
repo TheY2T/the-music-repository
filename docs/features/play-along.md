@@ -3,7 +3,8 @@
 - **Phase:** 5 · **Status:** shipped (Slices A–K)
 - **Flag keys:** `tools.backing-track` (`ToolBackingTrack`), `tools.voicings` (`ToolVoicings`),
   `tools.notation-player` (`ToolNotationPlayer`), `tools.licks` (`ToolLicks`), `tools.chord-diagrams`
-  (`ToolChordDiagrams`), `tools.strumming` (`ToolStrumming`) — from `@TheY2T/tmr-flags`. Default on.
+  (`ToolChordDiagrams`), `tools.strumming` (`ToolStrumming`), `tools.fingerpicking`
+  (`ToolFingerpicking`), `tools.arpeggio` (`ToolArpeggio`) — from `@TheY2T/tmr-flags`. Default on.
 
 ## Purpose
 
@@ -150,6 +151,21 @@ Each slot shows ↓ / ↑ / · with the current beat highlighted; the selected c
 The notation player gained a **Click** toggle: an independent beat timer runs alongside playback and
 sounds `scheduleClick` on each beat (accented every 4), so you can play along in time.
 
+## Slice N — Fingerpicking pattern trainer
+
+A new tool `/tools/fingerpicking` (`tools.fingerpicking`): pick a **chord** + a **picking pattern**
+(Travis alternating bass, bass + ascend, ballad) + tempo, and loop one bar of eighth-note plucks. Slots
+resolve per chord — `B`/`A` = bass / alternate bass (the two lowest non-muted strings), `3`–`5` = treble
+strings — and each slot displays the plucked string letter (E A D G B e) with the current one highlighted.
+Reuses `GUITAR_CHORDS` / `ChordDiagram` / `TUNING_LOW_FIRST`.
+
+## Slice O — Arpeggio player
+
+A new tool `/tools/arpeggio` (`tools.arpeggio`): pick a **root + chord quality** (music-theory `CHORDS`)
++ a **direction** (up, down, up-&-down, down-&-up) + tempo, and loop the arpeggio one note at a time with
+the current note highlighted. `arpeggioMidis` builds the ordered MIDI sequence (chord tones + the octave);
+up-&-down / down-&-up omit the repeated endpoints.
+
 ## Tests
 
 - **Web (browser) — backing track:** the 12-bar-blues grid renders the textbook form in C —
@@ -189,6 +205,10 @@ sounds `scheduleClick` on each beat (accented every 4), so you can play along in
   shows, and Play advances the highlighted slot in time.
 - **Web (browser) — click (Slice M):** the notation player's Click toggle enables and playback runs with
   it on (independent beat timer, no errors).
+- **Web (browser) — fingerpicking (Slice N):** the Travis pattern on C resolves to `A e D B A e D B`
+  (bass/alt-bass + treble strings) and the highlight advances.
+- **Web (browser) — arpeggio (Slice O):** C major Up = `C E G C`; Up-&-down = `C E G C G E` (no repeated
+  endpoints); the note cursor advances.
 - Build/lint/check-types green across the workspace (25/25).
 
 ## Next slices (Phase 5 menu)

@@ -23,6 +23,8 @@ const {
   toolLicks,
   toolChordDiagrams,
   toolStrumming,
+  toolFingerpicking,
+  toolArpeggio,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -150,6 +152,18 @@ const tools = [
     title: 'Strumming trainer',
     summary: 'Loop a strum pattern over a chord and play along.',
     enabled: toolStrumming,
+  },
+  {
+    href: '/tools/fingerpicking',
+    title: 'Fingerpicking trainer',
+    summary: 'Loop a picking pattern over a chord and follow the strings.',
+    enabled: toolFingerpicking,
+  },
+  {
+    href: '/tools/arpeggio',
+    title: 'Arpeggio player',
+    summary: 'Arpeggiate any chord up, down, or both — and loop it.',
+    enabled: toolArpeggio,
   },
 ].filter((tool) => tool.enabled);
 

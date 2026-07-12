@@ -75,6 +75,10 @@ export const FlagKeys = {
   ToolChordDiagrams: 'tools.chord-diagrams',
   /** Phase 5 — strumming pattern trainer. */
   ToolStrumming: 'tools.strumming',
+  /** Phase 5 — fingerpicking pattern trainer. */
+  ToolFingerpicking: 'tools.fingerpicking',
+  /** Phase 5 — arpeggio pattern player. */
+  ToolArpeggio: 'tools.arpeggio',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -110,4 +114,6 @@ export const FlagDefaults = {
   [FlagKeys.ToolLicks]: true,
   [FlagKeys.ToolChordDiagrams]: true,
   [FlagKeys.ToolStrumming]: true,
+  [FlagKeys.ToolFingerpicking]: true,
+  [FlagKeys.ToolArpeggio]: true,
 } satisfies Record<FlagKey, boolean>;

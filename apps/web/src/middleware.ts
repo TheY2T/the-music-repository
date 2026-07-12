@@ -184,6 +184,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.ToolStrumming,
     FlagDefaults[FlagKeys.ToolStrumming],
   );
+  const toolFingerpicking = await client.getBooleanValue(
+    FlagKeys.ToolFingerpicking,
+    FlagDefaults[FlagKeys.ToolFingerpicking],
+  );
+  const toolArpeggio = await client.getBooleanValue(
+    FlagKeys.ToolArpeggio,
+    FlagDefaults[FlagKeys.ToolArpeggio],
+  );
 
   context.locals.flags = {
     demoNewBanner,
@@ -215,6 +223,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
     toolLicks,
     toolChordDiagrams,
     toolStrumming,
+    toolFingerpicking,
+    toolArpeggio,
   };
   context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
   return next();

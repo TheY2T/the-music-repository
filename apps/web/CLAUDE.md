@@ -117,7 +117,11 @@ src/
   `GUITAR_CHORDS`, `ChordShape`, `ChordDiagram`, and `strumChord(frets, direction)` for reuse.
 - Strumming trainer at `/tools/strumming` (gated on `tools.strumming`) — `StrummingTrainer.tsx` loops a
   strum pattern (↓/↑/· eighth slots) over a chord, reusing the chord exports. The notation player has a
-  **Click** metronome toggle (independent beat timer via `scheduleClick`). See `docs/features/play-along.md`.
+  **Click** metronome toggle (independent beat timer via `scheduleClick`).
+- Fingerpicking trainer at `/tools/fingerpicking` (`tools.fingerpicking`) — `FingerpickingTrainer.tsx`
+  loops per-string picking patterns (bass/alt-bass + treble) over a chord, reusing the chord exports.
+- Arpeggio player at `/tools/arpeggio` (`tools.arpeggio`) — `ArpeggioPlayer.tsx` loops a chord's tones
+  one-at-a-time in a chosen direction (up/down/up-down). See `docs/features/play-along.md`.
 
 ## Trainers / drills (Phase 4)
 
