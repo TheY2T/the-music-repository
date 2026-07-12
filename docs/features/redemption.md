@@ -37,8 +37,8 @@ teacher/institution comps — and keep an **audit trail** of every entitlement c
 ## Tiered plans (Phase 6, 6B)
 
 - **Content `tier`** (`content_items.tier`, null = `premium`): which plan unlocks a premium item —
-  `premium` or `pro`. Ranked in the catalogue domain (`TIER_RANK` = `{ premium: 1, pro: 2 }`); `pro` ⊃
-  `premium`.
+  `premium`, `pro`, or `institution`. Ranked in the catalogue domain (`TIER_RANK` = `{ premium: 1,
+  pro: 2, institution: 3 }`): `institution` ⊃ `pro` ⊃ `premium` (a higher tier unlocks everything below).
 - **Entitlements are keyed** (`entitlements.key` = `premium` | `pro`). `Entitlements.grant(userId, key,
   …)` + `activeKeys(userId)`; `grantPremium` is `grant(_, 'premium', …)`. `PremiumAccessService.
   viewerEntitlement()` returns `{ staff, keys }`.
@@ -46,15 +46,17 @@ teacher/institution comps — and keep an **audit trail** of every entitlement c
   or Infinity for staff / flag off) and the use-cases lock a premium item when
   `viewerRank < tierRank(item.tier)`. So a `premium` grant unlocks `premium` content but **not** `pro`.
   `ContentSummary`/`ContentDetail` carry `tier`; web shows a **🔒 Premium** / **🔒 Pro** badge.
-- **Granting `pro`:** a `pro` redeem code today (pro-via-Stripe-checkout is a small follow-on).
+- **Granting a tier:** a redeem code with a `tier` **or** `POST /me/checkout { plan }` — both `pro` and
+  `institution` grant the matching entitlement key. The `/upgrade` page offers Premium / Pro /
+  Institution.
 
 ## Verification
 
 - Redeem: learner mints → **403 `NOT_STAFF`**; admin mints (uses:2) → 201; learner redeems → premium
   `source:redeem` + `expiresAt` +30d; **audit log** shows the grant; invalid code → 404; a 1-use code
   redeemed twice → 201 then **404 (exhausted)**.
-- **Tiered:** with no entitlement, both a `premium` and a `pro` item are locked; after redeeming a
-  **premium** code the premium item unlocks but the **pro item stays locked**; after redeeming a **pro**
-  code the pro item unlocks. Verified on both the list (`locked` + `tier`) and detail endpoints + the
-  web lock badges.
+- **Tiered ladder (premium < pro < institution):** with no entitlement all three tiers' items are
+  locked; a **premium** grant unlocks only premium; a **pro** grant unlocks premium + pro (institution
+  stays locked); an **institution** grant unlocks all three. Verified via redeem codes **and** checkout
+  (`{ plan }`), on both list + detail endpoints and the web lock badges (🔒 Premium / Pro / Institution).
 - All via curl + browser; `build lint check-types` green; spec drift clean; domain framework-free.

@@ -93,7 +93,7 @@ created. Stripe becomes an *inbound adapter* (webhook → `grantPremium`) + an *
 
 | Idea | Notes | Effort | Value |
 |---|---|---|---|
-| ✅ **Tiered plans** | **Shipped** — content gained a `tier` (`premium`/`pro`); entitlements are ranked (`TIER_RANK`, `pro` ⊃ `premium`). Catalogue gating compares the viewer's max entitlement rank vs the item's tier — a `premium` grant unlocks `premium` content but **not** `pro`. `Entitlements.grant(key)` + `activeKeys`; redeem codes mint a `tier`; catalogue lock badge shows Premium/Pro. Verified curl (premium unlocks premium, pro required for pro) + list/detail. `pro`-via-checkout is the one follow-on (redeem grants pro today) | Med | Med |
+| ✅ **Tiered plans** | **Shipped** — content `tier` (`premium`/`pro`/`institution`); ranked entitlements (`TIER_RANK`, `institution` ⊃ `pro` ⊃ `premium`). Catalogue gating compares the viewer's max entitlement rank vs the item's tier. `Entitlements.grant(key)` + `activeKeys`; granted via redeem code (`tier`) **or** checkout (`{ plan }`); lock badges + subscribe buttons for all three tiers. Verified: full 3-tier ladder gates correctly | Med | Med |
 | 💳 **Trials, coupons, proration** | Stripe trial periods, promo codes, seat proration — mostly Stripe config once the webhook path exists. | Med | Med |
 | ✅ **Gift / redeem codes** | **Shipped** — `redemption/` feature (`redeem_codes` + `RedeemCodeStore`): staff mint codes (`POST /admin/redeem-codes`, 403 `NOT_STAFF` otherwise); `POST /me/redeem` atomically consumes a use → `grantPremium(source:'redeem')`. Multi-use + expiry supported. Verified curl (403/201/redeem/exhaustion 404) | Low | Med |
 | ✅ **Entitlement audit log** | **Shipped** — `entitlement_events` table; `DrizzleEntitlements` appends a `grant`/`revoke` row (key, source, at) on every change; `GET /me/entitlements/history`. Verified | Low | Med |
@@ -133,10 +133,13 @@ checkout; status reflects any tier; cancel revokes all tiers), and a **mail tran
 invitations** (`MailSender` port — `LogMailSender` dev / `SmtpMailSender` when `SMTP_URL` set; invite →
 accept-link email → accept joins the class).
 
-**Remaining — genuinely gated on real Stripe test keys:** raw-body capture, `invoice.payment_failed`
-grace + real period-end expiry, trials/coupons/proration, annual/monthly price IDs, seat billing
-(Stripe quantity).
+And the **`institution` tier** (top tier: `institution` ⊃ `pro` ⊃ `premium`) — `TIER_RANK` extended,
+an institution-tier seed item, granted via redeem code or `POST /me/checkout { plan: 'institution' }`,
+Premium/Pro/Institution subscribe buttons + lock badges. Verified: the full 3-tier ladder gates
+correctly (each tier a superset of the ones below).
 
-**Remaining — no keys needed:** an `institution` tier (the tier machinery already generalizes — add the
-key + tag content). Everything else in Phase 6 is delivered; all slots behind the existing
-`Entitlements` / `CheckoutGateway` / `MailSender` ports.
+**All that remains is genuinely gated on real Stripe test keys** (`STRIPE_SECRET_KEY` flips the gateway,
+`SMTP_URL` flips mail): raw-body capture on the webhook, `invoice.payment_failed` grace + real
+period-end expiry, trials/coupons/proration, annual/monthly price IDs, and seat billing (Stripe
+quantity). **Every no-keys Phase-6 item is delivered** — all behind the existing `Entitlements` /
+`CheckoutGateway` / `MailSender` ports.

@@ -9,6 +9,9 @@ import { OpenBillingPortalUseCase } from './application/use-cases/open-billing-p
 import { StartCheckoutUseCase } from './application/use-cases/start-checkout.use-case';
 import { StartCheckoutDto } from './dto/billing.dto';
 
+/** Purchasable plans (entitlement tiers). Institution is the top tier. */
+const PLANS = ['premium', 'pro', 'institution'];
+
 /** The bits of the inbound request we read for the webhook. `rawBody` is present only when raw-body
  * capture is enabled (Phase-6 hardening); otherwise we re-serialize the parsed `body` (mock path). */
 interface WebhookRequest {
@@ -36,7 +39,7 @@ export class BillingController {
   @RequireAuth()
   checkout(@Body() body: StartCheckoutDto): Promise<{ url: string }> {
     const webBase = this.config.get<string>('WEB_BASE_URL') ?? 'http://localhost:4321';
-    const plan = body.plan === 'pro' ? 'pro' : 'premium';
+    const plan = PLANS.includes(body.plan ?? '') ? (body.plan as string) : 'premium';
     return this.startCheckout.execute(
       this.currentUser.require().id,
       plan,

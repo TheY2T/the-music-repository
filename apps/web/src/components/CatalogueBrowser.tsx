@@ -8,6 +8,14 @@ import { useEffect, useState } from 'react';
 import FavoriteHeart from '@/components/FavoriteHeart';
 import { listFavoriteSlugs } from '@/lib/favorites-api';
 
+/** Human label for a premium tier (`premium`/`pro`/`institution`). */
+function tierLabel(tier?: string): string {
+  if (!tier) {
+    return 'Premium';
+  }
+  return tier.charAt(0).toUpperCase() + tier.slice(1);
+}
+
 function toggle(list: string[], value: string): string[] {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
 }
@@ -151,7 +159,7 @@ function Browser({ showFavorites }: { showFavorites: boolean }) {
                   ) : null}
                   {item.locked ? (
                     <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400">
-                      🔒 {item.tier === 'pro' ? 'Pro' : 'Premium'}
+                      🔒 {tierLabel(item.tier)}
                     </span>
                   ) : null}
                 </div>

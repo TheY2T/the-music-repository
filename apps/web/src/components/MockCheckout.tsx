@@ -8,6 +8,12 @@ interface CheckoutParams {
   cancel: string;
 }
 
+const PLAN_PRICE: Record<string, string> = {
+  premium: '$8.00',
+  pro: '$16.00',
+  institution: '$40.00',
+};
+
 /**
  * Dev-only stand-in for a Stripe-hosted checkout page. Reads the session + return URLs from the query
  * string (built by the mock gateway), and on "Pay" simulates the provider firing the
@@ -43,10 +49,10 @@ export default function MockCheckout() {
       <div>
         <p className="text-sm font-medium text-muted-foreground">Mock payment provider</p>
         <p className="text-lg font-semibold">
-          The Music Repository — {params.plan === 'pro' ? 'Pro' : 'Premium'}
+          The Music Repository — {params.plan.charAt(0).toUpperCase() + params.plan.slice(1)}
         </p>
         <p className="text-sm text-muted-foreground">
-          {params.plan === 'pro' ? '$16.00' : '$8.00'} / month · test mode, no card required
+          {PLAN_PRICE[params.plan] ?? '$8.00'} / month · test mode, no card required
         </p>
       </div>
       <div className="flex gap-3">

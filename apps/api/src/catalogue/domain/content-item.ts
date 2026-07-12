@@ -1,11 +1,11 @@
 /** Catalogue domain — pure POJOs/interfaces, no framework or DB imports. */
 
 /**
- * Premium tiers, ordered by rank (higher unlocks lower). A `pro` entitlement unlocks both `premium`
- * and `pro` content; `premium` unlocks only `premium`-tier content. Null tier on a premium item ==
- * `premium`. Non-gating access (staff / flag off) uses rank `Infinity`.
+ * Premium tiers, ordered by rank (higher unlocks lower): `premium` < `pro` < `institution`. A `pro`
+ * entitlement unlocks `premium` + `pro` content; `institution` unlocks everything. Null tier on a
+ * premium item == `premium`. Non-gating access (staff / flag off) uses rank `Infinity`.
  */
-export const TIER_RANK: Record<string, number> = { premium: 1, pro: 2 };
+export const TIER_RANK: Record<string, number> = { premium: 1, pro: 2, institution: 3 };
 
 /** Rank of a content tier (default `premium` when unset). */
 export function tierRank(tier: string | null | undefined): number {

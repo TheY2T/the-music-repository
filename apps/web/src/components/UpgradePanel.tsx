@@ -94,6 +94,14 @@ export default function UpgradePanel() {
           >
             {busy ? 'Redirecting…' : 'Subscribe — Pro'}
           </button>
+          <button
+            type="button"
+            onClick={() => onSubscribe('institution')}
+            disabled={busy}
+            className="rounded-md border border-border px-6 py-2 text-sm font-medium disabled:opacity-50"
+          >
+            {busy ? 'Redirecting…' : 'Subscribe — Institution'}
+          </button>
         </div>
       )}
 
