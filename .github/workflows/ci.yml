@@ -1,0 +1,114 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Turbo prunes work to changed packages + dependents; needs git history (fetch-depth: 0).
+  TURBO_TELEMETRY_DISABLED: "1"
+
+jobs:
+  # Fast lane — runs on every push/PR. lint + typecheck + unit/component tests + build.
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo run lint check-types test build
+
+  # Integration lane — NestJS use-cases/adapters against real Postgres via Testcontainers.
+  # Docker is available on ubuntu-latest runners.
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:integration
+
+  # E2E lane (mock mode) — hermetic: MSW mocks the backend, no external services needed.
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Chromium alone is ~300MB — cache it keyed on the resolved Playwright version.
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm --filter @TheY2T/tmr-web exec playwright install --with-deps
+      - run: pnpm test:e2e
+        env:
+          TMR_E2E_MODE: mock
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 7
+
+  # Full-stack E2E (live mode) — brings the real stack up and runs E2E against it. Manual/main only
+  # (heavier + slower); PRs rely on the hermetic mock lane above.
+  e2e-live:
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Start infrastructure (db + flagd + meilisearch + minio)
+        run: pnpm infra:up
+      - name: Build + migrate + start the API
+        run: |
+          pnpm turbo run build --filter=@TheY2T/tmr-api
+          pnpm db:migrate
+          node --require ./apps/api/dist/otel.js apps/api/dist/main.js &
+          npx wait-on http://localhost:3000/health --timeout 60000
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm --filter @TheY2T/tmr-web exec playwright install --with-deps
+      - run: pnpm test:e2e:live
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-live
+          path: apps/web/playwright-report/
+          retention-days: 7

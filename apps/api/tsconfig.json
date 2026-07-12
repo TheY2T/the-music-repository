@@ -10,6 +10,8 @@
       "meilisearch": ["./node_modules/meilisearch/dist/index"]
     }
   },
-  "include": ["src", "drizzle.config.ts", "vitest.config.ts"],
+  // Vitest config files are executed by Vitest (type-stripped), not type-checked by tsc — including
+  // them pulls the vite/rollup type graph in and conflicts. Test files under `src` are still checked.
+  "include": ["src", "drizzle.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

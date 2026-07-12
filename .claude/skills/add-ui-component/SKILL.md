@@ -81,3 +81,11 @@ pnpm --filter @TheY2T/tmr-web check-types
 ```
 Then drive `apps/web` to confirm it renders in light/dark (see `/run`, `/verify`). If styles are
 missing, check the `@source` globs in `apps/web/src/styles/global.css` (ADR 0018 / design-system doc).
+
+## Write a test (Definition of Done — `add-tests` skill)
+
+Alongside the Storybook story, add a component test (`packages/ui/src/**/*.test.tsx` for library
+components, or `apps/web/src/components/<C>.test.tsx` for islands): render via `@testing-library/react`,
+pass localized strings as **props** (components never call `t()`), and assert the presentational output
++ key a11y roles. happy-dom is the default env. Run `pnpm --filter @TheY2T/tmr-ui test` (or the web
+filter). See `docs/features/testing.md`.

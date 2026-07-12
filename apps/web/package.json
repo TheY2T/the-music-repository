@@ -9,7 +9,10 @@
     "preview": "astro preview",
     "check-types": "astro check",
     "lint": "biome check . && eslint .",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:report": "playwright show-report"
   },
   "dependencies": {
     "@TheY2T/tmr-api-client": "workspace:*",
@@ -43,10 +46,20 @@
   },
   "devDependencies": {
     "@TheY2T/tmr-config-eslint": "workspace:*",
+    "@TheY2T/tmr-config-vitest": "workspace:*",
     "@astrojs/check": "catalog:",
+    "@axe-core/playwright": "catalog:",
+    "@playwright/test": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "eslint": "catalog:",
+    "happy-dom": "catalog:",
+    "jsdom": "catalog:",
+    "msw": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }

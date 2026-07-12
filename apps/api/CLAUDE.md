@@ -148,6 +148,20 @@ on every grant/revoke (all sources captured); `GET /me/entitlements/history`. Se
 Env is validated at boot by Zod (`src/config/env.ts`) via `@nestjs/config`. Add new vars there.
 Auth vars: `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `TRUSTED_ORIGINS` (dev defaults are local-only).
 
+## Testing (ADR 0020, `docs/features/testing.md`)
+
+- **Unit tier** (`pnpm test` — no Docker, Vitest + `unplugin-swc`): test **use-cases by mocking their
+  ports** (plain objects — no Nest DI), pure domain rules, and endpoint error mapping over HTTP
+  (`@nestjs/testing` + Supertest through the `ProblemDetailsExceptionFilter` with a fake `LOGGER` —
+  assert RFC 9457 problem+json). Files: `src/**/*.test.ts`. Templates: `catalogue/.../search-catalogue.use-case.test.ts`,
+  `src/platform-problem-details.test.ts`.
+- **Integration tier** (`pnpm test:integration` — needs Docker/podman): adapters/repositories against a
+  real Postgres via **Testcontainers** + Drizzle migrations (`migrationsFolder: join(process.cwd(),
+  'drizzle')`). Name files `*.integration.test.ts`. Template:
+  `health/infrastructure/drizzle-datastore-health-check.integration.test.ts`.
+- The mock adapters (billing `MockCheckoutGateway`, mail `LogMailSender`) are the CI-safe seams — tests
+  never call Stripe/SMTP. Follow the **`add-tests`** skill.
+
 ## Commands
 
-`pnpm --filter @TheY2T/tmr-api dev|build|check-types|lint|test|db:generate|db:migrate`
+`pnpm --filter @TheY2T/tmr-api dev|build|check-types|lint|test|test:integration|db:generate|db:migrate`

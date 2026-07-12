@@ -258,6 +258,20 @@ Tailwind v4 is configured in CSS (`@import "tailwindcss"`), not a JS config. Des
 `components.json` (aliases point at `@TheY2T/tmr-ui`). Dark mode = `.dark` on `<html>`, set pre-paint
 in the layout. Component workbench: `pnpm --filter @TheY2T/tmr-ui storybook`.
 
+## Testing (ADR 0020, `docs/features/testing.md`)
+
+- **Unit/component** (Vitest, `getViteConfig` + happy-dom): `src/**/*.test.ts(x)`. Test pure `lib/*`
+  (e.g. `music-theory`), api-client wrappers (mock `fetch`), `middleware.ts` (mock OpenFeature), and
+  islands via `@testing-library/react` — pass `locale` as a prop, render the island **root**. `.astro`
+  components are covered by E2E, not unit tests.
+- **E2E** (Playwright, `e2e/*.spec.ts`): runs against the production build. **Mock mode** (default) uses
+  an MSW SSR preload + browser routes (flags fall back to defaults); **live mode** (`TMR_E2E_MODE=live`)
+  hits the real stack. `TMR_E2E_MOCK_SERVICES=all|<subset>` mocks all or some services. Auth via
+  reusable per-role `storageState` (`e2e/auth.setup.ts`). Follow the **`add-tests`** skill.
+- E2E specs are excluded from Vitest + `astro check`; clean up `test-results/`, `playwright-report/`,
+  `e2e/.auth/` after runs (git-ignored).
+
 ## Commands
 
-`pnpm --filter @TheY2T/tmr-web dev|build|preview|check-types|lint|test`
+`pnpm --filter @TheY2T/tmr-web dev|build|preview|check-types|lint|test` ·
+`pnpm --filter @TheY2T/tmr-web test:e2e` (or root `pnpm test:e2e` / `test:e2e:live`)

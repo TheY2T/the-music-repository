@@ -5,7 +5,9 @@
     "dist",
     "test",
     "**/*.spec.ts",
+    "**/*.test.ts",
     "vitest.config.ts",
+    "vitest.integration.config.ts",
     "drizzle.config.ts"
   ]
 }

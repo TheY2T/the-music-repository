@@ -40,8 +40,19 @@
       "dependsOn": ["^build"]
     },
     "test": {
+      "dependsOn": ["^build"]
+    },
+    "test:integration": {
       "dependsOn": ["^build"],
-      "outputs": ["coverage/**"]
+      "cache": false
+    },
+    "test:e2e": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
+    "test:watch": {
+      "cache": false,
+      "persistent": true
     }
   }
 }

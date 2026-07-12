@@ -75,3 +75,12 @@ flash. Clean up any Playwright artifacts.
 
 See "Adding a language" in `docs/features/i18n.md`: drop `src/<locale>.json`, export it, register in
 `@TheY2T/tmr-i18n` (`LOCALES`/`URL_PREFIX`/`LOCALE_LABELS`/`htmlLang`/`matchAcceptLanguage`), rebuild.
+
+## Tests (Definition of Done — `add-tests` skill)
+
+- The **catalogue parity guard** (`packages/i18n-locales/src/index.test.ts`) already fails on orphan
+  `zh-Hans` keys or blank values — keep it green after editing the JSON (`pnpm --filter
+  @TheY2T/tmr-i18n-locales test`).
+- When you add a **new island** that renders localized text, add a component test that passes `locale`
+  as a prop and asserts the rendered string (see the `add-tests` skill). Localized routing is covered by
+  the E2E i18n spec (`apps/web/e2e/i18n.spec.ts`) — extend it if you add a locale.

@@ -51,6 +51,10 @@ Biome + thin ESLint · podman-compose deploy.
   **`add-translations`** skill. ADR 0017.
 - **Ship features behind a flag.** Add the key to `@TheY2T/tmr-flags`, define it in
   `flags/flags.json`, gate with `@RequireFlagsEnabled` (api) / `useFlag` (web).
+- **Test every feature (Definition of Done).** Ship tests with the code: **unit** for logic/use-cases
+  (mock **ports**, never Drizzle), **component** for islands/UI (i18n-by-prop), **E2E** for user flows.
+  Vitest (unit/component) + Playwright (E2E) + Testcontainers (api integration); shared runner config
+  from `@TheY2T/tmr-config-vitest`. Follow the **`add-tests`** skill. ADR 0020 · `docs/features/testing.md`.
 - **Docs are Definition of Done.** Every feature gets `docs/features/<feature>.md`; every
   significant decision gets an ADR in `docs/adr/`. Update Mermaid diagrams in `docs/architecture/`.
 - **Hexagonal dependency rule (api):** `domain ← application ← infrastructure/presentation`.
@@ -75,6 +79,8 @@ pnpm dev                              # all apps (turbo)
 pnpm --filter @TheY2T/tmr-api dev     # nest start --watch
 pnpm --filter @TheY2T/tmr-web dev     # astro dev
 pnpm build | pnpm lint | pnpm check-types | pnpm test   # turbo across workspace
+pnpm test:coverage | pnpm test:integration              # v8 coverage · api Testcontainers (Docker)
+pnpm test:e2e | pnpm test:e2e:live                      # Playwright: mocked (hermetic) · full stack
 pnpm --filter @TheY2T/tmr-api db:generate               # drizzle migration from schema
 pnpm infra:up                                           # db + flagd (docker/podman); infra:down to stop
 podman compose -f infra/podman/compose.yaml up          # full stack (db+flagd+api+web)

@@ -10,6 +10,8 @@
     "check-types": "tsc --noEmit -p tsconfig.json",
     "lint": "biome check . && eslint .",
     "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest",
+    "test:integration": "vitest run --config vitest.integration.config.ts --passWithNoTests",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "node dist/infrastructure/database/seed.js",
@@ -46,14 +48,22 @@
   "devDependencies": {
     "@TheY2T/tmr-config-eslint": "workspace:*",
     "@TheY2T/tmr-config-typescript": "workspace:*",
+    "@TheY2T/tmr-config-vitest": "workspace:*",
     "@nestjs/cli": "^11.0.24",
     "@nestjs/schematics": "^11.1.0",
     "@nestjs/testing": "catalog:",
+    "@testcontainers/postgresql": "catalog:",
     "@types/node": "catalog:",
     "@types/nodemailer": "^8.0.1",
+    "@types/supertest": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "drizzle-kit": "catalog:",
     "eslint": "catalog:",
+    "supertest": "catalog:",
+    "testcontainers": "catalog:",
     "typescript": "catalog:",
+    "unplugin-swc": "catalog:",
+    "vite-tsconfig-paths": "catalog:",
     "vitest": "catalog:"
   }
 }

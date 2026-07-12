@@ -42,3 +42,14 @@ new convention/gotcha emerged.
 ## 6. Verify
 `pnpm build && pnpm lint && pnpm check-types && pnpm test`, then drive the flow end-to-end
 (flag off → on) with the stack up.
+
+## Write tests (Definition of Done — `add-tests` skill)
+
+Tests ship with the feature, across every layer you touched:
+- **API:** unit-test use-cases (mock ports) + domain rules; assert problem+json for error paths;
+  `*.integration.test.ts` (Testcontainers) for new adapters.
+- **Web:** unit-test new `lib/*` + api-client wrappers; component-test islands via `@testing-library/react`
+  (pass `locale` as a prop, render the island root).
+- **E2E:** add an `apps/web/e2e/*.spec.ts` for the user-facing flow (mock mode by default; add the
+  service to the MSW registry if it isn't mocked yet).
+- Run `pnpm test` (+ `test:integration` / `test:e2e`). Full guide: `docs/features/testing.md`, ADR 0020.

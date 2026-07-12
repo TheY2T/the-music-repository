@@ -9,5 +9,6 @@
     "jsxImportSource": "react"
   },
   "include": [".astro/types.d.ts", "src/**/*"],
-  "exclude": ["dist"]
+  // Test/spec + e2e files are type-checked via tsconfig.test.json, not `astro check`.
+  "exclude": ["dist", "src/**/*.test.ts", "src/**/*.test.tsx", "src/test/**", "e2e/**"]
 }

@@ -29,6 +29,8 @@
   "devDependencies": {
     "@TheY2T/tmr-api-spec": "workspace:*",
     "@TheY2T/tmr-config-typescript": "workspace:*",
+    "@TheY2T/tmr-config-vitest": "workspace:*",
+    "@vitest/coverage-v8": "catalog:",
     "orval": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:",

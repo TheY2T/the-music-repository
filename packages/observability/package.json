@@ -51,6 +51,7 @@
     "@TheY2T/tmr-config-typescript": "workspace:*",
     "@types/node": "catalog:",
     "typescript": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "vitest": "catalog:"
   }
 }

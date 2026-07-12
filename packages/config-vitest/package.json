@@ -1,0 +1,17 @@
+{
+  "name": "@TheY2T/tmr-config-vitest",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./package.json": "./package.json"
+  }
+}

@@ -41,3 +41,12 @@ if structure changed; enrich CLAUDE.md on a new gotcha.
 `pnpm build lint check-types`; `pnpm infra:up` + `pnpm obs:up`; drive the endpoint and confirm: success
 path returns the contract shape; error path returns `application/problem+json` with a `code` + `traceId`
 that matches the error log line and an ERROR span in Grafana/Tempo.
+
+## Write tests (Definition of Done — `add-tests` skill)
+
+- **Unit-test the use-case** by mocking its ports (plain objects, no Nest DI):
+  `apps/api/src/<feature>/application/use-cases/<x>.use-case.test.ts`.
+- **HTTP + errors:** assert the endpoint's `DomainError` surfaces as RFC 9457 problem+json (stable
+  `code`, right status) via `@nestjs/testing` + Supertest — pattern in `src/platform-problem-details.test.ts`.
+- **Adapter (optional):** if you added a Drizzle adapter, add a `*.integration.test.ts` (Testcontainers).
+- Run `pnpm --filter @TheY2T/tmr-api test` (+ `test:integration` if applicable). See `docs/features/testing.md`.

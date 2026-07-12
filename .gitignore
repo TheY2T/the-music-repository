@@ -31,3 +31,9 @@ pnpm-debug.log*
 
 # Drizzle local artifacts
 apps/api/drizzle/meta/_journal_local.json
+
+# E2E / Playwright artifacts (auth state carries live session cookies — never commit)
+**/playwright-report/
+**/test-results/
+**/.playwright/
+apps/web/e2e/.auth/
