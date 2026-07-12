@@ -22,6 +22,15 @@ export interface EntitlementEvent {
 export abstract class Entitlements {
   /** The user's active premium grant, or null when absent/expired. */
   abstract getPremium(userId: string): Promise<EntitlementGrant | null>;
+  /** The user's active (non-expired) entitlement keys — e.g. `['premium']` or `['pro']`. */
+  abstract activeKeys(userId: string): Promise<string[]>;
+  /** Grant (or refresh) an entitlement key. Idempotent. `expiresAt` null = no expiry. */
+  abstract grant(
+    userId: string,
+    key: string,
+    source: string,
+    expiresAt?: Date | null,
+  ): Promise<void>;
   /** Grant (or refresh) premium. Idempotent. `expiresAt` null = no expiry (e.g. staff/manual). */
   abstract grantPremium(userId: string, source: string, expiresAt?: Date | null): Promise<void>;
   /** Remove the user's premium grant. Idempotent. */

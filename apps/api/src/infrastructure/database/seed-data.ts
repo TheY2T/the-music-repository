@@ -54,6 +54,8 @@ export interface SeedContent {
   withPdf?: boolean;
   /** Phase 6 — `premium` gates the item behind an entitlement; defaults to `public`. */
   visibility?: string;
+  /** Phase 6 (6B) — which plan unlocks a premium item: `premium` (default) or `pro`. */
+  tier?: string;
 }
 
 const PD = 'Public Domain';
@@ -133,6 +135,7 @@ export const CONTENT: SeedContent[] = [
     attribution: 'Open Music Theory (CC BY-SA 4.0)',
     license: 'CC BY-SA 4.0',
     visibility: 'premium',
+    tier: 'pro',
   },
   {
     slug: 'greensleeves-trad',

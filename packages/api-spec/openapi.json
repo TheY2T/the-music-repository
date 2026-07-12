@@ -2560,6 +2560,10 @@
               "premium"
             ]
           },
+          "tier": {
+            "type": "string",
+            "description": "For premium items: which plan unlocks it — \"premium\" or \"pro\"."
+          },
           "locked": {
             "type": "boolean",
             "description": "True when this is premium content the current viewer is not entitled to (body/media withheld)."
@@ -2659,6 +2663,10 @@
               "authed",
               "premium"
             ]
+          },
+          "tier": {
+            "type": "string",
+            "description": "For premium items: which plan unlocks it — \"premium\" or \"pro\"."
           },
           "locked": {
             "type": "boolean",
@@ -2783,6 +2791,10 @@
       "CreateRedeemCodeInput": {
         "type": "object",
         "properties": {
+          "tier": {
+            "type": "string",
+            "description": "Entitlement tier granted: \"premium\" (default) or \"pro\"."
+          },
           "durationDays": {
             "type": "integer",
             "format": "int32",

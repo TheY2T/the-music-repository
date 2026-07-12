@@ -7,7 +7,7 @@ import { PremiumAccessService } from '../entitlements/application/premium-access
 import { GetContentBySlugUseCase } from './application/use-cases/get-content-by-slug.use-case';
 import { GetRelatedContentUseCase } from './application/use-cases/get-related-content.use-case';
 import { SearchCatalogueUseCase } from './application/use-cases/search-catalogue.use-case';
-import type { CatalogueQuery } from './domain/content-item';
+import { type CatalogueQuery, entitledRank } from './domain/content-item';
 
 type RawQuery = Record<string, string | string[] | undefined>;
 
@@ -21,25 +21,30 @@ export class CatalogueController {
     @OpenFeatureClient() private readonly flags: Client,
   ) {}
 
-  /** May the current viewer access premium content? True for everyone when gating is flagged off. */
-  private async resolveEntitled(): Promise<boolean> {
+  /** The viewer's premium **tier rank** — how high their plan reaches. Infinity when gating is flagged
+   * off or the viewer is staff; else the max rank among their active entitlement keys (0 = none). */
+  private async resolveViewerRank(): Promise<number> {
     const gatingOn = await this.flags.getBooleanValue(
       FlagKeys.Premium,
       FlagDefaults[FlagKeys.Premium],
     );
-    return gatingOn ? this.premiumAccess.isEntitled() : true;
+    if (!gatingOn) {
+      return Number.POSITIVE_INFINITY;
+    }
+    const { staff, keys } = await this.premiumAccess.viewerEntitlement();
+    return staff ? Number.POSITIVE_INFINITY : entitledRank(keys);
   }
 
   @Get('items')
   @ResolveOptionalAuth()
   async search(@Query() query: RawQuery) {
-    return this.searchCatalogue.execute(normalizeQuery(query), await this.resolveEntitled());
+    return this.searchCatalogue.execute(normalizeQuery(query), await this.resolveViewerRank());
   }
 
   @Get('items/:slug')
   @ResolveOptionalAuth()
   async detail(@Param('slug') slug: string) {
-    return this.getContent.execute(slug, await this.resolveEntitled());
+    return this.getContent.execute(slug, await this.resolveViewerRank());
   }
 
   @Get('items/:slug/related')

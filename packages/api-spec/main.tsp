@@ -103,6 +103,8 @@ model ContentSummary {
   type: ContentType;
   difficulty?: int32;
   visibility: Visibility;
+  /** For premium items: which plan unlocks it — "premium" or "pro". */
+  tier?: string;
   /** True when this is premium content the current viewer is not entitled to (body/media withheld). */
   locked?: boolean;
   genres: TaxonomyRef[];
@@ -757,6 +759,8 @@ op getEntitlementHistory(): EntitlementHistory;
 
 /** Body for minting a gift code (staff only). */
 model CreateRedeemCodeInput {
+  /** Entitlement tier granted: "premium" (default) or "pro". */
+  tier?: string;
   /** Days the granted premium lasts; omit for no expiry. */
   durationDays?: int32;
   /** How many times the code can be redeemed (default 1). */

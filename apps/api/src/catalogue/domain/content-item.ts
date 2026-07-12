@@ -1,5 +1,22 @@
 /** Catalogue domain — pure POJOs/interfaces, no framework or DB imports. */
 
+/**
+ * Premium tiers, ordered by rank (higher unlocks lower). A `pro` entitlement unlocks both `premium`
+ * and `pro` content; `premium` unlocks only `premium`-tier content. Null tier on a premium item ==
+ * `premium`. Non-gating access (staff / flag off) uses rank `Infinity`.
+ */
+export const TIER_RANK: Record<string, number> = { premium: 1, pro: 2 };
+
+/** Rank of a content tier (default `premium` when unset). */
+export function tierRank(tier: string | null | undefined): number {
+  return tier ? (TIER_RANK[tier] ?? 1) : 1;
+}
+
+/** Highest rank among a user's entitlement keys (0 = none). */
+export function entitledRank(keys: string[]): number {
+  return keys.reduce((max, key) => Math.max(max, TIER_RANK[key] ?? 0), 0);
+}
+
 export interface TaxonomyRef {
   slug: string;
   name: string;
@@ -23,6 +40,7 @@ export interface ContentItem {
   bodyMdx: string | null;
   type: string;
   visibility: string;
+  tier: string | null;
   status: string;
   difficulty: number | null;
   source: string | null;
@@ -45,6 +63,8 @@ export interface ContentSummaryView {
   type: string;
   difficulty?: number;
   visibility: string;
+  /** Which plan unlocks this premium item: `premium` | `pro`. Present on premium items. */
+  tier?: string;
   /** True when this premium item is withheld from the current viewer (Phase 6). */
   locked?: boolean;
   genres: TaxonomyRef[];
@@ -121,6 +141,7 @@ export function toContentSummaryView(item: ContentItem): ContentSummaryView {
     type: item.type,
     difficulty: item.difficulty ?? undefined,
     visibility: item.visibility,
+    tier: item.visibility === 'premium' ? (item.tier ?? 'premium') : undefined,
     genres: item.genres,
     instruments: item.instruments,
     topics: item.topics,
@@ -137,6 +158,7 @@ export function toContentDetailView(item: ContentItem, media: MediaView[]): Cont
     type: item.type,
     difficulty: item.difficulty ?? undefined,
     visibility: item.visibility,
+    tier: item.visibility === 'premium' ? (item.tier ?? 'premium') : undefined,
     genres: item.genres,
     instruments: item.instruments,
     topics: item.topics,

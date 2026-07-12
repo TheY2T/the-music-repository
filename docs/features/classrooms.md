@@ -70,7 +70,17 @@ education path into monetization: a teacher (or school) unlocks premium for thei
   member remove / make-owner, and archive/leave — using `classrooms-api.ts` helpers. Verified curl
   (403/404/assign/progress 1-of-2/transfer role-swap) + browser (create → assign → progress → archive).
 
+## Teacher role (Phase 6, 6C — shipped)
+
+- `access-control.ts` gained a `classroom: ['create']` permission + a **`teacher` role** (admins also
+  hold it). `POST /me/classrooms` is now `@RequirePermissions({ classroom: ['create'] })`, so
+  learners/editors get **403** and only teachers/admins create classrooms. Seeded `teacher@local.dev`
+  (role `teacher`, password `password123`). Web: `/classrooms` passes `canCreate = role ∈ {admin,
+  teacher}` to `ClassroomsManager`, which hides the create form for non-teachers (join still works).
+  Verified curl (learner 403 / teacher 201 / admin 201) + browser (create form present for teacher,
+  absent for learner).
+
 ## Next (Phase 6 later)
 
-- Tiered plan gating + teacher role/email invitations (see backlog); expiring class seats via real
+- Email invitations (needs a mail transport; join codes work today); expiring class seats via real
   payment-provider seat billing (Stripe quantity).

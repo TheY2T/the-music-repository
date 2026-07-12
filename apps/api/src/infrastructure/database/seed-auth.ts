@@ -17,6 +17,7 @@ const log = new Logger('SeedAuth');
 const SEED_USERS = [
   { email: 'admin@local.dev', name: 'Admin', password: 'password123', role: 'admin' },
   { email: 'editor@local.dev', name: 'Editor', password: 'password123', role: 'editor' },
+  { email: 'teacher@local.dev', name: 'Teacher', password: 'password123', role: 'teacher' },
   { email: 'learner@local.dev', name: 'Learner', password: 'password123', role: 'learner' },
 ] as const;
 

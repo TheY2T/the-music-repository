@@ -79,10 +79,13 @@ function Detail({ slug }: { slug: string }) {
 
       {item.locked ? (
         <section className="space-y-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-6 text-center">
-          <p className="text-lg font-semibold">🔒 Premium content</p>
+          <p className="text-lg font-semibold">
+            🔒 {item.tier === 'pro' ? 'Pro' : 'Premium'} content
+          </p>
           <p className="text-sm text-muted-foreground">
-            Subscribe to unlock the full score, recording, and lesson for this and every premium
-            item.
+            {item.tier === 'pro'
+              ? 'This item needs a Pro plan. Redeem a Pro code or subscribe to unlock it and every premium item.'
+              : 'Subscribe to unlock the full score, recording, and lesson for this and every premium item.'}
           </p>
           <a
             href="/upgrade"

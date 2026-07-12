@@ -42,6 +42,19 @@ export class PremiumAccessService {
     return (await this.entitlements.getPremium(user.id)) !== null;
   }
 
+  /** The viewer's tier for gating: `staff` (unlocks everything) + active entitlement keys. Anonymous
+   * → not staff, no keys. The catalogue turns this into a tier rank. Never throws. */
+  async viewerEntitlement(): Promise<{ staff: boolean; keys: string[] }> {
+    const user = this.currentUser.optional();
+    if (!user) {
+      return { staff: false, keys: [] };
+    }
+    if (this.isStaff(user)) {
+      return { staff: true, keys: [] };
+    }
+    return { staff: false, keys: await this.entitlements.activeKeys(user.id) };
+  }
+
   /** The acting user's subscription status (requires authentication). */
   async status(): Promise<SubscriptionStatusView> {
     const user = this.currentUser.require();

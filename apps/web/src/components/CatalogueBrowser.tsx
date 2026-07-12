@@ -151,7 +151,7 @@ function Browser({ showFavorites }: { showFavorites: boolean }) {
                   ) : null}
                   {item.locked ? (
                     <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400">
-                      🔒 Premium
+                      🔒 {item.tier === 'pro' ? 'Pro' : 'Premium'}
                     </span>
                   ) : null}
                 </div>

@@ -93,7 +93,7 @@ created. Stripe becomes an *inbound adapter* (webhook → `grantPremium`) + an *
 
 | Idea | Notes | Effort | Value |
 |---|---|---|---|
-| 🔗 **Tiered plans** | More entitlement keys than `premium` (e.g. `pro`, `institution`); model content `visibility`/gates per tier. `entitlements.key` already supports this. | Med | Med |
+| ✅ **Tiered plans** | **Shipped** — content gained a `tier` (`premium`/`pro`); entitlements are ranked (`TIER_RANK`, `pro` ⊃ `premium`). Catalogue gating compares the viewer's max entitlement rank vs the item's tier — a `premium` grant unlocks `premium` content but **not** `pro`. `Entitlements.grant(key)` + `activeKeys`; redeem codes mint a `tier`; catalogue lock badge shows Premium/Pro. Verified curl (premium unlocks premium, pro required for pro) + list/detail. `pro`-via-checkout is the one follow-on (redeem grants pro today) | Med | Med |
 | 💳 **Trials, coupons, proration** | Stripe trial periods, promo codes, seat proration — mostly Stripe config once the webhook path exists. | Med | Med |
 | ✅ **Gift / redeem codes** | **Shipped** — `redemption/` feature (`redeem_codes` + `RedeemCodeStore`): staff mint codes (`POST /admin/redeem-codes`, 403 `NOT_STAFF` otherwise); `POST /me/redeem` atomically consumes a use → `grantPremium(source:'redeem')`. Multi-use + expiry supported. Verified curl (403/201/redeem/exhaustion 404) | Low | Med |
 | ✅ **Entitlement audit log** | **Shipped** — `entitlement_events` table; `DrizzleEntitlements` appends a `grant`/`revoke` row (key, source, at) on every change; `GET /me/entitlements/history`. Verified | Low | Med |
@@ -106,7 +106,7 @@ created. Stripe becomes an *inbound adapter* (webhook → `grantPremium`) + an *
 | 💳 **Seat billing** | A teacher/school buys **N seats**; joining consumes a seat; billing via Stripe quantity. Extends `grant-premium` (currently unconditional) into metered seats with `expires_at`. | High | High |
 | ✅ **Assign content to a class** | **Shipped** — `classroom_assignments` table; owner assigns content by slug (`POST /classrooms/{id}/assignments`, 403 non-owner, 404 unknown slug), `DELETE .../assignments/{slug}`, `GET .../assignments` (any member). Web: assign/remove + list in `ClassroomsManager`. Verified curl + browser | Med | High |
 | ✅ **Class progress overview** | **Shipped** — `GET /classrooms/{id}/progress` (owner) reads `content_progress` for members × assigned content → per-student `completedCount/total`. Web: progress list in the manage panel. Verified (learner 1/2) | Med | High |
-| 🔗 **Teacher role + invitations** | Currently *any* authed user can create a classroom. Add a `teacher` capability/role, and email invitations (vs. open join code) with accept links. Still open (email delivery not wired) | Med | Med |
+| ◑ **Teacher role + invitations** | **Teacher role shipped** — `access-control.ts` gained a `classroom:create` permission + a `teacher` role (admins also have it); `POST /me/classrooms` is now `@RequirePermissions({ classroom: ['create'] })`, so learners/editors get 403 and only teachers/admins create classrooms. Seeded `teacher@local.dev`. Web hides the create form for non-teachers. **Email invitations still open** (needs a mail transport — join codes work today) | Med | Med |
 | ✅ **Auto-grant on join** | **Shipped** — `JoinClassroomUseCase` grants premium (`source:'classroom'`) to a new member when the class is already `premiumGranted`. Verified: learner joins a granted class → `premium:true source:classroom` | Low | Med |
 | ✅ **Leave / remove member, transfer ownership, archive class** | **Shipped** — `leave` (owner blocked → 403), `DELETE .../members/{memberId}` (owner), `archive` (owner; hidden from all rosters), **`POST /classrooms/{id}/transfer`** (owner → a member becomes owner, old owner joins as a member; non-member → 404). Web: remove / make-owner / archive / leave in `ClassroomsManager`. Verified curl + browser | Low | Low |
 
@@ -125,7 +125,16 @@ raw-body capture on the webhook route (needed for Stripe signature bytes), `invo
 grace period + real period-end `expires_at`, trials/coupons/proration, annual/monthly price IDs, and
 **seat billing** (Stripe quantity).
 
-**Remaining — no keys needed** (deferred, policy/breadth): **tiered plan gating** (`pro`/`institution`
-entitlement keys + per-tier content `visibility` — needs a content-tier data model), and **teacher role
-+ email invitations** (a `teacher` capability in Better Auth access-control + an email transport, neither
-wired). All slot in behind the existing `Entitlements` / `CheckoutGateway` ports.
+Also shipped since: **tiered plans** (content `tier` + ranked entitlements — `pro` ⊃ `premium`; catalogue
+gates per tier; redeem codes mint a tier; Premium/Pro lock badges) and the **teacher role**
+(`classroom:create` permission + `teacher` role; only teachers/admins create classrooms; `teacher@local.dev`
+seeded; web hides the create form for non-teachers).
+
+**Remaining — genuinely gated on real Stripe test keys:** raw-body capture, `invoice.payment_failed`
+grace + real period-end expiry, trials/coupons/proration, annual/monthly price IDs, seat billing
+(Stripe quantity), and **pro-via-checkout** (`POST /me/checkout?plan=pro` — redeem codes grant `pro`
+today; threading the plan through checkout→webhook is the small remaining piece).
+
+**Remaining — no keys needed:** **email invitations** for classrooms (needs a mail transport — join
+codes work today), and an `institution` tier (the tier machinery already generalizes — add the key +
+seed content). All slot in behind the existing `Entitlements` / `CheckoutGateway` ports.

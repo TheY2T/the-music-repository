@@ -35,17 +35,37 @@ export class DrizzleEntitlements extends Entitlements {
     return { source: row.source, grantedAt: row.grantedAt, expiresAt: row.expiresAt };
   }
 
-  async grantPremium(userId: string, source: string, expiresAt: Date | null = null): Promise<void> {
+  async activeKeys(userId: string): Promise<string[]> {
+    const rows = await this.db
+      .select({ key: entitlements.key })
+      .from(entitlements)
+      .where(
+        and(
+          eq(entitlements.userId, userId),
+          or(isNull(entitlements.expiresAt), gt(entitlements.expiresAt, new Date())),
+        ),
+      );
+    return rows.map((r) => r.key);
+  }
+
+  async grant(
+    userId: string,
+    key: string,
+    source: string,
+    expiresAt: Date | null = null,
+  ): Promise<void> {
     await this.db
       .insert(entitlements)
-      .values({ userId, key: PREMIUM, source, expiresAt })
+      .values({ userId, key, source, expiresAt })
       .onConflictDoUpdate({
         target: [entitlements.userId, entitlements.key],
         set: { source, grantedAt: new Date(), expiresAt },
       });
-    await this.db
-      .insert(entitlementEvents)
-      .values({ userId, key: PREMIUM, action: 'grant', source });
+    await this.db.insert(entitlementEvents).values({ userId, key, action: 'grant', source });
+  }
+
+  grantPremium(userId: string, source: string, expiresAt: Date | null = null): Promise<void> {
+    return this.grant(userId, PREMIUM, source, expiresAt);
   }
 
   async revokePremium(userId: string): Promise<void> {

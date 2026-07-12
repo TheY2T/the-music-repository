@@ -23,8 +23,13 @@ export class CreateRedeemCodeUseCase {
     private readonly store: RedeemCodeStore,
   ) {}
 
-  /** Mint a gift code (staff only). `durationDays` null = the grant never expires; `uses` defaults to 1. */
-  async execute(input: { durationDays?: number | null; uses?: number }): Promise<{ code: string }> {
+  /** Mint a gift code (staff only). `tier` = entitlement key granted (`premium` default, or `pro`);
+   * `durationDays` null = the grant never expires; `uses` defaults to 1. */
+  async execute(input: {
+    tier?: string;
+    durationDays?: number | null;
+    uses?: number;
+  }): Promise<{ code: string }> {
     const user = this.currentUser.require();
     if (!user.roles.some((role) => STAFF_ROLES.includes(role))) {
       throw new NotStaffError();
@@ -32,7 +37,7 @@ export class CreateRedeemCodeUseCase {
     const code = generateCode();
     await this.store.create({
       code,
-      key: 'premium',
+      key: input.tier?.trim() || 'premium',
       source: 'redeem',
       durationDays: input.durationDays ?? null,
       usesRemaining: Math.max(1, input.uses ?? 1),
@@ -59,7 +64,12 @@ export class RedeemCodeUseCase {
     const expiresAt = consumed.durationDays
       ? new Date(Date.now() + consumed.durationDays * 24 * 60 * 60 * 1000)
       : null;
-    await this.entitlements.grantPremium(this.currentUser.require().id, consumed.source, expiresAt);
+    await this.entitlements.grant(
+      this.currentUser.require().id,
+      consumed.key,
+      consumed.source,
+      expiresAt,
+    );
     return { redeemed: true, expiresAt: expiresAt?.toISOString() ?? null };
   }
 }

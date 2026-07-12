@@ -2,7 +2,7 @@ import { FlagKeys } from '@TheY2T/tmr-flags';
 import { Body, Controller, Delete, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { RequireFlagsEnabled } from '@openfeature/nestjs-sdk';
 import { CurrentUser } from '../auth/application/current-user';
-import { RequireAuth } from '../auth/require-permissions.decorator';
+import { RequireAuth, RequirePermissions } from '../auth/require-permissions.decorator';
 import {
   ArchiveClassroomUseCase,
   AssignContentUseCase,
@@ -59,7 +59,7 @@ export class ClassroomsController {
   @Post('me/classrooms')
   @HttpCode(201)
   @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.Classrooms }] })
-  @RequireAuth()
+  @RequirePermissions({ classroom: ['create'] })
   create(@Body() body: CreateClassroomDto) {
     return this.createClassroom.execute(this.currentUser.require().id, body.name);
   }

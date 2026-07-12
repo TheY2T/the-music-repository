@@ -240,7 +240,7 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
   );
 }
 
-export default function ClassroomsManager() {
+export default function ClassroomsManager({ canCreate = false }: { canCreate?: boolean }) {
   const [rooms, setRooms] = useState<Classroom[]>([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
@@ -280,24 +280,26 @@ export default function ClassroomsManager() {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2">
-        <form onSubmit={onCreate} className="space-y-2 rounded-lg border border-border p-4">
-          <h2 className="font-semibold">Create a classroom</h2>
-          <p className="text-sm text-muted-foreground">
-            You become the teacher and get a join code.
-          </p>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Classroom name"
-            className="w-full rounded-md border border-input bg-background px-2 py-1 text-sm"
-          />
-          <button
-            type="submit"
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-          >
-            Create
-          </button>
-        </form>
+        {canCreate ? (
+          <form onSubmit={onCreate} className="space-y-2 rounded-lg border border-border p-4">
+            <h2 className="font-semibold">Create a classroom</h2>
+            <p className="text-sm text-muted-foreground">
+              You become the teacher and get a join code.
+            </p>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Classroom name"
+              className="w-full rounded-md border border-input bg-background px-2 py-1 text-sm"
+            />
+            <button
+              type="submit"
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+            >
+              Create
+            </button>
+          </form>
+        ) : null}
 
         <form onSubmit={onJoin} className="space-y-2 rounded-lg border border-border p-4">
           <h2 className="font-semibold">Join a classroom</h2>

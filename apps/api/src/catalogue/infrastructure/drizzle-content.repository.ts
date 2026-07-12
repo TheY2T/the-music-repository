@@ -87,6 +87,7 @@ export class DrizzleContentRepository extends ContentRepository {
       bodyMdx: row.bodyMdx,
       type: row.type,
       visibility: row.visibility,
+      tier: row.tier,
       status: row.status,
       difficulty: row.difficulty,
       source: row.source,

@@ -54,7 +54,9 @@ Better Auth lives in `src/auth/` and owns `/api/auth/*`. Key rules:
 - **Global auth guard is disabled** (`disableGlobalAuthGuard: true`) so the public catalogue stays
   anonymous. Protect a route by opting in: `@RequireAuth()` or `@RequirePermissions({ content: ['publish'] })`
   from `src/auth/require-permissions.decorator.ts` (wrap the library's `AuthGuard` + `@UserHasPermission`).
-- **RBAC** is permission-based in `src/auth/access-control.ts` (roles `admin`/`editor`/`learner`).
+- **RBAC** is permission-based in `src/auth/access-control.ts` (roles `admin`/`editor`/`teacher`/`learner`).
+  The `teacher` role holds `classroom:create` (admins too) — `POST /me/classrooms` is
+  `@RequirePermissions({ classroom: ['create'] })`, so only teachers/admins create classrooms.
 - **Read the acting user via the `CurrentUser` port** (`application/current-user.ts`), implemented by
   the request-scoped `BetterAuthCurrentUser` adapter. **Never import `better-auth` in domain/application.**
 - **Tables** are hand-written in `src/auth/auth-schema.ts` (re-exported from `database/schema.ts`) so
@@ -92,9 +94,12 @@ combines `CurrentUser` + `Entitlements` into **entitled = staff OR active premiu
 `SubscriptionController` exposes `/me/subscription` (get/activate/cancel — a **mock checkout**), gated by
 `monetization.premium` via **method-level** `@RequireFlagsEnabled` (class-level drops route mapping).
 
-- **Catalogue gating** = locked preview: the controller resolves `entitled` (flag + `PremiumAccessService`)
-  and passes a plain boolean into the pure `SearchCatalogue`/`GetContentBySlug` use-cases; premium items
-  get `locked` + (detail) `bodyMdx`/media withheld (`toLockedContentDetailView`).
+- **Catalogue gating** = locked preview, **tiered** (ADR 0015 + 6B): content has a `tier`
+  (`premium`/`pro`; null = premium). The controller resolves the viewer's **rank** (`entitledRank` over
+  `PremiumAccessService.viewerEntitlement().keys`, or Infinity for staff / flag off) and passes it into
+  `SearchCatalogue`/`GetContentBySlug`, which lock a premium item when `viewerRank < tierRank(item.tier)`
+  — so `premium` unlocks `premium` but not `pro`. Ranks live in the catalogue domain (`TIER_RANK`).
+  `Entitlements.grant(key)`/`activeKeys` are the tier-aware primitives (`grantPremium` = `grant('premium')`).
 - **Reading the viewer on public routes:** the catalogue is anonymous, so use `ResolveOptionalAuth()`
   (wraps the library's `@OptionalAuth()`) — resolves the session when present, never rejects anon. Plain
   `@RequireAuth()` still can't populate `CurrentUser` on an otherwise-public route.

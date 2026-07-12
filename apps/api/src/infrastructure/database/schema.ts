@@ -23,6 +23,7 @@ export const contentItems = pgTable('content_items', {
   bodyMdx: text('body_mdx'),
   type: text('type').notNull(), // lesson | song | score | exercise | technique | backing_track | tool_page
   visibility: text('visibility').notNull().default('public'), // public | authed | premium
+  tier: text('tier'), // when visibility=premium: which plan unlocks it — null/'premium' | 'pro'
   status: text('status').notNull().default('draft'), // draft | review | published
   difficulty: integer('difficulty'), // graded 1..10 (nullable)
   source: text('source'),

@@ -9,6 +9,8 @@ if (!Astro.locals.flags.classrooms) {
 if (!Astro.locals.user) {
   return Astro.redirect('/signin?redirect=/classrooms');
 }
+// Only teachers/admins may create classrooms (RBAC: classroom:create).
+const canCreate = ['admin', 'teacher'].includes(Astro.locals.user.role ?? '');
 ---
 
 <html lang="en">
@@ -33,7 +35,7 @@ if (!Astro.locals.user) {
           Create a class, share the join code, and grant premium to your students.
         </p>
       </header>
-      <ClassroomsManager client:load />
+      <ClassroomsManager client:load canCreate={canCreate} />
     </main>
   </body>
 </html>

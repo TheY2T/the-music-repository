@@ -21,6 +21,7 @@ interface IndexDoc {
   type: string;
   difficulty: number | null;
   visibility: string;
+  tier: string | null;
   genreSlugs: string[];
   instrumentSlugs: string[];
   topicSlugs: string[];
@@ -128,6 +129,7 @@ export class MeilisearchCatalogueSearch extends CatalogueSearch implements OnMod
         type: hit.type,
         difficulty: hit.difficulty ?? undefined,
         visibility: hit.visibility,
+        tier: hit.visibility === 'premium' ? (hit.tier ?? 'premium') : undefined,
         genres: hit.genres,
         instruments: hit.instruments,
         topics: hit.topics,
@@ -149,6 +151,7 @@ function toIndexDoc(item: ContentItem): IndexDoc {
     type: item.type,
     difficulty: item.difficulty,
     visibility: item.visibility,
+    tier: item.tier,
     genreSlugs: item.genres.map((g) => g.slug),
     instrumentSlugs: item.instruments.map((i) => i.slug),
     topicSlugs: item.topics.map((t) => t.slug),

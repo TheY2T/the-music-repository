@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   type ContentDetailView,
   type MediaView,
+  tierRank,
   toContentDetailView,
   toLockedContentDetailView,
 } from '../../domain/content-item';
@@ -16,15 +17,16 @@ export class GetContentBySlugUseCase {
     private readonly media: MediaLibrary,
   ) {}
 
-  /** `entitled` = the viewer may access premium content; otherwise premium returns a locked preview. */
-  async execute(slug: string, entitled: boolean): Promise<ContentDetailView> {
+  /** `viewerRank` = the viewer's highest entitlement tier rank (Infinity for staff / gating off).
+   * A premium item below the viewer's rank returns a locked preview (metadata only). */
+  async execute(slug: string, viewerRank: number): Promise<ContentDetailView> {
     const item = await this.repository.getBySlug(slug);
     if (!item || item.status !== 'published') {
       throw new ContentNotFoundError(slug);
     }
 
-    // Premium content for a non-entitled viewer: metadata only, no body/media (never presigned).
-    if (item.visibility === 'premium' && !entitled) {
+    // Premium content the viewer's tier can't unlock: metadata only, no body/media (never presigned).
+    if (item.visibility === 'premium' && viewerRank < tierRank(item.tier)) {
       return toLockedContentDetailView(item);
     }
 

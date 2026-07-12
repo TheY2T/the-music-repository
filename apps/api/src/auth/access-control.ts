@@ -10,6 +10,8 @@ export const statement = {
   content: ['create', 'read', 'update', 'delete', 'publish'],
   media: ['create', 'read', 'delete'],
   taxonomy: ['create', 'read', 'update', 'delete'],
+  // Teacher mode: only teachers (and admins) may create classrooms.
+  classroom: ['create'],
 } as const;
 
 export const ac = createAccessControl(statement);
@@ -20,11 +22,18 @@ export const roles = {
     content: ['create', 'read', 'update', 'delete', 'publish'],
     media: ['create', 'read', 'delete'],
     taxonomy: ['create', 'read', 'update', 'delete'],
+    classroom: ['create'],
   }),
   editor: ac.newRole({
     content: ['create', 'read', 'update', 'publish'],
     media: ['create', 'read', 'delete'],
     taxonomy: ['create', 'read', 'update'],
+  }),
+  teacher: ac.newRole({
+    content: ['read'],
+    media: ['read'],
+    taxonomy: ['read'],
+    classroom: ['create'],
   }),
   learner: ac.newRole({
     content: ['read'],

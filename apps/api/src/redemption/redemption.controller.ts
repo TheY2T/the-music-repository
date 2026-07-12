@@ -22,7 +22,11 @@ export class RedemptionController {
   @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.Premium }] })
   @RequireAuth()
   create(@Body() body: CreateRedeemCodeDto) {
-    return this.createCode.execute({ durationDays: body.durationDays, uses: body.uses });
+    return this.createCode.execute({
+      tier: body.tier,
+      durationDays: body.durationDays,
+      uses: body.uses,
+    });
   }
 
   @Post('me/redeem')
