@@ -1,6 +1,7 @@
 ---
 import UpgradePanel from '@/components/UpgradePanel.tsx';
-import '@/styles/global.css';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
 
 // Monetization: requires the flag on and an authenticated user.
 if (!Astro.locals.flags.premium) {
@@ -9,29 +10,18 @@ if (!Astro.locals.flags.premium) {
 if (!Astro.locals.user) {
   return Astro.redirect('/signin?redirect=/upgrade');
 }
+const locale = Astro.locals.locale;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Upgrade — The Music Repository</title>
-    <script is:inline>
-      const stored = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (stored === 'dark' || (!stored && prefersDark)) {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
-  </head>
-  <body>
-    <main class="mx-auto max-w-2xl space-y-6 p-8">
-      <header class="space-y-1">
-        <a href="/catalogue" class="text-sm text-muted-foreground underline">← Catalogue</a>
-        <h1 class="text-3xl font-bold">Premium</h1>
-        <p class="text-muted-foreground">Unlock premium scores, recordings, and lessons.</p>
-      </header>
-      <UpgradePanel client:load />
-    </main>
-  </body>
-</html>
+<BaseLayout title={t(locale, 'upgrade.pageTitle')}>
+  <main class="mx-auto max-w-2xl space-y-6 p-8">
+    <header class="space-y-1">
+      <a href={localizedPath(locale, '/catalogue')} class="text-sm text-muted-foreground underline">
+        {t(locale, 'common.backCatalogue')}
+      </a>
+      <h1 class="text-3xl font-bold">{t(locale, 'upgrade.title')}</h1>
+      <p class="text-muted-foreground">{t(locale, 'upgrade.subtitle')}</p>
+    </header>
+    <UpgradePanel client:load locale={locale} />
+  </main>
+</BaseLayout>

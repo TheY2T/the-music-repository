@@ -2,7 +2,8 @@
 import Solfege from '@/components/Solfege.tsx';
 import InfoView from '@/components/InfoView.tsx';
 import ToolPracticeLogger from '@/components/ToolPracticeLogger.tsx';
-import '@/styles/global.css';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
 
 if (!Astro.locals.flags.toolSolfege) {
   return Astro.redirect('/tools');
@@ -10,31 +11,18 @@ if (!Astro.locals.flags.toolSolfege) {
 const showInfoView = Astro.locals.flags.infoView;
 const logPracticeEnabled =
   Astro.locals.flags.toolPractice && Astro.locals.flags.progress && !!Astro.locals.user;
+const locale = Astro.locals.locale;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sight-singing — The Music Repository</title>
-    <script is:inline>
-      const stored = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (stored === 'dark' || (!stored && prefersDark)) {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
-  </head>
-  <body>
+<BaseLayout title={`${t(locale, 'tool.solfege.title')} — ${t(locale, 'site.name')}`}>
     <main class="mx-auto max-w-4xl space-y-6 p-8">
       <header class="space-y-1">
-        <a href="/tools" class="text-sm text-muted-foreground underline">← Tools</a>
-        <h1 class="text-3xl font-bold">Sight-singing</h1>
-        <p class="text-muted-foreground">Sing with movable-do solfège or scale degrees.</p>
+        <a href={localizedPath(locale, '/tools')} class="text-sm text-muted-foreground underline">{t(locale, 'common.backTools')}</a>
+        <h1 class="text-3xl font-bold">{t(locale, 'tool.solfege.title')}</h1>
+        <p class="text-muted-foreground">{t(locale, 'tool.solfege.summary')}</p>
       </header>
       <Solfege client:load />
     </main>
     {showInfoView && <InfoView client:idle />}
     {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}
-  </body>
-</html>
+  </BaseLayout>

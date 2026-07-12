@@ -62,7 +62,10 @@ declare namespace App {
       toolSoundfont: boolean;
       premium: boolean;
       classrooms: boolean;
+      i18nEnabled: boolean;
     };
+    /** Active locale resolved per request (URL prefix > cookie > Accept-Language > default). */
+    locale: 'en' | 'zh-Hans';
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: {
       id: string;

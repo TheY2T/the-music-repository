@@ -1,3 +1,4 @@
+import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import { useEffect, useState } from 'react';
 import {
   type Assignment,
@@ -22,7 +23,15 @@ import {
   unassignContent,
 } from '@/lib/classrooms-api';
 
-function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChanged: () => void }) {
+function ClassroomCard({
+  classroom,
+  onChanged,
+  locale,
+}: {
+  classroom: Classroom;
+  onChanged: () => void;
+  locale: Locale;
+}) {
   const [detail, setDetail] = useState<ClassroomDetail | null>(null);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [progress, setProgress] = useState<ClassProgress | null>(null);
@@ -50,7 +59,7 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
       return;
     }
     const result = await inviteToClassroom(classroom.id, inviteEmail.trim());
-    setInviteMsg(result.error ?? 'Invitation sent.');
+    setInviteMsg(result.error ?? t(locale, 'classmgr.invitationSent'));
     setInviteEmail('');
     await load();
   }
@@ -95,20 +104,20 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
           <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs">{classroom.role}</span>
           {classroom.premiumGranted ? (
             <span className="ml-2 rounded bg-green-600/20 px-1.5 py-0.5 text-xs text-green-700 dark:text-green-400">
-              premium granted
+              {t(locale, 'classmgr.premiumGranted')}
             </span>
           ) : null}
         </div>
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
-          <span>{classroom.memberCount} member(s)</span>
+          <span>{t(locale, 'classmgr.memberCount', { count: classroom.memberCount })}</span>
           {isOwner ? (
             <span>
-              Code:{' '}
+              {t(locale, 'classmgr.codeLabel')}{' '}
               <span className="font-mono font-semibold text-foreground">{classroom.joinCode}</span>
             </span>
           ) : null}
           <button type="button" onClick={toggle} className="underline">
-            {open ? 'Hide' : 'Manage'}
+            {open ? t(locale, 'classmgr.hide') : t(locale, 'classmgr.manage')}
           </button>
         </div>
       </div>
@@ -117,7 +126,7 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
         <div className="space-y-4 border-t border-border pt-3">
           {/* Roster */}
           <div className="space-y-1">
-            <h3 className="text-sm font-medium">Members</h3>
+            <h3 className="text-sm font-medium">{t(locale, 'classmgr.members')}</h3>
             {detail?.members.length ? (
               <ul className="space-y-1 text-sm">
                 {detail.members.map((m) => (
@@ -136,7 +145,7 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
                           }}
                           className="text-xs underline"
                         >
-                          remove
+                          {t(locale, 'classmgr.remove')}
                         </button>
                         <button
                           type="button"
@@ -146,7 +155,7 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
                           }}
                           className="text-xs underline"
                         >
-                          make owner
+                          {t(locale, 'classmgr.makeOwner')}
                         </button>
                       </>
                     ) : null}
@@ -154,18 +163,18 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-muted-foreground">No members yet — share the join code.</p>
+              <p className="text-sm text-muted-foreground">{t(locale, 'classmgr.noMembers')}</p>
             )}
           </div>
 
           {/* Assignments */}
           <div className="space-y-1">
-            <h3 className="text-sm font-medium">Assigned content</h3>
+            <h3 className="text-sm font-medium">{t(locale, 'classmgr.assignedContent')}</h3>
             {assignments.length ? (
               <ul className="space-y-1 text-sm">
                 {assignments.map((a) => (
                   <li key={a.slug} className="flex items-center gap-2">
-                    <a href={`/catalogue/${a.slug}`} className="underline">
+                    <a href={localizedPath(locale, `/catalogue/${a.slug}`)} className="underline">
                       {a.title}
                     </a>
                     {isOwner ? (
@@ -177,25 +186,27 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
                         }}
                         className="text-xs text-muted-foreground underline"
                       >
-                        remove
+                        {t(locale, 'classmgr.remove')}
                       </button>
                     ) : null}
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-muted-foreground">Nothing assigned yet.</p>
+              <p className="text-sm text-muted-foreground">
+                {t(locale, 'classmgr.nothingAssigned')}
+              </p>
             )}
             {isOwner ? (
               <form onSubmit={onAssign} className="flex flex-wrap items-center gap-2 pt-1">
                 <input
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
-                  placeholder="content slug"
+                  placeholder={t(locale, 'classmgr.contentSlugPlaceholder')}
                   className="rounded-md border border-input bg-background px-2 py-1 text-sm"
                 />
                 <button type="submit" className="rounded-md border border-border px-3 py-1 text-sm">
-                  Assign
+                  {t(locale, 'classmgr.assign')}
                 </button>
                 {assignError ? <span className="text-xs text-red-600">{assignError}</span> : null}
               </form>
@@ -205,28 +216,33 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
           {/* Invitations (owner) */}
           {isOwner ? (
             <div className="space-y-1">
-              <h3 className="text-sm font-medium">Invitations</h3>
+              <h3 className="text-sm font-medium">{t(locale, 'classmgr.invitations')}</h3>
               {invitations.length ? (
                 <ul className="space-y-1 text-sm text-muted-foreground">
                   {invitations.map((inv) => (
                     <li key={inv.email}>
-                      {inv.email} — {inv.accepted ? 'joined' : 'pending'}
+                      {inv.email} —{' '}
+                      {inv.accepted
+                        ? t(locale, 'classmgr.invitationJoined')
+                        : t(locale, 'classmgr.invitationPending')}
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-muted-foreground">No invitations yet.</p>
+                <p className="text-sm text-muted-foreground">
+                  {t(locale, 'classmgr.noInvitations')}
+                </p>
               )}
               <form onSubmit={onInvite} className="flex flex-wrap items-center gap-2 pt-1">
                 <input
                   type="email"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
-                  placeholder="student@email.com"
+                  placeholder={t(locale, 'classmgr.inviteEmailPlaceholder')}
                   className="rounded-md border border-input bg-background px-2 py-1 text-sm"
                 />
                 <button type="submit" className="rounded-md border border-border px-3 py-1 text-sm">
-                  Invite by email
+                  {t(locale, 'classmgr.inviteByEmail')}
                 </button>
                 {inviteMsg ? (
                   <span className="text-xs text-muted-foreground">{inviteMsg}</span>
@@ -238,14 +254,20 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
           {/* Progress overview (owner) */}
           {isOwner && progress && progress.assignments.length > 0 ? (
             <div className="space-y-1">
-              <h3 className="text-sm font-medium">Class progress</h3>
+              <h3 className="text-sm font-medium">{t(locale, 'classmgr.classProgress')}</h3>
               <ul className="space-y-1 text-sm text-muted-foreground">
                 {progress.members.map((m) => (
                   <li key={m.id}>
-                    {m.name || m.email}: {m.completedCount}/{m.total} assignments complete
+                    {t(locale, 'classmgr.memberProgress', {
+                      name: m.name || m.email,
+                      done: m.completedCount,
+                      total: m.total,
+                    })}
                   </li>
                 ))}
-                {progress.members.length === 0 ? <li>No members to track yet.</li> : null}
+                {progress.members.length === 0 ? (
+                  <li>{t(locale, 'classmgr.noMembersToTrack')}</li>
+                ) : null}
               </ul>
             </div>
           ) : null}
@@ -259,7 +281,7 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
                 disabled={busy || classroom.memberCount === 0}
                 className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
               >
-                {busy ? 'Granting…' : 'Grant premium to class'}
+                {busy ? t(locale, 'classmgr.granting') : t(locale, 'classmgr.grantPremium')}
               </button>
             ) : null}
             {isOwner ? (
@@ -271,7 +293,7 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
                 }}
                 className="rounded-md border border-border px-4 py-2 text-sm"
               >
-                Archive class
+                {t(locale, 'classmgr.archiveClass')}
               </button>
             ) : (
               <button
@@ -282,7 +304,7 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
                 }}
                 className="rounded-md border border-border px-4 py-2 text-sm"
               >
-                Leave class
+                {t(locale, 'classmgr.leaveClass')}
               </button>
             )}
           </div>
@@ -292,7 +314,13 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
   );
 }
 
-export default function ClassroomsManager({ canCreate = false }: { canCreate?: boolean }) {
+export default function ClassroomsManager({
+  canCreate = false,
+  locale,
+}: {
+  canCreate?: boolean;
+  locale: Locale;
+}) {
   const [rooms, setRooms] = useState<Classroom[]>([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
@@ -334,32 +362,32 @@ export default function ClassroomsManager({ canCreate = false }: { canCreate?: b
       <div className="grid gap-4 sm:grid-cols-2">
         {canCreate ? (
           <form onSubmit={onCreate} className="space-y-2 rounded-lg border border-border p-4">
-            <h2 className="font-semibold">Create a classroom</h2>
+            <h2 className="font-semibold">{t(locale, 'classmgr.createClassroom')}</h2>
             <p className="text-sm text-muted-foreground">
-              You become the teacher and get a join code.
+              {t(locale, 'classmgr.createDescription')}
             </p>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Classroom name"
+              placeholder={t(locale, 'classmgr.classroomNamePlaceholder')}
               className="w-full rounded-md border border-input bg-background px-2 py-1 text-sm"
             />
             <button
               type="submit"
               className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
             >
-              Create
+              {t(locale, 'classmgr.create')}
             </button>
           </form>
         ) : null}
 
         <form onSubmit={onJoin} className="space-y-2 rounded-lg border border-border p-4">
-          <h2 className="font-semibold">Join a classroom</h2>
-          <p className="text-sm text-muted-foreground">Enter the code your teacher gave you.</p>
+          <h2 className="font-semibold">{t(locale, 'classmgr.joinClassroom')}</h2>
+          <p className="text-sm text-muted-foreground">{t(locale, 'classmgr.joinDescription')}</p>
           <input
             value={code}
             onChange={(e) => setCode(e.target.value.toUpperCase())}
-            placeholder="Join code"
+            placeholder={t(locale, 'classmgr.joinCodePlaceholder')}
             className="w-full rounded-md border border-input bg-background px-2 py-1 font-mono text-sm uppercase"
           />
           {joinError ? <p className="text-sm text-red-600">{joinError}</p> : null}
@@ -367,23 +395,21 @@ export default function ClassroomsManager({ canCreate = false }: { canCreate?: b
             type="submit"
             className="rounded-md border border-border px-4 py-2 text-sm font-medium"
           >
-            Join
+            {t(locale, 'classmgr.join')}
           </button>
         </form>
       </div>
 
       <section className="space-y-3">
-        <h2 className="font-semibold">My classrooms</h2>
+        <h2 className="font-semibold">{t(locale, 'classmgr.myClassrooms')}</h2>
         {loading ? (
-          <p className="text-sm text-muted-foreground">Loading…</p>
+          <p className="text-sm text-muted-foreground">{t(locale, 'classmgr.loading')}</p>
         ) : rooms.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            You're not in any classrooms yet — create one or join with a code.
-          </p>
+          <p className="text-sm text-muted-foreground">{t(locale, 'classmgr.noClassrooms')}</p>
         ) : (
           <ul className="space-y-3">
             {rooms.map((room) => (
-              <ClassroomCard key={room.id} classroom={room} onChanged={refresh} />
+              <ClassroomCard key={room.id} classroom={room} onChanged={refresh} locale={locale} />
             ))}
           </ul>
         )}

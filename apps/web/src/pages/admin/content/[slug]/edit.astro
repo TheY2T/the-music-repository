@@ -1,35 +1,25 @@
 ---
 import ContentForm from '@/components/ContentForm.tsx';
+import BaseLayout from '@/layouts/BaseLayout.astro';
 import { guardAdmin } from '@/lib/admin-guard';
-import '@/styles/global.css';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
 
 const redirect = guardAdmin(Astro);
 if (redirect) {
   return redirect;
 }
 const { slug } = Astro.params;
+const locale = Astro.locals.locale;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Edit content — The Music Repository</title>
-    <script is:inline>
-      const stored = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (stored === 'dark' || (!stored && prefersDark)) {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
-  </head>
-  <body>
-    <main class="mx-auto max-w-5xl space-y-6 p-8">
-      <header class="space-y-1">
-        <a href="/admin" class="text-sm text-muted-foreground underline">← Content</a>
-        <h1 class="text-3xl font-bold">Edit content</h1>
-      </header>
-      <ContentForm client:load slug={slug} />
-    </main>
-  </body>
-</html>
+<BaseLayout title={`${t(locale, 'admin.editContent')} — ${t(locale, 'site.name')}`}>
+  <main class="mx-auto max-w-5xl space-y-6 p-8">
+    <header class="space-y-1">
+      <a href={localizedPath(locale, '/admin')} class="text-sm text-muted-foreground underline">
+        {t(locale, 'common.backContent')}
+      </a>
+      <h1 class="text-3xl font-bold">{t(locale, 'admin.editContent')}</h1>
+    </header>
+    <ContentForm client:load slug={slug} locale={locale} />
+  </main>
+</BaseLayout>

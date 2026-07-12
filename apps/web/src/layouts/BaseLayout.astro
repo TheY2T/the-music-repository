@@ -1,0 +1,62 @@
+---
+import LanguageSwitcher from '@/components/LanguageSwitcher.tsx';
+import '@/styles/global.css';
+import { LOCALES, htmlLang, localizedPath, splitLocalePath, t } from '@TheY2T/tmr-i18n';
+
+/**
+ * The single HTML shell for every page: dynamic `<html lang>`, the pre-paint dark-mode script,
+ * `hreflang` alternates, the CJK font class, and a top bar hosting the global language switcher.
+ * Pages render their own `<main>` into the default slot; extra `<head>` tags go in the `head` slot.
+ * The locale comes from `Astro.locals.locale` (resolved in middleware). See docs/features/i18n.md.
+ */
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+const locale = Astro.locals.locale;
+const i18nEnabled = Astro.locals.flags.i18nEnabled;
+const { path } = splitLocalePath(new URL(Astro.request.url).pathname);
+const site = Astro.site;
+const alternateHref = (target: (typeof LOCALES)[number]) =>
+  site ? new URL(localizedPath(target, path), site).href : localizedPath(target, path);
+---
+
+<html lang={htmlLang(locale)} class:list={[locale === 'zh-Hans' && 'lang-zh']}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <script is:inline>
+      // Apply theme before paint to avoid a flash (shadcn dark mode = `.dark` on <html>).
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+    {
+      i18nEnabled && (
+        <>
+          {LOCALES.map((l) => (
+            <link rel="alternate" hreflang={htmlLang(l)} href={alternateHref(l)} />
+          ))}
+          <link rel="alternate" hreflang="x-default" href={alternateHref('en')} />
+        </>
+      )
+    }
+    <slot name="head" />
+  </head>
+  <body>
+    {
+      i18nEnabled && (
+        <div class="flex items-center justify-between gap-4 border-b border-border px-4 py-2 text-sm">
+          <a href={localizedPath(locale, '/')} class="font-medium text-muted-foreground hover:underline">
+            {t(locale, 'site.name')}
+          </a>
+          <LanguageSwitcher client:load locale={locale} />
+        </div>
+      )
+    }
+    <slot />
+  </body>
+</html>

@@ -14,6 +14,7 @@
   "dependencies": {
     "@TheY2T/tmr-api-client": "workspace:*",
     "@TheY2T/tmr-flags": "workspace:*",
+    "@TheY2T/tmr-i18n": "workspace:*",
     "@astrojs/node": "catalog:",
     "@astrojs/react": "catalog:",
     "@openfeature/flagd-provider": "catalog:",

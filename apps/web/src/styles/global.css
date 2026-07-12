@@ -54,6 +54,15 @@ body {
     ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+/* Chinese (zh-Hans): prefer a system CJK face and loosen leading — set via `.lang-zh` on <html>
+   in BaseLayout so Latin pages keep their tighter Latin metrics. */
+.lang-zh body {
+  font-family:
+    ui-sans-serif, system-ui, "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB",
+    "Noto Sans SC", "Source Han Sans SC", sans-serif;
+  line-height: 1.7;
+}
+
 /* Info View: elements with context help are subtly marked and offer a help cursor. */
 [data-help] {
   cursor: help;

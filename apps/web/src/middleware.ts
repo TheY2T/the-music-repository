@@ -1,4 +1,11 @@
 import { FlagDefaults, FlagKeys } from '@TheY2T/tmr-flags';
+import {
+  DEFAULT_LOCALE,
+  localePrefix,
+  localizedPath,
+  preferredLocale,
+  splitLocalePath,
+} from '@TheY2T/tmr-i18n';
 import { defineMiddleware } from 'astro:middleware';
 import { FlagdProvider } from '@openfeature/flagd-provider';
 import { type Logger, OpenFeature } from '@openfeature/server-sdk';
@@ -294,6 +301,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.Classrooms,
     FlagDefaults[FlagKeys.Classrooms],
   );
+  const i18nEnabled = await client.getBooleanValue(FlagKeys.I18n, FlagDefaults[FlagKeys.I18n]);
 
   context.locals.flags = {
     demoNewBanner,
@@ -354,7 +362,37 @@ export const onRequest = defineMiddleware(async (context, next) => {
     toolSoundfont,
     premium,
     classrooms,
+    i18nEnabled,
   };
+
+  // Locale resolution + URL-prefix routing. One set of page files serves every locale: a `/zh/…`
+  // request is rewritten to its canonical (un-prefixed) path while the browser URL is left unchanged,
+  // and the page/islands read `Astro.locals.locale`. See @TheY2T/tmr-i18n + docs/features/i18n.md.
+  const url = new URL(context.request.url);
+  const { locale: urlLocale, path: canonicalPath } = splitLocalePath(url.pathname);
+
+  if (i18nEnabled && localePrefix(urlLocale)) {
+    context.locals.locale = urlLocale;
+  } else {
+    context.locals.locale = DEFAULT_LOCALE;
+    // On the bare root only, honour a saved `locale` cookie / browser language by redirecting to the
+    // prefixed URL. Restricted to `/` so assets and deep links are never surprise-redirected.
+    if (i18nEnabled && canonicalPath === '/' && context.request.method === 'GET') {
+      const preferred = preferredLocale({
+        cookie: context.request.headers.get('cookie'),
+        acceptLanguage: context.request.headers.get('accept-language'),
+      });
+      if (preferred !== DEFAULT_LOCALE) {
+        return context.redirect(localizedPath(preferred, '/'));
+      }
+    }
+  }
+
   context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
+
+  // Strip the locale prefix so the single page-file set renders (the browser URL stays `/zh/…`).
+  if (i18nEnabled && localePrefix(urlLocale)) {
+    return next(`${canonicalPath}${url.search}`);
+  }
   return next();
 });

@@ -1,15 +1,22 @@
+import { type Locale, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import { type FormEvent, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/auth-client';
 
 /** Local dev accounts (seeded by `pnpm --filter @TheY2T/tmr-api db:seed:auth`). */
 const DEV_ACCOUNTS = [
-  { label: 'Admin', email: 'admin@local.dev' },
-  { label: 'Editor', email: 'editor@local.dev' },
-  { label: 'Learner', email: 'learner@local.dev' },
-] as const;
+  { labelKey: 'signin.roleAdmin', email: 'admin@local.dev' },
+  { labelKey: 'signin.roleEditor', email: 'editor@local.dev' },
+  { labelKey: 'signin.roleLearner', email: 'learner@local.dev' },
+] as const satisfies ReadonlyArray<{ labelKey: MessageKey; email: string }>;
 
-export default function SignInForm({ redirectTo = '/admin' }: { redirectTo?: string }) {
+export default function SignInForm({
+  redirectTo = '/admin',
+  locale,
+}: {
+  redirectTo?: string;
+  locale: Locale;
+}) {
   const [email, setEmail] = useState('admin@local.dev');
   const [password, setPassword] = useState('password123');
   const [error, setError] = useState<string | null>(null);
@@ -22,7 +29,7 @@ export default function SignInForm({ redirectTo = '/admin' }: { redirectTo?: str
     const { error: signInError } = await authClient.signIn.email({ email, password });
     setBusy(false);
     if (signInError) {
-      setError(signInError.message ?? 'Sign-in failed. Check your credentials.');
+      setError(signInError.message ?? t(locale, 'signin.failed'));
       return;
     }
     window.location.href = redirectTo;
@@ -33,7 +40,7 @@ export default function SignInForm({ redirectTo = '/admin' }: { redirectTo?: str
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="space-y-1">
           <label htmlFor="email" className="text-sm font-medium">
-            Email
+            {t(locale, 'signin.email')}
           </label>
           <input
             id="email"
@@ -46,7 +53,7 @@ export default function SignInForm({ redirectTo = '/admin' }: { redirectTo?: str
         </div>
         <div className="space-y-1">
           <label htmlFor="password" className="text-sm font-medium">
-            Password
+            {t(locale, 'signin.password')}
           </label>
           <input
             id="password"
@@ -63,12 +70,12 @@ export default function SignInForm({ redirectTo = '/admin' }: { redirectTo?: str
           </p>
         ) : null}
         <Button type="submit" disabled={busy} className="w-full">
-          {busy ? 'Signing in…' : 'Sign in'}
+          {busy ? t(locale, 'signin.submitBusy') : t(locale, 'signin.submit')}
         </Button>
       </form>
 
       <div className="space-y-2 border-t pt-4">
-        <p className="text-xs text-muted-foreground">Quick fill (dev accounts, password shared):</p>
+        <p className="text-xs text-muted-foreground">{t(locale, 'signin.devAccounts')}</p>
         <div className="flex gap-2">
           {DEV_ACCOUNTS.map((account) => (
             <button
@@ -80,7 +87,7 @@ export default function SignInForm({ redirectTo = '/admin' }: { redirectTo?: str
               }}
               className="rounded-md border px-2 py-1 text-xs hover:bg-accent"
             >
-              {account.label}
+              {t(locale, account.labelKey)}
             </button>
           ))}
         </div>

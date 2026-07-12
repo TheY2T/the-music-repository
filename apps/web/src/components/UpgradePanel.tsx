@@ -1,3 +1,4 @@
+import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { useEffect, useState } from 'react';
 import {
   cancelPremium,
@@ -6,7 +7,7 @@ import {
   startCheckout,
 } from '@/lib/subscription-api';
 
-export default function UpgradePanel() {
+export default function UpgradePanel({ locale }: { locale: Locale }) {
   const [status, setStatus] = useState<SubscriptionStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -38,7 +39,7 @@ export default function UpgradePanel() {
   }
 
   if (loading) {
-    return <p className="text-sm text-muted-foreground">Loading…</p>;
+    return <p className="text-sm text-muted-foreground">{t(locale, 'common.loading')}</p>;
   }
 
   const premium = status?.premium ?? false;
@@ -51,20 +52,22 @@ export default function UpgradePanel() {
           premium ? 'border-green-600/40 bg-green-600/10' : 'border-border'
         }`}
       >
-        <p className="text-lg font-semibold">{premium ? '✓ Premium active' : 'Free plan'}</p>
+        <p className="text-lg font-semibold">
+          {premium ? t(locale, 'upgrade.premiumActive') : t(locale, 'upgrade.freePlan')}
+        </p>
         <p className="mt-1 text-sm text-muted-foreground">
           {isStaff
-            ? 'You have full access as a staff member (editor/admin).'
+            ? t(locale, 'upgrade.staffMsg')
             : premium
-              ? 'You can access all premium scores, recordings, and lessons.'
-              : 'Premium content is locked. Subscribe to unlock every premium item.'}
+              ? t(locale, 'upgrade.activeMsg')
+              : t(locale, 'upgrade.lockedMsg')}
         </p>
       </div>
 
       <ul className="space-y-1 text-sm text-muted-foreground">
-        <li>• Full scores & PDF downloads for premium repertoire</li>
-        <li>• Premium recordings and play-along backing tracks</li>
-        <li>• In-depth theory & technique lessons</li>
+        <li>• {t(locale, 'upgrade.benefit1')}</li>
+        <li>• {t(locale, 'upgrade.benefit2')}</li>
+        <li>• {t(locale, 'upgrade.benefit3')}</li>
       </ul>
 
       {isStaff ? null : premium ? (
@@ -74,7 +77,7 @@ export default function UpgradePanel() {
           disabled={busy}
           className="rounded-md border border-border px-4 py-2 text-sm font-medium"
         >
-          {busy ? 'Working…' : 'Cancel premium'}
+          {busy ? t(locale, 'upgrade.working') : t(locale, 'upgrade.cancel')}
         </button>
       ) : (
         <div className="flex flex-wrap gap-3">
@@ -84,7 +87,7 @@ export default function UpgradePanel() {
             disabled={busy}
             className="rounded-md bg-primary px-6 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
           >
-            {busy ? 'Redirecting…' : 'Subscribe — Premium'}
+            {busy ? t(locale, 'upgrade.redirecting') : t(locale, 'upgrade.subscribePremium')}
           </button>
           <button
             type="button"
@@ -92,7 +95,7 @@ export default function UpgradePanel() {
             disabled={busy}
             className="rounded-md border border-primary px-6 py-2 text-sm font-medium text-primary disabled:opacity-50"
           >
-            {busy ? 'Redirecting…' : 'Subscribe — Pro'}
+            {busy ? t(locale, 'upgrade.redirecting') : t(locale, 'upgrade.subscribePro')}
           </button>
           <button
             type="button"
@@ -100,16 +103,12 @@ export default function UpgradePanel() {
             disabled={busy}
             className="rounded-md border border-border px-6 py-2 text-sm font-medium disabled:opacity-50"
           >
-            {busy ? 'Redirecting…' : 'Subscribe — Institution'}
+            {busy ? t(locale, 'upgrade.redirecting') : t(locale, 'upgrade.subscribeInstitution')}
           </button>
         </div>
       )}
 
-      <p className="text-xs text-muted-foreground">
-        Checkout runs through a payment provider (Stripe). Until API keys are provisioned this uses
-        a <strong>mock checkout</strong> — no card, no charge — but the full flow (checkout →
-        provider webhook → entitlement grant) is exercised end-to-end.
-      </p>
+      <p className="text-xs text-muted-foreground">{t(locale, 'upgrade.note')}</p>
     </div>
   );
 }

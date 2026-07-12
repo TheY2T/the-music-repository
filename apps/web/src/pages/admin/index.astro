@@ -1,60 +1,50 @@
 ---
 import AdminContentList from '@/components/AdminContentList.tsx';
 import SignOutButton from '@/components/SignOutButton.tsx';
+import BaseLayout from '@/layouts/BaseLayout.astro';
 import { guardAdmin } from '@/lib/admin-guard';
-import '@/styles/global.css';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
 
 const redirect = guardAdmin(Astro);
 if (redirect) {
   return redirect;
 }
 const user = Astro.locals.user!;
+const locale = Astro.locals.locale;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Admin — The Music Repository</title>
-    <script is:inline>
-      const stored = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (stored === 'dark' || (!stored && prefersDark)) {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
-  </head>
-  <body>
-    <main class="mx-auto max-w-5xl space-y-6 p-8">
-      <header class="flex items-center justify-between">
-        <div class="space-y-1">
-          <a href="/" class="text-sm text-muted-foreground underline">← Home</a>
-          <h1 class="text-3xl font-bold">Content</h1>
-          <p class="text-sm text-muted-foreground">
-            Signed in as {user.name || user.email} · role: {user.role}
-          </p>
-        </div>
-        <SignOutButton client:load />
-      </header>
-
-      <div class="flex flex-wrap gap-4">
-        {
-          Astro.locals.flags.collections && (
-            <a href="/admin/collections" class="text-sm underline">
-              Manage collections →
-            </a>
-          )
-        }
-        {
-          Astro.locals.flags.infoView && (
-            <a href="/admin/help" class="text-sm underline">
-              Manage help topics →
-            </a>
-          )
-        }
+<BaseLayout title={`${t(locale, 'nav.admin')} — ${t(locale, 'site.name')}`}>
+  <main class="mx-auto max-w-5xl space-y-6 p-8">
+    <header class="flex items-center justify-between">
+      <div class="space-y-1">
+        <a href={localizedPath(locale, '/')} class="text-sm text-muted-foreground underline">
+          {t(locale, 'common.backHome')}
+        </a>
+        <h1 class="text-3xl font-bold">{t(locale, 'admin.content')}</h1>
+        <p class="text-sm text-muted-foreground">
+          {t(locale, 'admin.signedInAs', { who: user.name || user.email, role: user.role ?? '' })}
+        </p>
       </div>
+      <SignOutButton client:load locale={locale} />
+    </header>
 
-      <AdminContentList client:load />
-    </main>
-  </body>
-</html>
+    <div class="flex flex-wrap gap-4">
+      {
+        Astro.locals.flags.collections && (
+          <a href={localizedPath(locale, '/admin/collections')} class="text-sm underline">
+            {t(locale, 'admin.manageCollections')}
+          </a>
+        )
+      }
+      {
+        Astro.locals.flags.infoView && (
+          <a href={localizedPath(locale, '/admin/help')} class="text-sm underline">
+            {t(locale, 'admin.manageHelp')}
+          </a>
+        )
+      }
+    </div>
+
+    <AdminContentList client:load locale={locale} />
+  </main>
+</BaseLayout>

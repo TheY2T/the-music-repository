@@ -1,6 +1,7 @@
 ---
 import MockCheckout from '@/components/MockCheckout.tsx';
-import '@/styles/global.css';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { t } from '@TheY2T/tmr-i18n';
 
 // Dev-only mock checkout page (the mock gateway redirects here). Requires the flag + an authed user.
 if (!Astro.locals.flags.premium) {
@@ -9,28 +10,15 @@ if (!Astro.locals.flags.premium) {
 if (!Astro.locals.user) {
   return Astro.redirect('/signin?redirect=/upgrade');
 }
+const locale = Astro.locals.locale;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Checkout — The Music Repository</title>
-    <script is:inline>
-      const stored = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (stored === 'dark' || (!stored && prefersDark)) {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
-  </head>
-  <body>
-    <main class="mx-auto max-w-lg space-y-6 p-8">
-      <header class="space-y-1">
-        <h1 class="text-2xl font-bold">Checkout</h1>
-        <p class="text-muted-foreground">Complete your subscription.</p>
-      </header>
-      <MockCheckout client:load />
-    </main>
-  </body>
-</html>
+<BaseLayout title={t(locale, 'checkout.pageTitle')}>
+  <main class="mx-auto max-w-lg space-y-6 p-8">
+    <header class="space-y-1">
+      <h1 class="text-2xl font-bold">{t(locale, 'checkout.title')}</h1>
+      <p class="text-muted-foreground">{t(locale, 'checkout.subtitle')}</p>
+    </header>
+    <MockCheckout client:load locale={locale} />
+  </main>
+</BaseLayout>

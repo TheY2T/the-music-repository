@@ -1,6 +1,7 @@
 ---
 import ClassroomsManager from '@/components/ClassroomsManager.tsx';
-import '@/styles/global.css';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
 
 // Teacher mode: requires the flag on and an authenticated user.
 if (!Astro.locals.flags.classrooms) {
@@ -11,31 +12,18 @@ if (!Astro.locals.user) {
 }
 // Only teachers/admins may create classrooms (RBAC: classroom:create).
 const canCreate = ['admin', 'teacher'].includes(Astro.locals.user.role ?? '');
+const locale = Astro.locals.locale;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Classrooms — The Music Repository</title>
-    <script is:inline>
-      const stored = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (stored === 'dark' || (!stored && prefersDark)) {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
-  </head>
-  <body>
-    <main class="mx-auto max-w-3xl space-y-6 p-8">
-      <header class="space-y-1">
-        <a href="/" class="text-sm text-muted-foreground underline">← Home</a>
-        <h1 class="text-3xl font-bold">Classrooms</h1>
-        <p class="text-muted-foreground">
-          Create a class, share the join code, and grant premium to your students.
-        </p>
-      </header>
-      <ClassroomsManager client:load canCreate={canCreate} />
-    </main>
-  </body>
-</html>
+<BaseLayout title={`${t(locale, 'nav.classrooms')} — ${t(locale, 'site.name')}`}>
+  <main class="mx-auto max-w-3xl space-y-6 p-8">
+    <header class="space-y-1">
+      <a href={localizedPath(locale, '/')} class="text-sm text-muted-foreground underline">
+        {t(locale, 'common.backHome')}
+      </a>
+      <h1 class="text-3xl font-bold">{t(locale, 'nav.classrooms')}</h1>
+      <p class="text-muted-foreground">{t(locale, 'classrooms.subtitle')}</p>
+    </header>
+    <ClassroomsManager client:load canCreate={canCreate} locale={locale} />
+  </main>
+</BaseLayout>

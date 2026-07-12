@@ -3,16 +3,17 @@ import {
   type CollectionDetail as CollectionDetailDto,
   useGetCollectionBySlug,
 } from '@TheY2T/tmr-api-client';
+import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 
-function Detail({ slug }: { slug: string }) {
+function Detail({ slug, locale }: { slug: string; locale: Locale }) {
   const { data, isLoading } = useGetCollectionBySlug(slug);
   const collection = data?.status === 200 ? (data.data as CollectionDetailDto) : undefined;
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading…</p>;
+    return <p className="text-sm text-muted-foreground">{t(locale, 'common.loading')}</p>;
   }
   if (!collection) {
-    return <p className="text-sm text-red-500">This collection could not be found.</p>;
+    return <p className="text-sm text-red-500">{t(locale, 'collections.notFound')}</p>;
   }
 
   return (
@@ -27,7 +28,7 @@ function Detail({ slug }: { slug: string }) {
         {collection.items.map((entry) => (
           <li key={entry.content.slug}>
             <a
-              href={`/catalogue/${entry.content.slug}`}
+              href={localizedPath(locale, `/catalogue/${entry.content.slug}`)}
               className="flex items-center gap-3 rounded-lg border border-border p-3 transition-colors hover:bg-muted"
             >
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-medium">
@@ -37,7 +38,9 @@ function Detail({ slug }: { slug: string }) {
                 <span className="font-medium leading-snug">{entry.content.title}</span>
                 <span className="font-mono text-xs text-muted-foreground">
                   {entry.content.type}
-                  {entry.content.difficulty ? ` · Grade ${entry.content.difficulty}` : ''}
+                  {entry.content.difficulty
+                    ? ` · ${t(locale, 'catalogue.grade', { level: entry.content.difficulty })}`
+                    : ''}
                 </span>
               </span>
             </a>
@@ -48,10 +51,10 @@ function Detail({ slug }: { slug: string }) {
   );
 }
 
-export default function CollectionDetail({ slug }: { slug: string }) {
+export default function CollectionDetail({ slug, locale }: { slug: string; locale: Locale }) {
   return (
     <ApiProvider>
-      <Detail slug={slug} />
+      <Detail slug={slug} locale={locale} />
     </ApiProvider>
   );
 }

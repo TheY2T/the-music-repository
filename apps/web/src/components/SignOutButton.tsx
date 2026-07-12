@@ -1,8 +1,15 @@
+import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/auth-client';
 
-export default function SignOutButton({ redirectTo = '/signin' }: { redirectTo?: string }) {
+export default function SignOutButton({
+  redirectTo = '/signin',
+  locale,
+}: {
+  redirectTo?: string;
+  locale: Locale;
+}) {
   const [busy, setBusy] = useState(false);
   return (
     <Button
@@ -15,7 +22,7 @@ export default function SignOutButton({ redirectTo = '/signin' }: { redirectTo?:
         window.location.href = redirectTo;
       }}
     >
-      {busy ? 'Signing out…' : 'Sign out'}
+      {busy ? t(locale, 'common.loading') : t(locale, 'common.signOut')}
     </Button>
   );
 }

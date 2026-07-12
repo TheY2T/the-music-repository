@@ -1,4 +1,5 @@
 import type { ProgressSummary } from '@TheY2T/tmr-api-client';
+import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import { type FormEvent, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { getProgress, logPractice } from '@/lib/progress-api';
@@ -12,7 +13,7 @@ function Stat({ label, value }: { label: string; value: string | number }) {
   );
 }
 
-export default function ProgressDashboard() {
+export default function ProgressDashboard({ locale }: { locale: Locale }) {
   const [summary, setSummary] = useState<ProgressSummary | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [minutes, setMinutes] = useState('20');
@@ -40,27 +41,31 @@ export default function ProgressDashboard() {
   }
 
   if (!loaded) {
-    return <p className="text-sm text-muted-foreground">Loading…</p>;
+    return <p className="text-sm text-muted-foreground">{t(locale, 'prog.loading')}</p>;
   }
   if (!summary) {
-    return <p className="text-sm text-red-500">Could not load your progress.</p>;
+    return <p className="text-sm text-red-500">{t(locale, 'prog.loadError')}</p>;
   }
+
+  const streak = summary.currentStreakDays;
 
   return (
     <div className="space-y-8">
       <div className="grid gap-4 sm:grid-cols-3">
-        <Stat label="Items completed" value={summary.completedCount} />
+        <Stat label={t(locale, 'prog.itemsCompleted')} value={summary.completedCount} />
         <Stat
-          label="Day streak"
-          value={`${summary.currentStreakDays} day${summary.currentStreakDays === 1 ? '' : 's'}`}
+          label={t(locale, 'prog.dayStreakLabel')}
+          value={t(locale, streak === 1 ? 'prog.dayStreakOne' : 'prog.dayStreakOther', {
+            count: streak,
+          })}
         />
-        <Stat label="Practice minutes" value={summary.totalPracticeMinutes} />
+        <Stat label={t(locale, 'prog.practiceMinutes')} value={summary.totalPracticeMinutes} />
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-medium">Collections</h2>
+        <h2 className="text-lg font-medium">{t(locale, 'prog.collections')}</h2>
         {summary.collections.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No collections yet.</p>
+          <p className="text-sm text-muted-foreground">{t(locale, 'prog.noCollections')}</p>
         ) : (
           <ul className="space-y-3">
             {summary.collections.map((collection) => {
@@ -71,7 +76,10 @@ export default function ProgressDashboard() {
               return (
                 <li key={collection.slug} className="space-y-1">
                   <div className="flex justify-between text-sm">
-                    <a href={`/collections/${collection.slug}`} className="font-medium underline">
+                    <a
+                      href={localizedPath(locale, `/collections/${collection.slug}`)}
+                      className="font-medium underline"
+                    >
                       {collection.title}
                     </a>
                     <span className="text-muted-foreground">
@@ -92,10 +100,10 @@ export default function ProgressDashboard() {
       </section>
 
       <section className="space-y-3 border-t pt-6">
-        <h2 className="text-lg font-medium">Log practice</h2>
+        <h2 className="text-lg font-medium">{t(locale, 'prog.logPractice')}</h2>
         <form onSubmit={onLog} className="flex items-end gap-3">
           <label className="space-y-1">
-            <span className="block text-sm font-medium">Minutes</span>
+            <span className="block text-sm font-medium">{t(locale, 'prog.minutes')}</span>
             <input
               type="number"
               min={1}
@@ -106,7 +114,7 @@ export default function ProgressDashboard() {
             />
           </label>
           <Button type="submit" disabled={busy}>
-            {busy ? 'Logging…' : 'Log practice'}
+            {busy ? t(locale, 'prog.logging') : t(locale, 'prog.logPractice')}
           </Button>
         </form>
       </section>

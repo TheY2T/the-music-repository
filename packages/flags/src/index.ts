@@ -133,6 +133,8 @@ export const FlagKeys = {
   Premium: 'monetization.premium',
   /** Phase 6 — teacher/classroom mode (create/join classrooms, grant premium to a class). */
   Classrooms: 'education.classrooms',
+  /** i18n — enables `/zh` localized routing + the language switcher (English + 中文). */
+  I18n: 'platform.i18n',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -197,4 +199,5 @@ export const FlagDefaults = {
   [FlagKeys.ToolSoundfont]: true,
   [FlagKeys.Premium]: true,
   [FlagKeys.Classrooms]: true,
+  [FlagKeys.I18n]: true,
 } satisfies Record<FlagKey, boolean>;

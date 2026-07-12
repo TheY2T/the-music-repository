@@ -1,4 +1,5 @@
 import type { ReviewSummary } from '@TheY2T/tmr-api-client';
+import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { DECKS } from '@/lib/drill-decks';
@@ -13,7 +14,7 @@ function Stat({ label, value }: { label: string; value: string | number }) {
   );
 }
 
-export default function DrillsHub() {
+export default function DrillsHub({ locale }: { locale: Locale }) {
   const [summary, setSummary] = useState<ReviewSummary | null>(null);
 
   useEffect(() => {
@@ -27,13 +28,13 @@ export default function DrillsHub() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-4">
         <div className="grid grid-cols-3 gap-3">
-          <Stat label="Day streak" value={`${summary?.streakDays ?? 0}🔥`} />
-          <Stat label="Reviewed today" value={summary?.reviewsToday ?? 0} />
-          <Stat label="Due now" value={totalDue} />
+          <Stat label={t(locale, 'drillhub.dayStreak')} value={`${summary?.streakDays ?? 0}🔥`} />
+          <Stat label={t(locale, 'drillhub.reviewedToday')} value={summary?.reviewsToday ?? 0} />
+          <Stat label={t(locale, 'drillhub.dueNow')} value={totalDue} />
         </div>
         {totalDue > 0 ? (
-          <a href="/drills/review" className="ml-auto">
-            <Button size="lg">▶ Review {totalDue} due</Button>
+          <a href={localizedPath(locale, '/drills/review')} className="ml-auto">
+            <Button size="lg">▶ {t(locale, 'drillhub.reviewDue', { count: totalDue })}</Button>
           </a>
         ) : null}
       </div>
@@ -47,7 +48,7 @@ export default function DrillsHub() {
           return (
             <li key={deck.key}>
               <a
-                href={`/drills/${deck.key}`}
+                href={localizedPath(locale, `/drills/${deck.key}`)}
                 className="flex h-full flex-col gap-2 rounded-lg border border-border p-4 transition-colors hover:bg-muted"
               >
                 <span className="font-semibold" data-help="ear-training">
@@ -56,10 +57,14 @@ export default function DrillsHub() {
                 <span className="text-sm text-muted-foreground">{deck.description}</span>
                 <span className="mt-auto flex gap-3 pt-2 text-xs">
                   <span className="rounded-full bg-blue-100 px-2 py-0.5 text-blue-900 dark:bg-blue-950 dark:text-blue-100">
-                    {due} due
+                    {t(locale, 'drillhub.due', { count: due })}
                   </span>
-                  <span className="rounded-full bg-muted px-2 py-0.5">{fresh} new</span>
-                  <span className="rounded-full bg-muted px-2 py-0.5">{learned} learned</span>
+                  <span className="rounded-full bg-muted px-2 py-0.5">
+                    {t(locale, 'drillhub.new', { count: fresh })}
+                  </span>
+                  <span className="rounded-full bg-muted px-2 py-0.5">
+                    {t(locale, 'drillhub.learned', { count: learned })}
+                  </span>
                 </span>
               </a>
             </li>

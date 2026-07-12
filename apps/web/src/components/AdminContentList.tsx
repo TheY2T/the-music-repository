@@ -1,9 +1,21 @@
 import type { ContentAdminSummary } from '@TheY2T/tmr-api-client';
+import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { adminApi } from '@/lib/admin-api';
 
-export default function AdminContentList() {
+/** Localized label for a content status (`draft`/`review`/`published`; unknown → draft). */
+function statusLabel(locale: Locale, status: string): string {
+  const key: MessageKey =
+    status === 'published'
+      ? 'acl.statusPublished'
+      : status === 'review'
+        ? 'acl.statusReview'
+        : 'acl.statusDraft';
+  return t(locale, key);
+}
+
+export default function AdminContentList({ locale }: { locale: Locale }) {
   const [items, setItems] = useState<ContentAdminSummary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -15,29 +27,29 @@ export default function AdminContentList() {
   }, []);
 
   if (error) {
-    return <p className="text-sm text-destructive">Failed to load content: {error}</p>;
+    return <p className="text-sm text-destructive">{t(locale, 'acl.loadError', { error })}</p>;
   }
   if (!items) {
-    return <p className="text-sm text-muted-foreground">Loading…</p>;
+    return <p className="text-sm text-muted-foreground">{t(locale, 'acl.loading')}</p>;
   }
 
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <a href="/admin/content/new">
-          <Button size="sm">+ New content</Button>
+        <a href={localizedPath(locale, '/admin/content/new')}>
+          <Button size="sm">+ {t(locale, 'acl.newContent')}</Button>
         </a>
       </div>
       {items.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No content yet. Create the first item.</p>
+        <p className="text-sm text-muted-foreground">{t(locale, 'acl.empty')}</p>
       ) : (
         <div className="overflow-x-auto rounded-lg border">
           <table className="w-full text-sm">
             <thead className="border-b bg-muted/40 text-left">
               <tr>
-                <th className="p-3 font-medium">Title</th>
-                <th className="p-3 font-medium">Type</th>
-                <th className="p-3 font-medium">Status</th>
+                <th className="p-3 font-medium">{t(locale, 'acl.colTitle')}</th>
+                <th className="p-3 font-medium">{t(locale, 'acl.colType')}</th>
+                <th className="p-3 font-medium">{t(locale, 'acl.colStatus')}</th>
                 <th className="p-3" />
               </tr>
             </thead>
@@ -57,15 +69,18 @@ export default function AdminContentList() {
                           : 'rounded-full bg-muted px-2 py-0.5 text-xs'
                       }
                     >
-                      {item.status}
+                      {statusLabel(locale, item.status)}
                     </span>
                   </td>
                   <td className="p-3 text-right">
                     <a
-                      href={`/admin/content/${encodeURIComponent(item.slug)}/edit`}
+                      href={localizedPath(
+                        locale,
+                        `/admin/content/${encodeURIComponent(item.slug)}/edit`,
+                      )}
                       className="text-sm underline"
                     >
-                      Edit
+                      {t(locale, 'acl.edit')}
                     </a>
                   </td>
                 </tr>

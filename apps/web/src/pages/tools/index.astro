@@ -1,5 +1,6 @@
 ---
-import '@/styles/global.css';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
 
 const {
   toolKeyboard,
@@ -49,283 +50,56 @@ const {
   toolScore,
   toolSoundfont,
 } = Astro.locals.flags;
-const tools = [
-  {
-    href: '/tools/keyboard',
-    title: 'Interactive keyboard',
-    summary: 'Click keys to hear them; highlight any scale.',
-    enabled: toolKeyboard,
-  },
-  {
-    href: '/tools/fretboard',
-    title: 'Guitar fretboard',
-    summary: 'Standard-tuning fretboard; hear notes and see scale shapes.',
-    enabled: toolFretboard,
-  },
-  {
-    href: '/tools/circle-of-fifths',
-    title: 'Circle of fifths',
-    summary: 'Explore keys, signatures, and diatonic chords.',
-    enabled: toolCircleOfFifths,
-  },
-  {
-    href: '/tools/scale-explorer',
-    title: 'Scale explorer',
-    summary: 'See any scale’s notes, degrees, and step pattern; play it.',
-    enabled: toolScaleExplorer,
-  },
-  {
-    href: '/tools/chords',
-    title: 'Chord builder',
-    summary: 'Build any chord; see its notes and hear it.',
-    enabled: toolChords,
-  },
-  {
-    href: '/tools/chord-identifier',
-    title: 'Chord identifier',
-    summary: 'Pick notes to name the chord (reverse lookup).',
-    enabled: toolChordId,
-  },
-  {
-    href: '/tools/modes',
-    title: 'Mode explorer',
-    summary: 'The seven modes, brightest to darkest, with their colour notes.',
-    enabled: toolModes,
-  },
-  {
-    href: '/tools/progression',
-    title: 'Progression builder',
-    summary: 'Build a chord progression and see its Roman numerals.',
-    enabled: toolProgression,
-  },
-  {
-    href: '/tools/metronome',
-    title: 'Metronome',
-    summary: 'Keep time with an accented, adjustable click.',
-    enabled: toolMetronome,
-  },
-  {
-    href: '/tools/tuner',
-    title: 'Tuning reference',
-    summary: 'Reference tones (A440 + guitar strings) to tune by ear.',
-    enabled: toolTuner,
-  },
-  {
-    href: '/tools/intervals',
-    title: 'Interval explorer',
-    summary: 'Hear and name any interval, melodic or harmonic.',
-    enabled: toolIntervals,
-  },
-  {
-    href: '/tools/staff',
-    title: 'Staff note reader',
-    summary: 'Read notes on the treble staff; click to hear them.',
-    enabled: toolStaff,
-  },
-  {
-    href: '/tools/ear-trainer',
-    title: 'Ear trainer',
-    summary: 'Train your ear: listen and name the interval.',
-    enabled: toolEarTrainer,
-  },
-  {
-    href: '/tools/sequencer',
-    title: 'Beat sequencer',
-    summary: 'Program a drum pattern and loop it.',
-    enabled: toolSequencer,
-  },
-  {
-    href: '/tools/sight-reading',
-    title: 'Sight-reading',
-    summary: 'Read a generated melody on the staff, then check yourself.',
-    enabled: toolSightReading,
-  },
-  {
-    href: '/tools/backing-track',
-    title: 'Backing track',
-    summary: 'Loop a chord progression with drums and bass to jam over.',
-    enabled: toolBackingTrack,
-  },
-  {
-    href: '/tools/voicings',
-    title: 'Voicing library',
-    summary: 'See a chord’s inversions, drop-2/3, and shell voicings on the keyboard.',
-    enabled: toolVoicings,
-  },
-  {
-    href: '/tools/player',
-    title: 'Notation player',
-    summary: 'Play a melody on the staff with a moving cursor; slow, loop, and section it.',
-    enabled: toolNotationPlayer,
-  },
-  {
-    href: '/tools/licks',
-    title: 'Lick library',
-    summary: 'Guitar licks and turnarounds in tab — hear them and work them up to speed.',
-    enabled: toolLicks,
-  },
-  {
-    href: '/tools/chord-diagrams',
-    title: 'Chord diagrams',
-    summary: 'Common open and barre guitar chord shapes — click to strum.',
-    enabled: toolChordDiagrams,
-  },
-  {
-    href: '/tools/strumming',
-    title: 'Strumming trainer',
-    summary: 'Loop a strum pattern over a chord and play along.',
-    enabled: toolStrumming,
-  },
-  {
-    href: '/tools/fingerpicking',
-    title: 'Fingerpicking trainer',
-    summary: 'Loop a picking pattern over a chord and follow the strings.',
-    enabled: toolFingerpicking,
-  },
-  {
-    href: '/tools/arpeggio',
-    title: 'Arpeggio player',
-    summary: 'Arpeggiate any chord up, down, or both — and loop it.',
-    enabled: toolArpeggio,
-  },
-  {
-    href: '/tools/progression-player',
-    title: 'Progression play-along',
-    summary: 'Strum through a chord progression, one bar per chord.',
-    enabled: toolProgressionPlayer,
-  },
-  {
-    href: '/tools/rhythm',
-    title: 'Rhythm trainer',
-    summary: 'Read a rhythm and clap along over a steady click.',
-    enabled: toolRhythm,
-  },
-  {
-    href: '/tools/caged',
-    title: 'CAGED explorer',
-    summary: 'One chord in five shapes up the neck.',
-    enabled: toolCaged,
-  },
-  {
-    href: '/tools/scale-boxes',
-    title: 'Scale positions',
-    summary: 'See any scale as a movable box on the fretboard.',
-    enabled: toolScaleBoxes,
-  },
-  {
-    href: '/tools/song',
-    title: 'Song player',
-    summary: 'Melody and chords together — play along.',
-    enabled: toolSong,
-  },
-  {
-    href: '/tools/progression-ear',
-    title: 'Progression ear training',
-    summary: 'Hear a chord progression and name it.',
-    enabled: toolProgressionEar,
-  },
-  {
-    href: '/tools/chord-quality-ear',
-    title: 'Chord ear training',
-    summary: 'Hear a chord and name its quality.',
-    enabled: toolChordQualityEar,
-  },
-  {
-    href: '/tools/fret-quiz',
-    title: 'Fretboard quiz',
-    summary: 'Name the highlighted note on the guitar neck.',
-    enabled: toolFretQuiz,
-  },
-  {
-    href: '/tools/musicxml',
-    title: 'MusicXML import',
-    summary: 'Load a MusicXML score, render it, and play it back.',
-    enabled: toolMusicXml,
-  },
-  {
-    href: '/tools/multi-voice',
-    title: 'Chord engraving',
-    summary: 'Diatonic triads as stacked chords on the staff.',
-    enabled: toolMultiVoice,
-  },
-  {
-    href: '/tools/practice-player',
-    title: 'Practice player',
-    summary: 'Slow a track down (pitch-preserving) and loop a section.',
-    enabled: toolPracticePlayer,
-  },
-  {
-    href: '/tools/analyzer',
-    title: 'Chord analyzer',
-    summary: 'Roman numerals and harmonic function for any progression.',
-    enabled: toolAnalyzer,
-  },
-  {
-    href: '/tools/transposer',
-    title: 'Transposer & capo',
-    summary: 'Transpose a progression and find easy capo positions.',
-    enabled: toolTransposer,
-  },
-  {
-    href: '/tools/bassline',
-    title: 'Bass-line generator',
-    summary: 'Roots, root–fifth, or a walking bass under a progression.',
-    enabled: toolBassline,
-  },
-  {
-    href: '/tools/melodic-dictation',
-    title: 'Melodic dictation',
-    summary: 'Hear a melody, then rebuild it by ear.',
-    enabled: toolMelodicDictation,
-  },
-  {
-    href: '/tools/rhythm-dictation',
-    title: 'Rhythm dictation',
-    summary: 'Hear a one-bar rhythm, then rebuild it.',
-    enabled: toolRhythmDictation,
-  },
-  {
-    href: '/tools/grooves',
-    title: 'Groove library',
-    summary: 'Classic drum grooves to play along to.',
-    enabled: toolGrooves,
-  },
-  {
-    href: '/tools/solfege',
-    title: 'Sight-singing',
-    summary: 'Sing with movable-do solfège or scale degrees.',
-    enabled: toolSolfege,
-  },
-  {
-    href: '/tools/key-quiz',
-    title: 'Key signature quiz',
-    summary: 'Name the major key from its signature.',
-    enabled: toolKeyQuiz,
-  },
-  {
-    href: '/tools/interval-quiz',
-    title: 'Interval construction',
-    summary: 'Build the interval above a given note.',
-    enabled: toolIntervalQuiz,
-  },
-  {
-    href: '/tools/practice-room',
-    title: 'Practice room',
-    summary: 'Jam over a looping band with the chord shapes shown.',
-    enabled: toolPracticeRoom,
-  },
-  {
-    href: '/tools/score',
-    title: 'Score rendering',
-    summary: 'Full music engraving from MusicXML / MEI (Verovio).',
-    enabled: toolScore,
-  },
-  {
-    href: '/tools/soundfont',
-    title: 'Sampled instruments',
-    summary: 'Play a keyboard with real General-MIDI instrument samples.',
-    enabled: toolSoundfont,
-  },
+const locale = Astro.locals.locale;
+
+// Each tool references shared `tool.<slug>.title`/`.summary` keys (also used by its own page).
+const tools: { slug: string; enabled: boolean }[] = [
+  { slug: 'keyboard', enabled: toolKeyboard },
+  { slug: 'fretboard', enabled: toolFretboard },
+  { slug: 'circle-of-fifths', enabled: toolCircleOfFifths },
+  { slug: 'scale-explorer', enabled: toolScaleExplorer },
+  { slug: 'chords', enabled: toolChords },
+  { slug: 'chord-identifier', enabled: toolChordId },
+  { slug: 'modes', enabled: toolModes },
+  { slug: 'progression', enabled: toolProgression },
+  { slug: 'metronome', enabled: toolMetronome },
+  { slug: 'tuner', enabled: toolTuner },
+  { slug: 'intervals', enabled: toolIntervals },
+  { slug: 'staff', enabled: toolStaff },
+  { slug: 'ear-trainer', enabled: toolEarTrainer },
+  { slug: 'sequencer', enabled: toolSequencer },
+  { slug: 'sight-reading', enabled: toolSightReading },
+  { slug: 'backing-track', enabled: toolBackingTrack },
+  { slug: 'voicings', enabled: toolVoicings },
+  { slug: 'player', enabled: toolNotationPlayer },
+  { slug: 'licks', enabled: toolLicks },
+  { slug: 'chord-diagrams', enabled: toolChordDiagrams },
+  { slug: 'strumming', enabled: toolStrumming },
+  { slug: 'fingerpicking', enabled: toolFingerpicking },
+  { slug: 'arpeggio', enabled: toolArpeggio },
+  { slug: 'progression-player', enabled: toolProgressionPlayer },
+  { slug: 'rhythm', enabled: toolRhythm },
+  { slug: 'caged', enabled: toolCaged },
+  { slug: 'scale-boxes', enabled: toolScaleBoxes },
+  { slug: 'song', enabled: toolSong },
+  { slug: 'progression-ear', enabled: toolProgressionEar },
+  { slug: 'chord-quality-ear', enabled: toolChordQualityEar },
+  { slug: 'fret-quiz', enabled: toolFretQuiz },
+  { slug: 'musicxml', enabled: toolMusicXml },
+  { slug: 'multi-voice', enabled: toolMultiVoice },
+  { slug: 'practice-player', enabled: toolPracticePlayer },
+  { slug: 'analyzer', enabled: toolAnalyzer },
+  { slug: 'transposer', enabled: toolTransposer },
+  { slug: 'bassline', enabled: toolBassline },
+  { slug: 'melodic-dictation', enabled: toolMelodicDictation },
+  { slug: 'rhythm-dictation', enabled: toolRhythmDictation },
+  { slug: 'grooves', enabled: toolGrooves },
+  { slug: 'solfege', enabled: toolSolfege },
+  { slug: 'key-quiz', enabled: toolKeyQuiz },
+  { slug: 'interval-quiz', enabled: toolIntervalQuiz },
+  { slug: 'practice-room', enabled: toolPracticeRoom },
+  { slug: 'score', enabled: toolScore },
+  { slug: 'soundfont', enabled: toolSoundfont },
 ].filter((tool) => tool.enabled);
 
 if (tools.length === 0) {
@@ -333,41 +107,31 @@ if (tools.length === 0) {
 }
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tools — The Music Repository</title>
-    <script is:inline>
-      const stored = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (stored === 'dark' || (!stored && prefersDark)) {
-        document.documentElement.classList.add('dark');
+<BaseLayout title={t(locale, 'tools.pageTitle')}>
+  <main class="mx-auto max-w-4xl space-y-6 p-8">
+    <header class="space-y-1">
+      <a href={localizedPath(locale, '/')} class="text-sm text-muted-foreground underline">
+        {t(locale, 'common.backHome')}
+      </a>
+      <h1 class="text-3xl font-bold">{t(locale, 'tools.title')}</h1>
+      <p class="text-muted-foreground">{t(locale, 'tools.subtitle')}</p>
+    </header>
+    <ul class="grid gap-4 sm:grid-cols-2">
+      {
+        tools.map((tool) => (
+          <li>
+            <a
+              href={localizedPath(locale, `/tools/${tool.slug}`)}
+              class="flex h-full flex-col gap-1 rounded-lg border border-border p-4 transition-colors hover:bg-muted"
+            >
+              <span class="font-semibold">{t(locale, `tool.${tool.slug}.title` as MessageKey)}</span>
+              <span class="text-sm text-muted-foreground">
+                {t(locale, `tool.${tool.slug}.summary` as MessageKey)}
+              </span>
+            </a>
+          </li>
+        ))
       }
-    </script>
-  </head>
-  <body>
-    <main class="mx-auto max-w-4xl space-y-6 p-8">
-      <header class="space-y-1">
-        <a href="/" class="text-sm text-muted-foreground underline">← Home</a>
-        <h1 class="text-3xl font-bold">Interactive tools</h1>
-        <p class="text-muted-foreground">Play, explore, and hear music theory in the browser.</p>
-      </header>
-      <ul class="grid gap-4 sm:grid-cols-2">
-        {
-          tools.map((tool) => (
-            <li>
-              <a
-                href={tool.href}
-                class="flex h-full flex-col gap-1 rounded-lg border border-border p-4 transition-colors hover:bg-muted"
-              >
-                <span class="font-semibold">{tool.title}</span>
-                <span class="text-sm text-muted-foreground">{tool.summary}</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </main>
-  </body>
-</html>
+    </ul>
+  </main>
+</BaseLayout>

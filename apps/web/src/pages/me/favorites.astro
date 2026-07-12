@@ -1,6 +1,7 @@
 ---
 import MyFavorites from '@/components/MyFavorites.tsx';
-import '@/styles/global.css';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
 
 // Personalization: requires the flag on and an authenticated user.
 if (!Astro.locals.flags.favorites) {
@@ -9,28 +10,17 @@ if (!Astro.locals.flags.favorites) {
 if (!Astro.locals.user) {
   return Astro.redirect('/signin?redirect=/me/favorites');
 }
+const locale = Astro.locals.locale;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>My favorites — The Music Repository</title>
-    <script is:inline>
-      const stored = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (stored === 'dark' || (!stored && prefersDark)) {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
-  </head>
-  <body>
-    <main class="mx-auto max-w-6xl space-y-6 p-8">
-      <header class="space-y-1">
-        <a href="/catalogue" class="text-sm text-muted-foreground underline">← Catalogue</a>
-        <h1 class="text-3xl font-bold">My favorites</h1>
-      </header>
-      <MyFavorites client:load />
-    </main>
-  </body>
-</html>
+<BaseLayout title={`${t(locale, 'nav.myFavorites')} — ${t(locale, 'site.name')}`}>
+  <main class="mx-auto max-w-6xl space-y-6 p-8">
+    <header class="space-y-1">
+      <a href={localizedPath(locale, '/catalogue')} class="text-sm text-muted-foreground underline">
+        {t(locale, 'common.backCatalogue')}
+      </a>
+      <h1 class="text-3xl font-bold">{t(locale, 'nav.myFavorites')}</h1>
+    </header>
+    <MyFavorites client:load locale={locale} />
+  </main>
+</BaseLayout>

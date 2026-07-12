@@ -3,39 +3,29 @@ import CompleteButton from '@/components/CompleteButton.tsx';
 import ContentDetail from '@/components/ContentDetail.tsx';
 import FavoriteButton from '@/components/FavoriteButton.tsx';
 import InfoView from '@/components/InfoView.tsx';
-import '@/styles/global.css';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
 
 const { slug = '' } = Astro.params;
 const loggedIn = !!Astro.locals.user;
 const showFavorite = Astro.locals.flags.favorites && loggedIn;
 const showComplete = Astro.locals.flags.progress && loggedIn;
 const showInfoView = Astro.locals.flags.infoView;
+const locale = Astro.locals.locale;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>The Music Repository</title>
-    <script is:inline>
-      const stored = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (stored === 'dark' || (!stored && prefersDark)) {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
-  </head>
-  <body>
-    <main class="mx-auto max-w-3xl space-y-6 p-8">
-      <div class="flex items-center justify-between">
-        <a href="/catalogue" class="text-sm text-muted-foreground underline">← Catalogue</a>
-        <div class="flex items-center gap-3">
-          {showComplete && <CompleteButton client:load slug={slug} />}
-          {showFavorite && <FavoriteButton client:load slug={slug} />}
-        </div>
+<BaseLayout title={t(locale, 'home.title')}>
+  <main class="mx-auto max-w-3xl space-y-6 p-8">
+    <div class="flex items-center justify-between">
+      <a href={localizedPath(locale, '/catalogue')} class="text-sm text-muted-foreground underline">
+        {t(locale, 'common.backCatalogue')}
+      </a>
+      <div class="flex items-center gap-3">
+        {showComplete && <CompleteButton client:load slug={slug} />}
+        {showFavorite && <FavoriteButton client:load slug={slug} />}
       </div>
-      <ContentDetail client:load slug={slug} />
-    </main>
-    {showInfoView && <InfoView client:idle />}
-  </body>
-</html>
+    </div>
+    <ContentDetail client:load slug={slug} locale={locale} />
+  </main>
+  {showInfoView && <InfoView client:idle />}
+</BaseLayout>

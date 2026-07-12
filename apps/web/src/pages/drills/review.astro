@@ -1,6 +1,7 @@
 ---
 import ReviewSession from '@/components/ReviewSession.tsx';
-import '@/styles/global.css';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
 
 if (!Astro.locals.flags.trainers) {
   return Astro.redirect('/');
@@ -8,28 +9,17 @@ if (!Astro.locals.flags.trainers) {
 if (!Astro.locals.user) {
   return Astro.redirect('/signin?redirect=/drills');
 }
+const locale = Astro.locals.locale;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Review — The Music Repository</title>
-    <script is:inline>
-      const stored = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (stored === 'dark' || (!stored && prefersDark)) {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
-  </head>
-  <body>
-    <main class="mx-auto max-w-2xl space-y-6 p-8">
-      <header class="space-y-1">
-        <a href="/drills" class="text-sm text-muted-foreground underline">← Drills</a>
-        <h1 class="text-3xl font-bold">Review — all due</h1>
-      </header>
-      <ReviewSession client:load />
-    </main>
-  </body>
-</html>
+<BaseLayout title={`${t(locale, 'drills.review')} — ${t(locale, 'site.name')}`}>
+  <main class="mx-auto max-w-2xl space-y-6 p-8">
+    <header class="space-y-1">
+      <a href={localizedPath(locale, '/drills')} class="text-sm text-muted-foreground underline">
+        {t(locale, 'common.backDrills')}
+      </a>
+      <h1 class="text-3xl font-bold">{t(locale, 'drills.reviewAllDue')}</h1>
+    </header>
+    <ReviewSession client:load locale={locale} />
+  </main>
+</BaseLayout>

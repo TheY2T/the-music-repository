@@ -1,9 +1,10 @@
 import type { HelpTopic } from '@TheY2T/tmr-api-client';
+import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { listHelpTopics } from '@/lib/help-api';
 
-export default function AdminHelpList() {
+export default function AdminHelpList({ locale }: { locale: Locale }) {
   const [items, setItems] = useState<HelpTopic[] | null>(null);
 
   useEffect(() => {
@@ -11,25 +12,25 @@ export default function AdminHelpList() {
   }, []);
 
   if (!items) {
-    return <p className="text-sm text-muted-foreground">Loading…</p>;
+    return <p className="text-sm text-muted-foreground">{t(locale, 'ahelp.loading')}</p>;
   }
 
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <a href="/admin/help/new">
-          <Button size="sm">+ New help topic</Button>
+        <a href={localizedPath(locale, '/admin/help/new')}>
+          <Button size="sm">{t(locale, 'ahelp.newTopic')}</Button>
         </a>
       </div>
       {items.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No help topics yet.</p>
+        <p className="text-sm text-muted-foreground">{t(locale, 'ahelp.empty')}</p>
       ) : (
         <div className="overflow-x-auto rounded-lg border">
           <table className="w-full text-sm">
             <thead className="border-b bg-muted/40 text-left">
               <tr>
-                <th className="p-3 font-medium">Term</th>
-                <th className="p-3 font-medium">Slug</th>
+                <th className="p-3 font-medium">{t(locale, 'ahelp.colTerm')}</th>
+                <th className="p-3 font-medium">{t(locale, 'ahelp.colSlug')}</th>
                 <th className="p-3" />
               </tr>
             </thead>
@@ -40,10 +41,13 @@ export default function AdminHelpList() {
                   <td className="p-3 text-muted-foreground">{topic.slug}</td>
                   <td className="p-3 text-right">
                     <a
-                      href={`/admin/help/${encodeURIComponent(topic.slug)}/edit`}
+                      href={localizedPath(
+                        locale,
+                        `/admin/help/${encodeURIComponent(topic.slug)}/edit`,
+                      )}
                       className="text-sm underline"
                     >
-                      Edit
+                      {t(locale, 'ahelp.edit')}
                     </a>
                   </td>
                 </tr>

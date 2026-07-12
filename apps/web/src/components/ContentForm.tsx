@@ -1,4 +1,5 @@
 import type { ContentWriteInput, MediaUploadRequestKind } from '@TheY2T/tmr-api-client';
+import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { marked } from 'marked';
 import { type FormEvent, useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -16,6 +17,32 @@ const CONTENT_TYPES = [
 const VISIBILITIES = ['public', 'authed', 'premium'] as const;
 const TAXONOMY_DIMS = ['genres', 'instruments', 'topics', 'tags'] as const;
 type Dim = (typeof TAXONOMY_DIMS)[number];
+
+/** Message keys for each displayed content-type label (values stay as enum codes). */
+const TYPE_LABEL_KEYS = {
+  lesson: 'cform.typeLesson',
+  song: 'cform.typeSong',
+  score: 'cform.typeScore',
+  exercise: 'cform.typeExercise',
+  technique: 'cform.typeTechnique',
+  backing_track: 'cform.typeBackingTrack',
+  tool_page: 'cform.typeToolPage',
+} as const;
+
+/** Message keys for each displayed visibility label (values stay as enum codes). */
+const VISIBILITY_LABEL_KEYS = {
+  public: 'cform.visibilityPublic',
+  authed: 'cform.visibilityAuthed',
+  premium: 'cform.visibilityPremium',
+} as const;
+
+/** Message keys for each taxonomy dimension label. */
+const DIM_LABEL_KEYS = {
+  genres: 'cform.dimGenres',
+  instruments: 'cform.dimInstruments',
+  topics: 'cform.dimTopics',
+  tags: 'cform.dimTags',
+} as const;
 
 interface MediaRow {
   id: string;
@@ -49,7 +76,7 @@ function toSlugs(value: string): string[] {
     .filter(Boolean);
 }
 
-export default function ContentForm({ slug }: { slug?: string }) {
+export default function ContentForm({ slug, locale }: { slug?: string; locale: Locale }) {
   const isEdit = Boolean(slug);
   const [form, setForm] = useState({ ...emptyForm });
   const [media, setMedia] = useState<MediaRow[]>([]);
@@ -107,8 +134,8 @@ export default function ContentForm({ slug }: { slug?: string }) {
   }, [slug]);
 
   const previewHtml = useMemo(
-    () => marked.parse(form.bodyMdx || '_Nothing yet._') as string,
-    [form.bodyMdx],
+    () => marked.parse(form.bodyMdx || t(locale, 'cform.previewEmpty')) as string,
+    [form.bodyMdx, locale],
   );
 
   function set<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
@@ -143,7 +170,7 @@ export default function ContentForm({ slug }: { slug?: string }) {
     try {
       if (isEdit && slug) {
         await adminApi.update(slug, buildInput());
-        setNotice('Saved.');
+        setNotice(t(locale, 'cform.noticeSaved'));
       } else {
         const created = await adminApi.create(buildInput());
         window.location.href = `/admin/content/${encodeURIComponent(created.slug)}/edit`;
@@ -200,7 +227,7 @@ export default function ContentForm({ slug }: { slug?: string }) {
       setMedia(
         fresh.media.map((m) => ({ id: m.id, filename: m.filename, kind: m.kind, url: m.url })),
       );
-      setNotice(`Uploaded ${file.name}.`);
+      setNotice(t(locale, 'cform.noticeUploaded', { filename: file.name }));
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -225,23 +252,23 @@ export default function ContentForm({ slug }: { slug?: string }) {
 
       <form onSubmit={onSave} className="grid gap-6 md:grid-cols-2">
         <div className="space-y-4">
-          <Field label="Slug">
+          <Field label={t(locale, 'cform.slug')}>
             <input
               className={inputClass}
               value={form.slug}
               readOnly={isEdit}
               onChange={(e) => set('slug', e.target.value)}
-              placeholder="my-first-lesson"
+              placeholder={t(locale, 'cform.slugPlaceholder')}
             />
           </Field>
-          <Field label="Title">
+          <Field label={t(locale, 'cform.title')}>
             <input
               className={inputClass}
               value={form.title}
               onChange={(e) => set('title', e.target.value)}
             />
           </Field>
-          <Field label="Summary">
+          <Field label={t(locale, 'cform.summary')}>
             <input
               className={inputClass}
               value={form.summary}
@@ -249,20 +276,20 @@ export default function ContentForm({ slug }: { slug?: string }) {
             />
           </Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Type">
+            <Field label={t(locale, 'cform.type')}>
               <select
                 className={inputClass}
                 value={form.type}
                 onChange={(e) => set('type', e.target.value as ContentWriteInput['type'])}
               >
-                {CONTENT_TYPES.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
+                {CONTENT_TYPES.map((code) => (
+                  <option key={code} value={code}>
+                    {t(locale, TYPE_LABEL_KEYS[code])}
                   </option>
                 ))}
               </select>
             </Field>
-            <Field label="Visibility">
+            <Field label={t(locale, 'cform.visibility')}>
               <select
                 className={inputClass}
                 value={form.visibility}
@@ -272,13 +299,13 @@ export default function ContentForm({ slug }: { slug?: string }) {
               >
                 {VISIBILITIES.map((v) => (
                   <option key={v} value={v}>
-                    {v}
+                    {t(locale, VISIBILITY_LABEL_KEYS[v])}
                   </option>
                 ))}
               </select>
             </Field>
           </div>
-          <Field label="Difficulty (1–10)">
+          <Field label={t(locale, 'cform.difficulty')}>
             <input
               type="number"
               min={1}
@@ -289,7 +316,10 @@ export default function ContentForm({ slug }: { slug?: string }) {
             />
           </Field>
           {TAXONOMY_DIMS.map((dim) => (
-            <Field key={dim} label={`${dim} (comma-separated slugs)`}>
+            <Field
+              key={dim}
+              label={t(locale, 'cform.taxonomyLabel', { dim: t(locale, DIM_LABEL_KEYS[dim]) })}
+            >
               <input
                 className={inputClass}
                 list={`opts-${dim}`}
@@ -304,14 +334,14 @@ export default function ContentForm({ slug }: { slug?: string }) {
             </Field>
           ))}
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Attribution">
+            <Field label={t(locale, 'cform.attribution')}>
               <input
                 className={inputClass}
                 value={form.attribution}
                 onChange={(e) => set('attribution', e.target.value)}
               />
             </Field>
-            <Field label="License">
+            <Field label={t(locale, 'cform.license')}>
               <input
                 className={inputClass}
                 value={form.license}
@@ -322,13 +352,13 @@ export default function ContentForm({ slug }: { slug?: string }) {
         </div>
 
         <div className="space-y-2">
-          <span className="text-sm font-medium">Body (Markdown)</span>
+          <span className="text-sm font-medium">{t(locale, 'cform.body')}</span>
           <textarea
             className={`${inputClass} h-64 font-mono`}
             value={form.bodyMdx}
             onChange={(e) => set('bodyMdx', e.target.value)}
           />
-          <span className="text-sm font-medium">Preview</span>
+          <span className="text-sm font-medium">{t(locale, 'cform.preview')}</span>
           {/* biome-ignore lint/security/noDangerouslySetInnerHtml: admin-authored markdown preview. */}
           <div
             className="prose prose-sm max-w-none rounded-md border p-3 dark:prose-invert"
@@ -338,7 +368,7 @@ export default function ContentForm({ slug }: { slug?: string }) {
 
         <div className="md:col-span-2 flex flex-wrap gap-3 border-t pt-4">
           <Button type="submit" disabled={busy}>
-            {isEdit ? 'Save changes' : 'Create'}
+            {isEdit ? t(locale, 'cform.saveChanges') : t(locale, 'cform.create')}
           </Button>
           {isEdit && slug ? (
             <>
@@ -346,31 +376,35 @@ export default function ContentForm({ slug }: { slug?: string }) {
                 type="button"
                 variant="outline"
                 disabled={busy}
-                onClick={() => act(() => adminApi.publish(slug), 'Published.')}
+                onClick={() =>
+                  act(() => adminApi.publish(slug), t(locale, 'cform.noticePublished'))
+                }
               >
-                Publish
+                {t(locale, 'cform.publish')}
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 disabled={busy}
-                onClick={() => act(() => adminApi.unpublish(slug), 'Unpublished.')}
+                onClick={() =>
+                  act(() => adminApi.unpublish(slug), t(locale, 'cform.noticeUnpublished'))
+                }
               >
-                Unpublish
+                {t(locale, 'cform.unpublish')}
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 disabled={busy}
                 onClick={() => {
-                  if (confirm('Delete this content item?')) {
-                    act(() => adminApi.remove(slug), 'Deleted.').then(() => {
+                  if (confirm(t(locale, 'cform.confirmDelete'))) {
+                    act(() => adminApi.remove(slug), t(locale, 'cform.noticeDeleted')).then(() => {
                       window.location.href = '/admin';
                     });
                   }
                 }}
               >
-                Delete
+                {t(locale, 'cform.delete')}
               </Button>
             </>
           ) : null}
@@ -379,7 +413,7 @@ export default function ContentForm({ slug }: { slug?: string }) {
 
       {isEdit && slug ? (
         <section className="space-y-3 border-t pt-4">
-          <h2 className="text-lg font-medium">Media</h2>
+          <h2 className="text-lg font-medium">{t(locale, 'cform.media')}</h2>
           <input
             type="file"
             className="text-sm"
@@ -392,7 +426,7 @@ export default function ContentForm({ slug }: { slug?: string }) {
             }}
           />
           {media.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No media attached.</p>
+            <p className="text-sm text-muted-foreground">{t(locale, 'cform.noMedia')}</p>
           ) : (
             <ul className="space-y-1 text-sm">
               {media.map((m) => (

@@ -1,6 +1,7 @@
 ---
 import DrillsHub from '@/components/DrillsHub.tsx';
-import '@/styles/global.css';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
 
 if (!Astro.locals.flags.trainers) {
   return Astro.redirect('/');
@@ -8,31 +9,18 @@ if (!Astro.locals.flags.trainers) {
 if (!Astro.locals.user) {
   return Astro.redirect('/signin?redirect=/drills');
 }
+const locale = Astro.locals.locale;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Drills — The Music Repository</title>
-    <script is:inline>
-      const stored = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (stored === 'dark' || (!stored && prefersDark)) {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
-  </head>
-  <body>
-    <main class="mx-auto max-w-4xl space-y-6 p-8">
-      <header class="space-y-1">
-        <a href="/" class="text-sm text-muted-foreground underline">← Home</a>
-        <h1 class="text-3xl font-bold">Drills</h1>
-        <p class="text-muted-foreground">
-          Spaced-repetition practice — review a little each day to remember more.
-        </p>
-      </header>
-      <DrillsHub client:load />
-    </main>
-  </body>
-</html>
+<BaseLayout title={`${t(locale, 'nav.drills')} — ${t(locale, 'site.name')}`}>
+  <main class="mx-auto max-w-4xl space-y-6 p-8">
+    <header class="space-y-1">
+      <a href={localizedPath(locale, '/')} class="text-sm text-muted-foreground underline">
+        {t(locale, 'common.backHome')}
+      </a>
+      <h1 class="text-3xl font-bold">{t(locale, 'nav.drills')}</h1>
+      <p class="text-muted-foreground">{t(locale, 'drills.subtitle')}</p>
+    </header>
+    <DrillsHub client:load locale={locale} />
+  </main>
+</BaseLayout>

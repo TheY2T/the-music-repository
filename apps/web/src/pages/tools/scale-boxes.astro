@@ -2,7 +2,8 @@
 import InfoView from '@/components/InfoView.tsx';
 import ToolPracticeLogger from '@/components/ToolPracticeLogger.tsx';
 import ScaleBoxes from '@/components/ScaleBoxes.tsx';
-import '@/styles/global.css';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
 
 if (!Astro.locals.flags.toolScaleBoxes) {
   return Astro.redirect('/tools');
@@ -10,31 +11,18 @@ if (!Astro.locals.flags.toolScaleBoxes) {
 const showInfoView = Astro.locals.flags.infoView;
 const logPracticeEnabled =
   Astro.locals.flags.toolPractice && Astro.locals.flags.progress && !!Astro.locals.user;
+const locale = Astro.locals.locale;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Scale positions — The Music Repository</title>
-    <script is:inline>
-      const stored = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (stored === 'dark' || (!stored && prefersDark)) {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
-  </head>
-  <body>
+<BaseLayout title={`${t(locale, 'tool.scale-boxes.title')} — ${t(locale, 'site.name')}`}>
     <main class="mx-auto max-w-5xl space-y-6 p-8">
       <header class="space-y-1">
-        <a href="/tools" class="text-sm text-muted-foreground underline">← Tools</a>
-        <h1 class="text-3xl font-bold">Scale positions</h1>
-        <p class="text-muted-foreground">See any scale as a movable box on the fretboard.</p>
+        <a href={localizedPath(locale, '/tools')} class="text-sm text-muted-foreground underline">{t(locale, 'common.backTools')}</a>
+        <h1 class="text-3xl font-bold">{t(locale, 'tool.scale-boxes.title')}</h1>
+        <p class="text-muted-foreground">{t(locale, 'tool.scale-boxes.summary')}</p>
       </header>
       <ScaleBoxes client:load />
     </main>
     {showInfoView && <InfoView client:idle />}
     {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}
-  </body>
-</html>
+  </BaseLayout>

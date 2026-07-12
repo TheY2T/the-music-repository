@@ -1,4 +1,5 @@
 import type { CollectionWriteInput } from '@TheY2T/tmr-api-client';
+import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import { type FormEvent, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { collectionsAdminApi } from '@/lib/admin-api';
@@ -13,7 +14,7 @@ const emptyForm = {
   items: '', // newline-separated content slugs
 };
 
-export default function CollectionForm({ slug }: { slug?: string }) {
+export default function CollectionForm({ slug, locale }: { slug?: string; locale: Locale }) {
   const isEdit = Boolean(slug);
   const [form, setForm] = useState({ ...emptyForm });
   const [status, setStatus] = useState<string | null>(null);
@@ -70,11 +71,14 @@ export default function CollectionForm({ slug }: { slug?: string }) {
       if (isEdit && slug) {
         await collectionsAdminApi.update(slug, meta());
         await collectionsAdminApi.setItems(slug, itemSlugs());
-        setNotice('Saved.');
+        setNotice(t(locale, 'colform.savedNotice'));
       } else {
         const created = await collectionsAdminApi.create(meta());
         await collectionsAdminApi.setItems(created.slug, itemSlugs());
-        window.location.href = `/admin/collections/${encodeURIComponent(created.slug)}/edit`;
+        window.location.href = localizedPath(
+          locale,
+          `/admin/collections/${encodeURIComponent(created.slug)}/edit`,
+        );
         return;
       }
     } catch (e) {
@@ -115,11 +119,15 @@ export default function CollectionForm({ slug }: { slug?: string }) {
           {notice}
         </p>
       ) : null}
-      {status ? <p className="text-sm text-muted-foreground">Status: {status}</p> : null}
+      {status ? (
+        <p className="text-sm text-muted-foreground">
+          {t(locale, 'colform.statusLabel', { status })}
+        </p>
+      ) : null}
 
       <form onSubmit={onSave} className="space-y-4">
         <label className="block space-y-1">
-          <span className="text-sm font-medium">Slug</span>
+          <span className="text-sm font-medium">{t(locale, 'colform.slug')}</span>
           <input
             className={inputClass}
             value={form.slug}
@@ -129,7 +137,7 @@ export default function CollectionForm({ slug }: { slug?: string }) {
           />
         </label>
         <label className="block space-y-1">
-          <span className="text-sm font-medium">Title</span>
+          <span className="text-sm font-medium">{t(locale, 'colform.title')}</span>
           <input
             className={inputClass}
             value={form.title}
@@ -137,7 +145,7 @@ export default function CollectionForm({ slug }: { slug?: string }) {
           />
         </label>
         <label className="block space-y-1">
-          <span className="text-sm font-medium">Summary</span>
+          <span className="text-sm font-medium">{t(locale, 'colform.summary')}</span>
           <input
             className={inputClass}
             value={form.summary}
@@ -145,7 +153,7 @@ export default function CollectionForm({ slug }: { slug?: string }) {
           />
         </label>
         <label className="block space-y-1">
-          <span className="text-sm font-medium">Kind</span>
+          <span className="text-sm font-medium">{t(locale, 'colform.kind')}</span>
           <select
             className={inputClass}
             value={form.kind}
@@ -159,9 +167,7 @@ export default function CollectionForm({ slug }: { slug?: string }) {
           </select>
         </label>
         <label className="block space-y-1">
-          <span className="text-sm font-medium">
-            Items — content slugs, one per line (order matters)
-          </span>
+          <span className="text-sm font-medium">{t(locale, 'colform.itemsHelp')}</span>
           <textarea
             className={`${inputClass} h-40 font-mono`}
             value={form.items}
@@ -172,7 +178,7 @@ export default function CollectionForm({ slug }: { slug?: string }) {
 
         <div className="flex flex-wrap gap-3 border-t pt-4">
           <Button type="submit" disabled={busy}>
-            {isEdit ? 'Save changes' : 'Create'}
+            {isEdit ? t(locale, 'colform.saveChanges') : t(locale, 'colform.create')}
           </Button>
           {isEdit && slug ? (
             <>
@@ -180,31 +186,41 @@ export default function CollectionForm({ slug }: { slug?: string }) {
                 type="button"
                 variant="outline"
                 disabled={busy}
-                onClick={() => act(() => collectionsAdminApi.publish(slug), 'Published.')}
+                onClick={() =>
+                  act(() => collectionsAdminApi.publish(slug), t(locale, 'colform.publishedNotice'))
+                }
               >
-                Publish
+                {t(locale, 'colform.publish')}
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 disabled={busy}
-                onClick={() => act(() => collectionsAdminApi.unpublish(slug), 'Unpublished.')}
+                onClick={() =>
+                  act(
+                    () => collectionsAdminApi.unpublish(slug),
+                    t(locale, 'colform.unpublishedNotice'),
+                  )
+                }
               >
-                Unpublish
+                {t(locale, 'colform.unpublish')}
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 disabled={busy}
                 onClick={() => {
-                  if (confirm('Delete this collection?')) {
-                    act(() => collectionsAdminApi.remove(slug), 'Deleted.').then(() => {
-                      window.location.href = '/admin/collections';
+                  if (confirm(t(locale, 'colform.confirmDelete'))) {
+                    act(
+                      () => collectionsAdminApi.remove(slug),
+                      t(locale, 'colform.deletedNotice'),
+                    ).then(() => {
+                      window.location.href = localizedPath(locale, '/admin/collections');
                     });
                   }
                 }}
               >
-                Delete
+                {t(locale, 'colform.delete')}
               </Button>
             </>
           ) : null}

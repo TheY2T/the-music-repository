@@ -1,11 +1,12 @@
 import type { HelpTopicWriteInput } from '@TheY2T/tmr-api-client';
+import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import { type FormEvent, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { getHelpTopic, helpAdminApi } from '@/lib/help-api';
 
 const emptyForm = { slug: '', term: '', body: '', linkSlug: '' };
 
-export default function HelpTopicForm({ slug }: { slug?: string }) {
+export default function HelpTopicForm({ slug, locale }: { slug?: string; locale: Locale }) {
   const isEdit = Boolean(slug);
   const [form, setForm] = useState({ ...emptyForm });
   const [error, setError] = useState<string | null>(null);
@@ -49,10 +50,13 @@ export default function HelpTopicForm({ slug }: { slug?: string }) {
     try {
       if (isEdit && slug) {
         await helpAdminApi.update(slug, payload());
-        setNotice('Saved.');
+        setNotice(t(locale, 'hform.saved'));
       } else {
         const created = await helpAdminApi.create(payload());
-        window.location.href = `/admin/help/${encodeURIComponent(created.slug)}/edit`;
+        window.location.href = localizedPath(
+          locale,
+          `/admin/help/${encodeURIComponent(created.slug)}/edit`,
+        );
         return;
       }
     } catch (e) {
@@ -79,7 +83,7 @@ export default function HelpTopicForm({ slug }: { slug?: string }) {
 
       <form onSubmit={onSave} className="space-y-4">
         <label className="block space-y-1">
-          <span className="text-sm font-medium">Slug (matches a skill-topic or term)</span>
+          <span className="text-sm font-medium">{t(locale, 'hform.slugLabel')}</span>
           <input
             className={inputClass}
             value={form.slug}
@@ -89,7 +93,7 @@ export default function HelpTopicForm({ slug }: { slug?: string }) {
           />
         </label>
         <label className="block space-y-1">
-          <span className="text-sm font-medium">Term</span>
+          <span className="text-sm font-medium">{t(locale, 'hform.termLabel')}</span>
           <input
             className={inputClass}
             value={form.term}
@@ -97,7 +101,7 @@ export default function HelpTopicForm({ slug }: { slug?: string }) {
           />
         </label>
         <label className="block space-y-1">
-          <span className="text-sm font-medium">Body (Markdown)</span>
+          <span className="text-sm font-medium">{t(locale, 'hform.bodyLabel')}</span>
           <textarea
             className={`${inputClass} h-32`}
             value={form.body}
@@ -105,7 +109,7 @@ export default function HelpTopicForm({ slug }: { slug?: string }) {
           />
         </label>
         <label className="block space-y-1">
-          <span className="text-sm font-medium">Learn-more content slug (optional)</span>
+          <span className="text-sm font-medium">{t(locale, 'hform.linkSlugLabel')}</span>
           <input
             className={inputClass}
             value={form.linkSlug}
@@ -116,7 +120,7 @@ export default function HelpTopicForm({ slug }: { slug?: string }) {
 
         <div className="flex flex-wrap gap-3 border-t pt-4">
           <Button type="submit" disabled={busy}>
-            {isEdit ? 'Save changes' : 'Create'}
+            {isEdit ? t(locale, 'hform.saveChanges') : t(locale, 'hform.create')}
           </Button>
           {isEdit && slug ? (
             <Button
@@ -124,12 +128,12 @@ export default function HelpTopicForm({ slug }: { slug?: string }) {
               variant="outline"
               disabled={busy}
               onClick={() => {
-                if (confirm('Delete this help topic?')) {
+                if (confirm(t(locale, 'hform.deleteConfirm'))) {
                   setBusy(true);
                   helpAdminApi
                     .remove(slug)
                     .then(() => {
-                      window.location.href = '/admin/help';
+                      window.location.href = localizedPath(locale, '/admin/help');
                     })
                     .catch((e: Error) => {
                       setError(e.message);
@@ -138,7 +142,7 @@ export default function HelpTopicForm({ slug }: { slug?: string }) {
                 }
               }}
             >
-              Delete
+              {t(locale, 'hform.delete')}
             </Button>
           ) : null}
         </div>

@@ -4,16 +4,16 @@ import {
   type SearchCatalogueType,
   useSearchCatalogue,
 } from '@TheY2T/tmr-api-client';
+import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import { useEffect, useState } from 'react';
 import FavoriteHeart from '@/components/FavoriteHeart';
 import { listFavoriteSlugs } from '@/lib/favorites-api';
 
-/** Human label for a premium tier (`premium`/`pro`/`institution`). */
-function tierLabel(tier?: string): string {
-  if (!tier) {
-    return 'Premium';
-  }
-  return tier.charAt(0).toUpperCase() + tier.slice(1);
+/** Localized label for a premium tier (`premium`/`pro`/`institution`; unknown → premium). */
+function tierLabel(locale: Locale, tier?: string): string {
+  const key: MessageKey =
+    tier === 'pro' ? 'tier.pro' : tier === 'institution' ? 'tier.institution' : 'tier.premium';
+  return t(locale, key);
 }
 
 function toggle(list: string[], value: string): string[] {
@@ -58,7 +58,7 @@ function FacetGroup({
   );
 }
 
-function Browser({ showFavorites }: { showFavorites: boolean }) {
+function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Locale }) {
   const [q, setQ] = useState('');
   const [genre, setGenre] = useState<string[]>([]);
   const [instrument, setInstrument] = useState<string[]>([]);
@@ -101,29 +101,29 @@ function Browser({ showFavorites }: { showFavorites: boolean }) {
           type="search"
           value={q}
           onChange={(event) => setQ(event.target.value)}
-          placeholder="Search…"
+          placeholder={t(locale, 'catalogue.search')}
           className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
         />
         <FacetGroup
-          title="Type"
+          title={t(locale, 'catalogue.facetType')}
           facets={result?.facets.types ?? []}
           selected={type ? [type] : []}
           onToggle={(value) => setType((current) => (current === value ? undefined : value))}
         />
         <FacetGroup
-          title="Genre"
+          title={t(locale, 'catalogue.facetGenre')}
           facets={result?.facets.genres ?? []}
           selected={genre}
           onToggle={(value) => setGenre((current) => toggle(current, value))}
         />
         <FacetGroup
-          title="Instrument"
+          title={t(locale, 'catalogue.facetInstrument')}
           facets={result?.facets.instruments ?? []}
           selected={instrument}
           onToggle={(value) => setInstrument((current) => toggle(current, value))}
         />
         <FacetGroup
-          title="Topic"
+          title={t(locale, 'catalogue.facetTopic')}
           facets={result?.facets.topics ?? []}
           selected={topic}
           onToggle={(value) => setTopic((current) => toggle(current, value))}
@@ -132,7 +132,9 @@ function Browser({ showFavorites }: { showFavorites: boolean }) {
 
       <section className="space-y-4">
         <p className="text-sm text-muted-foreground">
-          {isFetching ? 'Searching…' : `${result?.total ?? 0} results`}
+          {isFetching
+            ? t(locale, 'catalogue.searching')
+            : t(locale, 'catalogue.results', { count: result?.total ?? 0 })}
         </p>
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {(result?.items ?? []).map((item) => (
@@ -147,7 +149,7 @@ function Browser({ showFavorites }: { showFavorites: boolean }) {
                 </div>
               ) : null}
               <a
-                href={`/catalogue/${item.slug}`}
+                href={localizedPath(locale, `/catalogue/${item.slug}`)}
                 className="flex h-full flex-col gap-2 rounded-lg border border-border p-4 transition-colors hover:bg-muted"
               >
                 <div className="flex items-center gap-2">
@@ -155,11 +157,13 @@ function Browser({ showFavorites }: { showFavorites: boolean }) {
                     {item.type}
                   </span>
                   {item.difficulty ? (
-                    <span className="text-xs text-muted-foreground">Grade {item.difficulty}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {t(locale, 'catalogue.grade', { level: item.difficulty })}
+                    </span>
                   ) : null}
                   {item.locked ? (
                     <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400">
-                      🔒 {tierLabel(item.tier)}
+                      🔒 {tierLabel(locale, item.tier)}
                     </span>
                   ) : null}
                 </div>
@@ -186,10 +190,16 @@ function Browser({ showFavorites }: { showFavorites: boolean }) {
   );
 }
 
-export default function CatalogueBrowser({ showFavorites = false }: { showFavorites?: boolean }) {
+export default function CatalogueBrowser({
+  showFavorites = false,
+  locale,
+}: {
+  showFavorites?: boolean;
+  locale: Locale;
+}) {
   return (
     <ApiProvider>
-      <Browser showFavorites={showFavorites} />
+      <Browser showFavorites={showFavorites} locale={locale} />
     </ApiProvider>
   );
 }

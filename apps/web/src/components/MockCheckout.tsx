@@ -1,3 +1,4 @@
+import { type Locale, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import { useEffect, useState } from 'react';
 import { completeMockCheckout } from '@/lib/subscription-api';
 
@@ -14,13 +15,20 @@ const PLAN_PRICE: Record<string, string> = {
   institution: '$40.00',
 };
 
+/** Localized plan name for the given plan id (`premium`/`pro`/`institution`). */
+function planLabel(locale: Locale, plan: string): string {
+  const key: MessageKey =
+    plan === 'pro' ? 'tier.pro' : plan === 'institution' ? 'tier.institution' : 'tier.premium';
+  return t(locale, key);
+}
+
 /**
  * Dev-only stand-in for a Stripe-hosted checkout page. Reads the session + return URLs from the query
  * string (built by the mock gateway), and on "Pay" simulates the provider firing the
  * `checkout.session.completed` webhook (which grants premium) before redirecting back. With real
  * Stripe keys this page is never reached — the checkout URL points at Stripe instead.
  */
-export default function MockCheckout() {
+export default function MockCheckout({ locale }: { locale: Locale }) {
   const [params, setParams] = useState<CheckoutParams | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -44,15 +52,19 @@ export default function MockCheckout() {
     window.location.href = p.success;
   }
 
+  const price = PLAN_PRICE[params.plan] ?? '$8.00';
+
   return (
     <div className="space-y-6 rounded-lg border border-border p-6">
       <div>
-        <p className="text-sm font-medium text-muted-foreground">Mock payment provider</p>
+        <p className="text-sm font-medium text-muted-foreground">
+          {t(locale, 'checkout.provider')}
+        </p>
         <p className="text-lg font-semibold">
-          The Music Repository — {params.plan.charAt(0).toUpperCase() + params.plan.slice(1)}
+          {t(locale, 'checkout.planLine', { plan: planLabel(locale, params.plan) })}
         </p>
         <p className="text-sm text-muted-foreground">
-          {PLAN_PRICE[params.plan] ?? '$8.00'} / month · test mode, no card required
+          {t(locale, 'checkout.priceLine', { price })}
         </p>
       </div>
       <div className="flex gap-3">
@@ -62,19 +74,16 @@ export default function MockCheckout() {
           disabled={busy || !params.session}
           className="rounded-md bg-primary px-6 py-2 text-sm font-medium text-primary-foreground disabled:opacity-40"
         >
-          {busy ? 'Processing…' : 'Pay $8.00'}
+          {busy ? t(locale, 'checkout.processing') : t(locale, 'checkout.pay', { price })}
         </button>
         <a
           href={params.cancel}
           className="rounded-md border border-border px-4 py-2 text-sm font-medium"
         >
-          Cancel
+          {t(locale, 'checkout.cancel')}
         </a>
       </div>
-      <p className="text-xs text-muted-foreground">
-        Clicking Pay simulates the provider firing its <strong>checkout.session.completed</strong>{' '}
-        webhook to the API, which grants your premium entitlement — then returns you to the app.
-      </p>
+      <p className="text-xs text-muted-foreground">{t(locale, 'checkout.webhookNote')}</p>
     </div>
   );
 }

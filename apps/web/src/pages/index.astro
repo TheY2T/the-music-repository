@@ -1,9 +1,11 @@
 ---
 import FlagBanner from '@/components/FlagBanner.tsx';
 import HealthCard from '@/components/HealthCard.tsx';
-import '@/styles/global.css';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
 
 const { demoNewBanner, authEnabled, adminCms, favorites, collections, progress } = Astro.locals.flags;
+const locale = Astro.locals.locale;
 const user = Astro.locals.user;
 const canAuthor = adminCms && (user?.role === 'admin' || user?.role === 'editor');
 const showFavorites = favorites && !!user;
@@ -108,89 +110,96 @@ const showTools =
   toolSoundfont;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>The Music Repository</title>
-    <script is:inline>
-      // Apply theme before paint to avoid a flash (shadcn dark mode = `.dark` on <html>).
-      const stored = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (stored === 'dark' || (!stored && prefersDark)) {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
-  </head>
-  <body>
-    <main class="mx-auto max-w-2xl space-y-6 p-8">
-      <header class="space-y-1">
-        <h1 class="text-3xl font-bold">The Music Repository</h1>
-        <p class="text-muted-foreground">
-          Phase 0 scaffold — Astro + NestJS + Postgres/Drizzle + OpenFeature.
-        </p>
-        <div class="flex flex-wrap items-center gap-3">
-          <a
-            href="/catalogue"
-            class="inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-          >
-            Browse the catalogue →
-          </a>
-          {collections && <a href="/collections" class="text-sm underline">Collections</a>}
-          {showTools && <a href="/tools" class="text-sm underline">Tools</a>}
-          {
-            authEnabled &&
-              (user ? (
-                <span class="text-sm text-muted-foreground">
-                  {user.name || user.email}
-                  {showProgress && (
-                    <>
-                      {' · '}
-                      <a href="/me/progress" class="underline">My progress</a>
-                    </>
-                  )}
-                  {showDrills && (
-                    <>
-                      {' · '}
-                      <a href="/drills" class="underline">Drills</a>
-                    </>
-                  )}
-                  {showFavorites && (
-                    <>
-                      {' · '}
-                      <a href="/me/favorites" class="underline">My favorites</a>
-                    </>
-                  )}
-                  {showUpgrade && (
-                    <>
-                      {' · '}
-                      <a href="/upgrade" class="underline">Premium</a>
-                    </>
-                  )}
-                  {showClassrooms && (
-                    <>
-                      {' · '}
-                      <a href="/classrooms" class="underline">Classrooms</a>
-                    </>
-                  )}
-                  {canAuthor && (
-                    <>
-                      {' · '}
-                      <a href="/admin" class="underline">Admin</a>
-                    </>
-                  )}
-                </span>
-              ) : (
-                <a href="/signin" class="text-sm underline">
-                  Sign in
-                </a>
-              ))
-          }
-        </div>
-      </header>
+<BaseLayout title={t(locale, 'home.title')}>
+  <main class="mx-auto max-w-2xl space-y-6 p-8">
+    <header class="space-y-1">
+      <h1 class="text-3xl font-bold">{t(locale, 'home.title')}</h1>
+      <p class="text-muted-foreground">{t(locale, 'home.tagline')}</p>
+      <div class="flex flex-wrap items-center gap-3">
+        <a
+          href={localizedPath(locale, '/catalogue')}
+          class="inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+        >
+          {t(locale, 'nav.catalogue')} →
+        </a>
+        {
+          collections && (
+            <a href={localizedPath(locale, '/collections')} class="text-sm underline">
+              {t(locale, 'nav.collections')}
+            </a>
+          )
+        }
+        {
+          showTools && (
+            <a href={localizedPath(locale, '/tools')} class="text-sm underline">
+              {t(locale, 'nav.tools')}
+            </a>
+          )
+        }
+        {
+          authEnabled &&
+            (user ? (
+              <span class="text-sm text-muted-foreground">
+                {user.name || user.email}
+                {showProgress && (
+                  <>
+                    {' · '}
+                    <a href={localizedPath(locale, '/me/progress')} class="underline">
+                      {t(locale, 'nav.myProgress')}
+                    </a>
+                  </>
+                )}
+                {showDrills && (
+                  <>
+                    {' · '}
+                    <a href={localizedPath(locale, '/drills')} class="underline">
+                      {t(locale, 'nav.drills')}
+                    </a>
+                  </>
+                )}
+                {showFavorites && (
+                  <>
+                    {' · '}
+                    <a href={localizedPath(locale, '/me/favorites')} class="underline">
+                      {t(locale, 'nav.myFavorites')}
+                    </a>
+                  </>
+                )}
+                {showUpgrade && (
+                  <>
+                    {' · '}
+                    <a href={localizedPath(locale, '/upgrade')} class="underline">
+                      {t(locale, 'nav.premium')}
+                    </a>
+                  </>
+                )}
+                {showClassrooms && (
+                  <>
+                    {' · '}
+                    <a href={localizedPath(locale, '/classrooms')} class="underline">
+                      {t(locale, 'nav.classrooms')}
+                    </a>
+                  </>
+                )}
+                {canAuthor && (
+                  <>
+                    {' · '}
+                    <a href={localizedPath(locale, '/admin')} class="underline">
+                      {t(locale, 'nav.admin')}
+                    </a>
+                  </>
+                )}
+              </span>
+            ) : (
+              <a href={localizedPath(locale, '/signin')} class="text-sm underline">
+                {t(locale, 'nav.signIn')}
+              </a>
+            ))
+        }
+      </div>
+    </header>
 
-      <FlagBanner client:load initial={demoNewBanner} />
-      <HealthCard client:load />
-    </main>
-  </body>
-</html>
+    <FlagBanner client:load initial={demoNewBanner} />
+    <HealthCard client:load />
+  </main>
+</BaseLayout>
