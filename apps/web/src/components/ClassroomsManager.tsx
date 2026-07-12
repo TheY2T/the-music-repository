@@ -1,22 +1,44 @@
 import { useEffect, useState } from 'react';
 import {
+  type Assignment,
+  archiveClassroom,
+  assignContent,
+  type ClassProgress,
   type Classroom,
   type ClassroomDetail,
   createClassroom,
+  getClassProgress,
   getClassroom,
   grantClassroomPremium,
   joinClassroom,
+  leaveClassroom,
+  listAssignments,
   listClassrooms,
+  removeMember,
+  transferOwnership,
+  unassignContent,
 } from '@/lib/classrooms-api';
 
 function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChanged: () => void }) {
   const [detail, setDetail] = useState<ClassroomDetail | null>(null);
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [progress, setProgress] = useState<ClassProgress | null>(null);
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [slug, setSlug] = useState('');
+  const [assignError, setAssignError] = useState<string | null>(null);
+  const isOwner = classroom.role === 'owner';
+
+  async function load() {
+    const [d, a] = await Promise.all([getClassroom(classroom.id), listAssignments(classroom.id)]);
+    setDetail(d);
+    setAssignments(a);
+    setProgress(isOwner ? await getClassProgress(classroom.id) : null);
+  }
 
   async function toggle() {
     if (!open && !detail) {
-      setDetail(await getClassroom(classroom.id));
+      await load();
     }
     setOpen((o) => !o);
   }
@@ -29,6 +51,21 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
     }
     setBusy(false);
     onChanged();
+  }
+
+  async function onAssign(e: React.FormEvent) {
+    e.preventDefault();
+    setAssignError(null);
+    if (!slug.trim()) {
+      return;
+    }
+    const result = await assignContent(classroom.id, slug.trim());
+    if (result.error) {
+      setAssignError(result.error);
+      return;
+    }
+    setSlug('');
+    await load();
   }
 
   return (
@@ -45,41 +82,158 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
         </div>
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           <span>{classroom.memberCount} member(s)</span>
-          {classroom.role === 'owner' ? (
+          {isOwner ? (
             <span>
               Code:{' '}
               <span className="font-mono font-semibold text-foreground">{classroom.joinCode}</span>
             </span>
           ) : null}
           <button type="button" onClick={toggle} className="underline">
-            {open ? 'Hide' : 'Roster'}
+            {open ? 'Hide' : 'Manage'}
           </button>
         </div>
       </div>
 
       {open ? (
-        <div className="space-y-3 border-t border-border pt-3">
-          {detail?.members.length ? (
-            <ul className="space-y-1 text-sm">
-              {detail.members.map((m) => (
-                <li key={m.email} className="text-muted-foreground">
-                  {m.name || m.email} <span className="text-xs">({m.email})</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-muted-foreground">No members yet — share the join code.</p>
-          )}
-          {classroom.role === 'owner' && !classroom.premiumGranted ? (
-            <button
-              type="button"
-              onClick={grant}
-              disabled={busy || classroom.memberCount === 0}
-              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
-            >
-              {busy ? 'Granting…' : 'Grant premium to class'}
-            </button>
+        <div className="space-y-4 border-t border-border pt-3">
+          {/* Roster */}
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium">Members</h3>
+            {detail?.members.length ? (
+              <ul className="space-y-1 text-sm">
+                {detail.members.map((m) => (
+                  <li key={m.id} className="flex items-center gap-2 text-muted-foreground">
+                    <span>
+                      {m.name || m.email} <span className="text-xs">({m.email})</span>
+                    </span>
+                    {isOwner ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            await removeMember(classroom.id, m.id);
+                            await load();
+                            onChanged();
+                          }}
+                          className="text-xs underline"
+                        >
+                          remove
+                        </button>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            await transferOwnership(classroom.id, m.id);
+                            onChanged();
+                          }}
+                          className="text-xs underline"
+                        >
+                          make owner
+                        </button>
+                      </>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-muted-foreground">No members yet — share the join code.</p>
+            )}
+          </div>
+
+          {/* Assignments */}
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium">Assigned content</h3>
+            {assignments.length ? (
+              <ul className="space-y-1 text-sm">
+                {assignments.map((a) => (
+                  <li key={a.slug} className="flex items-center gap-2">
+                    <a href={`/catalogue/${a.slug}`} className="underline">
+                      {a.title}
+                    </a>
+                    {isOwner ? (
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          await unassignContent(classroom.id, a.slug);
+                          await load();
+                        }}
+                        className="text-xs text-muted-foreground underline"
+                      >
+                        remove
+                      </button>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-muted-foreground">Nothing assigned yet.</p>
+            )}
+            {isOwner ? (
+              <form onSubmit={onAssign} className="flex flex-wrap items-center gap-2 pt-1">
+                <input
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                  placeholder="content slug"
+                  className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+                />
+                <button type="submit" className="rounded-md border border-border px-3 py-1 text-sm">
+                  Assign
+                </button>
+                {assignError ? <span className="text-xs text-red-600">{assignError}</span> : null}
+              </form>
+            ) : null}
+          </div>
+
+          {/* Progress overview (owner) */}
+          {isOwner && progress && progress.assignments.length > 0 ? (
+            <div className="space-y-1">
+              <h3 className="text-sm font-medium">Class progress</h3>
+              <ul className="space-y-1 text-sm text-muted-foreground">
+                {progress.members.map((m) => (
+                  <li key={m.id}>
+                    {m.name || m.email}: {m.completedCount}/{m.total} assignments complete
+                  </li>
+                ))}
+                {progress.members.length === 0 ? <li>No members to track yet.</li> : null}
+              </ul>
+            </div>
           ) : null}
+
+          {/* Actions */}
+          <div className="flex flex-wrap gap-3">
+            {isOwner && !classroom.premiumGranted ? (
+              <button
+                type="button"
+                onClick={grant}
+                disabled={busy || classroom.memberCount === 0}
+                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
+              >
+                {busy ? 'Granting…' : 'Grant premium to class'}
+              </button>
+            ) : null}
+            {isOwner ? (
+              <button
+                type="button"
+                onClick={async () => {
+                  await archiveClassroom(classroom.id);
+                  onChanged();
+                }}
+                className="rounded-md border border-border px-4 py-2 text-sm"
+              >
+                Archive class
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={async () => {
+                  await leaveClassroom(classroom.id);
+                  onChanged();
+                }}
+                className="rounded-md border border-border px-4 py-2 text-sm"
+              >
+                Leave class
+              </button>
+            )}
+          </div>
         </div>
       ) : null}
     </li>

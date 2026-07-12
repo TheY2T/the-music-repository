@@ -532,6 +532,51 @@ export const ArchiveClassroomResponse = zod.void()
 
 
 /**
+ * The class's assigned content (any owner or member).
+ */
+export const ListAssignmentsParams = zod.object({
+  "id": zod.string()
+})
+
+export const ListAssignmentsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "slug": zod.string(),
+  "title": zod.string()
+}))
+})
+
+
+/**
+ * Assign content to the class by slug (owner only).
+ */
+export const AssignContentParams = zod.object({
+  "id": zod.string()
+})
+
+export const AssignContentBody = zod.object({
+  "contentSlug": zod.string()
+})
+
+export const AssignContentResponse = zod.object({
+  "items": zod.array(zod.object({
+  "slug": zod.string(),
+  "title": zod.string()
+}))
+})
+
+
+/**
+ * Remove an assignment (owner only).
+ */
+export const UnassignContentParams = zod.object({
+  "id": zod.string(),
+  "slug": zod.string()
+})
+
+export const UnassignContentResponse = zod.void()
+
+
+/**
  * Grant premium to every current member of the classroom (owner only).
  */
 export const GrantClassroomPremiumParams = zod.object({
@@ -572,6 +617,39 @@ export const RemoveClassroomMemberParams = zod.object({
 })
 
 export const RemoveClassroomMemberResponse = zod.void()
+
+
+/**
+ * Per-student progress across the class's assigned content (owner only).
+ */
+export const GetClassProgressParams = zod.object({
+  "id": zod.string()
+})
+
+export const GetClassProgressResponse = zod.object({
+  "assignments": zod.array(zod.object({
+  "slug": zod.string(),
+  "title": zod.string()
+})),
+  "members": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "completedCount": zod.number(),
+  "total": zod.number()
+}).describe('A member\'s completion across the class\'s assigned content.'))
+})
+
+
+export const TransferClassroomOwnershipParams = zod.object({
+  "id": zod.string()
+})
+
+export const TransferClassroomOwnershipBody = zod.object({
+  "memberId": zod.string()
+}).describe('Transfer ownership to a current member (owner only).')
+
+export const TransferClassroomOwnershipResponse = zod.void()
 
 
 /**

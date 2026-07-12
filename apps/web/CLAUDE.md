@@ -202,8 +202,10 @@ src/
   (`CatalogueBrowser`) and a locked upgrade panel on the detail page (`ContentDetail`). No client-side
   entitlement logic — the API decides. Home shows a "Premium" link when logged in + flag on.
 - **Classrooms (teacher mode, `education.classrooms`):** `src/lib/classrooms-api.ts` +
-  `ClassroomsManager.tsx` (create / join by code / roster / grant premium to class) on `/classrooms`
-  (login + flag gated). Home shows a "Classrooms" link. See `docs/features/classrooms.md`.
+  `ClassroomsManager.tsx` on `/classrooms` (login + flag gated). The "Manage" panel does create / join
+  by code / roster (remove member, make-owner) / grant premium / **assign content by slug** / **class
+  progress** (per-student completedCount) / archive / leave. Home shows a "Classrooms" link. See
+  `docs/features/classrooms.md`.
 
 ## Feature flags
 

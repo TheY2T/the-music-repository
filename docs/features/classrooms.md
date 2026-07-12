@@ -55,7 +55,22 @@ education path into monetization: a teacher (or school) unlocks premium for thei
   `id` so the owner can target a member for removal. Verified curl (403 owner-leave / 204 remove /
   403 non-owner-archive / 204 archive / hidden from list).
 
+## Assignments + class progress + transfer (Phase 6, 6C — shipped)
+
+- **Assignments:** `classroom_assignments` table (`classroom_id`, `content_id`, `position`). Owner
+  assigns content by slug — `POST /classrooms/{id}/assignments` `{ contentSlug }` (403 non-owner, 404
+  unknown slug), `DELETE /classrooms/{id}/assignments/{slug}`, `GET /classrooms/{id}/assignments` (any
+  owner/member). New use-cases `AssignContent`/`UnassignContent`/`GetAssignments`.
+- **Class progress overview:** `GET /classrooms/{id}/progress` (owner) — joins `classroom_assignments`
+  × members × `content_progress` → per-student `{ completedCount, total }`. `GetClassProgress`
+  computes the matrix; no cross-module coupling (queries `content_progress` directly).
+- **Transfer ownership:** `POST /classrooms/{id}/transfer` `{ memberId }` (owner; the target must be a
+  current member → else 404). The new owner leaves `classroom_members`, the old owner joins it.
+- **Web:** `ClassroomsManager`'s "Manage" panel gained assign/remove content, a class-progress list,
+  member remove / make-owner, and archive/leave — using `classrooms-api.ts` helpers. Verified curl
+  (403/404/assign/progress 1-of-2/transfer role-swap) + browser (create → assign → progress → archive).
+
 ## Next (Phase 6 later)
 
-- Assign content/collections/drills to a classroom; class progress overview; transfer ownership;
-  expiring class seats via real payment-provider seat billing (Stripe quantity).
+- Tiered plan gating + teacher role/email invitations (see backlog); expiring class seats via real
+  payment-provider seat billing (Stripe quantity).

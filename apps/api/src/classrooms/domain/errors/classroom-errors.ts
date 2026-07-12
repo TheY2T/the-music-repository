@@ -27,3 +27,10 @@ export class OwnerCannotLeaveError extends ForbiddenError {
     super(`The owner cannot leave their classroom — archive it instead.`, { id });
   }
 }
+
+export class MemberNotFoundError extends NotFoundError {
+  readonly code = 'CLASSROOM_MEMBER_NOT_FOUND';
+  constructor(memberId: string) {
+    super(`No member '${memberId}' is in this classroom.`, { memberId });
+  }
+}

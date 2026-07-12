@@ -692,6 +692,108 @@
         ]
       }
     },
+    "/classrooms/{id}/assignments": {
+      "get": {
+        "operationId": "listAssignments",
+        "description": "The class's assigned content (any owner or member).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssignmentList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "classrooms"
+        ]
+      },
+      "post": {
+        "operationId": "assignContent",
+        "description": "Assign content to the class by slug (owner only).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssignmentList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "classrooms"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignContentInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/classrooms/{id}/assignments/{slug}": {
+      "delete": {
+        "operationId": "unassignContent",
+        "description": "Remove an assignment (owner only).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "classrooms"
+        ]
+      }
+    },
     "/classrooms/{id}/grant-premium": {
       "post": {
         "operationId": "grantClassroomPremium",
@@ -777,6 +879,70 @@
         "tags": [
           "classrooms"
         ]
+      }
+    },
+    "/classrooms/{id}/progress": {
+      "get": {
+        "operationId": "getClassProgress",
+        "description": "Per-student progress across the class's assigned content (owner only).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassProgress"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "classrooms"
+        ]
+      }
+    },
+    "/classrooms/{id}/transfer": {
+      "post": {
+        "operationId": "transferClassroomOwnership",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "classrooms"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferOwnershipInput"
+              }
+            }
+          }
+        }
       }
     },
     "/collections": {
@@ -1829,6 +1995,46 @@
   },
   "components": {
     "schemas": {
+      "AssignContentInput": {
+        "type": "object",
+        "required": [
+          "contentSlug"
+        ],
+        "properties": {
+          "contentSlug": {
+            "type": "string"
+          }
+        }
+      },
+      "Assignment": {
+        "type": "object",
+        "required": [
+          "slug",
+          "title"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        }
+      },
+      "AssignmentList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Assignment"
+            }
+          }
+        }
+      },
       "BillingPortalSession": {
         "type": "object",
         "required": [
@@ -1887,6 +2093,27 @@
           }
         },
         "description": "A payment-provider checkout session to redirect the user to."
+      },
+      "ClassProgress": {
+        "type": "object",
+        "required": [
+          "assignments",
+          "members"
+        ],
+        "properties": {
+          "assignments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Assignment"
+            }
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberProgress"
+            }
+          }
+        }
       },
       "Classroom": {
         "type": "object",
@@ -2932,6 +3159,36 @@
         },
         "description": "A presigned PUT ticket the browser uploads the bytes to."
       },
+      "MemberProgress": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "email",
+          "completedCount",
+          "total"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "completedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "A member's completion across the class's assigned content."
+      },
       "PracticeInput": {
         "type": "object",
         "required": [
@@ -3299,6 +3556,18 @@
             "type": "string"
           }
         }
+      },
+      "TransferOwnershipInput": {
+        "type": "object",
+        "required": [
+          "memberId"
+        ],
+        "properties": {
+          "memberId": {
+            "type": "string"
+          }
+        },
+        "description": "Transfer ownership to a current member (owner only)."
       }
     }
   }

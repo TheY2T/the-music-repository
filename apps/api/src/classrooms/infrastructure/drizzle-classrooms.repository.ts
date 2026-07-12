@@ -1,13 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { and, desc, eq, isNull } from 'drizzle-orm';
+import { and, asc, count, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { user } from '../../auth/auth-schema';
+import { ContentNotFoundError } from '../../catalogue/domain/errors/content-not-found.error';
 import { DATABASE, type Database } from '../../infrastructure/database/database.module';
-import { classroomMembers, classrooms } from '../../infrastructure/database/schema';
+import {
+  classroomAssignments,
+  classroomMembers,
+  classrooms,
+  contentItems,
+  contentProgress,
+} from '../../infrastructure/database/schema';
 import {
   type ClassroomRow,
   ClassroomsRepository,
 } from '../application/ports/classrooms-repository.port';
-import type { ClassroomMemberView } from '../domain/classroom';
+import type { AssignmentView, ClassroomMemberView } from '../domain/classroom';
 
 @Injectable()
 export class DrizzleClassrooms extends ClassroomsRepository {
@@ -118,6 +125,88 @@ export class DrizzleClassrooms extends ClassroomsRepository {
       .update(classrooms)
       .set({ premiumGranted: true })
       .where(eq(classrooms.id, classroomId));
+  }
+
+  async transferOwnership(
+    classroomId: string,
+    newOwnerId: string,
+    oldOwnerId: string,
+  ): Promise<void> {
+    await this.db
+      .update(classrooms)
+      .set({ ownerId: newOwnerId })
+      .where(eq(classrooms.id, classroomId));
+    // New owner is no longer a plain member; the old owner becomes one.
+    await this.removeMember(classroomId, newOwnerId);
+    await this.addMember(classroomId, oldOwnerId);
+  }
+
+  async assignContent(classroomId: string, slug: string): Promise<void> {
+    const contentId = await this.contentIdBySlug(slug);
+    if (!contentId) {
+      throw new ContentNotFoundError(slug);
+    }
+    const [existing] = await this.db
+      .select({ n: count() })
+      .from(classroomAssignments)
+      .where(eq(classroomAssignments.classroomId, classroomId));
+    await this.db
+      .insert(classroomAssignments)
+      .values({ classroomId, contentId, position: existing?.n ?? 0 })
+      .onConflictDoNothing();
+  }
+
+  async unassignContent(classroomId: string, slug: string): Promise<void> {
+    const contentId = await this.contentIdBySlug(slug);
+    if (!contentId) {
+      return;
+    }
+    await this.db
+      .delete(classroomAssignments)
+      .where(
+        and(
+          eq(classroomAssignments.classroomId, classroomId),
+          eq(classroomAssignments.contentId, contentId),
+        ),
+      );
+  }
+
+  async assignments(classroomId: string): Promise<AssignmentView[]> {
+    const rows = await this.db
+      .select({ slug: contentItems.slug, title: contentItems.title })
+      .from(classroomAssignments)
+      .innerJoin(contentItems, eq(classroomAssignments.contentId, contentItems.id))
+      .where(eq(classroomAssignments.classroomId, classroomId))
+      .orderBy(asc(classroomAssignments.position));
+    return rows.map((r) => ({ slug: r.slug, title: r.title }));
+  }
+
+  async completedAssignments(classroomId: string): Promise<{ memberId: string; slug: string }[]> {
+    const memberIds = await this.memberIds(classroomId);
+    if (memberIds.length === 0) {
+      return [];
+    }
+    const rows = await this.db
+      .select({ memberId: contentProgress.userId, slug: contentItems.slug })
+      .from(classroomAssignments)
+      .innerJoin(contentItems, eq(classroomAssignments.contentId, contentItems.id))
+      .innerJoin(contentProgress, eq(contentProgress.contentId, classroomAssignments.contentId))
+      .where(
+        and(
+          eq(classroomAssignments.classroomId, classroomId),
+          inArray(contentProgress.userId, memberIds),
+        ),
+      );
+    return rows.map((r) => ({ memberId: r.memberId, slug: r.slug }));
+  }
+
+  private async contentIdBySlug(slug: string): Promise<string | null> {
+    const [row] = await this.db
+      .select({ id: contentItems.id })
+      .from(contentItems)
+      .where(eq(contentItems.slug, slug))
+      .limit(1);
+    return row?.id ?? null;
   }
 
   private toRow(row: typeof classrooms.$inferSelect): ClassroomRow {

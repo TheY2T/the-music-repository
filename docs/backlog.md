@@ -104,11 +104,11 @@ created. Stripe becomes an *inbound adapter* (webhook → `grantPremium`) + an *
 | Idea | Notes | Effort | Value |
 |---|---|---|---|
 | 💳 **Seat billing** | A teacher/school buys **N seats**; joining consumes a seat; billing via Stripe quantity. Extends `grant-premium` (currently unconditional) into metered seats with `expires_at`. | High | High |
-| 🔗 **Assign content to a class** | Teacher assigns content/collections/drills; students see an assignments list; ties into the Phase 2 progress dashboard. | Med | High |
-| 🔗 **Class progress overview** | Teacher dashboard: per-student completion/streaks across assigned material (reuses `content_progress` / reviews). | Med | High |
+| ✅ **Assign content to a class** | **Shipped** — `classroom_assignments` table; owner assigns content by slug (`POST /classrooms/{id}/assignments`, 403 non-owner, 404 unknown slug), `DELETE .../assignments/{slug}`, `GET .../assignments` (any member). Web: assign/remove + list in `ClassroomsManager`. Verified curl + browser | Med | High |
+| ✅ **Class progress overview** | **Shipped** — `GET /classrooms/{id}/progress` (owner) reads `content_progress` for members × assigned content → per-student `completedCount/total`. Web: progress list in the manage panel. Verified (learner 1/2) | Med | High |
 | 🔗 **Teacher role + invitations** | Currently *any* authed user can create a classroom. Add a `teacher` capability/role, and email invitations (vs. open join code) with accept links. Still open (email delivery not wired) | Med | Med |
 | ✅ **Auto-grant on join** | **Shipped** — `JoinClassroomUseCase` grants premium (`source:'classroom'`) to a new member when the class is already `premiumGranted`. Verified: learner joins a granted class → `premium:true source:classroom` | Low | Med |
-| ◑ **Leave / remove member, transfer ownership, archive class** | **Mostly shipped** — `POST /classrooms/{id}/leave` (owner blocked → 403), `DELETE /classrooms/{id}/members/{memberId}` (owner only), `POST /classrooms/{id}/archive` (owner only; archived hidden from all rosters). Transfer-ownership still open. Verified curl | Low | Low |
+| ✅ **Leave / remove member, transfer ownership, archive class** | **Shipped** — `leave` (owner blocked → 403), `DELETE .../members/{memberId}` (owner), `archive` (owner; hidden from all rosters), **`POST /classrooms/{id}/transfer`** (owner → a member becomes owner, old owner joins as a member; non-member → 404). Web: remove / make-owner / archive / leave in `ClassroomsManager`. Verified curl + browser | Low | Low |
 
 ## Phase 6 status
 
@@ -116,10 +116,16 @@ Most of Phase 6 is now shipped and verified with the mock gateway (no keys): **c
 (ADR 0016), **billing portal**, **invoice.paid renewal**, **gift/redeem codes**, **entitlement audit
 log**, **classroom auto-grant on join**, and **roster management** (leave / remove / archive).
 
+Also shipped since: **assign content to a class** + **class progress overview**, **transfer ownership**,
+and the classroom management **web UI** (assign / progress / roster / transfer / archive in
+`ClassroomsManager`).
+
 **Remaining — genuinely gated on real Stripe test keys** (`STRIPE_SECRET_KEY` flips the gateway):
 raw-body capture on the webhook route (needed for Stripe signature bytes), `invoice.payment_failed`
 grace period + real period-end `expires_at`, trials/coupons/proration, annual/monthly price IDs, and
-**seat billing** (Stripe quantity). **Remaining — no keys needed** (larger follow-ons): tiered plan
-gating (`pro`/`institution`), teacher role + email invitations, assign-content-to-a-class + class
-progress overview, transfer classroom ownership. All slot in behind the existing `Entitlements` /
-`CheckoutGateway` ports.
+**seat billing** (Stripe quantity).
+
+**Remaining — no keys needed** (deferred, policy/breadth): **tiered plan gating** (`pro`/`institution`
+entitlement keys + per-tier content `visibility` — needs a content-tier data model), and **teacher role
++ email invitations** (a `teacher` capability in Better Auth access-control + an email transport, neither
+wired). All slot in behind the existing `Entitlements` / `CheckoutGateway` ports.

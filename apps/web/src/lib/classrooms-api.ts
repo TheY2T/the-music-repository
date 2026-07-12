@@ -9,11 +9,27 @@ export interface Classroom {
   premiumGranted: boolean;
 }
 export interface ClassroomMember {
+  id: string;
   name: string;
   email: string;
 }
 export interface ClassroomDetail extends Classroom {
   members: ClassroomMember[];
+}
+export interface Assignment {
+  slug: string;
+  title: string;
+}
+export interface MemberProgress {
+  id: string;
+  name: string;
+  email: string;
+  completedCount: number;
+  total: number;
+}
+export interface ClassProgress {
+  assignments: Assignment[];
+  members: MemberProgress[];
 }
 
 export async function listClassrooms(): Promise<Classroom[]> {
@@ -64,3 +80,52 @@ export async function grantClassroomPremium(id: string): Promise<ClassroomDetail
   });
   return response.ok ? ((await response.json()) as ClassroomDetail) : null;
 }
+
+async function send(path: string, method: string, body?: unknown): Promise<boolean> {
+  const response = await fetch(`${API_BASE}${path}`, {
+    method,
+    credentials: 'include',
+    headers: body ? { 'content-type': 'application/json' } : undefined,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  return response.ok;
+}
+
+export async function listAssignments(id: string): Promise<Assignment[]> {
+  const response = await fetch(`${API_BASE}/classrooms/${id}/assignments`, {
+    credentials: 'include',
+  });
+  return response.ok ? ((await response.json()) as { items: Assignment[] }).items : [];
+}
+
+/** Assign content by slug; returns the new list, or an error message (e.g. unknown slug). */
+export async function assignContent(
+  id: string,
+  contentSlug: string,
+): Promise<{ items?: Assignment[]; error?: string }> {
+  const response = await fetch(`${API_BASE}/classrooms/${id}/assignments`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ contentSlug }),
+  });
+  if (response.ok) {
+    return { items: ((await response.json()) as { items: Assignment[] }).items };
+  }
+  return { error: response.status === 404 ? 'No content with that slug.' : 'Could not assign.' };
+}
+
+export const unassignContent = (id: string, slug: string) =>
+  send(`/classrooms/${id}/assignments/${encodeURIComponent(slug)}`, 'DELETE');
+
+export async function getClassProgress(id: string): Promise<ClassProgress | null> {
+  const response = await fetch(`${API_BASE}/classrooms/${id}/progress`, { credentials: 'include' });
+  return response.ok ? ((await response.json()) as ClassProgress) : null;
+}
+
+export const removeMember = (id: string, memberId: string) =>
+  send(`/classrooms/${id}/members/${memberId}`, 'DELETE');
+export const transferOwnership = (id: string, memberId: string) =>
+  send(`/classrooms/${id}/transfer`, 'POST', { memberId });
+export const leaveClassroom = (id: string) => send(`/classrooms/${id}/leave`, 'POST');
+export const archiveClassroom = (id: string) => send(`/classrooms/${id}/archive`, 'POST');

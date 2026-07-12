@@ -1,10 +1,16 @@
 import { randomInt } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
 import { Entitlements } from '../../entitlements/application/ports/entitlements.port';
-import type { ClassroomDetailView, ClassroomView } from '../domain/classroom';
+import type {
+  AssignmentView,
+  ClassProgressView,
+  ClassroomDetailView,
+  ClassroomView,
+} from '../domain/classroom';
 import {
   ClassroomNotFoundError,
   InvalidJoinCodeError,
+  MemberNotFoundError,
   NotClassroomOwnerError,
   OwnerCannotLeaveError,
 } from '../domain/errors/classroom-errors';
@@ -128,6 +134,103 @@ export class ArchiveClassroomUseCase {
       throw new NotClassroomOwnerError(id);
     }
     await this.repository.archive(id);
+  }
+}
+
+/** Shared: load a classroom the caller owns, or throw. */
+async function requireOwned(
+  repository: ClassroomsRepository,
+  id: string,
+  ownerId: string,
+): Promise<void> {
+  const row = await repository.findById(id);
+  if (!row) {
+    throw new ClassroomNotFoundError(id);
+  }
+  if (row.ownerId !== ownerId) {
+    throw new NotClassroomOwnerError(id);
+  }
+}
+
+@Injectable()
+export class TransferOwnershipUseCase {
+  constructor(private readonly repository: ClassroomsRepository) {}
+
+  async execute(id: string, ownerId: string, newOwnerId: string): Promise<void> {
+    await requireOwned(this.repository, id, ownerId);
+    const members = await this.repository.memberIds(id);
+    if (!members.includes(newOwnerId)) {
+      throw new MemberNotFoundError(newOwnerId);
+    }
+    await this.repository.transferOwnership(id, newOwnerId, ownerId);
+  }
+}
+
+@Injectable()
+export class AssignContentUseCase {
+  constructor(private readonly repository: ClassroomsRepository) {}
+
+  async execute(id: string, ownerId: string, slug: string): Promise<AssignmentView[]> {
+    await requireOwned(this.repository, id, ownerId);
+    await this.repository.assignContent(id, slug.trim());
+    return this.repository.assignments(id);
+  }
+}
+
+@Injectable()
+export class UnassignContentUseCase {
+  constructor(private readonly repository: ClassroomsRepository) {}
+
+  async execute(id: string, ownerId: string, slug: string): Promise<void> {
+    await requireOwned(this.repository, id, ownerId);
+    await this.repository.unassignContent(id, slug);
+  }
+}
+
+@Injectable()
+export class GetAssignmentsUseCase {
+  constructor(private readonly repository: ClassroomsRepository) {}
+
+  /** Any owner or member can see the assignment list. */
+  async execute(id: string, viewerId: string): Promise<AssignmentView[]> {
+    if (!(await this.repository.isOwnerOrMember(id, viewerId))) {
+      throw new ClassroomNotFoundError(id);
+    }
+    return this.repository.assignments(id);
+  }
+}
+
+@Injectable()
+export class GetClassProgressUseCase {
+  constructor(private readonly repository: ClassroomsRepository) {}
+
+  /** Per-student completion across the class's assigned content (owner only). */
+  async execute(id: string, ownerId: string): Promise<ClassProgressView> {
+    await requireOwned(this.repository, id, ownerId);
+    const [assignments, members, completed] = await Promise.all([
+      this.repository.assignments(id),
+      this.repository.members(id),
+      this.repository.completedAssignments(id),
+    ]);
+    const doneByMember = new Map<string, Set<string>>();
+    for (const { memberId, slug } of completed) {
+      const set = doneByMember.get(memberId) ?? new Set<string>();
+      set.add(slug);
+      doneByMember.set(memberId, set);
+    }
+    return {
+      assignments,
+      members: members.map((m) => {
+        const done = doneByMember.get(m.id) ?? new Set<string>();
+        return {
+          id: m.id,
+          name: m.name,
+          email: m.email,
+          completedCount: assignments.filter((a) => done.has(a.slug)).length,
+          total: assignments.length,
+        };
+      }),
+    };
   }
 }
 

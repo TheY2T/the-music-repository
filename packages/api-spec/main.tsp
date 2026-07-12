@@ -886,3 +886,73 @@ op removeClassroomMember(@path id: string, @path memberId: string): {
 op archiveClassroom(@path id: string): {
   @statusCode statusCode: 204;
 };
+
+/** Transfer ownership to a current member (owner only). */
+model TransferOwnershipInput {
+  memberId: string;
+}
+
+@route("/classrooms/{id}/transfer")
+@tag("classrooms")
+@post
+op transferClassroomOwnership(@path id: string, @body body: TransferOwnershipInput): {
+  @statusCode statusCode: 204;
+};
+
+// ----- Assignments + class progress (6C) -----
+
+model Assignment {
+  slug: string;
+  title: string;
+}
+
+model AssignmentList {
+  items: Assignment[];
+}
+
+model AssignContentInput {
+  contentSlug: string;
+}
+
+/** A member's completion across the class's assigned content. */
+model MemberProgress {
+  id: string;
+  name: string;
+  email: string;
+  completedCount: int32;
+  total: int32;
+}
+
+model ClassProgress {
+  assignments: Assignment[];
+  members: MemberProgress[];
+}
+
+/** The class's assigned content (any owner or member). */
+@route("/classrooms/{id}/assignments")
+@tag("classrooms")
+@get
+op listAssignments(@path id: string): AssignmentList;
+
+/** Assign content to the class by slug (owner only). */
+@route("/classrooms/{id}/assignments")
+@tag("classrooms")
+@post
+op assignContent(@path id: string, @body body: AssignContentInput): {
+  @statusCode statusCode: 201;
+  @body body: AssignmentList;
+};
+
+/** Remove an assignment (owner only). */
+@route("/classrooms/{id}/assignments/{slug}")
+@tag("classrooms")
+@delete
+op unassignContent(@path id: string, @path slug: string): {
+  @statusCode statusCode: 204;
+};
+
+/** Per-student progress across the class's assigned content (owner only). */
+@route("/classrooms/{id}/progress")
+@tag("classrooms")
+@get
+op getClassProgress(@path id: string): ClassProgress;

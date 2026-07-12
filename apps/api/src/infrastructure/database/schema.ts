@@ -328,6 +328,23 @@ export const classroomMembers = pgTable(
   (t) => [primaryKey({ columns: [t.classroomId, t.userId] })],
 );
 
+// --- Classroom assignments (Phase 6, 6C): content a teacher assigns to a class. One row per
+// (classroom, content); progress is read from `content_progress` for the class members. ---
+export const classroomAssignments = pgTable(
+  'classroom_assignments',
+  {
+    classroomId: uuid('classroom_id')
+      .notNull()
+      .references(() => classrooms.id, { onDelete: 'cascade' }),
+    contentId: uuid('content_id')
+      .notNull()
+      .references(() => contentItems.id, { onDelete: 'cascade' }),
+    position: integer('position').notNull().default(0),
+    assignedAt: timestamp('assigned_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.classroomId, t.contentId] })],
+);
+
 // --- Info View (Phase 2): context-sensitive help topics keyed by slug (e.g. a term or skill_topic). ---
 export const helpTopics = pgTable('help_topics', {
   id: uuid('id').primaryKey().defaultRandom(),

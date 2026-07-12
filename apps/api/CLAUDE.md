@@ -118,8 +118,11 @@ parsed body (fine for the mock, which skips signatures; add raw-body capture whe
 codes via `crypto.randomInt`. `GrantClassroomPremiumUseCase` imports the `Entitlements` port
 (EntitlementsModule) → `grantPremium(memberId, 'classroom')` per member. **Auto-grant:** `JoinClassroom`
 grants premium to a new joiner when the class is `premiumGranted`. **Roster:** leave (owner blocked),
-remove-member (owner), archive (owner; `archived_at`, filtered from `findByCode`/`listForUser`). Same
-flag gotchas as monetization (method-level `@RequireFlagsEnabled`, reload flagd). See `docs/features/classrooms.md`.
+remove-member (owner), archive (owner; `archived_at`, filtered from `findByCode`/`listForUser`),
+transfer-ownership (owner → a member). **Assignments + progress:** `classroom_assignments` table;
+owner assigns content by slug; `GET /classrooms/{id}/progress` joins assignments × members ×
+`content_progress` for per-student `completedCount/total` (no cross-module coupling). Same flag gotchas
+as monetization (method-level `@RequireFlagsEnabled`, reload flagd). See `docs/features/classrooms.md`.
 
 **Gift/redeem codes (`src/redemption/`, 6B) + entitlement audit log:** `RedeemCodeStore` ←
 `DrizzleRedeemCodeStore` (`redeem_codes`); atomic `consume` (`UPDATE ... WHERE uses_remaining > 0
