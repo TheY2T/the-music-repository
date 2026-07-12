@@ -1,9 +1,9 @@
 # Feature: Play-along (Phase 5)
 
-- **Phase:** 5 · **Status:** shipped (Slice A + B + C + D)
+- **Phase:** 5 · **Status:** shipped (Slices A–K)
 - **Flag keys:** `tools.backing-track` (`ToolBackingTrack`), `tools.voicings` (`ToolVoicings`),
-  `tools.notation-player` (`ToolNotationPlayer`), `tools.licks` (`ToolLicks`) — from
-  `@TheY2T/tmr-flags`. Default on.
+  `tools.notation-player` (`ToolNotationPlayer`), `tools.licks` (`ToolLicks`), `tools.chord-diagrams`
+  (`ToolChordDiagrams`) — from `@TheY2T/tmr-flags`. Default on.
 
 ## Purpose
 
@@ -123,6 +123,20 @@ plus an augmentation dot) — unicode rest glyphs were dropped because the syste
 striped block. Playback dwells for the rest's `beats` but plays nothing. A **Rhythm study (with rests)**
 piece demonstrates it.
 
+## Slice J — Guitar chord diagrams
+
+A new tool `/tools/chord-diagrams` (`tools.chord-diagrams`): a curated library of common **open and barre
+guitar chords** (C A G E D · Am Em Dm · F Bm), each rendered as a **chord diagram** (SVG fret grid, low E
+on the left, dots for fretted notes, × muted / ○ open above the nut), filterable by quality. Click a
+chord to **strum** it (staggered `playTone` up the strings, low→high). `ChordDiagrams.tsx`, curated data,
+no backend.
+
+## Slice K — Speed trainer in the lick library
+
+The lick library gained a **Speed trainer** toggle. With it on, playing a lick loops it and adds
+`SPEED_STEP` (15) BPM each pass up to `SPEED_PASSES` (4) faster — the tempo slider tracks the ramp — so
+you drill a lick from slow to fast automatically. Implemented in the existing `playLick` loop via refs.
+
 ## Tests
 
 - **Web (browser) — backing track:** the 12-bar-blues grid renders the textbook form in C —
@@ -154,6 +168,10 @@ piece demonstrates it.
 - **Web (browser) — rests (Slice I):** the Rhythm study renders 4 note heads with three drawn quarter
   rests between them (verified visually — proper squiggles, not font tofu); playback advances the cursor
   through the rest positions (indices 1·3·5) silently.
+- **Web (browser) — chord diagrams (Slice J):** all 10 shapes render correctly (verified visually — dots,
+  × muted, ○ open); clicking C strums without error.
+- **Web (browser) — speed trainer (Slice K):** with the trainer on, playing a lick ramps the tempo
+  110 → 125 BPM per pass (verified live).
 - Build/lint/check-types green across the workspace (25/25).
 
 ## Next slices (Phase 5 menu)

@@ -29,6 +29,7 @@ const {
   toolVoicings,
   toolNotationPlayer,
   toolLicks,
+  toolChordDiagrams,
 } = Astro.locals.flags;
 const showTools =
   toolKeyboard ||
@@ -49,7 +50,8 @@ const showTools =
   toolBackingTrack ||
   toolVoicings ||
   toolNotationPlayer ||
-  toolLicks;
+  toolLicks ||
+  toolChordDiagrams;
 ---
 
 <html lang="en">

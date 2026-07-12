@@ -21,6 +21,7 @@ const {
   toolVoicings,
   toolNotationPlayer,
   toolLicks,
+  toolChordDiagrams,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -136,6 +137,12 @@ const tools = [
     title: 'Lick library',
     summary: 'Guitar licks and turnarounds in tab — hear them and work them up to speed.',
     enabled: toolLicks,
+  },
+  {
+    href: '/tools/chord-diagrams',
+    title: 'Chord diagrams',
+    summary: 'Common open and barre guitar chord shapes — click to strum.',
+    enabled: toolChordDiagrams,
   },
 ].filter((tool) => tool.enabled);
 

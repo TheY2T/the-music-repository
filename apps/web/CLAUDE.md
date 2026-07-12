@@ -110,7 +110,10 @@ src/
   bends/slides. `StaffSequence` also takes an optional per-note `beats` → draws note-value glyphs
   (open/filled head, stem, flag, dot); a `rest` note draws a hand-drawn SVG rest (quarter/half/eighth —
   **not** unicode glyphs, which render as tofu in the system font). Omit `beats`/`rest` and notes render
-  as plain heads (backward-compatible). Lick tab notes also support `legatoTo` (`5h7`/`7p5`). See
+  as plain heads (backward-compatible). Lick tab notes also support `legatoTo` (`5h7`/`7p5`); the lick
+  library has a **speed trainer** (loop + tempo ramp).
+- Chord diagrams at `/tools/chord-diagrams` (gated on `tools.chord-diagrams`) — `ChordDiagrams.tsx`
+  renders curated open/barre guitar shapes as SVG fret grids (low E left), click to strum. See
   `docs/features/play-along.md`.
 
 ## Trainers / drills (Phase 4)

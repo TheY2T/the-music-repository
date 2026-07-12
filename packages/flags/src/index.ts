@@ -71,6 +71,8 @@ export const FlagKeys = {
   ToolNotationPlayer: 'tools.notation-player',
   /** Phase 5 — lick & turnaround library (guitar tab + audio). */
   ToolLicks: 'tools.licks',
+  /** Phase 5 — guitar chord-diagram library. */
+  ToolChordDiagrams: 'tools.chord-diagrams',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -104,4 +106,5 @@ export const FlagDefaults = {
   [FlagKeys.ToolVoicings]: true,
   [FlagKeys.ToolNotationPlayer]: true,
   [FlagKeys.ToolLicks]: true,
+  [FlagKeys.ToolChordDiagrams]: true,
 } satisfies Record<FlagKey, boolean>;

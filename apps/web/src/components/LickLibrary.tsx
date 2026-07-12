@@ -198,25 +198,49 @@ function Tab({ steps, activeStep }: { steps: Step[]; activeStep: number }) {
   );
 }
 
+const SPEED_STEP = 15; // BPM added per pass in the speed trainer
+const SPEED_PASSES = 4; // number of accelerating passes
+
 export default function LickLibrary() {
   const [category, setCategory] = useState('all');
   const [bpm, setBpm] = useState(110);
+  const [speedTrainer, setSpeedTrainer] = useState(false);
   const [playing, setPlaying] = useState<{ lick: string; step: number } | null>(null);
 
   const bpmRef = useRef(bpm);
+  const trainerRef = useRef(speedTrainer);
+  const startBpmRef = useRef(bpm);
   const timerRef = useRef(0);
   useEffect(() => {
     bpmRef.current = bpm;
   }, [bpm]);
+  useEffect(() => {
+    trainerRef.current = speedTrainer;
+  }, [speedTrainer]);
   useEffect(() => () => window.clearTimeout(timerRef.current), []);
 
   const licks = LICKS.filter((lick) => category === 'all' || lick.category === category);
 
   function playLick(lick: Lick) {
     window.clearTimeout(timerRef.current);
+    startBpmRef.current = bpmRef.current;
     let i = 0;
     const run = () => {
       if (i >= lick.steps.length) {
+        // Speed trainer: replay faster each pass until the target tempo.
+        if (trainerRef.current) {
+          const next = Math.min(
+            bpmRef.current + SPEED_STEP,
+            startBpmRef.current + SPEED_STEP * SPEED_PASSES,
+          );
+          if (next > bpmRef.current) {
+            bpmRef.current = next;
+            setBpm(next);
+            i = 0;
+            timerRef.current = window.setTimeout(run, 60000 / next);
+            return;
+          }
+        }
         setPlaying(null);
         return;
       }
@@ -284,6 +308,14 @@ export default function LickLibrary() {
             />
             <span className="w-16 tabular-nums text-sm text-muted-foreground">{bpm} BPM</span>
           </span>
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={speedTrainer}
+            onChange={(e) => setSpeedTrainer(e.target.checked)}
+          />
+          Speed trainer (+{SPEED_STEP} BPM/pass)
         </label>
       </div>
 

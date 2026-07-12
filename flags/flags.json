@@ -209,6 +209,14 @@
       },
       "defaultVariant": "on"
     },
+    "tools.chord-diagrams": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "demo.new-banner": {
       "state": "ENABLED",
       "variants": {
