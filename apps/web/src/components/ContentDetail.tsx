@@ -6,6 +6,7 @@ import {
   useGetRelatedContent,
 } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
+import { Badge, Card, CardGrid, Chip } from '@TheY2T/tmr-ui';
 
 /** Localized label for a premium tier (`premium`/`pro`/`institution`; unknown → premium). */
 function tierLabel(locale: Locale, tier?: string | null): string {
@@ -23,7 +24,7 @@ function RelatedSection({ slug, locale }: { slug: string; locale: Locale }) {
   return (
     <section className="space-y-3 border-t border-border pt-6">
       <h2 className="font-semibold">{t(locale, 'content.related')}</h2>
-      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <CardGrid className="gap-3">
         {items.map((item) => (
           <li key={item.slug}>
             <a
@@ -35,7 +36,7 @@ function RelatedSection({ slug, locale }: { slug: string; locale: Locale }) {
             </a>
           </li>
         ))}
-      </ul>
+      </CardGrid>
     </section>
   );
 }
@@ -59,7 +60,9 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
     <article className="space-y-6">
       <header className="space-y-2">
         <div className="flex items-center gap-2">
-          <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">{item.type}</span>
+          <Badge variant="secondary" className="font-mono">
+            {item.type}
+          </Badge>
           {item.difficulty ? (
             <span className="text-xs text-muted-foreground">
               {t(locale, 'catalogue.grade', { level: item.difficulty })}
@@ -70,25 +73,19 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
         {item.summary ? <p className="text-muted-foreground">{item.summary}</p> : null}
         <div className="flex flex-wrap gap-1">
           {[...item.genres, ...item.instruments].map((ref) => (
-            <span key={ref.slug} className="rounded-full border border-border px-2 py-0.5 text-xs">
-              {ref.name}
-            </span>
+            <Chip key={ref.slug}>{ref.name}</Chip>
           ))}
           {/* Topic chips opt into the Info View — hover/focus shows the help topic. */}
           {item.topics.map((ref) => (
-            <span
-              key={ref.slug}
-              data-help={ref.slug}
-              className="rounded-full border border-border px-2 py-0.5 text-xs"
-            >
+            <Chip key={ref.slug} data-help={ref.slug}>
               {ref.name}
-            </span>
+            </Chip>
           ))}
         </div>
       </header>
 
       {item.locked ? (
-        <section className="space-y-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-6 text-center">
+        <Card className="space-y-3 border-amber-500/40 bg-amber-500/10 p-6 text-center">
           <p className="text-lg font-semibold">
             🔒 {t(locale, 'content.lockedHeading', { tier: tierLabel(locale, item.tier) })}
           </p>
@@ -103,7 +100,7 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
           >
             {t(locale, 'content.upgradeCta')}
           </a>
-        </section>
+        </Card>
       ) : (
         <>
           {pdf ? (
@@ -131,7 +128,7 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
       )}
 
       {item.attribution || item.license || item.source ? (
-        <footer className="space-y-1 rounded-lg border border-border p-4 text-sm text-muted-foreground">
+        <Card className="space-y-1 p-4 text-sm text-muted-foreground">
           {item.attribution ? (
             <p>
               {t(locale, 'content.attribution')} {item.attribution}
@@ -147,7 +144,7 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
               {t(locale, 'content.license')} {item.license}
             </p>
           ) : null}
-        </footer>
+        </Card>
       ) : null}
 
       <RelatedSection slug={slug} locale={locale} />

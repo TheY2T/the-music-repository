@@ -3,6 +3,7 @@ import ContentForm from '@/components/ContentForm.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { guardAdmin } from '@/lib/admin-guard';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 const redirect = guardAdmin(Astro);
 if (redirect) {
@@ -12,13 +13,11 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={`${t(locale, 'admin.newContent')} — ${t(locale, 'site.name')}`}>
-  <main class="mx-auto max-w-5xl space-y-6 p-8">
-    <header class="space-y-1">
-      <a href={localizedPath(locale, '/admin')} class="text-sm text-muted-foreground underline">
-        {t(locale, 'common.backContent')}
-      </a>
-      <h1 class="text-3xl font-bold">{t(locale, 'admin.newContent')}</h1>
-    </header>
+  <PageShell
+    title={t(locale, 'admin.newContent')}
+    back={{ href: localizedPath(locale, '/admin'), label: t(locale, 'common.backContent') }}
+    maxWidth="max-w-5xl"
+  >
     <ContentForm client:load locale={locale} />
-  </main>
+  </PageShell>
 </BaseLayout>

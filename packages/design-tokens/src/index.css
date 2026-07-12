@@ -1,0 +1,9 @@
+/*
+ * @TheY2T/tmr-design-tokens — entrypoint.
+ *
+ * Import this AFTER `@import "tailwindcss"` in the consuming stylesheet. It pulls in the raw
+ * token variables (`tokens.css`) and the Tailwind theme mapping + dark variant (`theme.css`).
+ * For a non-Tailwind context (rare), import `./tokens.css` alone.
+ */
+@import "./tokens.css";
+@import "./theme.css";

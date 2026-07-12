@@ -1,3 +1,4 @@
+import { Button, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { GUITAR_CHORDS, strumChord } from '@/components/ChordDiagrams';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
@@ -137,17 +138,17 @@ export default function SongPlayer() {
       <div className="flex flex-wrap items-end gap-4">
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Song</span>
-          <select
+          <Select
             value={songKey}
             onChange={(e) => setSongKey(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {SONGS.map((s) => (
               <option key={s.key} value={s.key}>
                 {s.title}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium" data-help="rhythm">
@@ -191,15 +192,14 @@ export default function SongPlayer() {
 
       <StaffSequence notes={notes} showLabels activeIndex={active} />
 
-      <button
+      <Button
         type="button"
+        variant={running ? 'outline' : 'default'}
+        className="px-6"
         onClick={() => setRunning((r) => !r)}
-        className={`rounded-md px-6 py-2 text-sm font-medium ${
-          running ? 'border border-border' : 'bg-primary text-primary-foreground'
-        }`}
       >
         {running ? '■ Stop' : '▶ Play'}
-      </button>
+      </Button>
       <p className="text-xs text-muted-foreground">
         Plays the melody on the staff with a strummed chord under each bar — the current chord is
         highlighted. Turn chords off to practise the melody alone, or slow the tempo to learn it.

@@ -1,0 +1,50 @@
+---
+/**
+ * PageShell — the shared page container that replaces the repeated
+ * `<main class="mx-auto max-w-* space-y-6 p-8">` + `<header>` + back-link + `<h1>` markup across
+ * ~70 pages. Renders INSIDE `BaseLayout`'s slot (BaseLayout stays in apps/web — it owns
+ * <html>/head/dark-mode/hreflang/i18n).
+ *
+ * Cross-package `.astro`: the consuming app must add `@TheY2T/tmr-ui` to
+ * `vite.ssr.noExternal` in astro.config.mjs (see docs/features/design-system.md).
+ *
+ * Strings are passed in already-localized (no i18n inside the library).
+ */
+interface Props {
+  title?: string;
+  subtitle?: string;
+  back?: { href: string; label: string };
+  /** Tailwind max-width utility (e.g. "max-w-4xl"). Defaults to max-w-4xl. */
+  maxWidth?: string;
+  class?: string;
+}
+
+const { title, subtitle, back, maxWidth = 'max-w-4xl', class: className } = Astro.props;
+const hasHeader = Boolean(title || back || Astro.slots.has('actions'));
+---
+
+<main class:list={['mx-auto space-y-6 p-8', maxWidth, className]}>
+  {
+    hasHeader && (
+      <header class="flex flex-col gap-1">
+        {back && (
+          <a href={back.href} class="text-sm text-muted-foreground hover:text-foreground">
+            {back.label}
+          </a>
+        )}
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          {title && <h1 class="text-3xl font-bold tracking-tight">{title}</h1>}
+          {
+            Astro.slots.has('actions') && (
+              <div class="flex items-center gap-2">
+                <slot name="actions" />
+              </div>
+            )
+          }
+        </div>
+        {subtitle && <p class="text-muted-foreground">{subtitle}</p>}
+      </header>
+    )
+  }
+  <slot />
+</main>

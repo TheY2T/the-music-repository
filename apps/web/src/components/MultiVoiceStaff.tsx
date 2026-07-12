@@ -1,3 +1,4 @@
+import { Button, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import {
@@ -101,17 +102,17 @@ export default function MultiVoiceStaff() {
         <span className="block font-medium" data-help="chords">
           Key
         </span>
-        <select
+        <Select
           value={root}
           onChange={(e) => setRoot(Number(e.target.value))}
-          className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+          className="h-auto w-auto px-2 py-1"
         >
           {ROOT_CHOICES.map((pc) => (
             <option key={pc} value={pc}>
               {pitchName(pc)} major
             </option>
           ))}
-        </select>
+        </Select>
       </label>
 
       <div className="overflow-x-auto">
@@ -199,26 +200,26 @@ export default function MultiVoiceStaff() {
 
       <div className="flex flex-wrap gap-2">
         {columns.map((col) => (
-          <button
+          <Button
             key={col.roman}
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => playChord(col.pitches)}
-            className="rounded-md border border-border px-3 py-1 text-sm font-medium hover:bg-muted"
           >
             {col.roman} · {col.name}
-          </button>
+          </Button>
         ))}
       </div>
 
-      <button
+      <Button
         type="button"
+        variant={running ? 'outline' : 'default'}
+        className="px-6"
         onClick={() => setRunning((r) => !r)}
-        className={`rounded-md px-6 py-2 text-sm font-medium ${
-          running ? 'border border-border' : 'bg-primary text-primary-foreground'
-        }`}
       >
         {running ? '■ Stop' : '▶ Play all'}
-      </button>
+      </Button>
       <p className="text-xs text-muted-foreground">
         The seven diatonic triads of the key, engraved as **stacked chords** on the staff (multiple
         noteheads per beat, with shared ledger lines and accidentals). Click any chord to hear it.

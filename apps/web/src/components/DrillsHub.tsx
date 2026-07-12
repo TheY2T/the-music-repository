@@ -1,18 +1,9 @@
 import type { ReviewSummary } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
+import { Badge, Button, CardGrid, StatCard } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { DECKS } from '@/lib/drill-decks';
 import { getReviewSummary } from '@/lib/reviews-api';
-
-function Stat({ label, value }: { label: string; value: string | number }) {
-  return (
-    <div className="rounded-lg border border-border px-4 py-3 text-center">
-      <div className="text-2xl font-bold">{value}</div>
-      <div className="text-xs text-muted-foreground">{label}</div>
-    </div>
-  );
-}
 
 export default function DrillsHub({ locale }: { locale: Locale }) {
   const [summary, setSummary] = useState<ReviewSummary | null>(null);
@@ -28,9 +19,15 @@ export default function DrillsHub({ locale }: { locale: Locale }) {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-4">
         <div className="grid grid-cols-3 gap-3">
-          <Stat label={t(locale, 'drillhub.dayStreak')} value={`${summary?.streakDays ?? 0}🔥`} />
-          <Stat label={t(locale, 'drillhub.reviewedToday')} value={summary?.reviewsToday ?? 0} />
-          <Stat label={t(locale, 'drillhub.dueNow')} value={totalDue} />
+          <StatCard
+            label={t(locale, 'drillhub.dayStreak')}
+            value={`${summary?.streakDays ?? 0}🔥`}
+          />
+          <StatCard
+            label={t(locale, 'drillhub.reviewedToday')}
+            value={summary?.reviewsToday ?? 0}
+          />
+          <StatCard label={t(locale, 'drillhub.dueNow')} value={totalDue} />
         </div>
         {totalDue > 0 ? (
           <a href={localizedPath(locale, '/drills/review')} className="ml-auto">
@@ -39,7 +36,7 @@ export default function DrillsHub({ locale }: { locale: Locale }) {
         ) : null}
       </div>
 
-      <ul className="grid gap-4 sm:grid-cols-2">
+      <CardGrid columns={2}>
         {DECKS.map((deck) => {
           const stats = byDeck.get(deck.key);
           const learned = stats?.learned ?? 0;
@@ -55,22 +52,18 @@ export default function DrillsHub({ locale }: { locale: Locale }) {
                   {deck.title}
                 </span>
                 <span className="text-sm text-muted-foreground">{deck.description}</span>
-                <span className="mt-auto flex gap-3 pt-2 text-xs">
-                  <span className="rounded-full bg-blue-100 px-2 py-0.5 text-blue-900 dark:bg-blue-950 dark:text-blue-100">
-                    {t(locale, 'drillhub.due', { count: due })}
-                  </span>
-                  <span className="rounded-full bg-muted px-2 py-0.5">
-                    {t(locale, 'drillhub.new', { count: fresh })}
-                  </span>
-                  <span className="rounded-full bg-muted px-2 py-0.5">
+                <span className="mt-auto flex gap-3 pt-2">
+                  <Badge variant="info">{t(locale, 'drillhub.due', { count: due })}</Badge>
+                  <Badge variant="secondary">{t(locale, 'drillhub.new', { count: fresh })}</Badge>
+                  <Badge variant="secondary">
                     {t(locale, 'drillhub.learned', { count: learned })}
-                  </span>
+                  </Badge>
                 </span>
               </a>
             </li>
           );
         })}
-      </ul>
+      </CardGrid>
     </div>
   );
 }

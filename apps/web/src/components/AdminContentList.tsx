@@ -1,7 +1,7 @@
 import type { ContentAdminSummary } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
+import { Badge, Button, Card } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { adminApi } from '@/lib/admin-api';
 
 /** Localized label for a content status (`draft`/`review`/`published`; unknown → draft). */
@@ -43,7 +43,7 @@ export default function AdminContentList({ locale }: { locale: Locale }) {
       {items.length === 0 ? (
         <p className="text-sm text-muted-foreground">{t(locale, 'acl.empty')}</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border">
+        <Card className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b bg-muted/40 text-left">
               <tr>
@@ -62,15 +62,9 @@ export default function AdminContentList({ locale }: { locale: Locale }) {
                   </td>
                   <td className="p-3">{item.type}</td>
                   <td className="p-3">
-                    <span
-                      className={
-                        item.status === 'published'
-                          ? 'rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-800 dark:bg-green-900 dark:text-green-100'
-                          : 'rounded-full bg-muted px-2 py-0.5 text-xs'
-                      }
-                    >
+                    <Badge variant={item.status === 'published' ? 'success' : 'secondary'}>
                       {statusLabel(locale, item.status)}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="p-3 text-right">
                     <a
@@ -87,7 +81,7 @@ export default function AdminContentList({ locale }: { locale: Locale }) {
               ))}
             </tbody>
           </table>
-        </div>
+        </Card>
       )}
     </div>
   );

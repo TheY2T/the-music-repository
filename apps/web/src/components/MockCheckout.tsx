@@ -1,4 +1,5 @@
 import { type Locale, type MessageKey, t } from '@TheY2T/tmr-i18n';
+import { Button, Card } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { completeMockCheckout } from '@/lib/subscription-api';
 
@@ -55,7 +56,7 @@ export default function MockCheckout({ locale }: { locale: Locale }) {
   const price = PLAN_PRICE[params.plan] ?? '$8.00';
 
   return (
-    <div className="space-y-6 rounded-lg border border-border p-6">
+    <Card className="space-y-6 p-6">
       <div>
         <p className="text-sm font-medium text-muted-foreground">
           {t(locale, 'checkout.provider')}
@@ -68,14 +69,14 @@ export default function MockCheckout({ locale }: { locale: Locale }) {
         </p>
       </div>
       <div className="flex gap-3">
-        <button
+        <Button
           type="button"
           onClick={() => pay(params)}
           disabled={busy || !params.session}
-          className="rounded-md bg-primary px-6 py-2 text-sm font-medium text-primary-foreground disabled:opacity-40"
+          className="px-6"
         >
           {busy ? t(locale, 'checkout.processing') : t(locale, 'checkout.pay', { price })}
-        </button>
+        </Button>
         <a
           href={params.cancel}
           className="rounded-md border border-border px-4 py-2 text-sm font-medium"
@@ -84,6 +85,6 @@ export default function MockCheckout({ locale }: { locale: Locale }) {
         </a>
       </div>
       <p className="text-xs text-muted-foreground">{t(locale, 'checkout.webhookNote')}</p>
-    </div>
+    </Card>
   );
 }

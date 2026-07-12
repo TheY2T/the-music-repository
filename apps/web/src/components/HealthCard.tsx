@@ -1,5 +1,5 @@
 import { ApiProvider, useGetHealth } from '@TheY2T/tmr-api-client';
-import { Button } from '@/components/ui/button';
+import { Button, Card } from '@TheY2T/tmr-ui';
 
 /**
  * Interactive island consuming the spec-first generated client: the `useGetHealth` TanStack Query
@@ -11,7 +11,7 @@ function HealthView() {
   const dbUp = health?.checks.database === 'up';
 
   return (
-    <section className="space-y-3 rounded-lg border border-border p-4">
+    <Card className="space-y-3 p-4">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold">API health</h2>
         <Button size="sm" variant="outline" onClick={() => void refetch()} disabled={isFetching}>
@@ -42,7 +42,7 @@ function HealthView() {
       <p className="text-xs text-muted-foreground">
         via generated <span className="font-mono">useGetHealth()</span> hook (spec-first client)
       </p>
-    </section>
+    </Card>
   );
 }
 

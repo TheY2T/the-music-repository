@@ -1,8 +1,8 @@
 import type { ContentWriteInput, MediaUploadRequestKind } from '@TheY2T/tmr-api-client';
 import { type Locale, t } from '@TheY2T/tmr-i18n';
+import { Button, Field, Input, Select, Textarea } from '@TheY2T/tmr-ui';
 import { marked } from 'marked';
 import { type FormEvent, useEffect, useMemo, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { adminApi, uploadToTicket } from '@/lib/admin-api';
 
 const CONTENT_TYPES = [
@@ -235,8 +235,6 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
     }
   }
 
-  const inputClass = 'w-full rounded-md border border-input bg-background px-3 py-2 text-sm';
-
   return (
     <div className="space-y-6">
       {error ? (
@@ -252,33 +250,33 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
 
       <form onSubmit={onSave} className="grid gap-6 md:grid-cols-2">
         <div className="space-y-4">
-          <Field label={t(locale, 'cform.slug')}>
-            <input
-              className={inputClass}
+          <Field label={t(locale, 'cform.slug')} htmlFor="cform-slug">
+            <Input
+              id="cform-slug"
               value={form.slug}
               readOnly={isEdit}
               onChange={(e) => set('slug', e.target.value)}
               placeholder={t(locale, 'cform.slugPlaceholder')}
             />
           </Field>
-          <Field label={t(locale, 'cform.title')}>
-            <input
-              className={inputClass}
+          <Field label={t(locale, 'cform.title')} htmlFor="cform-title">
+            <Input
+              id="cform-title"
               value={form.title}
               onChange={(e) => set('title', e.target.value)}
             />
           </Field>
-          <Field label={t(locale, 'cform.summary')}>
-            <input
-              className={inputClass}
+          <Field label={t(locale, 'cform.summary')} htmlFor="cform-summary">
+            <Input
+              id="cform-summary"
               value={form.summary}
               onChange={(e) => set('summary', e.target.value)}
             />
           </Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label={t(locale, 'cform.type')}>
-              <select
-                className={inputClass}
+            <Field label={t(locale, 'cform.type')} htmlFor="cform-type">
+              <Select
+                id="cform-type"
                 value={form.type}
                 onChange={(e) => set('type', e.target.value as ContentWriteInput['type'])}
               >
@@ -287,11 +285,11 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
                     {t(locale, TYPE_LABEL_KEYS[code])}
                   </option>
                 ))}
-              </select>
+              </Select>
             </Field>
-            <Field label={t(locale, 'cform.visibility')}>
-              <select
-                className={inputClass}
+            <Field label={t(locale, 'cform.visibility')} htmlFor="cform-visibility">
+              <Select
+                id="cform-visibility"
                 value={form.visibility}
                 onChange={(e) =>
                   set('visibility', e.target.value as ContentWriteInput['visibility'])
@@ -302,15 +300,15 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
                     {t(locale, VISIBILITY_LABEL_KEYS[v])}
                   </option>
                 ))}
-              </select>
+              </Select>
             </Field>
           </div>
-          <Field label={t(locale, 'cform.difficulty')}>
-            <input
+          <Field label={t(locale, 'cform.difficulty')} htmlFor="cform-difficulty">
+            <Input
+              id="cform-difficulty"
               type="number"
               min={1}
               max={10}
-              className={inputClass}
               value={form.difficulty}
               onChange={(e) => set('difficulty', e.target.value)}
             />
@@ -319,9 +317,10 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
             <Field
               key={dim}
               label={t(locale, 'cform.taxonomyLabel', { dim: t(locale, DIM_LABEL_KEYS[dim]) })}
+              htmlFor={`cform-${dim}`}
             >
-              <input
-                className={inputClass}
+              <Input
+                id={`cform-${dim}`}
                 list={`opts-${dim}`}
                 value={form[dim]}
                 onChange={(e) => set(dim, e.target.value)}
@@ -334,16 +333,16 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
             </Field>
           ))}
           <div className="grid grid-cols-2 gap-3">
-            <Field label={t(locale, 'cform.attribution')}>
-              <input
-                className={inputClass}
+            <Field label={t(locale, 'cform.attribution')} htmlFor="cform-attribution">
+              <Input
+                id="cform-attribution"
                 value={form.attribution}
                 onChange={(e) => set('attribution', e.target.value)}
               />
             </Field>
-            <Field label={t(locale, 'cform.license')}>
-              <input
-                className={inputClass}
+            <Field label={t(locale, 'cform.license')} htmlFor="cform-license">
+              <Input
+                id="cform-license"
                 value={form.license}
                 onChange={(e) => set('license', e.target.value)}
               />
@@ -353,8 +352,8 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
 
         <div className="space-y-2">
           <span className="text-sm font-medium">{t(locale, 'cform.body')}</span>
-          <textarea
-            className={`${inputClass} h-64 font-mono`}
+          <Textarea
+            className="h-64 font-mono"
             value={form.bodyMdx}
             onChange={(e) => set('bodyMdx', e.target.value)}
           />
@@ -442,15 +441,5 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
         </section>
       ) : null}
     </div>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    // biome-ignore lint/a11y/noLabelWithoutControl: the control is passed in as `children`.
-    <label className="block space-y-1">
-      <span className="text-sm font-medium">{label}</span>
-      {children}
-    </label>
   );
 }

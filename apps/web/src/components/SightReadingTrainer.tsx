@@ -1,3 +1,4 @@
+import { Button, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
 import { playTone } from '@/lib/audio';
@@ -57,31 +58,31 @@ export default function SightReadingTrainer() {
           <span className="block font-medium" data-help="sight-reading">
             Notes
           </span>
-          <select
+          <Select
             value={length}
             onChange={(e) => setLength(Number(e.target.value))}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {LENGTHS.map((n) => (
               <option key={n} value={n}>
                 {n}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Motion</span>
-          <select
+          <Select
             value={motion}
             onChange={(e) => setMotion(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {MOTIONS.map((m) => (
               <option key={m.key} value={m.key}>
                 {m.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="flex items-center gap-2 text-sm">
           <input
@@ -96,20 +97,12 @@ export default function SightReadingTrainer() {
       <StaffSequence notes={melody} showLabels={showLabels} />
 
       <div className="flex gap-3">
-        <button
-          type="button"
-          onClick={play}
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-        >
+        <Button type="button" onClick={play}>
           ▶ Play
-        </button>
-        <button
-          type="button"
-          onClick={() => setSeed((s) => s + 1)}
-          className="rounded-md border border-border px-4 py-2 text-sm font-medium"
-        >
+        </Button>
+        <Button type="button" variant="outline" onClick={() => setSeed((s) => s + 1)}>
           ↻ New melody
-        </button>
+        </Button>
       </div>
       <p className="text-xs text-muted-foreground">
         Read the notes (C major), sing or play them, then press Play to check — reveal the names if

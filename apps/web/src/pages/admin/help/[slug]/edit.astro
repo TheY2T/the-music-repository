@@ -3,6 +3,7 @@ import HelpTopicForm from '@/components/HelpTopicForm.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { guardAdmin } from '@/lib/admin-guard';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 const redirect = guardAdmin(Astro);
 if (redirect) {
@@ -16,13 +17,11 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={`${t(locale, 'admin.editHelp')} — ${t(locale, 'nav.admin')}`}>
-  <main class="mx-auto max-w-2xl space-y-6 p-8">
-    <header class="space-y-1">
-      <a href={localizedPath(locale, '/admin/help')} class="text-sm text-muted-foreground underline">
-        {t(locale, 'common.backHelpTopics')}
-      </a>
-      <h1 class="text-3xl font-bold">{t(locale, 'admin.editHelp')}</h1>
-    </header>
+  <PageShell
+    title={t(locale, 'admin.editHelp')}
+    back={{ href: localizedPath(locale, '/admin/help'), label: t(locale, 'common.backHelpTopics') }}
+    maxWidth="max-w-2xl"
+  >
     <HelpTopicForm client:load slug={slug} locale={locale} />
-  </main>
+  </PageShell>
 </BaseLayout>

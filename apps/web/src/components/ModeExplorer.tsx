@@ -1,3 +1,4 @@
+import { Chip, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { intervalLabel, MODES, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
@@ -24,17 +25,17 @@ export default function ModeExplorer() {
         <span className="block font-medium" data-help="modes">
           Root
         </span>
-        <select
+        <Select
           value={root}
           onChange={(e) => setRoot(Number(e.target.value))}
-          className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+          className="h-auto w-auto px-2 py-1"
         >
           {ROOT_CHOICES.map((pc) => (
             <option key={pc} value={pc}>
               {pitchName(pc)}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
 
       <p className="text-xs text-muted-foreground">Ordered brightest → darkest.</p>
@@ -45,9 +46,7 @@ export default function ModeExplorer() {
               <h2 className="text-lg font-semibold">
                 {pitchName(root, flats)} {mode.name}
               </h2>
-              <span className="rounded-full bg-muted px-2 py-0.5 text-xs">
-                characteristic {mode.characteristic}
-              </span>
+              <Chip variant="muted">characteristic {mode.characteristic}</Chip>
               <button
                 type="button"
                 onClick={() => playMode(mode.intervals)}

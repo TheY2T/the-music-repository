@@ -1,0 +1,74 @@
+/*
+ * @TheY2T/tmr-design-tokens — design tokens (CSS custom properties).
+ *
+ * PURE CSS: this file defines only :root / .dark variables. It contains NO Tailwind
+ * directives (no `@import "tailwindcss"`, no `@theme`, no `@custom-variant`) so it can be
+ * imported anywhere — the web app, Storybook, or any standalone context — without pulling in
+ * a Tailwind build. The `@theme` mapping that turns these variables into Tailwind utilities
+ * lives in `theme.css`.
+ *
+ * Light values preserve the app's original palette (hue 240 neutrals); the reconciled set adds
+ * the tokens the codebase already referenced but never defined (input, destructive, accent,
+ * secondary, popover) plus semantic status tokens (success / warning / info) that replace the
+ * previously hardcoded raw `text-red-500` / `bg-amber-500/20` / `text-green-600` colors.
+ */
+
+:root {
+  --radius: 0.625rem;
+
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(240 10% 3.9%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(240 10% 3.9%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(240 10% 3.9%);
+  --primary: hsl(240 5.9% 10%);
+  --primary-foreground: hsl(0 0% 98%);
+  --secondary: hsl(240 4.8% 95.9%);
+  --secondary-foreground: hsl(240 5.9% 10%);
+  --muted: hsl(240 4.8% 95.9%);
+  --muted-foreground: hsl(240 3.8% 46.1%);
+  --accent: hsl(240 4.8% 95.9%);
+  --accent-foreground: hsl(240 5.9% 10%);
+  --border: hsl(240 5.9% 90%);
+  --input: hsl(240 5.9% 90%);
+  --ring: hsl(240 5% 64.9%);
+
+  --destructive: hsl(0 84.2% 60.2%);
+  --destructive-foreground: hsl(0 0% 98%);
+  --success: hsl(142 71% 45%);
+  --success-foreground: hsl(0 0% 98%);
+  --warning: hsl(38 92% 50%);
+  --warning-foreground: hsl(48 96% 9%);
+  --info: hsl(221 83% 53%);
+  --info-foreground: hsl(0 0% 98%);
+}
+
+.dark {
+  --background: hsl(240 10% 3.9%);
+  --foreground: hsl(0 0% 98%);
+  --card: hsl(240 10% 3.9%);
+  --card-foreground: hsl(0 0% 98%);
+  --popover: hsl(240 10% 3.9%);
+  --popover-foreground: hsl(0 0% 98%);
+  --primary: hsl(0 0% 98%);
+  --primary-foreground: hsl(240 5.9% 10%);
+  --secondary: hsl(240 3.7% 15.9%);
+  --secondary-foreground: hsl(0 0% 98%);
+  --muted: hsl(240 3.7% 15.9%);
+  --muted-foreground: hsl(240 5% 64.9%);
+  --accent: hsl(240 3.7% 15.9%);
+  --accent-foreground: hsl(0 0% 98%);
+  --border: hsl(240 3.7% 15.9%);
+  --input: hsl(240 3.7% 15.9%);
+  --ring: hsl(240 4.9% 83.9%);
+
+  --destructive: hsl(0 62.8% 30.6%);
+  --destructive-foreground: hsl(0 0% 98%);
+  --success: hsl(142 71% 45%);
+  --success-foreground: hsl(0 0% 98%);
+  --warning: hsl(38 92% 50%);
+  --warning-foreground: hsl(48 96% 9%);
+  --info: hsl(217 91% 60%);
+  --info-foreground: hsl(0 0% 98%);
+}

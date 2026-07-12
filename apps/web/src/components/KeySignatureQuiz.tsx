@@ -1,3 +1,4 @@
+import { Button, Card } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { CIRCLE_OF_FIFTHS, describeAccidentals } from '@/lib/music-theory';
 
@@ -68,12 +69,12 @@ export default function KeySignatureQuiz() {
         Score: {score.correct}/{score.total}
       </span>
 
-      <div className="rounded-lg border border-border p-6 text-center">
+      <Card className="p-6 text-center">
         <p className="text-sm text-muted-foreground">This key signature has</p>
         <p className="my-1 text-2xl font-bold">{describeAccidentals(round.accidentals)}</p>
         {names ? <p className="font-mono text-lg">{names}</p> : null}
         <p className="mt-2 text-sm text-muted-foreground">Which major key is it?</p>
-      </div>
+      </Card>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {round.options.map((option) => {
@@ -111,13 +112,9 @@ export default function KeySignatureQuiz() {
           <span className="text-sm font-medium">
             {answered === round.answer ? '✓ Correct!' : `✗ It was ${round.answer} major`}
           </span>
-          <button
-            type="button"
-            onClick={next}
-            className="rounded-md border border-border px-4 py-2 text-sm font-medium"
-          >
+          <Button type="button" variant="outline" onClick={next}>
             Next →
-          </button>
+          </Button>
         </div>
       ) : (
         <p className="text-sm text-muted-foreground">Name the major key from its signature.</p>

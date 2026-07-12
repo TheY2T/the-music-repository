@@ -1,7 +1,7 @@
 import type { HelpTopicWriteInput } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
+import { Button, Field, Input, Textarea } from '@TheY2T/tmr-ui';
 import { type FormEvent, useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { getHelpTopic, helpAdminApi } from '@/lib/help-api';
 
 const emptyForm = { slug: '', term: '', body: '', linkSlug: '' };
@@ -66,8 +66,6 @@ export default function HelpTopicForm({ slug, locale }: { slug?: string; locale:
     }
   }
 
-  const inputClass = 'w-full rounded-md border border-input bg-background px-3 py-2 text-sm';
-
   return (
     <div className="space-y-6">
       {error ? (
@@ -82,41 +80,34 @@ export default function HelpTopicForm({ slug, locale }: { slug?: string; locale:
       ) : null}
 
       <form onSubmit={onSave} className="space-y-4">
-        <label className="block space-y-1">
-          <span className="text-sm font-medium">{t(locale, 'hform.slugLabel')}</span>
-          <input
-            className={inputClass}
+        <Field label={t(locale, 'hform.slugLabel')} htmlFor="hform-slug">
+          <Input
+            id="hform-slug"
             value={form.slug}
             readOnly={isEdit}
             onChange={(e) => set('slug', e.target.value)}
             placeholder="cadence"
           />
-        </label>
-        <label className="block space-y-1">
-          <span className="text-sm font-medium">{t(locale, 'hform.termLabel')}</span>
-          <input
-            className={inputClass}
-            value={form.term}
-            onChange={(e) => set('term', e.target.value)}
-          />
-        </label>
-        <label className="block space-y-1">
-          <span className="text-sm font-medium">{t(locale, 'hform.bodyLabel')}</span>
-          <textarea
-            className={`${inputClass} h-32`}
+        </Field>
+        <Field label={t(locale, 'hform.termLabel')} htmlFor="hform-term">
+          <Input id="hform-term" value={form.term} onChange={(e) => set('term', e.target.value)} />
+        </Field>
+        <Field label={t(locale, 'hform.bodyLabel')} htmlFor="hform-body">
+          <Textarea
+            id="hform-body"
+            className="h-32"
             value={form.body}
             onChange={(e) => set('body', e.target.value)}
           />
-        </label>
-        <label className="block space-y-1">
-          <span className="text-sm font-medium">{t(locale, 'hform.linkSlugLabel')}</span>
-          <input
-            className={inputClass}
+        </Field>
+        <Field label={t(locale, 'hform.linkSlugLabel')} htmlFor="hform-linkSlug">
+          <Input
+            id="hform-linkSlug"
             value={form.linkSlug}
             onChange={(e) => set('linkSlug', e.target.value)}
             placeholder="omt-diatonic-chords"
           />
-        </label>
+        </Field>
 
         <div className="flex flex-wrap gap-3 border-t pt-4">
           <Button type="submit" disabled={busy}>

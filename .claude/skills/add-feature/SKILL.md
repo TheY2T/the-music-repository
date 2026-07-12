@@ -26,8 +26,13 @@ Create `domain/` (POJO entities), `application/ports/*.port.ts` (abstract classe
 
 ## 4. Frontend (`apps/web/src/`)
 Add a route in `pages/`, islands in `components/` (one island root per interactive unit; keep
-context-dependent shadcn together). Read the flag from `Astro.locals.flags` (SSR) and/or via
-react-sdk in the island. Fetch the API using the typed contract.
+context-dependent shadcn together). **Build UI from `@TheY2T/tmr-ui`** — compose atoms/molecules
+(`Button`, `Card`, `Field`, `Input`, `Badge`, `CardGrid`, `PageHeader`, …); wrap the page in
+`PageShell` (`@TheY2T/tmr-ui/astro/PageShell.astro`) inside `BaseLayout`; no bespoke raw-Tailwind
+chrome. Need a new shared component/token? Use the **`add-ui-component`** skill (ADR 0018). Read the
+flag from `Astro.locals.flags` (SSR) and/or via react-sdk in the island. Fetch the API using the
+typed contract. Localize strings via `t(locale, key)` (**`add-translations`**) and pass them into
+library components as props.
 
 ## 5. Docs (Definition of Done)
 Copy `docs/features/_template.md` → `docs/features/<feature>.md`. Add an ADR in `docs/adr/` if a

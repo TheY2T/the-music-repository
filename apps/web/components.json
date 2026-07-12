@@ -12,8 +12,8 @@
   },
   "aliases": {
     "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components/ui",
+    "utils": "@TheY2T/tmr-ui/lib/utils",
+    "ui": "@TheY2T/tmr-ui/components/ui",
     "lib": "@/lib",
     "hooks": "@/hooks"
   },

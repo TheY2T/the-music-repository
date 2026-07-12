@@ -1,3 +1,4 @@
+import { Button, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { getAudioContext, scheduleDrum } from '@/lib/audio';
 
@@ -103,17 +104,17 @@ export default function GrooveLibrary() {
           <span className="block font-medium" data-help="rhythm">
             Groove
           </span>
-          <select
+          <Select
             value={grooveKey}
             onChange={(e) => setGrooveKey(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {GROOVES.map((g) => (
               <option key={g.key} value={g.key}>
                 {g.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Tempo</span>
@@ -148,15 +149,14 @@ export default function GrooveLibrary() {
         ))}
       </div>
 
-      <button
+      <Button
         type="button"
+        variant={running ? 'outline' : 'default'}
+        className="px-6"
         onClick={() => setRunning((r) => !r)}
-        className={`rounded-md px-6 py-2 text-sm font-medium ${
-          running ? 'border border-border' : 'bg-primary text-primary-foreground'
-        }`}
       >
         {running ? '■ Stop' : '▶ Play'}
-      </button>
+      </Button>
       <p className="text-xs text-muted-foreground">
         Classic drum grooves (kick / snare / hi-hat over eighth notes) — loop them at any tempo to
         play or practise along. The amber outline follows the beat.

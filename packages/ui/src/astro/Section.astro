@@ -1,0 +1,17 @@
+---
+/**
+ * Section — a titled content block within a PageShell (an <section> with an optional heading).
+ * Strings are passed in already-localized.
+ */
+interface Props {
+  title?: string;
+  class?: string;
+}
+
+const { title, class: className } = Astro.props;
+---
+
+<section class:list={['space-y-3', className]}>
+  {title && <h2 class="text-xl font-semibold tracking-tight">{title}</h2>}
+  <slot />
+</section>

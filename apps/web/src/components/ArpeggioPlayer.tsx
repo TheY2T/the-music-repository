@@ -1,3 +1,4 @@
+import { Button, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { CHORDS, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
@@ -72,47 +73,47 @@ export default function ArpeggioPlayer() {
       <div className="flex flex-wrap items-end gap-4">
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Root</span>
-          <select
+          <Select
             value={root}
             onChange={(e) => setRoot(Number(e.target.value))}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {ROOT_CHOICES.map((pc) => (
               <option key={pc} value={pc}>
                 {pitchName(pc)}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium" data-help="chords">
             Chord
           </span>
-          <select
+          <Select
             value={chordKey}
             onChange={(e) => setChordKey(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {CHORDS.map((c) => (
               <option key={c.key} value={c.key}>
                 {c.name}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Pattern</span>
-          <select
+          <Select
             value={patternKey}
             onChange={(e) => setPatternKey(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {PATTERNS.map((p) => (
               <option key={p.key} value={p.key}>
                 {p.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium" data-help="rhythm">
@@ -146,15 +147,14 @@ export default function ArpeggioPlayer() {
         ))}
       </div>
 
-      <button
+      <Button
         type="button"
+        variant={running ? 'outline' : 'default'}
+        className="px-6"
         onClick={() => setRunning((r) => !r)}
-        className={`rounded-md px-6 py-2 text-sm font-medium ${
-          running ? 'border border-border' : 'bg-primary text-primary-foreground'
-        }`}
       >
         {running ? '■ Stop' : '▶ Play'}
-      </button>
+      </Button>
       <p className="text-xs text-muted-foreground">
         Arpeggiates the chord (one note at a time) in the chosen direction and loops it — follow the
         highlighted note. Great for building picking and finger independence.

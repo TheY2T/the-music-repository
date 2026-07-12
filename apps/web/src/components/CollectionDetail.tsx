@@ -4,6 +4,7 @@ import {
   useGetCollectionBySlug,
 } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
+import { Badge } from '@TheY2T/tmr-ui';
 
 function Detail({ slug, locale }: { slug: string; locale: Locale }) {
   const { data, isLoading } = useGetCollectionBySlug(slug);
@@ -19,7 +20,9 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
   return (
     <article className="space-y-6">
       <header className="space-y-2">
-        <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">{collection.kind}</span>
+        <Badge variant="secondary" className="font-mono">
+          {collection.kind}
+        </Badge>
         <h1 className="text-3xl font-bold">{collection.title}</h1>
         {collection.summary ? <p className="text-muted-foreground">{collection.summary}</p> : null}
       </header>

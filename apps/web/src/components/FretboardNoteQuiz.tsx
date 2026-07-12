@@ -1,3 +1,4 @@
+import { Button } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import {
@@ -134,13 +135,9 @@ export default function FretboardNoteQuiz() {
           <span className="text-sm font-medium">
             {answered === targetPc ? '✓ Correct!' : `✗ It was ${pitchName(targetPc)}`}
           </span>
-          <button
-            type="button"
-            onClick={next}
-            className="rounded-md border border-border px-4 py-2 text-sm font-medium"
-          >
+          <Button type="button" variant="outline" onClick={next}>
             Next →
-          </button>
+          </Button>
         </div>
       ) : (
         <p className="text-sm text-muted-foreground" data-help="fretboard">

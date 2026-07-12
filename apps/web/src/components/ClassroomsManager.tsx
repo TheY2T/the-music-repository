@@ -1,4 +1,5 @@
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
+import { Badge, Button, Input } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import {
   type Assignment,
@@ -101,11 +102,13 @@ function ClassroomCard({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <span className="font-semibold">{classroom.name}</span>
-          <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs">{classroom.role}</span>
+          <Badge variant="secondary" className="ml-2">
+            {classroom.role}
+          </Badge>
           {classroom.premiumGranted ? (
-            <span className="ml-2 rounded bg-green-600/20 px-1.5 py-0.5 text-xs text-green-700 dark:text-green-400">
+            <Badge variant="success" className="ml-2">
               {t(locale, 'classmgr.premiumGranted')}
-            </span>
+            </Badge>
           ) : null}
         </div>
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
@@ -199,15 +202,15 @@ function ClassroomCard({
             )}
             {isOwner ? (
               <form onSubmit={onAssign} className="flex flex-wrap items-center gap-2 pt-1">
-                <input
+                <Input
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
                   placeholder={t(locale, 'classmgr.contentSlugPlaceholder')}
-                  className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+                  className="w-auto"
                 />
-                <button type="submit" className="rounded-md border border-border px-3 py-1 text-sm">
+                <Button type="submit" variant="outline" size="sm">
                   {t(locale, 'classmgr.assign')}
-                </button>
+                </Button>
                 {assignError ? <span className="text-xs text-red-600">{assignError}</span> : null}
               </form>
             ) : null}
@@ -234,16 +237,16 @@ function ClassroomCard({
                 </p>
               )}
               <form onSubmit={onInvite} className="flex flex-wrap items-center gap-2 pt-1">
-                <input
+                <Input
                   type="email"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
                   placeholder={t(locale, 'classmgr.inviteEmailPlaceholder')}
-                  className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+                  className="w-auto"
                 />
-                <button type="submit" className="rounded-md border border-border px-3 py-1 text-sm">
+                <Button type="submit" variant="outline" size="sm">
                   {t(locale, 'classmgr.inviteByEmail')}
-                </button>
+                </Button>
                 {inviteMsg ? (
                   <span className="text-xs text-muted-foreground">{inviteMsg}</span>
                 ) : null}
@@ -275,37 +278,32 @@ function ClassroomCard({
           {/* Actions */}
           <div className="flex flex-wrap gap-3">
             {isOwner && !classroom.premiumGranted ? (
-              <button
-                type="button"
-                onClick={grant}
-                disabled={busy || classroom.memberCount === 0}
-                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
-              >
+              <Button type="button" onClick={grant} disabled={busy || classroom.memberCount === 0}>
                 {busy ? t(locale, 'classmgr.granting') : t(locale, 'classmgr.grantPremium')}
-              </button>
+              </Button>
             ) : null}
             {isOwner ? (
-              <button
+              <Button
                 type="button"
+                variant="outline"
                 onClick={async () => {
                   await archiveClassroom(classroom.id);
                   onChanged();
                 }}
-                className="rounded-md border border-border px-4 py-2 text-sm"
               >
                 {t(locale, 'classmgr.archiveClass')}
-              </button>
+              </Button>
             ) : (
-              <button
+              <Button
                 type="button"
+                variant="outline"
                 onClick={async () => {
                   await leaveClassroom(classroom.id);
                   onChanged();
                 }}
-                className="rounded-md border border-border px-4 py-2 text-sm"
               >
                 {t(locale, 'classmgr.leaveClass')}
-              </button>
+              </Button>
             )}
           </div>
         </div>
@@ -366,37 +364,28 @@ export default function ClassroomsManager({
             <p className="text-sm text-muted-foreground">
               {t(locale, 'classmgr.createDescription')}
             </p>
-            <input
+            <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={t(locale, 'classmgr.classroomNamePlaceholder')}
-              className="w-full rounded-md border border-input bg-background px-2 py-1 text-sm"
             />
-            <button
-              type="submit"
-              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-            >
-              {t(locale, 'classmgr.create')}
-            </button>
+            <Button type="submit">{t(locale, 'classmgr.create')}</Button>
           </form>
         ) : null}
 
         <form onSubmit={onJoin} className="space-y-2 rounded-lg border border-border p-4">
           <h2 className="font-semibold">{t(locale, 'classmgr.joinClassroom')}</h2>
           <p className="text-sm text-muted-foreground">{t(locale, 'classmgr.joinDescription')}</p>
-          <input
+          <Input
             value={code}
             onChange={(e) => setCode(e.target.value.toUpperCase())}
             placeholder={t(locale, 'classmgr.joinCodePlaceholder')}
-            className="w-full rounded-md border border-input bg-background px-2 py-1 font-mono text-sm uppercase"
+            className="font-mono uppercase"
           />
           {joinError ? <p className="text-sm text-red-600">{joinError}</p> : null}
-          <button
-            type="submit"
-            className="rounded-md border border-border px-4 py-2 text-sm font-medium"
-          >
+          <Button type="submit" variant="outline">
             {t(locale, 'classmgr.join')}
-          </button>
+          </Button>
         </form>
       </div>
 

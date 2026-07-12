@@ -1,4 +1,5 @@
 import { FlagKeys } from '@TheY2T/tmr-flags';
+import { Card } from '@TheY2T/tmr-ui';
 import { OpenFeature, OpenFeatureProvider, useFlag } from '@openfeature/react-sdk';
 import { InMemoryProvider } from '@openfeature/web-sdk';
 
@@ -27,14 +28,14 @@ function ensureProvider(initial: boolean): void {
 function Banner() {
   const { value } = useFlag(FlagKeys.DemoNewBanner, false);
   return value ? (
-    <div className="rounded-lg border border-green-600/40 bg-green-600/10 p-4 text-sm">
+    <Card className="border-green-600/40 bg-green-600/10 p-4 text-sm">
       🎉 The new banner is <strong>enabled</strong> (evaluated via OpenFeature react-sdk island).
-    </div>
+    </Card>
   ) : (
-    <div className="rounded-lg border border-border p-4 text-sm text-muted-foreground">
+    <Card className="p-4 text-sm text-muted-foreground">
       The <span className="font-mono">demo.new-banner</span> flag is <strong>off</strong>. Enable it
       in <span className="font-mono">flags/flags.json</span> (or target a role) to flip this.
-    </div>
+    </Card>
   );
 }
 

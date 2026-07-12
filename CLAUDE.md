@@ -30,8 +30,20 @@ Biome + thin ESLint · podman-compose deploy.
 - **Package naming:** every workspace package is scoped `@TheY2T/tmr-*`. Folder names stay
   kebab-case; the scoped name lives in `package.json`.
 - **Shared sources of truth (never duplicate):** types → `@TheY2T/tmr-contracts`;
-  flag keys + eval-context → `@TheY2T/tmr-flags`; dependency versions → **pnpm catalogs** in
-  `pnpm-workspace.yaml` (add a version once, reference `catalog:`).
+  flag keys + eval-context → `@TheY2T/tmr-flags`; **UI message strings → `@TheY2T/tmr-i18n-locales`**
+  (`en.json` is the key source of truth) **via `@TheY2T/tmr-i18n`'s `t(locale, key)`**;
+  **UI components → `@TheY2T/tmr-ui`; design tokens → `@TheY2T/tmr-design-tokens`**; dependency
+  versions → **pnpm catalogs** in `pnpm-workspace.yaml` (add a version once, reference `catalog:`).
+- **Build UI from the design system (web).** Compose `apps/web` UI from `@TheY2T/tmr-ui`
+  (Atomic Design: atoms = shadcn primitives, then molecules → organisms) and style with
+  `@TheY2T/tmr-design-tokens` — no bespoke raw-Tailwind chrome (buttons/cards/badges/inputs/page
+  shells) in `apps/web`. Both are **raw-source ESM** (not dual-build). Templates/pages stay in
+  `apps/web`. Library components are presentational + i18n-by-prop (never call `t()` inside). Follow
+  the **`add-ui-component`** skill. ADR 0018 · `docs/features/design-system.md`.
+- **Localize UI strings (web).** No hardcoded user-facing text in `apps/web` — add a key to
+  `@TheY2T/tmr-i18n-locales` (English + `zh-Hans`) and render via `t(Astro.locals.locale, key)`; pass
+  `locale` into islands as a prop. URL-prefix routing (`/zh/…`), gated by `platform.i18n`. Follow the
+  **`add-translations`** skill. ADR 0017.
 - **Ship features behind a flag.** Add the key to `@TheY2T/tmr-flags`, define it in
   `flags/flags.json`, gate with `@RequireFlagsEnabled` (api) / `useFlag` (web).
 - **Docs are Definition of Done.** Every feature gets `docs/features/<feature>.md`; every

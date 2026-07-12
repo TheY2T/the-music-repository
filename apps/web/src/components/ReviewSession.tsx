@@ -1,6 +1,6 @@
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
+import { Badge, Button } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { DECKS, findDeck } from '@/lib/drill-decks';
 import { getDeckReviews, gradeCard } from '@/lib/reviews-api';
 
@@ -111,7 +111,9 @@ export default function ReviewSession({ deckKey, locale }: { deckKey?: string; l
       <p className="text-sm text-muted-foreground">
         {t(locale, 'review.cardProgress', { current: index + 1, total: queue.length })}
         {!deckKey ? (
-          <span className="ml-2 rounded bg-muted px-1.5 py-0.5">{deck.title}</span>
+          <Badge variant="secondary" className="ml-2">
+            {deck.title}
+          </Badge>
         ) : null}
       </p>
 

@@ -1,3 +1,4 @@
+import { Button, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
 import { playTone } from '@/lib/audio';
@@ -71,30 +72,26 @@ export default function MelodicDictation() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-4">
-        <button
-          type="button"
-          onClick={play}
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-        >
+        <Button type="button" onClick={play}>
           ▶ Play melody
-        </button>
+        </Button>
         <label className="flex items-center gap-2 text-sm">
           Notes
-          <select
+          <Select
             value={length}
             onChange={(e) => {
               const n = Number(e.target.value);
               setLength(n);
               newMelody(n);
             }}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {LENGTHS.map((n) => (
               <option key={n} value={n}>
                 {n}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <span className="text-sm text-muted-foreground">
           Score: {score.correct}/{score.total}
@@ -139,36 +136,29 @@ export default function MelodicDictation() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="sm"
           onClick={() => setAnswer((a) => a.slice(0, -1))}
           disabled={!!checked || answer.length === 0}
-          className="rounded-md border border-border px-3 py-1 text-sm disabled:opacity-40"
         >
           ← Backspace
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
+          size="sm"
           onClick={check}
           disabled={!!checked || answer.length !== melody.length}
-          className="rounded-md bg-primary px-4 py-1 text-sm font-medium text-primary-foreground disabled:opacity-40"
         >
           Check
-        </button>
-        <button
-          type="button"
-          onClick={() => setRevealed(true)}
-          className="rounded-md border border-border px-3 py-1 text-sm"
-        >
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={() => setRevealed(true)}>
           Reveal
-        </button>
-        <button
-          type="button"
-          onClick={() => newMelody()}
-          className="rounded-md border border-border px-3 py-1 text-sm"
-        >
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={() => newMelody()}>
           ↻ New melody
-        </button>
+        </Button>
       </div>
 
       {checked ? (

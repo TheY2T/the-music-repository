@@ -1,3 +1,4 @@
+import { Button, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
 import { playTone } from '@/lib/audio';
@@ -77,32 +78,24 @@ export default function Solfege() {
           <span className="block font-medium" data-help="scales">
             Labels
           </span>
-          <select
+          <Select
             value={mode}
             onChange={(e) => setMode(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {MODES.map((m) => (
               <option key={m.key} value={m.key}>
                 {m.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
-        <button
-          type="button"
-          onClick={play}
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-        >
+        <Button type="button" onClick={play}>
           ▶ Play
-        </button>
-        <button
-          type="button"
-          onClick={() => setMelody(generate(6))}
-          className="rounded-md border border-border px-4 py-2 text-sm font-medium"
-        >
+        </Button>
+        <Button type="button" variant="outline" onClick={() => setMelody(generate(6))}>
           ↻ New melody
-        </button>
+        </Button>
       </div>
 
       <StaffSequence notes={notes} showLabels />

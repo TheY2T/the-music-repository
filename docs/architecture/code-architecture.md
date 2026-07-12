@@ -6,15 +6,22 @@
 flowchart TD
   contracts["@TheY2T/tmr-contracts<br/>Zod DTO/types"]
   flags["@TheY2T/tmr-flags<br/>flag keys + eval-context"]
+  i18n["@TheY2T/tmr-i18n<br/>t(locale, key)"]
+  ui["@TheY2T/tmr-ui<br/>Atomic Design UI (web-only, raw ESM)"]
+  tokens["@TheY2T/tmr-design-tokens<br/>CSS tokens (web-only)"]
   cfg["config-* (ts / biome / eslint)"]
   web["apps/web (Astro)"]
   api["apps/api (NestJS)"]
-  web --> contracts & flags & cfg
+  web --> contracts & flags & cfg & i18n & ui
+  ui --> tokens & i18n
   api --> contracts & flags & cfg
 ```
 
-Internal packages are scoped `@TheY2T/tmr-*` and compile to **CommonJS** so both NestJS (CJS) and
-Astro (ESM) consume them. Turbo `^build` builds them before the apps.
+Internal packages are scoped `@TheY2T/tmr-*`. Most (`contracts`, `flags`, `i18n`, …) build to **dual
+ESM+CJS** so both NestJS (CJS) and Astro (ESM) consume them. The **web-only** UI packages
+(`@TheY2T/tmr-ui`, `@TheY2T/tmr-design-tokens`) ship as **raw ESM source** (no build) — Astro/Vite
+compiles them and `.astro` files can't be precompiled (ADR 0018). Turbo `^build` builds the compiled
+packages before the apps.
 
 ## Backend — hexagonal (inward dependencies only)
 

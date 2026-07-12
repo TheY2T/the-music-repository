@@ -1,3 +1,4 @@
+import { Button } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 
 /** Set pitch-preservation across browsers (standard + vendor-prefixed). */
@@ -130,41 +131,30 @@ export default function PracticePlayer() {
               />
               Preserve pitch
             </label>
-            <button
-              type="button"
-              onClick={() => setRate(1)}
-              className="rounded-md border border-border px-3 py-1 text-sm"
-            >
+            <Button type="button" variant="outline" size="sm" onClick={() => setRate(1)}>
               Reset speed
-            </button>
+            </Button>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 text-sm">
             <span className="font-medium">A–B loop:</span>
-            <button
-              type="button"
-              onClick={() => setLoopA(time)}
-              className="rounded-md border border-border px-3 py-1"
-            >
+            <Button type="button" variant="outline" size="sm" onClick={() => setLoopA(time)}>
               Set A {loopA !== null ? `(${formatTime(loopA)})` : ''}
-            </button>
-            <button
-              type="button"
-              onClick={() => setLoopB(time)}
-              className="rounded-md border border-border px-3 py-1"
-            >
+            </Button>
+            <Button type="button" variant="outline" size="sm" onClick={() => setLoopB(time)}>
               Set B {loopB !== null ? `(${formatTime(loopB)})` : ''}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="outline"
+              size="sm"
               onClick={() => {
                 setLoopA(null);
                 setLoopB(null);
               }}
-              className="rounded-md border border-border px-3 py-1"
             >
               Clear
-            </button>
+            </Button>
             <span className="text-muted-foreground tabular-nums">
               {formatTime(time)} / {formatTime(duration)}
             </span>

@@ -1,29 +1,18 @@
+import { Select } from '@TheY2T/tmr-ui/components/ui/select';
+import { ChordDiagram, GUITAR_CHORDS, TUNING_LOW_FIRST } from '@TheY2T/tmr-ui/music';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { midiToFrequency } from '@/lib/music-theory';
 
-// Open-string MIDI, low-E first (diagram convention: low E on the left).
-export const TUNING_LOW_FIRST = [40, 45, 50, 55, 59, 64];
-
-export interface ChordShape {
-  name: string;
-  quality: 'major' | 'minor' | 'barre';
-  /** Fret per string, low-E first. -1 = muted, 0 = open. */
-  frets: number[];
-}
-
-export const GUITAR_CHORDS: ChordShape[] = [
-  { name: 'C', quality: 'major', frets: [-1, 3, 2, 0, 1, 0] },
-  { name: 'A', quality: 'major', frets: [-1, 0, 2, 2, 2, 0] },
-  { name: 'G', quality: 'major', frets: [3, 2, 0, 0, 0, 3] },
-  { name: 'E', quality: 'major', frets: [0, 2, 2, 1, 0, 0] },
-  { name: 'D', quality: 'major', frets: [-1, -1, 0, 2, 3, 2] },
-  { name: 'Am', quality: 'minor', frets: [-1, 0, 2, 2, 1, 0] },
-  { name: 'Em', quality: 'minor', frets: [0, 2, 2, 0, 0, 0] },
-  { name: 'Dm', quality: 'minor', frets: [-1, -1, 0, 2, 3, 1] },
-  { name: 'F', quality: 'barre', frets: [1, 3, 3, 2, 1, 1] },
-  { name: 'Bm', quality: 'barre', frets: [-1, 2, 4, 4, 3, 2] },
-];
+// Chord-diagram DATA + rendering now live in @TheY2T/tmr-ui/music. Re-exported here so the ~6
+// tools importing from `@/components/ChordDiagrams` keep working. Audio (`strumChord`) stays in
+// the app because sound generation is an app concern.
+export {
+  ChordDiagram,
+  type ChordShape,
+  GUITAR_CHORDS,
+  TUNING_LOW_FIRST,
+} from '@TheY2T/tmr-ui/music';
 
 /** Strum a chord: sound each non-muted string in sequence, low→high (down) or high→low (up). */
 export function strumChord(
@@ -55,90 +44,6 @@ const CATEGORIES = [
   { key: 'barre', label: 'Barre' },
 ];
 
-const LEFT = 12;
-const TOP = 20;
-const COL = 14;
-const ROW = 16;
-const FRETS = 5;
-const stringX = (i: number) => LEFT + i * COL;
-const fretY = (f: number) => TOP + f * ROW;
-const WIDTH = LEFT * 2 + (TUNING_LOW_FIRST.length - 1) * COL;
-const HEIGHT = TOP + FRETS * ROW + 16;
-
-export function ChordDiagram({ chord }: { chord: ChordShape }) {
-  return (
-    <svg
-      viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-      className="w-24"
-      role="img"
-      aria-label={`${chord.name} chord diagram`}
-    >
-      {/* Fret lines (fret 0 = nut, drawn thicker). */}
-      {Array.from({ length: FRETS + 1 }, (_, f) => (
-        <line
-          key={f}
-          x1={stringX(0)}
-          x2={stringX(5)}
-          y1={fretY(f)}
-          y2={fretY(f)}
-          className="stroke-foreground"
-          strokeWidth={f === 0 ? 3 : 1}
-        />
-      ))}
-      {/* Strings. */}
-      {TUNING_LOW_FIRST.map((_, i) => (
-        <line
-          key={stringX(i)}
-          x1={stringX(i)}
-          x2={stringX(i)}
-          y1={fretY(0)}
-          y2={fretY(FRETS)}
-          className="stroke-foreground"
-          strokeWidth={1}
-        />
-      ))}
-      {/* Muted (×) / open (○) markers + fretted dots. */}
-      {chord.frets.map((fret, i) => {
-        const key = `s${i}`;
-        if (fret === -1) {
-          return (
-            <text
-              key={key}
-              x={stringX(i)}
-              y={TOP - 6}
-              textAnchor="middle"
-              className="fill-muted-foreground text-[9px]"
-            >
-              ×
-            </text>
-          );
-        }
-        if (fret === 0) {
-          return (
-            <circle
-              key={key}
-              cx={stringX(i)}
-              cy={TOP - 9}
-              r={3}
-              className="fill-none stroke-muted-foreground"
-              strokeWidth={1}
-            />
-          );
-        }
-        return (
-          <circle
-            key={key}
-            cx={stringX(i)}
-            cy={fretY(fret) - ROW / 2}
-            r={4.5}
-            className="fill-foreground"
-          />
-        );
-      })}
-    </svg>
-  );
-}
-
 export default function ChordDiagrams() {
   const [category, setCategory] = useState('all');
   const chords = GUITAR_CHORDS.filter((c) => category === 'all' || c.quality === category);
@@ -149,17 +54,17 @@ export default function ChordDiagrams() {
         <span className="block font-medium" data-help="chords">
           Category
         </span>
-        <select
+        <Select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+          className="h-auto w-auto px-2 py-1"
         >
           {CATEGORIES.map((c) => (
             <option key={c.key} value={c.key}>
               {c.label}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">

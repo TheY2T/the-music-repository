@@ -1,7 +1,7 @@
 import type { HelpTopic } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
+import { Button, Card } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { listHelpTopics } from '@/lib/help-api';
 
 export default function AdminHelpList({ locale }: { locale: Locale }) {
@@ -25,7 +25,7 @@ export default function AdminHelpList({ locale }: { locale: Locale }) {
       {items.length === 0 ? (
         <p className="text-sm text-muted-foreground">{t(locale, 'ahelp.empty')}</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border">
+        <Card className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b bg-muted/40 text-left">
               <tr>
@@ -54,7 +54,7 @@ export default function AdminHelpList({ locale }: { locale: Locale }) {
               ))}
             </tbody>
           </table>
-        </div>
+        </Card>
       )}
     </div>
   );

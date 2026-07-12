@@ -2,6 +2,7 @@
 import SignInForm from '@/components/SignInForm.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 // Already authenticated? Skip the form.
 const redirectTo = Astro.url.searchParams.get('redirect') ?? '/admin';
@@ -12,7 +13,7 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={t(locale, 'signin.title')}>
-  <main class="mx-auto flex min-h-screen max-w-md flex-col justify-center space-y-6 p-8">
+  <PageShell maxWidth="max-w-md" class="flex min-h-screen flex-col justify-center">
     <header class="space-y-1 text-center">
       <a href={localizedPath(locale, '/')} class="text-sm text-muted-foreground underline">
         {t(locale, 'common.backHome')}
@@ -21,5 +22,5 @@ const locale = Astro.locals.locale;
       <p class="text-muted-foreground">{t(locale, 'signin.subtitle')}</p>
     </header>
     <SignInForm client:load redirectTo={redirectTo} locale={locale} />
-  </main>
+  </PageShell>
 </BaseLayout>

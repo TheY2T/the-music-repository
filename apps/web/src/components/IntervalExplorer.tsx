@@ -1,3 +1,4 @@
+import { Button, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { INTERVAL_NAMES, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
@@ -28,33 +29,33 @@ export default function IntervalExplorer() {
       <div className="flex flex-wrap items-end gap-3">
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Lower note</span>
-          <select
+          <Select
             value={root}
             onChange={(e) => setRoot(Number(e.target.value))}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {ROOT_CHOICES.map((pc) => (
               <option key={pc} value={pc}>
                 {pitchName(pc)}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium" data-help="ear-training">
             Interval
           </span>
-          <select
+          <Select
             value={semitones}
             onChange={(e) => setSemitones(Number(e.target.value))}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {INTERVAL_NAMES.map((name, semis) => (
               <option key={name} value={semis}>
                 {name}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       </div>
 
@@ -68,20 +69,12 @@ export default function IntervalExplorer() {
       </div>
 
       <div className="flex gap-3">
-        <button
-          type="button"
-          onClick={playMelodic}
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-        >
+        <Button type="button" onClick={playMelodic}>
           ▶ Melodic
-        </button>
-        <button
-          type="button"
-          onClick={playHarmonic}
-          className="rounded-md border border-border px-4 py-2 text-sm font-medium"
-        >
+        </Button>
+        <Button type="button" variant="outline" onClick={playHarmonic}>
           Harmonic
-        </button>
+        </Button>
       </div>
     </div>
   );

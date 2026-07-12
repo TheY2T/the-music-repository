@@ -1,7 +1,3 @@
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-/** Merge conditional class names, resolving Tailwind conflicts (shadcn convention). */
-export function cn(...inputs: ClassValue[]): string {
-  return twMerge(clsx(inputs));
-}
+// `cn()` now lives in the shared design system. Re-exported here so existing `@/lib/utils`
+// imports keep working; prefer importing from `@TheY2T/tmr-ui` in new code.
+export { cn } from '@TheY2T/tmr-ui/lib/utils';

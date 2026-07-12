@@ -1,3 +1,4 @@
+import { Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { TUNING_LOW_FIRST } from '@/components/ChordDiagrams';
 import { playTone } from '@/lib/audio';
@@ -140,17 +141,17 @@ export default function CagedExplorer() {
         <span className="block font-medium" data-help="chords">
           Root (major)
         </span>
-        <select
+        <Select
           value={root}
           onChange={(e) => setRoot(Number(e.target.value))}
-          className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+          className="h-auto w-auto px-2 py-1"
         >
           {ROOT_CHOICES.map((pc) => (
             <option key={pc} value={pc}>
               {pitchName(pc)}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">

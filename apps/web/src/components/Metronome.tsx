@@ -1,3 +1,4 @@
+import { Button, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { getAudioContext, scheduleClick, scheduleTone } from '@/lib/audio';
 
@@ -176,62 +177,57 @@ export default function Metronome() {
       <div className="flex flex-wrap items-center justify-center gap-4">
         <label className="flex items-center gap-2 text-sm">
           Beats per bar
-          <select
+          <Select
             value={beatsPerBar}
             onChange={(e) => setBeatsPerBar(Number(e.target.value))}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {BEATS_PER_BAR_CHOICES.map((n) => (
               <option key={n} value={n}>
                 {n}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="flex items-center gap-2 text-sm">
           Subdivision
-          <select
+          <Select
             value={subdivision}
             onChange={(e) => setSubdivision(Number(e.target.value))}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {SUBDIVISIONS.map((s) => (
               <option key={s.value} value={s.value}>
                 {s.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="flex items-center gap-2 text-sm">
           Polyrhythm
-          <select
+          <Select
             value={poly}
             onChange={(e) => setPoly(Number(e.target.value))}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {POLY_CHOICES.map((p) => (
               <option key={p.value} value={p.value}>
                 {p.value === 0 ? 'Off' : `${p.label}:${beatsPerBar}`}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
-        <button
-          type="button"
-          onClick={tap}
-          className="rounded-md border border-border px-4 py-2 text-sm font-medium"
-        >
+        <Button type="button" variant="outline" onClick={tap}>
           Tap tempo
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
+          variant={running ? 'outline' : 'default'}
+          className="px-6"
           onClick={() => setRunning((r) => !r)}
-          className={`rounded-md px-6 py-2 text-sm font-medium ${
-            running ? 'border border-border' : 'bg-primary text-primary-foreground'
-          }`}
         >
           {running ? '■ Stop' : '▶ Start'}
-        </button>
+        </Button>
       </div>
     </div>
   );

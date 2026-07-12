@@ -1,3 +1,4 @@
+import { Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
 import {
@@ -31,33 +32,33 @@ export default function ScaleBoxes() {
       <div className="flex flex-wrap items-end gap-4">
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Root</span>
-          <select
+          <Select
             value={root}
             onChange={(e) => setRoot(Number(e.target.value))}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {ROOT_CHOICES.map((pc) => (
               <option key={pc} value={pc}>
                 {pitchName(pc)}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium" data-help="scales">
             Scale
           </span>
-          <select
+          <Select
             value={scaleKey}
             onChange={(e) => setScaleKey(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {SCALES.map((s) => (
               <option key={s.key} value={s.key}>
                 {s.name}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Position (fret {position})</span>

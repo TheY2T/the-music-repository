@@ -1,3 +1,4 @@
+import { Button, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
 import { getAudioContext, playTone, scheduleClick } from '@/lib/audio';
@@ -201,33 +202,33 @@ export default function NotationPlayer() {
       <div className="flex flex-wrap items-end gap-4">
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Piece</span>
-          <select
+          <Select
             value={pieceKey}
             onChange={(e) => setPieceKey(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {PIECES.map((p) => (
               <option key={p.key} value={p.key}>
                 {p.title}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium" data-help="scales">
             Key (transpose)
           </span>
-          <select
+          <Select
             value={root}
             onChange={(e) => setRoot(Number(e.target.value))}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {ROOT_CHOICES.map((pc) => (
               <option key={pc} value={pc}>
                 {pitchName(pc, transposeForRoot(pc) < 0)}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium" data-help="rhythm">
@@ -288,15 +289,14 @@ export default function NotationPlayer() {
         </span>
       </div>
 
-      <button
+      <Button
         type="button"
+        variant={playing ? 'outline' : 'default'}
+        className="px-6"
         onClick={() => setPlaying((p) => !p)}
-        className={`rounded-md px-6 py-2 text-sm font-medium ${
-          playing ? 'border border-border' : 'bg-primary text-primary-foreground'
-        }`}
       >
         {playing ? '■ Stop' : '▶ Play'}
-      </button>
+      </Button>
       <p className="text-xs text-muted-foreground">
         Follow the moving cursor as each note sounds. Slow the tempo to learn a tricky passage, set
         a section to drill just those bars, and loop it until it’s under your fingers.

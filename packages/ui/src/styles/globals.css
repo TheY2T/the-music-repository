@@ -1,0 +1,10 @@
+/*
+ * @TheY2T/tmr-ui — Tailwind entrypoint for the package's own contexts (Storybook, and the
+ * target the shadcn CLI writes to). The consuming app has its OWN Tailwind entry
+ * (apps/web/src/styles/global.css) and does not import this file.
+ */
+@import "tailwindcss";
+@import "@TheY2T/tmr-design-tokens/index.css";
+
+/* Scan this package's components so their utility classes are generated in Storybook. */
+@source "../";

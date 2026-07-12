@@ -1,6 +1,6 @@
 import { type Locale, t } from '@TheY2T/tmr-i18n';
+import { Button } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/auth-client';
 
 export default function SignOutButton({

@@ -2,6 +2,7 @@
 import ProgressDashboard from '@/components/ProgressDashboard.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 if (!Astro.locals.flags.progress) {
   return Astro.redirect('/');
@@ -13,13 +14,11 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={`${t(locale, 'nav.myProgress')} — ${t(locale, 'site.name')}`}>
-  <main class="mx-auto max-w-3xl space-y-6 p-8">
-    <header class="space-y-1">
-      <a href={localizedPath(locale, '/')} class="text-sm text-muted-foreground underline">
-        {t(locale, 'common.backHome')}
-      </a>
-      <h1 class="text-3xl font-bold">{t(locale, 'nav.myProgress')}</h1>
-    </header>
+  <PageShell
+    title={t(locale, 'nav.myProgress')}
+    back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
+    maxWidth="max-w-3xl"
+  >
     <ProgressDashboard client:load locale={locale} />
-  </main>
+  </PageShell>
 </BaseLayout>

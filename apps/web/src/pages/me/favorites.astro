@@ -2,6 +2,7 @@
 import MyFavorites from '@/components/MyFavorites.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 // Personalization: requires the flag on and an authenticated user.
 if (!Astro.locals.flags.favorites) {
@@ -14,13 +15,11 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={`${t(locale, 'nav.myFavorites')} — ${t(locale, 'site.name')}`}>
-  <main class="mx-auto max-w-6xl space-y-6 p-8">
-    <header class="space-y-1">
-      <a href={localizedPath(locale, '/catalogue')} class="text-sm text-muted-foreground underline">
-        {t(locale, 'common.backCatalogue')}
-      </a>
-      <h1 class="text-3xl font-bold">{t(locale, 'nav.myFavorites')}</h1>
-    </header>
+  <PageShell
+    title={t(locale, 'nav.myFavorites')}
+    back={{ href: localizedPath(locale, '/catalogue'), label: t(locale, 'common.backCatalogue') }}
+    maxWidth="max-w-6xl"
+  >
     <MyFavorites client:load locale={locale} />
-  </main>
+  </PageShell>
 </BaseLayout>

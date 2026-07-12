@@ -4,6 +4,7 @@ import ToolPracticeLogger from '@/components/ToolPracticeLogger.tsx';
 import SongPlayer from '@/components/SongPlayer.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 if (!Astro.locals.flags.toolSong) {
   return Astro.redirect('/tools');
@@ -15,14 +16,13 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={`${t(locale, 'tool.song.title')} — ${t(locale, 'site.name')}`}>
-    <main class="mx-auto max-w-4xl space-y-6 p-8">
-      <header class="space-y-1">
-        <a href={localizedPath(locale, '/tools')} class="text-sm text-muted-foreground underline">{t(locale, 'common.backTools')}</a>
-        <h1 class="text-3xl font-bold">{t(locale, 'tool.song.title')}</h1>
-        <p class="text-muted-foreground">{t(locale, 'tool.song.summary')}</p>
-      </header>
+    <PageShell
+      title={t(locale, 'tool.song.title')}
+      subtitle={t(locale, 'tool.song.summary')}
+      back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}
+    >
       <SongPlayer client:load />
-    </main>
+    </PageShell>
     {showInfoView && <InfoView client:idle />}
     {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}
   </BaseLayout>

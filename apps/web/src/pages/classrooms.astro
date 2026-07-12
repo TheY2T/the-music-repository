@@ -2,6 +2,7 @@
 import ClassroomsManager from '@/components/ClassroomsManager.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 // Teacher mode: requires the flag on and an authenticated user.
 if (!Astro.locals.flags.classrooms) {
@@ -16,14 +17,12 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={`${t(locale, 'nav.classrooms')} — ${t(locale, 'site.name')}`}>
-  <main class="mx-auto max-w-3xl space-y-6 p-8">
-    <header class="space-y-1">
-      <a href={localizedPath(locale, '/')} class="text-sm text-muted-foreground underline">
-        {t(locale, 'common.backHome')}
-      </a>
-      <h1 class="text-3xl font-bold">{t(locale, 'nav.classrooms')}</h1>
-      <p class="text-muted-foreground">{t(locale, 'classrooms.subtitle')}</p>
-    </header>
+  <PageShell
+    title={t(locale, 'nav.classrooms')}
+    subtitle={t(locale, 'classrooms.subtitle')}
+    back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
+    maxWidth="max-w-3xl"
+  >
     <ClassroomsManager client:load canCreate={canCreate} locale={locale} />
-  </main>
+  </PageShell>
 </BaseLayout>

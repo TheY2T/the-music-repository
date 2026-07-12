@@ -5,6 +5,7 @@ import {
   useSearchCatalogue,
 } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
+import { Badge, CardGrid, Chip, SearchField } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import FavoriteHeart from '@/components/FavoriteHeart';
 import { listFavoriteSlugs } from '@/lib/favorites-api';
@@ -97,12 +98,11 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
   return (
     <div className="grid gap-8 md:grid-cols-[220px_1fr]">
       <aside className="space-y-6">
-        <input
-          type="search"
+        <SearchField
           value={q}
           onChange={(event) => setQ(event.target.value)}
+          onClear={() => setQ('')}
           placeholder={t(locale, 'catalogue.search')}
-          className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
         />
         <FacetGroup
           title={t(locale, 'catalogue.facetType')}
@@ -136,7 +136,7 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
             ? t(locale, 'catalogue.searching')
             : t(locale, 'catalogue.results', { count: result?.total ?? 0 })}
         </p>
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <CardGrid>
           {(result?.items ?? []).map((item) => (
             <li key={item.slug} className="relative">
               {showFavorites ? (
@@ -153,18 +153,16 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
                 className="flex h-full flex-col gap-2 rounded-lg border border-border p-4 transition-colors hover:bg-muted"
               >
                 <div className="flex items-center gap-2">
-                  <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
+                  <Badge variant="secondary" className="font-mono">
                     {item.type}
-                  </span>
+                  </Badge>
                   {item.difficulty ? (
                     <span className="text-xs text-muted-foreground">
                       {t(locale, 'catalogue.grade', { level: item.difficulty })}
                     </span>
                   ) : null}
                   {item.locked ? (
-                    <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400">
-                      🔒 {tierLabel(locale, item.tier)}
-                    </span>
+                    <Badge variant="warning">🔒 {tierLabel(locale, item.tier)}</Badge>
                   ) : null}
                 </div>
                 <h2 className="font-semibold leading-snug">{item.title}</h2>
@@ -173,18 +171,13 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
                 ) : null}
                 <div className="mt-auto flex flex-wrap gap-1 pt-2">
                   {[...item.genres, ...item.instruments].map((ref) => (
-                    <span
-                      key={ref.slug}
-                      className="rounded-full border border-border px-2 py-0.5 text-xs"
-                    >
-                      {ref.name}
-                    </span>
+                    <Chip key={ref.slug}>{ref.name}</Chip>
                   ))}
                 </div>
               </a>
             </li>
           ))}
-        </ul>
+        </CardGrid>
       </section>
     </div>
   );

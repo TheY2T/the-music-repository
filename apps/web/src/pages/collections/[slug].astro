@@ -2,6 +2,7 @@
 import CollectionDetail from '@/components/CollectionDetail.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 if (!Astro.locals.flags.collections) {
   return Astro.redirect('/');
@@ -11,10 +12,10 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={t(locale, 'collections.detailPageTitle')}>
-  <main class="mx-auto max-w-3xl space-y-6 p-8">
-    <a href={localizedPath(locale, '/collections')} class="text-sm text-muted-foreground underline">
-      {t(locale, 'common.backCollections')}
-    </a>
+  <PageShell
+    back={{ href: localizedPath(locale, '/collections'), label: t(locale, 'common.backCollections') }}
+    maxWidth="max-w-3xl"
+  >
     <CollectionDetail client:load slug={slug} locale={locale} />
-  </main>
+  </PageShell>
 </BaseLayout>

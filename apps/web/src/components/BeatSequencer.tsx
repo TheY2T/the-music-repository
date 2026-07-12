@@ -1,3 +1,4 @@
+import { Button } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { type DrumVoice, getAudioContext, scheduleDrum } from '@/lib/audio';
 
@@ -87,15 +88,14 @@ export default function BeatSequencer() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-4">
-        <button
+        <Button
           type="button"
+          variant={running ? 'outline' : 'default'}
+          className="px-6"
           onClick={() => setRunning((r) => !r)}
-          className={`rounded-md px-6 py-2 text-sm font-medium ${
-            running ? 'border border-border' : 'bg-primary text-primary-foreground'
-          }`}
         >
           {running ? '■ Stop' : '▶ Play'}
-        </button>
+        </Button>
         <label className="flex items-center gap-2 text-sm" data-help="rhythm">
           Tempo
           <input
@@ -107,13 +107,15 @@ export default function BeatSequencer() {
           />
           <span className="font-mono">{bpm} BPM</span>
         </label>
-        <button
+        <Button
           type="button"
+          variant="link"
+          size="sm"
+          className="h-auto p-0 text-muted-foreground underline"
           onClick={() => setGrid(TRACKS.map(() => Array<boolean>(STEPS).fill(false)))}
-          className="text-sm text-muted-foreground underline"
         >
           Clear
-        </button>
+        </Button>
       </div>
 
       <div className="space-y-2 overflow-x-auto">

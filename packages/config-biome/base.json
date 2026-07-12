@@ -12,6 +12,14 @@
       "recommended": true,
       "style": {
         "useImportType": "off"
+      },
+      "a11y": {
+        "noLabelWithoutControl": {
+          "level": "error",
+          "options": {
+            "inputComponents": ["Input", "Select", "Textarea", "Checkbox"]
+          }
+        }
       }
     }
   },

@@ -36,3 +36,17 @@ filesystems otherwise pass locally but break Linux containers).
 - Use-cases inject the **port**; the module binds `{ provide: <PortClass>, useClass: <Adapter> }`.
 - Files keep the `application/ports/*.port.ts` / `infrastructure/*.adapter.ts` role markers (a discovery
   aid — the filename may mark the role; the identifier stays technology-free).
+
+## Localization / i18n (web UI strings — ADR 0017)
+
+- **No hardcoded user-facing strings** in `apps/web`. Every UI string goes through `t(locale, key)` from
+  `@TheY2T/tmr-i18n`; the locale comes from `Astro.locals.locale` and is passed into islands as a plain
+  `locale` prop (never React context — it can't cross island boundaries).
+- **Message keys** live in `@TheY2T/tmr-i18n-locales` (`en.json` = source of truth for keys;
+  `zh-Hans.json` = Simplified Chinese, missing → English). Naming: `domain.thing` (camelCase after the
+  dot). Shared `tool.<slug>.*` keys back both the `/tools` hub and each tool page.
+- **Never duplicate** message strings — add a key once, reference it everywhere.
+- **Left language-neutral by design:** music-theory tokens (note names, chord symbols, Roman numerals),
+  technical names (MusicXML/MEI/Verovio/MIDI/CAGED), and API/DB data (content titles, taxonomy names).
+- Pages use `BaseLayout.astro` (owns `<html lang>`, hreflang, dark-mode script, language switcher) and
+  build internal links with `localizedPath(locale, path)`. See the `add-translations` skill.

@@ -1,3 +1,4 @@
+import { Button, Card } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
 import { getAudioContext, playTone, scheduleClick } from '@/lib/audio';
@@ -87,19 +88,15 @@ export default function RhythmDictation() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-4">
-        <button
-          type="button"
-          onClick={playTarget}
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-        >
+        <Button type="button" onClick={playTarget}>
           ▶ Play rhythm
-        </button>
+        </Button>
         <span className="text-sm text-muted-foreground">
           Score: {score.correct}/{score.total}
         </span>
       </div>
 
-      <div className="flex min-h-[3rem] flex-wrap items-center gap-2 rounded-lg border border-border p-3">
+      <Card className="flex min-h-[3rem] flex-wrap items-center gap-2 p-3">
         {answer.length === 0 ? (
           <span className="text-sm text-muted-foreground">
             Tap durations to build one bar (4 beats)…
@@ -114,54 +111,48 @@ export default function RhythmDictation() {
         <span className="ml-auto text-xs text-muted-foreground tabular-nums">
           {answerTotal} / 4
         </span>
-      </div>
+      </Card>
 
       <div className="flex flex-wrap gap-2" data-help="rhythm">
         {DURATIONS.map((d) => (
-          <button
+          <Button
             key={d.label}
             type="button"
+            variant="outline"
+            className="text-lg"
             onClick={() => add(d.beats)}
             disabled={checked !== null || answerTotal + d.beats > 4}
-            className="rounded-md border border-border px-4 py-2 text-lg hover:bg-muted disabled:opacity-40"
             title={d.label}
           >
             {d.glyph}
-          </button>
+          </Button>
         ))}
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="sm"
           onClick={() => setAnswer((a) => a.slice(0, -1))}
           disabled={checked !== null || answer.length === 0}
-          className="rounded-md border border-border px-3 py-1 text-sm disabled:opacity-40"
         >
           ← Backspace
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
+          size="sm"
           onClick={check}
           disabled={checked !== null || answerTotal !== 4}
-          className="rounded-md bg-primary px-4 py-1 text-sm font-medium text-primary-foreground disabled:opacity-40"
         >
           Check
-        </button>
-        <button
-          type="button"
-          onClick={() => setRevealed(true)}
-          className="rounded-md border border-border px-3 py-1 text-sm"
-        >
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={() => setRevealed(true)}>
           Reveal
-        </button>
-        <button
-          type="button"
-          onClick={reset}
-          className="rounded-md border border-border px-3 py-1 text-sm"
-        >
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={reset}>
           ↻ New rhythm
-        </button>
+        </Button>
       </div>
 
       {checked !== null ? (

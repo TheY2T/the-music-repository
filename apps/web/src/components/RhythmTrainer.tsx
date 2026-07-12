@@ -1,3 +1,4 @@
+import { Button, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
 import { getAudioContext, playTone, scheduleClick } from '@/lib/audio';
@@ -83,17 +84,17 @@ export default function RhythmTrainer() {
           <span className="block font-medium" data-help="rhythm">
             Rhythm
           </span>
-          <select
+          <Select
             value={rhythmKey}
             onChange={(e) => setRhythmKey(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {RHYTHMS.map((r) => (
               <option key={r.key} value={r.key}>
                 {r.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Tempo</span>
@@ -118,15 +119,14 @@ export default function RhythmTrainer() {
 
       <StaffSequence notes={notes} activeIndex={active} />
 
-      <button
+      <Button
         type="button"
+        variant={running ? 'outline' : 'default'}
+        className="px-6"
         onClick={() => setRunning((r) => !r)}
-        className={`rounded-md px-6 py-2 text-sm font-medium ${
-          running ? 'border border-border' : 'bg-primary text-primary-foreground'
-        }`}
       >
         {running ? '■ Stop' : '▶ Play'}
-      </button>
+      </Button>
       <p className="text-xs text-muted-foreground">
         Read the rhythm, then press Play to hear it (a woodblock per note) over a steady click. Clap
         or tap along, then slow the tempo if a figure trips you up.

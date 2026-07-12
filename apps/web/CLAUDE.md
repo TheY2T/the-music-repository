@@ -7,13 +7,44 @@ Astro SSR + React islands + Tailwind v4 + shadcn/ui. See root `CLAUDE.md` for re
 ```
 src/
   pages/*.astro        # routes (lowercase/kebab, [slug].astro for dynamic)
-  components/*.tsx      # React islands (PascalCase files)
-  components/ui/*.tsx   # shadcn components (Button, ...)
-  lib/utils.ts          # cn() helper
-  styles/global.css     # Tailwind v4 (@import) + shadcn tokens + dark mode (.dark)
+  components/*.tsx      # React islands (PascalCase files) — compose from @TheY2T/tmr-ui
+  components/ui/button.tsx  # thin re-export of @TheY2T/tmr-ui Button (back-compat)
+  lib/utils.ts          # thin re-export of cn() from @TheY2T/tmr-ui
+  styles/global.css     # Tailwind v4 (@import) + @import @TheY2T/tmr-design-tokens + @source globs
   middleware.ts         # OpenFeature SSR eval → Astro.locals.flags (per request)
   env.d.ts              # App.Locals typing
 ```
+
+## Design system (ADR 0018, `docs/features/design-system.md`)
+
+- **Build UI from `@TheY2T/tmr-ui`** (Atomic Design): atoms (shadcn primitives) → molecules
+  (`Field`, `Card`, `Badge`, `SearchField`, `CardGrid`, `StatCard`, `PageHeader`, `SegmentedToggle`,
+  …) → organisms. Music primitives (`StaffSequence`, `ChordDiagram`, `GUITAR_CHORDS`) from
+  `@TheY2T/tmr-ui/music`. No bespoke raw-Tailwind chrome — compose from the library.
+- **Page shell:** wrap page content in `PageShell` (`@TheY2T/tmr-ui/astro/PageShell.astro`) INSIDE
+  `BaseLayout` — it renders the `mx-auto max-w-* p-8` container + back-link/title/subtitle/actions.
+- **Tokens:** `@TheY2T/tmr-design-tokens` (imported by `global.css`); tokens generate as Tailwind
+  utilities. `global.css` has `@source` globs pointing at the packages — if styles vanish, check them.
+- **i18n-by-prop:** library components take localized strings as props (never call `t()`); pass
+  `t(locale, key)` results in. Add/extend components via the **`add-ui-component`** skill.
+
+## Localization / i18n (ADR 0017, `docs/features/i18n.md`)
+
+- **No hardcoded UI strings.** Every user-facing string goes through `t(locale, key)` from
+  `@TheY2T/tmr-i18n`. Keys live in `@TheY2T/tmr-i18n-locales` (`en.json` = source of truth for keys →
+  `type MessageKey`; `zh-Hans.json` = Simplified Chinese, missing → falls back to English). Add keys via
+  the **`add-translations`** skill.
+- **Locale** is resolved per request in `middleware.ts` → `Astro.locals.locale` (URL prefix > cookie >
+  Accept-Language). `/zh/…` is rewritten to the canonical page path (single page-file set); the browser
+  URL stays `/zh/…`. Gated by `platform.i18n`.
+- **Pages** use `src/layouts/BaseLayout.astro` (owns `<html lang>`, dark-mode script, hreflang, and the
+  `LanguageSwitcher` top bar) — never write a bare `<html>`/`<head>`. Build internal links with
+  `localizedPath(locale, '/path')` so a zh page stays Chinese; build `<title>` inline as
+  `` `${t(locale, 'x.title')} — ${t(locale, 'site.name')}` ``.
+- **Islands** take `locale: Locale` as a plain prop (deterministic from the URL → no hydration flash;
+  React context can't cross islands) and call `t(locale, key)`. Tools share `tool.<slug>.title/summary`.
+- **Left as-is:** music-theory tokens, technical names, and API/DB data (catalogue titles, taxonomy).
+  Backend/DB-content i18n is deferred (see the feature doc).
 
 ## Islands rules
 
@@ -216,8 +247,11 @@ src/
 
 ## Styling
 
-Tailwind v4 is configured in CSS (`@import "tailwindcss"` + `@theme inline`), not a JS config.
-shadcn config is `components.json`. Dark mode = `.dark` on `<html>`, set pre-paint in the layout.
+Tailwind v4 is configured in CSS (`@import "tailwindcss"`), not a JS config. Design tokens + the
+`@theme inline` mapping + the `.dark` variant come from `@TheY2T/tmr-design-tokens` (imported in
+`global.css`); `@source` globs there make library utilities generate. shadcn config is
+`components.json` (aliases point at `@TheY2T/tmr-ui`). Dark mode = `.dark` on `<html>`, set pre-paint
+in the layout. Component workbench: `pnpm --filter @TheY2T/tmr-ui storybook`.
 
 ## Commands
 

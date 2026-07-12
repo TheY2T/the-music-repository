@@ -5,6 +5,7 @@ import FavoriteButton from '@/components/FavoriteButton.tsx';
 import InfoView from '@/components/InfoView.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 const { slug = '' } = Astro.params;
 const loggedIn = !!Astro.locals.user;
@@ -15,7 +16,7 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={t(locale, 'home.title')}>
-  <main class="mx-auto max-w-3xl space-y-6 p-8">
+  <PageShell maxWidth="max-w-3xl">
     <div class="flex items-center justify-between">
       <a href={localizedPath(locale, '/catalogue')} class="text-sm text-muted-foreground underline">
         {t(locale, 'common.backCatalogue')}
@@ -26,6 +27,6 @@ const locale = Astro.locals.locale;
       </div>
     </div>
     <ContentDetail client:load slug={slug} locale={locale} />
-  </main>
+  </PageShell>
   {showInfoView && <InfoView client:idle />}
 </BaseLayout>

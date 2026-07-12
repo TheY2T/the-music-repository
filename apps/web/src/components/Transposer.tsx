@@ -1,3 +1,4 @@
+import { Button, Card, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
 import {
@@ -85,7 +86,7 @@ export default function Transposer() {
       <div className="flex flex-wrap items-end gap-4">
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Preset</span>
-          <select
+          <Select
             onChange={(e) => {
               const p = PRESETS.find((x) => x.key === e.target.value);
               if (p) {
@@ -94,7 +95,7 @@ export default function Transposer() {
               }
             }}
             defaultValue=""
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             <option value="" disabled>
               — load —
@@ -104,7 +105,7 @@ export default function Transposer() {
                 {p.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium" data-help="scales">
@@ -127,45 +128,41 @@ export default function Transposer() {
         </label>
       </div>
 
-      <div className="flex flex-wrap items-end gap-2 rounded-lg border border-border p-3">
+      <Card className="flex flex-wrap items-end gap-2 p-3">
         <span className="text-sm font-medium">Add chord:</span>
-        <select
+        <Select
           value={addRoot}
           onChange={(e) => setAddRoot(Number(e.target.value))}
-          className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+          className="h-auto w-auto px-2 py-1"
         >
           {ROOT_CHOICES.map((pc) => (
             <option key={pc} value={pc}>
               {pitchName(pc)}
             </option>
           ))}
-        </select>
-        <select
+        </Select>
+        <Select
           value={addQuality}
           onChange={(e) => setAddQuality(e.target.value)}
-          className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+          className="h-auto w-auto px-2 py-1"
         >
           {CHORDS.map((c) => (
             <option key={c.key} value={c.key}>
               {c.name}
             </option>
           ))}
-        </select>
-        <button
+        </Select>
+        <Button
           type="button"
+          size="sm"
           onClick={() => setChords((cs) => [...cs, { root: addRoot, quality: addQuality }])}
-          className="rounded-md bg-primary px-3 py-1 text-sm font-medium text-primary-foreground"
         >
           Add
-        </button>
-        <button
-          type="button"
-          onClick={() => setChords([])}
-          className="rounded-md border border-border px-3 py-1 text-sm"
-        >
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={() => setChords([])}>
           Clear
-        </button>
-      </div>
+        </Button>
+      </Card>
 
       <div className="space-y-2">
         <div className="flex flex-wrap items-center gap-2">
@@ -198,7 +195,7 @@ export default function Transposer() {
         </div>
       </div>
 
-      <div className="rounded-lg border border-border p-3">
+      <Card className="p-3">
         <p className="text-sm font-medium" data-help="fretboard">
           Capo suggestions (guitar) — key of {pitchName(targetTonic, flatsNew)}
         </p>
@@ -214,7 +211,7 @@ export default function Transposer() {
         ) : (
           <p className="mt-1 text-sm text-muted-foreground">No easy capo within 7 frets.</p>
         )}
-      </div>
+      </Card>
       <p className="text-xs text-muted-foreground">
         Slide to transpose the whole progression; play either row to compare. Capo suggestions map
         the new key to easy open-chord shapes (C A G E D).

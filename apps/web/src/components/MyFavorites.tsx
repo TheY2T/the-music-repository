@@ -1,5 +1,6 @@
 import type { ContentSummary } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
+import { Badge, CardGrid } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { listFavorites } from '@/lib/favorites-api';
 
@@ -26,7 +27,7 @@ export default function MyFavorites({ locale }: { locale: Locale }) {
   }
 
   return (
-    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <CardGrid>
       {items.map((item) => (
         <li key={item.slug}>
           <a
@@ -34,7 +35,9 @@ export default function MyFavorites({ locale }: { locale: Locale }) {
             className="flex h-full flex-col gap-2 rounded-lg border border-border p-4 transition-colors hover:bg-muted"
           >
             <div className="flex items-center gap-2">
-              <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">{item.type}</span>
+              <Badge variant="secondary" className="font-mono">
+                {item.type}
+              </Badge>
               {item.difficulty ? (
                 <span className="text-xs text-muted-foreground">
                   {t(locale, 'myfav.grade', { difficulty: item.difficulty })}
@@ -48,6 +51,6 @@ export default function MyFavorites({ locale }: { locale: Locale }) {
           </a>
         </li>
       ))}
-    </ul>
+    </CardGrid>
   );
 }

@@ -1,6 +1,6 @@
 import { type Locale, type MessageKey, t } from '@TheY2T/tmr-i18n';
+import { Button, Field, Input } from '@TheY2T/tmr-ui';
 import { type FormEvent, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/auth-client';
 
 /** Local dev accounts (seeded by `pnpm --filter @TheY2T/tmr-api db:seed:auth`). */
@@ -38,32 +38,24 @@ export default function SignInForm({
   return (
     <div className="mx-auto w-full max-w-sm space-y-6">
       <form onSubmit={onSubmit} className="space-y-4">
-        <div className="space-y-1">
-          <label htmlFor="email" className="text-sm font-medium">
-            {t(locale, 'signin.email')}
-          </label>
-          <input
+        <Field label={t(locale, 'signin.email')} htmlFor="email">
+          <Input
             id="email"
             type="email"
             autoComplete="username"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
           />
-        </div>
-        <div className="space-y-1">
-          <label htmlFor="password" className="text-sm font-medium">
-            {t(locale, 'signin.password')}
-          </label>
-          <input
+        </Field>
+        <Field label={t(locale, 'signin.password')} htmlFor="password">
+          <Input
             id="password"
             type="password"
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
           />
-        </div>
+        </Field>
         {error ? (
           <p role="alert" className="text-sm text-destructive">
             {error}
@@ -78,17 +70,18 @@ export default function SignInForm({
         <p className="text-xs text-muted-foreground">{t(locale, 'signin.devAccounts')}</p>
         <div className="flex gap-2">
           {DEV_ACCOUNTS.map((account) => (
-            <button
+            <Button
               key={account.email}
               type="button"
+              variant="outline"
+              size="sm"
               onClick={() => {
                 setEmail(account.email);
                 setPassword('password123');
               }}
-              className="rounded-md border px-2 py-1 text-xs hover:bg-accent"
             >
               {t(locale, account.labelKey)}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

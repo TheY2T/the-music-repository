@@ -2,6 +2,7 @@
 import UpgradePanel from '@/components/UpgradePanel.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 // Monetization: requires the flag on and an authenticated user.
 if (!Astro.locals.flags.premium) {
@@ -14,14 +15,12 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={t(locale, 'upgrade.pageTitle')}>
-  <main class="mx-auto max-w-2xl space-y-6 p-8">
-    <header class="space-y-1">
-      <a href={localizedPath(locale, '/catalogue')} class="text-sm text-muted-foreground underline">
-        {t(locale, 'common.backCatalogue')}
-      </a>
-      <h1 class="text-3xl font-bold">{t(locale, 'upgrade.title')}</h1>
-      <p class="text-muted-foreground">{t(locale, 'upgrade.subtitle')}</p>
-    </header>
+  <PageShell
+    title={t(locale, 'upgrade.title')}
+    subtitle={t(locale, 'upgrade.subtitle')}
+    back={{ href: localizedPath(locale, '/catalogue'), label: t(locale, 'common.backCatalogue') }}
+    maxWidth="max-w-2xl"
+  >
     <UpgradePanel client:load locale={locale} />
-  </main>
+  </PageShell>
 </BaseLayout>

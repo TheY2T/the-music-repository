@@ -1,3 +1,4 @@
+import { Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { diatonicChords, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
@@ -33,20 +34,20 @@ export default function ProgressionBuilder() {
     <div className="space-y-6">
       <label className="space-y-1 text-sm">
         <span className="block font-medium">Key</span>
-        <select
+        <Select
           value={key}
           onChange={(e) => {
             setKey(Number(e.target.value));
             setProgression([]);
           }}
-          className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+          className="h-auto w-auto px-2 py-1"
         >
           {ROOT_CHOICES.map((pc) => (
             <option key={pc} value={pc}>
               {pitchName(pc)} major
             </option>
           ))}
-        </select>
+        </Select>
       </label>
 
       <div className="space-y-2">

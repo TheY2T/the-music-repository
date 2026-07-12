@@ -4,6 +4,7 @@ import SignOutButton from '@/components/SignOutButton.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { guardAdmin } from '@/lib/admin-guard';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 const redirect = guardAdmin(Astro);
 if (redirect) {
@@ -14,19 +15,15 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={`${t(locale, 'nav.admin')} — ${t(locale, 'site.name')}`}>
-  <main class="mx-auto max-w-5xl space-y-6 p-8">
-    <header class="flex items-center justify-between">
-      <div class="space-y-1">
-        <a href={localizedPath(locale, '/')} class="text-sm text-muted-foreground underline">
-          {t(locale, 'common.backHome')}
-        </a>
-        <h1 class="text-3xl font-bold">{t(locale, 'admin.content')}</h1>
-        <p class="text-sm text-muted-foreground">
-          {t(locale, 'admin.signedInAs', { who: user.name || user.email, role: user.role ?? '' })}
-        </p>
-      </div>
+  <PageShell
+    title={t(locale, 'admin.content')}
+    subtitle={t(locale, 'admin.signedInAs', { who: user.name || user.email, role: user.role ?? '' })}
+    back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
+    maxWidth="max-w-5xl"
+  >
+    <Fragment slot="actions">
       <SignOutButton client:load locale={locale} />
-    </header>
+    </Fragment>
 
     <div class="flex flex-wrap gap-4">
       {
@@ -46,5 +43,5 @@ const locale = Astro.locals.locale;
     </div>
 
     <AdminContentList client:load locale={locale} />
-  </main>
+  </PageShell>
 </BaseLayout>

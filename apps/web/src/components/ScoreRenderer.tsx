@@ -1,3 +1,4 @@
+import { Button, Textarea } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { getAudioContext, scheduleTone } from '@/lib/audio';
 import { midiToFrequency } from '@/lib/music-theory';
@@ -236,37 +237,32 @@ export default function ScoreRenderer() {
             }}
           />
         </label>
-        <button
+        <Button
           type="button"
+          variant="outline"
           onClick={() => {
             stop();
             setXml(SAMPLE);
             render(SAMPLE);
           }}
           disabled={status !== 'ready'}
-          className="rounded-md border border-border px-3 py-2 text-sm font-medium disabled:opacity-40"
         >
           Load sample
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
+          variant="outline"
           onClick={() => {
             stop();
             render(xml);
           }}
           disabled={status !== 'ready'}
-          className="rounded-md border border-border px-3 py-2 text-sm font-medium disabled:opacity-40"
         >
           Render
-        </button>
-        <button
-          type="button"
-          onClick={() => (playing ? stop() : play())}
-          disabled={!canPlay}
-          className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground disabled:opacity-40"
-        >
+        </Button>
+        <Button type="button" onClick={() => (playing ? stop() : play())} disabled={!canPlay}>
           {playing ? '■ Stop' : '▶ Play'}
-        </button>
+        </Button>
         <label className="flex items-center gap-2 text-sm">
           <span className="text-muted-foreground">Speed</span>
           <input
@@ -298,11 +294,11 @@ export default function ScoreRenderer() {
 
       <details className="text-sm">
         <summary className="cursor-pointer text-muted-foreground">Edit MusicXML source</summary>
-        <textarea
+        <Textarea
           value={xml}
           onChange={(e) => setXml(e.target.value)}
           spellCheck={false}
-          className="mt-2 h-48 w-full rounded-md border border-input bg-background p-2 font-mono text-xs"
+          className="mt-2 h-48 p-2 font-mono text-xs"
         />
       </details>
       <p className="text-xs text-muted-foreground">

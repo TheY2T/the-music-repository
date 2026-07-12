@@ -5,6 +5,7 @@ import {
   localizedPath,
   splitLocalePath,
 } from '@TheY2T/tmr-i18n';
+import { SegmentedToggle } from '@TheY2T/tmr-ui';
 
 /**
  * Global language switcher (lives in BaseLayout's top bar). Sets a 1-year `locale` cookie so the
@@ -23,24 +24,15 @@ export default function LanguageSwitcher({ locale }: { locale: Locale }) {
   }
 
   return (
-    <div className="flex items-center gap-1">
-      {LOCALES.map((option) => {
-        const active = option === locale;
-        return (
-          <button
-            key={option}
-            type="button"
-            onClick={() => switchTo(option)}
-            aria-current={active ? 'true' : undefined}
-            aria-label={LOCALE_LABELS[option]}
-            className={`rounded px-2 py-0.5 text-xs font-medium transition-colors ${
-              active ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'
-            }`}
-          >
-            {LOCALE_LABELS[option]}
-          </button>
-        );
-      })}
-    </div>
+    <SegmentedToggle
+      aria-label="Language"
+      value={locale}
+      onValueChange={switchTo}
+      options={LOCALES.map((option) => ({
+        value: option,
+        label: LOCALE_LABELS[option],
+        title: LOCALE_LABELS[option],
+      }))}
+    />
   );
 }

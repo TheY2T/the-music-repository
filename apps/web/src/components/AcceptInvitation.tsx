@@ -1,4 +1,5 @@
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
+import { Card } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { acceptInvitation } from '@/lib/classrooms-api';
 
@@ -16,7 +17,7 @@ export default function AcceptInvitation({ locale }: { locale: Locale }) {
   }, []);
 
   return (
-    <div className="space-y-4 rounded-lg border border-border p-6">
+    <Card className="space-y-4 p-6">
       {state === 'working' ? (
         <p className="text-sm text-muted-foreground">{t(locale, 'invite.accepting')}</p>
       ) : state === 'done' ? (
@@ -37,6 +38,6 @@ export default function AcceptInvitation({ locale }: { locale: Locale }) {
           </a>
         </>
       )}
-    </div>
+    </Card>
   );
 }

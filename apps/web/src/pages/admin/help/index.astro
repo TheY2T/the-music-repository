@@ -3,6 +3,7 @@ import AdminHelpList from '@/components/AdminHelpList.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { guardAdmin } from '@/lib/admin-guard';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 const redirect = guardAdmin(Astro);
 if (redirect) {
@@ -15,14 +16,11 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={`${t(locale, 'admin.helpTopics')} — ${t(locale, 'nav.admin')}`}>
-  <main class="mx-auto max-w-4xl space-y-6 p-8">
-    <header class="space-y-1">
-      <a href={localizedPath(locale, '/admin')} class="text-sm text-muted-foreground underline">
-        {t(locale, 'common.backContent')}
-      </a>
-      <h1 class="text-3xl font-bold">{t(locale, 'admin.helpTopics')}</h1>
-      <p class="text-sm text-muted-foreground">{t(locale, 'admin.helpSubtitle')}</p>
-    </header>
+  <PageShell
+    title={t(locale, 'admin.helpTopics')}
+    subtitle={t(locale, 'admin.helpSubtitle')}
+    back={{ href: localizedPath(locale, '/admin'), label: t(locale, 'common.backContent') }}
+  >
     <AdminHelpList client:load locale={locale} />
-  </main>
+  </PageShell>
 </BaseLayout>

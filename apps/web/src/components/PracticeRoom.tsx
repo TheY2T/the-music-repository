@@ -1,3 +1,4 @@
+import { Button, Card, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { ChordDiagram, GUITAR_CHORDS } from '@/components/ChordDiagrams';
 import { getAudioContext, scheduleDrum, scheduleTone } from '@/lib/audio';
@@ -115,17 +116,17 @@ export default function PracticeRoom() {
           <span className="block font-medium" data-help="chords">
             Progression
           </span>
-          <select
+          <Select
             value={progKey}
             onChange={(e) => setProgKey(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {PROGRESSIONS.map((p) => (
               <option key={p.key} value={p.key}>
                 {p.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium" data-help="rhythm">
@@ -146,7 +147,7 @@ export default function PracticeRoom() {
         </label>
       </div>
 
-      <div className="flex flex-col items-center gap-3 rounded-lg border border-border p-6">
+      <Card className="flex flex-col items-center gap-3 p-6">
         {/* Beat indicator */}
         <div className="flex gap-2">
           {[0, 1, 2, 3].map((i) => (
@@ -164,7 +165,7 @@ export default function PracticeRoom() {
         </div>
         <ChordDiagram chord={chordShape(currentChordName)} />
         <span className="text-2xl font-bold">{currentChordName}</span>
-      </div>
+      </Card>
 
       <div className="flex flex-wrap gap-2">
         {progression.chords.map((name, i) => (
@@ -179,15 +180,14 @@ export default function PracticeRoom() {
         ))}
       </div>
 
-      <button
+      <Button
         type="button"
+        variant={running ? 'outline' : 'default'}
+        className="px-6"
         onClick={() => setRunning((r) => !r)}
-        className={`rounded-md px-6 py-2 text-sm font-medium ${
-          running ? 'border border-border' : 'bg-primary text-primary-foreground'
-        }`}
       >
         {running ? '■ Stop' : '▶ Play'}
-      </button>
+      </Button>
       <p className="text-xs text-muted-foreground">
         A jam station — pick a progression and tempo, and the band (drums + bass + comping) loops
         while the current chord's shape and the beat are shown. Grab your instrument and play along.

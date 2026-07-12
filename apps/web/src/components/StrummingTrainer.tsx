@@ -1,3 +1,4 @@
+import { Button, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { ChordDiagram, GUITAR_CHORDS, strumChord } from '@/components/ChordDiagrams';
 
@@ -72,31 +73,31 @@ export default function StrummingTrainer() {
           <span className="block font-medium" data-help="chords">
             Chord
           </span>
-          <select
+          <Select
             value={chordName}
             onChange={(e) => setChordName(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {GUITAR_CHORDS.map((c) => (
               <option key={c.name} value={c.name}>
                 {c.name}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Pattern</span>
-          <select
+          <Select
             value={patternKey}
             onChange={(e) => setPatternKey(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {PATTERNS.map((p) => (
               <option key={p.key} value={p.key}>
                 {p.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium" data-help="rhythm">
@@ -136,15 +137,14 @@ export default function StrummingTrainer() {
         </div>
       </div>
 
-      <button
+      <Button
         type="button"
+        variant={running ? 'outline' : 'default'}
+        className="px-6"
         onClick={() => setRunning((r) => !r)}
-        className={`rounded-md px-6 py-2 text-sm font-medium ${
-          running ? 'border border-border' : 'bg-primary text-primary-foreground'
-        }`}
       >
         {running ? '■ Stop' : '▶ Play'}
-      </button>
+      </Button>
       <p className="text-xs text-muted-foreground">
         ↓ = downstroke (strum low to high), ↑ = upstroke, · = skip. Loops one bar of eighth notes —
         strum along with the highlighted beat.

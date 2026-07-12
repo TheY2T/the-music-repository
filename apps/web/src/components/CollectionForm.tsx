@@ -1,7 +1,7 @@
 import type { CollectionWriteInput } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
+import { Button, Field, Input, Select, Textarea } from '@TheY2T/tmr-ui';
 import { type FormEvent, useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { collectionsAdminApi } from '@/lib/admin-api';
 
 const KINDS = ['course', 'path', 'syllabus', 'songlist'] as const;
@@ -105,8 +105,6 @@ export default function CollectionForm({ slug, locale }: { slug?: string; locale
     }
   }
 
-  const inputClass = 'w-full rounded-md border border-input bg-background px-3 py-2 text-sm';
-
   return (
     <div className="space-y-6">
       {error ? (
@@ -126,36 +124,32 @@ export default function CollectionForm({ slug, locale }: { slug?: string; locale
       ) : null}
 
       <form onSubmit={onSave} className="space-y-4">
-        <label className="block space-y-1">
-          <span className="text-sm font-medium">{t(locale, 'colform.slug')}</span>
-          <input
-            className={inputClass}
+        <Field label={t(locale, 'colform.slug')} htmlFor="colform-slug">
+          <Input
+            id="colform-slug"
             value={form.slug}
             readOnly={isEdit}
             onChange={(e) => set('slug', e.target.value)}
             placeholder="beginner-piano-path"
           />
-        </label>
-        <label className="block space-y-1">
-          <span className="text-sm font-medium">{t(locale, 'colform.title')}</span>
-          <input
-            className={inputClass}
+        </Field>
+        <Field label={t(locale, 'colform.title')} htmlFor="colform-title">
+          <Input
+            id="colform-title"
             value={form.title}
             onChange={(e) => set('title', e.target.value)}
           />
-        </label>
-        <label className="block space-y-1">
-          <span className="text-sm font-medium">{t(locale, 'colform.summary')}</span>
-          <input
-            className={inputClass}
+        </Field>
+        <Field label={t(locale, 'colform.summary')} htmlFor="colform-summary">
+          <Input
+            id="colform-summary"
             value={form.summary}
             onChange={(e) => set('summary', e.target.value)}
           />
-        </label>
-        <label className="block space-y-1">
-          <span className="text-sm font-medium">{t(locale, 'colform.kind')}</span>
-          <select
-            className={inputClass}
+        </Field>
+        <Field label={t(locale, 'colform.kind')} htmlFor="colform-kind">
+          <Select
+            id="colform-kind"
             value={form.kind}
             onChange={(e) => set('kind', e.target.value as CollectionWriteInput['kind'])}
           >
@@ -164,17 +158,17 @@ export default function CollectionForm({ slug, locale }: { slug?: string; locale
                 {k}
               </option>
             ))}
-          </select>
-        </label>
-        <label className="block space-y-1">
-          <span className="text-sm font-medium">{t(locale, 'colform.itemsHelp')}</span>
-          <textarea
-            className={`${inputClass} h-40 font-mono`}
+          </Select>
+        </Field>
+        <Field label={t(locale, 'colform.itemsHelp')} htmlFor="colform-items">
+          <Textarea
+            id="colform-items"
+            className="h-40 font-mono"
             value={form.items}
             onChange={(e) => set('items', e.target.value)}
             placeholder={'c-major-scale-two-octaves\nczerny-op-599-no-1'}
           />
-        </label>
+        </Field>
 
         <div className="flex flex-wrap gap-3 border-t pt-4">
           <Button type="submit" disabled={busy}>

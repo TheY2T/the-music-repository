@@ -1,3 +1,4 @@
+import { Button } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { CHORDS, midiToFrequency } from '@/lib/music-theory';
@@ -54,13 +55,9 @@ export default function ChordQualityEar() {
   return (
     <div className="space-y-5">
       <div className="flex items-center gap-4">
-        <button
-          type="button"
-          onClick={() => playChord(QUALITY_CHORDS[current].intervals, root)}
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-        >
+        <Button type="button" onClick={() => playChord(QUALITY_CHORDS[current].intervals, root)}>
           ▶ Replay
-        </button>
+        </Button>
         <span className="text-sm text-muted-foreground">
           Score: {score.correct}/{score.total}
         </span>
@@ -102,13 +99,9 @@ export default function ChordQualityEar() {
           <span className="text-sm font-medium">
             {answered === current ? '✓ Correct!' : `✗ It was ${QUALITY_CHORDS[current].name}`}
           </span>
-          <button
-            type="button"
-            onClick={next}
-            className="rounded-md border border-border px-4 py-2 text-sm font-medium"
-          >
+          <Button type="button" variant="outline" onClick={next}>
             Next →
-          </button>
+          </Button>
         </div>
       ) : (
         <p className="text-sm text-muted-foreground">Listen, then name the chord quality.</p>

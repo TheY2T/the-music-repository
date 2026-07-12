@@ -15,5 +15,8 @@ export default defineConfig({
   server: { port: 4321 },
   vite: {
     plugins: [tailwindcss()],
+    // The UI package ships raw source (incl. `.astro`), which Astro must transform rather than
+    // treat as an externalized node_modules dependency during SSR. See docs/features/design-system.md.
+    ssr: { noExternal: ['@TheY2T/tmr-ui'] },
   },
 });

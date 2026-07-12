@@ -1,3 +1,4 @@
+import { Select } from '@TheY2T/tmr-ui';
 import { useCallback, useEffect, useState } from 'react';
 import { pitchName } from '@/lib/music-theory';
 import {
@@ -85,17 +86,17 @@ export default function SoundfontPlayer() {
       <div className="flex flex-wrap items-center gap-3">
         <label className="flex items-center gap-2 text-sm">
           <span className="font-medium">Instrument</span>
-          <select
+          <Select
             value={instrument}
             onChange={(e) => setInstrument(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1"
+            className="h-auto w-auto px-2 py-1"
           >
             {SOUNDFONT_INSTRUMENTS.map((inst) => (
               <option key={inst.name} value={inst.name}>
                 {inst.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         {lastNote ? (
           <span className="text-sm text-muted-foreground">

@@ -1,3 +1,4 @@
+import { Button, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { getAudioContext, scheduleDrum, scheduleTone } from '@/lib/audio';
 import { midiToFrequency, pitchName } from '@/lib/music-theory';
@@ -143,31 +144,31 @@ export default function BassLineGenerator() {
           <span className="block font-medium" data-help="chords">
             Progression
           </span>
-          <select
+          <Select
             value={progKey}
             onChange={(e) => setProgKey(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {PROGRESSIONS.map((p) => (
               <option key={p.key} value={p.key}>
                 {p.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Bass style</span>
-          <select
+          <Select
             value={style}
             onChange={(e) => setStyle(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {STYLES.map((s) => (
               <option key={s.key} value={s.key}>
                 {s.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium" data-help="rhythm">
@@ -208,15 +209,14 @@ export default function BassLineGenerator() {
         <span className="font-medium text-foreground">{pitchName(currentBar.root)}</span>
       </p>
 
-      <button
+      <Button
         type="button"
+        variant={running ? 'outline' : 'default'}
+        className="px-6"
         onClick={() => setRunning((r) => !r)}
-        className={`rounded-md px-6 py-2 text-sm font-medium ${
-          running ? 'border border-border' : 'bg-primary text-primary-foreground'
-        }`}
       >
         {running ? '■ Stop' : '▶ Play'}
-      </button>
+      </Button>
       <p className="text-xs text-muted-foreground">
         Generates a bass line under the progression — <strong>roots</strong>,{' '}
         <strong>root–fifth</strong>, or a <strong>walking</strong> line (root · 3rd · 5th ·

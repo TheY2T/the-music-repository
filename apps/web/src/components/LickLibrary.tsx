@@ -1,3 +1,4 @@
+import { Button, Card, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { playGlide, playTone } from '@/lib/audio';
 import { midiToFrequency, STANDARD_TUNING } from '@/lib/music-theory';
@@ -339,17 +340,17 @@ export default function LickLibrary() {
       <div className="flex flex-wrap items-end gap-4">
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Category</span>
-          <select
+          <Select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {CATEGORIES.map((c) => (
               <option key={c.key} value={c.key}>
                 {c.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium" data-help="rhythm">
@@ -380,7 +381,7 @@ export default function LickLibrary() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         {licks.map((lick) => (
-          <div key={lick.key} className="space-y-2 rounded-lg border border-border p-3">
+          <Card key={lick.key} className="space-y-2 p-3">
             <div>
               <span className="font-semibold" data-help="improvisation">
                 {lick.title}
@@ -388,14 +389,10 @@ export default function LickLibrary() {
               <p className="text-xs text-muted-foreground">{lick.context}</p>
             </div>
             <Tab steps={lick.steps} activeStep={playing?.lick === lick.key ? playing.step : -1} />
-            <button
-              type="button"
-              onClick={() => playLick(lick)}
-              className="rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground"
-            >
+            <Button type="button" size="sm" onClick={() => playLick(lick)}>
               ▶ Play
-            </button>
-          </div>
+            </Button>
+          </Card>
         ))}
       </div>
       <p className="text-xs text-muted-foreground">

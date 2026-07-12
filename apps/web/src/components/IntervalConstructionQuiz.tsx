@@ -1,3 +1,4 @@
+import { Button, Card } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { INTERVAL_NAMES, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
@@ -46,7 +47,7 @@ export default function IntervalConstructionQuiz() {
         Score: {score.correct}/{score.total}
       </span>
 
-      <div className="rounded-lg border border-border p-6 text-center">
+      <Card className="p-6 text-center">
         <p className="text-sm text-muted-foreground">Build a</p>
         <p className="my-1 text-2xl font-bold" data-help="intervals">
           {INTERVAL_NAMES[round.semitones]}
@@ -55,7 +56,7 @@ export default function IntervalConstructionQuiz() {
           above{' '}
           <span className="font-semibold text-foreground">{pitchName(round.root, flats)}</span>
         </p>
-      </div>
+      </Card>
 
       <div className="flex flex-wrap gap-2">
         {ROOT_CHOICES.map((pc) => {
@@ -92,13 +93,9 @@ export default function IntervalConstructionQuiz() {
           <span className="text-sm font-medium">
             {answered === targetPc ? '✓ Correct!' : `✗ It was ${pitchName(targetPc, flats)}`}
           </span>
-          <button
-            type="button"
-            onClick={next}
-            className="rounded-md border border-border px-4 py-2 text-sm font-medium"
-          >
+          <Button type="button" variant="outline" onClick={next}>
             Next →
-          </button>
+          </Button>
         </div>
       ) : (
         <p className="text-sm text-muted-foreground">Pick the note that completes the interval.</p>

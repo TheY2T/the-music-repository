@@ -1,5 +1,6 @@
 import { ApiProvider, type CollectionSummary, useListCollections } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
+import { Badge, CardGrid } from '@TheY2T/tmr-ui';
 
 function List({ locale }: { locale: Locale }) {
   const { data, isLoading } = useListCollections();
@@ -12,7 +13,7 @@ function List({ locale }: { locale: Locale }) {
     return <p className="text-sm text-muted-foreground">{t(locale, 'collections.empty')}</p>;
   }
   return (
-    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <CardGrid>
       {items.map((collection) => (
         <li key={collection.slug}>
           <a
@@ -20,9 +21,9 @@ function List({ locale }: { locale: Locale }) {
             className="flex h-full flex-col gap-2 rounded-lg border border-border p-4 transition-colors hover:bg-muted"
           >
             <div className="flex items-center gap-2">
-              <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
+              <Badge variant="secondary" className="font-mono">
                 {collection.kind}
-              </span>
+              </Badge>
               <span className="text-xs text-muted-foreground">
                 {collection.itemCount}{' '}
                 {t(
@@ -38,7 +39,7 @@ function List({ locale }: { locale: Locale }) {
           </a>
         </li>
       ))}
-    </ul>
+    </CardGrid>
   );
 }
 

@@ -2,6 +2,7 @@
 import AcceptInvitation from '@/components/AcceptInvitation.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 if (!Astro.locals.flags.classrooms) {
   return Astro.redirect('/');
@@ -15,10 +16,7 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={`${t(locale, 'classrooms.acceptHeading')} — ${t(locale, 'site.name')}`}>
-  <main class="mx-auto max-w-lg space-y-6 p-8">
-    <header class="space-y-1">
-      <h1 class="text-2xl font-bold">{t(locale, 'classrooms.acceptHeading')}</h1>
-    </header>
+  <PageShell title={t(locale, 'classrooms.acceptHeading')} maxWidth="max-w-lg">
     <AcceptInvitation client:load locale={locale} />
-  </main>
+  </PageShell>
 </BaseLayout>

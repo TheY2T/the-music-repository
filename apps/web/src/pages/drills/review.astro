@@ -2,6 +2,7 @@
 import ReviewSession from '@/components/ReviewSession.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 if (!Astro.locals.flags.trainers) {
   return Astro.redirect('/');
@@ -13,13 +14,11 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={`${t(locale, 'drills.review')} — ${t(locale, 'site.name')}`}>
-  <main class="mx-auto max-w-2xl space-y-6 p-8">
-    <header class="space-y-1">
-      <a href={localizedPath(locale, '/drills')} class="text-sm text-muted-foreground underline">
-        {t(locale, 'common.backDrills')}
-      </a>
-      <h1 class="text-3xl font-bold">{t(locale, 'drills.reviewAllDue')}</h1>
-    </header>
+  <PageShell
+    title={t(locale, 'drills.reviewAllDue')}
+    back={{ href: localizedPath(locale, '/drills'), label: t(locale, 'common.backDrills') }}
+    maxWidth="max-w-2xl"
+  >
     <ReviewSession client:load locale={locale} />
-  </main>
+  </PageShell>
 </BaseLayout>

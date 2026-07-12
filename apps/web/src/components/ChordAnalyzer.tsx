@@ -1,3 +1,4 @@
+import { Button, Card, Input, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import {
@@ -122,21 +123,21 @@ export default function ChordAnalyzer({ syncEnabled = false }: { syncEnabled?: b
           <span className="block font-medium" data-help="scales">
             Key (major)
           </span>
-          <select
+          <Select
             value={keyRoot}
             onChange={(e) => setKeyRoot(Number(e.target.value))}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {ROOT_CHOICES.map((pc) => (
               <option key={pc} value={pc}>
                 {pitchName(pc)}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Preset</span>
-          <select
+          <Select
             onChange={(e) => {
               const preset = PRESETS.find((p) => p.key === e.target.value);
               if (preset) {
@@ -144,7 +145,7 @@ export default function ChordAnalyzer({ syncEnabled = false }: { syncEnabled?: b
                 setChords(preset.chords);
               }
             }}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
             defaultValue=""
           >
             <option value="" disabled>
@@ -155,49 +156,45 @@ export default function ChordAnalyzer({ syncEnabled = false }: { syncEnabled?: b
                 {p.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       </div>
 
-      <div className="flex flex-wrap items-end gap-2 rounded-lg border border-border p-3">
+      <Card className="flex flex-wrap items-end gap-2 p-3">
         <span className="text-sm font-medium">Add chord:</span>
-        <select
+        <Select
           value={addRoot}
           onChange={(e) => setAddRoot(Number(e.target.value))}
-          className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+          className="h-auto w-auto px-2 py-1"
         >
           {ROOT_CHOICES.map((pc) => (
             <option key={pc} value={pc}>
               {pitchName(pc)}
             </option>
           ))}
-        </select>
-        <select
+        </Select>
+        <Select
           value={addQuality}
           onChange={(e) => setAddQuality(e.target.value)}
-          className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+          className="h-auto w-auto px-2 py-1"
         >
           {CHORDS.map((c) => (
             <option key={c.key} value={c.key}>
               {c.name}
             </option>
           ))}
-        </select>
-        <button
+        </Select>
+        <Button
           type="button"
+          size="sm"
           onClick={() => setChords((cs) => [...cs, { root: addRoot, quality: addQuality }])}
-          className="rounded-md bg-primary px-3 py-1 text-sm font-medium text-primary-foreground"
         >
           Add
-        </button>
-        <button
-          type="button"
-          onClick={() => setChords([])}
-          className="rounded-md border border-border px-3 py-1 text-sm"
-        >
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={() => setChords([])}>
           Clear
-        </button>
-      </div>
+        </Button>
+      </Card>
 
       {chords.length > 0 ? (
         <div className="space-y-3">
@@ -238,13 +235,9 @@ export default function ChordAnalyzer({ syncEnabled = false }: { syncEnabled?: b
             })}
           </div>
           <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={playAll}
-              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-            >
+            <Button type="button" onClick={playAll}>
               ▶ Play progression
-            </button>
+            </Button>
             <span className="self-center font-mono text-sm text-muted-foreground">
               {chords.map((c) => analyzeChordInKey(keyRoot, c.root, c.quality).roman).join(' – ')}
             </span>
@@ -306,27 +299,27 @@ export default function ChordAnalyzer({ syncEnabled = false }: { syncEnabled?: b
       )}
 
       {/* Save / load (localStorage) */}
-      <div className="space-y-2 rounded-lg border border-border p-3">
+      <Card className="space-y-2 p-3">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm font-medium">Save progression:</span>
-          <input
+          <Input
             value={saveName}
             onChange={(e) => setSaveName(e.target.value)}
             placeholder="Name"
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           />
-          <button
+          <Button
             type="button"
+            size="sm"
             onClick={() => {
               if (saveName.trim() && chords.length) {
                 persistSave({ name: saveName.trim(), keyRoot, chords });
                 setSaveName('');
               }
             }}
-            className="rounded-md bg-primary px-3 py-1 text-sm font-medium text-primary-foreground"
           >
             Save
-          </button>
+          </Button>
         </div>
         {saved.length ? (
           <ul className="space-y-1 text-sm">
@@ -362,7 +355,7 @@ export default function ChordAnalyzer({ syncEnabled = false }: { syncEnabled?: b
               : 'Saved progressions persist in this browser.'}
           </p>
         )}
-      </div>
+      </Card>
 
       <p className="text-xs text-muted-foreground">
         Each chord's <strong>Roman numeral</strong> and <strong>function</strong> (Tonic /

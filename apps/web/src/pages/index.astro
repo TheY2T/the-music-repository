@@ -3,6 +3,7 @@ import FlagBanner from '@/components/FlagBanner.tsx';
 import HealthCard from '@/components/HealthCard.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 const { demoNewBanner, authEnabled, adminCms, favorites, collections, progress } = Astro.locals.flags;
 const locale = Astro.locals.locale;
@@ -111,10 +112,7 @@ const showTools =
 ---
 
 <BaseLayout title={t(locale, 'home.title')}>
-  <main class="mx-auto max-w-2xl space-y-6 p-8">
-    <header class="space-y-1">
-      <h1 class="text-3xl font-bold">{t(locale, 'home.title')}</h1>
-      <p class="text-muted-foreground">{t(locale, 'home.tagline')}</p>
+  <PageShell title={t(locale, 'home.title')} subtitle={t(locale, 'home.tagline')} maxWidth="max-w-2xl">
       <div class="flex flex-wrap items-center gap-3">
         <a
           href={localizedPath(locale, '/catalogue')}
@@ -197,9 +195,8 @@ const showTools =
             ))
         }
       </div>
-    </header>
 
     <FlagBanner client:load initial={demoNewBanner} />
     <HealthCard client:load />
-  </main>
+  </PageShell>
 </BaseLayout>

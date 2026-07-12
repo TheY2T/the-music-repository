@@ -3,6 +3,7 @@ import CollectionForm from '@/components/CollectionForm.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { guardAdmin } from '@/lib/admin-guard';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 const redirect = guardAdmin(Astro);
 if (redirect) {
@@ -16,13 +17,11 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={`${t(locale, 'admin.editCollection')} — ${t(locale, 'nav.admin')}`}>
-  <main class="mx-auto max-w-2xl space-y-6 p-8">
-    <header class="space-y-1">
-      <a href={localizedPath(locale, '/admin/collections')} class="text-sm text-muted-foreground underline">
-        {t(locale, 'common.backCollections')}
-      </a>
-      <h1 class="text-3xl font-bold">{t(locale, 'admin.editCollection')}</h1>
-    </header>
+  <PageShell
+    title={t(locale, 'admin.editCollection')}
+    back={{ href: localizedPath(locale, '/admin/collections'), label: t(locale, 'common.backCollections') }}
+    maxWidth="max-w-2xl"
+  >
     <CollectionForm client:load slug={slug} locale={locale} />
-  </main>
+  </PageShell>
 </BaseLayout>

@@ -1,3 +1,4 @@
+import { Select } from '@TheY2T/tmr-ui';
 import { useMemo, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import {
@@ -48,10 +49,10 @@ export default function GuitarFretboard() {
             Highlight scale
           </span>
           <div className="flex gap-2">
-            <select
+            <Select
               value={root ?? ''}
               onChange={(e) => setRoot(e.target.value === '' ? null : Number(e.target.value))}
-              className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+              className="h-auto w-auto px-2 py-1"
             >
               <option value="">— root —</option>
               {ROOT_CHOICES.map((pc) => (
@@ -59,18 +60,18 @@ export default function GuitarFretboard() {
                   {pitchName(pc)}
                 </option>
               ))}
-            </select>
-            <select
+            </Select>
+            <Select
               value={scaleKey}
               onChange={(e) => setScaleKey(e.target.value)}
-              className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+              className="h-auto w-auto px-2 py-1"
             >
               {SCALES.map((s) => (
                 <option key={s.key} value={s.key}>
                   {s.name}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
         </label>
         <div className="ml-auto text-sm text-muted-foreground">

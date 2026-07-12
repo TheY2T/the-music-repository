@@ -1,3 +1,4 @@
+import { Button, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { ChordDiagram, GUITAR_CHORDS, strumChord } from '@/components/ChordDiagrams';
 
@@ -83,31 +84,31 @@ export default function ProgressionPlayer() {
           <span className="block font-medium" data-help="chords">
             Progression
           </span>
-          <select
+          <Select
             value={progKey}
             onChange={(e) => setProgKey(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {PROGRESSIONS.map((p) => (
               <option key={p.key} value={p.key}>
                 {p.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Strum</span>
-          <select
+          <Select
             value={patternKey}
             onChange={(e) => setPatternKey(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+            className="h-auto w-auto px-2 py-1"
           >
             {PATTERNS.map((p) => (
               <option key={p.key} value={p.key}>
                 {p.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="space-y-1 text-sm">
           <span className="block font-medium" data-help="rhythm">
@@ -155,15 +156,14 @@ export default function ProgressionPlayer() {
         ))}
       </div>
 
-      <button
+      <Button
         type="button"
+        variant={running ? 'outline' : 'default'}
+        className="px-6"
         onClick={() => setRunning((r) => !r)}
-        className={`rounded-md px-6 py-2 text-sm font-medium ${
-          running ? 'border border-border' : 'bg-primary text-primary-foreground'
-        }`}
       >
         {running ? '■ Stop' : '▶ Play'}
-      </button>
+      </Button>
       <p className="text-xs text-muted-foreground">
         Loops the progression — one bar per chord — with your chosen strum. Follow the highlighted
         chord and strum along; change tempo to build it up.

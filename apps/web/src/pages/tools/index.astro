@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 const {
   toolKeyboard,
@@ -108,14 +109,11 @@ if (tools.length === 0) {
 ---
 
 <BaseLayout title={t(locale, 'tools.pageTitle')}>
-  <main class="mx-auto max-w-4xl space-y-6 p-8">
-    <header class="space-y-1">
-      <a href={localizedPath(locale, '/')} class="text-sm text-muted-foreground underline">
-        {t(locale, 'common.backHome')}
-      </a>
-      <h1 class="text-3xl font-bold">{t(locale, 'tools.title')}</h1>
-      <p class="text-muted-foreground">{t(locale, 'tools.subtitle')}</p>
-    </header>
+  <PageShell
+    title={t(locale, 'tools.title')}
+    subtitle={t(locale, 'tools.subtitle')}
+    back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
+  >
     <ul class="grid gap-4 sm:grid-cols-2">
       {
         tools.map((tool) => (
@@ -133,5 +131,5 @@ if (tools.length === 0) {
         ))
       }
     </ul>
-  </main>
+  </PageShell>
 </BaseLayout>
