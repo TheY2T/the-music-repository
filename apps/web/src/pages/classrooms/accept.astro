@@ -1,0 +1,36 @@
+---
+import AcceptInvitation from '@/components/AcceptInvitation.tsx';
+import '@/styles/global.css';
+
+if (!Astro.locals.flags.classrooms) {
+  return Astro.redirect('/');
+}
+// Preserve the token through sign-in so the accept completes afterwards.
+if (!Astro.locals.user) {
+  const token = Astro.url.searchParams.get('token') ?? '';
+  return Astro.redirect(`/signin?redirect=${encodeURIComponent(`/classrooms/accept?token=${token}`)}`);
+}
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Accept invitation — The Music Repository</title>
+    <script is:inline>
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body>
+    <main class="mx-auto max-w-lg space-y-6 p-8">
+      <header class="space-y-1">
+        <h1 class="text-2xl font-bold">Classroom invitation</h1>
+      </header>
+      <AcceptInvitation client:load />
+    </main>
+  </body>
+</html>

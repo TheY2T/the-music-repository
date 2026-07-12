@@ -43,4 +43,12 @@ export abstract class ClassroomsRepository {
   abstract assignments(classroomId: string): Promise<AssignmentView[]>;
   /** Completed (memberId, contentSlug) pairs among the class's assigned content. */
   abstract completedAssignments(classroomId: string): Promise<{ memberId: string; slug: string }[]>;
+
+  // --- Invitations (6C) ---
+  abstract createInvitation(classroomId: string, email: string, token: string): Promise<void>;
+  abstract findInvitationByToken(
+    token: string,
+  ): Promise<{ classroomId: string; email: string; acceptedAt: Date | null } | null>;
+  abstract markInvitationAccepted(token: string): Promise<void>;
+  abstract listInvitations(classroomId: string): Promise<{ email: string; accepted: boolean }[]>;
 }

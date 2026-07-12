@@ -4,6 +4,7 @@ import { RequireFlagsEnabled } from '@openfeature/nestjs-sdk';
 import { CurrentUser } from '../auth/application/current-user';
 import { RequireAuth, RequirePermissions } from '../auth/require-permissions.decorator';
 import {
+  AcceptInvitationUseCase,
   ArchiveClassroomUseCase,
   AssignContentUseCase,
   CreateClassroomUseCase,
@@ -11,9 +12,11 @@ import {
   GetClassProgressUseCase,
   GetClassroomUseCase,
   GrantClassroomPremiumUseCase,
+  InviteToClassroomUseCase,
   JoinClassroomUseCase,
   LeaveClassroomUseCase,
   ListClassroomsUseCase,
+  ListInvitationsUseCase,
   RemoveMemberUseCase,
   TransferOwnershipUseCase,
   UnassignContentUseCase,
@@ -21,6 +24,7 @@ import {
 import {
   AssignContentDto,
   CreateClassroomDto,
+  InviteToClassroomDto,
   JoinClassroomDto,
   TransferOwnershipDto,
 } from './dto/classrooms.dto';
@@ -47,6 +51,9 @@ export class ClassroomsController {
     private readonly unassignContent: UnassignContentUseCase,
     private readonly getAssignments: GetAssignmentsUseCase,
     private readonly getClassProgress: GetClassProgressUseCase,
+    private readonly inviteToClassroom: InviteToClassroomUseCase,
+    private readonly listInvitations: ListInvitationsUseCase,
+    private readonly acceptInvitation: AcceptInvitationUseCase,
   ) {}
 
   @Get('me/classrooms')
@@ -148,5 +155,27 @@ export class ClassroomsController {
   @RequireAuth()
   progress(@Param('id') id: string) {
     return this.getClassProgress.execute(id, this.currentUser.require().id);
+  }
+
+  @Post('classrooms/:id/invitations')
+  @HttpCode(201)
+  @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.Classrooms }] })
+  @RequireAuth()
+  invite(@Param('id') id: string, @Body() body: InviteToClassroomDto) {
+    return this.inviteToClassroom.execute(id, this.currentUser.require().id, body.email);
+  }
+
+  @Get('classrooms/:id/invitations')
+  @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.Classrooms }] })
+  @RequireAuth()
+  async invitations(@Param('id') id: string) {
+    return { items: await this.listInvitations.execute(id, this.currentUser.require().id) };
+  }
+
+  @Post('classrooms/invitations/:token/accept')
+  @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.Classrooms }] })
+  @RequireAuth()
+  accept(@Param('token') token: string) {
+    return this.acceptInvitation.execute(token, this.currentUser.require().id);
   }
 }

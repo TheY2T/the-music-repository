@@ -28,7 +28,7 @@ server-side; the browser never touches `/billing/webhook`.
 
 | Route | Auth | Result |
 |---|---|---|
-| `POST /me/checkout` | `@RequireAuth` + `monetization.premium` | `{ url }` to redirect to (in TypeSpec) |
+| `POST /me/checkout` | `@RequireAuth` + `monetization.premium` | body `{ plan?: 'premium'\|'pro' }` → `{ url }`. The **plan** is recorded on the checkout session (`entitlement_key`) and the webhook grants that tier — so `pro` checkout grants a `pro` entitlement (unlocks pro content). Stripe picks the price by plan (`STRIPE_PRICE_ID` / `STRIPE_PRO_PRICE_ID`). |
 | `POST /me/billing-portal` | `@RequireAuth` + `monetization.premium` | `{ url }` — manage card/cancel/invoices (mock → `/upgrade`; Stripe → real portal for the user's customer) |
 | `POST /billing/webhook` | none (signature) | `{ received: true }`; grants/revokes premium (NOT in TypeSpec — inbound provider endpoint, like Better Auth) |
 
@@ -72,8 +72,17 @@ Webhook events handled: `checkout.session.completed` (first purchase → grant),
   active" (`premium:true`). Verified end-to-end; test user reset afterwards; artifacts cleaned.
 - `pnpm build lint check-types` green (25/25); spec drift clean; domain framework-free.
 
+## Tiered checkout (Phase 6, 6B)
+
+`POST /me/checkout { plan }` supports `premium` and `pro`. The plan rides on the `checkout_sessions.
+entitlement_key` column; on completion the webhook calls `Entitlements.grant(userId, key, …)` for that
+tier. Web `/upgrade` shows **Subscribe — Premium** / **Subscribe — Pro**; the mock checkout page shows
+the chosen plan + price. Subscription **status** reflects any active tier (a pro-only user shows
+`premium: true`), and **cancel revokes all tiers**. Verified end-to-end (curl + browser): pro checkout →
+pro entitlement → pro-tier content unlocks.
+
 ## Follow-ups (open in `docs/backlog.md`)
 
 Real Stripe keys → flip env; add **raw-body capture** on the webhook route (signature needs exact
-bytes); **subscription lifecycle** (renew on `invoice.paid`, `expires_at` from billing period);
-**billing portal**; seat billing. The mock sets a 30-day expiry to exercise the `expires_at` path.
+bytes); **subscription lifecycle** (`invoice.payment_failed` grace, real period-end `expires_at`);
+seat billing. The mock sets a 30-day expiry to exercise the `expires_at` path.

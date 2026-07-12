@@ -80,7 +80,21 @@ education path into monetization: a teacher (or school) unlocks premium for thei
   Verified curl (learner 403 / teacher 201 / admin 201) + browser (create form present for teacher,
   absent for learner).
 
+## Email invitations (Phase 6, 6C — shipped)
+
+- **Mail transport** (`apps/api/src/mail/`): a `MailSender` port bound to `LogMailSender` (dev/CI —
+  logs the message, no delivery) or `SmtpMailSender` (nodemailer) when `SMTP_URL` is set. `MailModule`
+  picks by env; app code depends only on the port. See `.env.example` (`SMTP_URL`, `MAIL_FROM`).
+- **Invitations** (`classroom_invitations` table): `POST /classrooms/{id}/invitations` `{ email }`
+  (owner) mints a token, emails an accept link, and returns `{ email, acceptUrl }` (so the teacher can
+  share it too — handy in dev where mail is only logged). `GET /classrooms/{id}/invitations` lists them;
+  `POST /classrooms/invitations/{token}/accept` joins the signed-in user (auto-granting premium if the
+  class has it) and marks the invite accepted (a reused/invalid token → 404).
+- **Web:** `ClassroomsManager` gained an owner **Invitations** section (invite by email + pending list);
+  a new `/classrooms/accept?token=…` page (`AcceptInvitation.tsx`) accepts the token (routing through
+  sign-in first if needed). Verified curl (invite → dev-mail logged → accept → member; reused → 404) +
+  browser (invite form → pending shows).
+
 ## Next (Phase 6 later)
 
-- Email invitations (needs a mail transport; join codes work today); expiring class seats via real
-  payment-provider seat billing (Stripe quantity).
+- Expiring class seats via real payment-provider seat billing (Stripe quantity).

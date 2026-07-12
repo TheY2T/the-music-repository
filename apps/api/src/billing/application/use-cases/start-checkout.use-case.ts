@@ -9,15 +9,26 @@ export class StartCheckoutUseCase {
     private readonly sessions: CheckoutSessionStore,
   ) {}
 
-  /** Start a checkout for the user; returns the URL to redirect to. Premium is granted later by the
-   * provider webhook, not here. */
-  async execute(userId: string, successUrl: string, cancelUrl: string): Promise<{ url: string }> {
+  /** Start a checkout for the user + plan (`premium` | `pro`); returns the URL to redirect to. The
+   * entitlement is granted later by the provider webhook, not here. */
+  async execute(
+    userId: string,
+    plan: string,
+    successUrl: string,
+    cancelUrl: string,
+  ): Promise<{ url: string }> {
     const { url, sessionId } = await this.gateway.createCheckoutSession({
       userId,
+      plan,
       successUrl,
       cancelUrl,
     });
-    await this.sessions.create({ id: sessionId, userId, provider: this.gateway.provider });
+    await this.sessions.create({
+      id: sessionId,
+      userId,
+      provider: this.gateway.provider,
+      entitlementKey: plan,
+    });
     return { url };
   }
 }

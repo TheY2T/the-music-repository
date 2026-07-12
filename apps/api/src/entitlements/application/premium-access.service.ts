@@ -55,16 +55,24 @@ export class PremiumAccessService {
     return { staff: false, keys: await this.entitlements.activeKeys(user.id) };
   }
 
-  /** The acting user's subscription status (requires authentication). */
+  /** The acting user's subscription status (requires authentication). Reflects **any** active tier
+   * (`premium` or `pro`), not just the premium key. */
   async status(): Promise<SubscriptionStatusView> {
     const user = this.currentUser.require();
     if (this.isStaff(user)) {
       return { premium: true, source: 'staff' };
     }
+    const keys = await this.entitlements.activeKeys(user.id);
+    if (keys.length === 0) {
+      return { premium: false, source: 'none' };
+    }
+    // Prefer the premium-key grant's metadata; fall back to a generic subscription for pro-only.
     const grant = await this.entitlements.getPremium(user.id);
-    return grant
-      ? { premium: true, source: grant.source, since: grant.grantedAt.toISOString() }
-      : { premium: false, source: 'none' };
+    return {
+      premium: true,
+      source: grant?.source ?? 'subscription',
+      since: grant?.grantedAt.toISOString(),
+    };
   }
 
   /** Activate premium (mock checkout). Staff already have access, so it's a no-op for them. */

@@ -3,6 +3,7 @@ import { completeMockCheckout } from '@/lib/subscription-api';
 
 interface CheckoutParams {
   session: string;
+  plan: string;
   success: string;
   cancel: string;
 }
@@ -21,6 +22,7 @@ export default function MockCheckout() {
     const p = new URLSearchParams(window.location.search);
     setParams({
       session: p.get('session') ?? '',
+      plan: p.get('plan') ?? 'premium',
       success: p.get('success') ?? '/upgrade?status=success',
       cancel: p.get('cancel') ?? '/upgrade?status=cancel',
     });
@@ -40,8 +42,12 @@ export default function MockCheckout() {
     <div className="space-y-6 rounded-lg border border-border p-6">
       <div>
         <p className="text-sm font-medium text-muted-foreground">Mock payment provider</p>
-        <p className="text-lg font-semibold">The Music Repository — Premium</p>
-        <p className="text-sm text-muted-foreground">$8.00 / month · test mode, no card required</p>
+        <p className="text-lg font-semibold">
+          The Music Repository — {params.plan === 'pro' ? 'Pro' : 'Premium'}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          {params.plan === 'pro' ? '$16.00' : '$8.00'} / month · test mode, no card required
+        </p>
       </div>
       <div className="flex gap-3">
         <button

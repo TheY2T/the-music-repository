@@ -605,6 +605,37 @@
         ]
       }
     },
+    "/classrooms/invitations/{token}/accept": {
+      "post": {
+        "operationId": "acceptInvitation",
+        "description": "Accept an invitation token → the signed-in user joins the class.",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Classroom"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "classrooms"
+        ]
+      }
+    },
     "/classrooms/join": {
       "post": {
         "operationId": "joinClassroom",
@@ -815,6 +846,76 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ClassroomDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "classrooms"
+        ]
+      }
+    },
+    "/classrooms/{id}/invitations": {
+      "post": {
+        "operationId": "inviteToClassroom",
+        "description": "Invite an email to the class (owner only) — emails an accept link.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invitation"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "classrooms"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteInput"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listInvitations",
+        "description": "The class's invitations (owner only).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvitationList"
                 }
               }
             }
@@ -1392,7 +1493,7 @@
     "/me/checkout": {
       "post": {
         "operationId": "startCheckout",
-        "description": "Start a subscription checkout — returns the URL to redirect to. Premium is granted by the\nprovider webhook (`POST /billing/webhook`) on completion, not here.",
+        "description": "Start a subscription checkout — returns the URL to redirect to. The entitlement is granted by the\nprovider webhook (`POST /billing/webhook`) on completion, not here.",
         "parameters": [],
         "responses": {
           "200": {
@@ -1408,7 +1509,17 @@
         },
         "tags": [
           "monetization"
-        ]
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartCheckoutInput"
+              }
+            }
+          }
+        }
       }
     },
     "/me/classrooms": {
@@ -3066,6 +3177,62 @@
           }
         }
       },
+      "Invitation": {
+        "type": "object",
+        "required": [
+          "email",
+          "acceptUrl"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "acceptUrl": {
+            "type": "string"
+          }
+        },
+        "description": "A created invitation — the accept URL is returned so the teacher can share it directly too."
+      },
+      "InvitationList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvitationListItem"
+            }
+          }
+        }
+      },
+      "InvitationListItem": {
+        "type": "object",
+        "required": [
+          "email",
+          "accepted"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "accepted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "InviteInput": {
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      },
       "JoinClassroomInput": {
         "type": "object",
         "required": [
@@ -3502,6 +3669,16 @@
           }
         },
         "description": "A saved progression as returned to the client."
+      },
+      "StartCheckoutInput": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": "string",
+            "description": "Tier to purchase: \"premium\" (default) or \"pro\"."
+          }
+        },
+        "description": "Body for starting a checkout."
       },
       "SubscriptionStatus": {
         "type": "object",

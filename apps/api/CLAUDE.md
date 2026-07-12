@@ -107,9 +107,17 @@ combines `CurrentUser` + `Entitlements` into **entitled = staff OR active premiu
   route-gates 404 while the imperative `getBooleanValue(default)` path still works.
 - The seed upsert updates `visibility`; mark premium items with `visibility: 'premium'` in `seed-data.ts`.
 
+**Mail (`src/mail/`):** `MailSender` port bound by `MailModule`'s factory to `LogMailSender` (dev/CI —
+logs, no delivery) or `SmtpMailSender` (nodemailer) when `SMTP_URL` is set. Inject the port anywhere
+(e.g. classroom invitations). Env: `SMTP_URL`, `MAIL_FROM`.
+
 **Billing (Stripe checkout + webhook, `src/billing/`, ADR 0016):** `CheckoutGateway` port bound by a
 factory to `MockCheckoutGateway` (default) or `StripeCheckoutGateway` (when `STRIPE_SECRET_KEY` is set).
-`POST /me/checkout` (in TypeSpec, `@RequireAuth` + `monetization.premium`) returns a redirect URL;
+`POST /me/checkout` (in TypeSpec, `@RequireAuth` + `monetization.premium`) takes a `{ plan }`
+(`premium`/`pro`) — the plan is recorded on `checkout_sessions.entitlement_key`, and the webhook grants
+that tier via `Entitlements.grant(key)`. Stripe selects the price by plan (`STRIPE_PRICE_ID` /
+`STRIPE_PRO_PRICE_ID`). Subscription **status** reflects any active tier; **cancel revokes all tiers**.
+It returns a redirect URL;
 `POST /billing/webhook` (NOT in TypeSpec — inbound provider endpoint like Better Auth, unauthenticated)
 verifies + normalizes the event and calls the existing `Entitlements.grantPremium`/`revokePremium`.
 Idempotency via `WebhookLedger` (`processed_webhooks`); session↔user via `CheckoutSessionStore`

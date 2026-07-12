@@ -106,7 +106,7 @@ created. Stripe becomes an *inbound adapter* (webhook → `grantPremium`) + an *
 | 💳 **Seat billing** | A teacher/school buys **N seats**; joining consumes a seat; billing via Stripe quantity. Extends `grant-premium` (currently unconditional) into metered seats with `expires_at`. | High | High |
 | ✅ **Assign content to a class** | **Shipped** — `classroom_assignments` table; owner assigns content by slug (`POST /classrooms/{id}/assignments`, 403 non-owner, 404 unknown slug), `DELETE .../assignments/{slug}`, `GET .../assignments` (any member). Web: assign/remove + list in `ClassroomsManager`. Verified curl + browser | Med | High |
 | ✅ **Class progress overview** | **Shipped** — `GET /classrooms/{id}/progress` (owner) reads `content_progress` for members × assigned content → per-student `completedCount/total`. Web: progress list in the manage panel. Verified (learner 1/2) | Med | High |
-| ◑ **Teacher role + invitations** | **Teacher role shipped** — `access-control.ts` gained a `classroom:create` permission + a `teacher` role (admins also have it); `POST /me/classrooms` is now `@RequirePermissions({ classroom: ['create'] })`, so learners/editors get 403 and only teachers/admins create classrooms. Seeded `teacher@local.dev`. Web hides the create form for non-teachers. **Email invitations still open** (needs a mail transport — join codes work today) | Med | Med |
+| ✅ **Teacher role + invitations** | **Both shipped** — `teacher` role + `classroom:create` (only teachers/admins create classrooms; `teacher@local.dev`; web hides the create form). **Email invitations:** a `MailSender` port (`LogMailSender` dev / `SmtpMailSender` when `SMTP_URL` set); `POST /classrooms/{id}/invitations` emails an accept link, `POST /classrooms/invitations/{token}/accept` joins the user; web invite form + `/classrooms/accept` page. Verified curl + browser | Med | Med |
 | ✅ **Auto-grant on join** | **Shipped** — `JoinClassroomUseCase` grants premium (`source:'classroom'`) to a new member when the class is already `premiumGranted`. Verified: learner joins a granted class → `premium:true source:classroom` | Low | Med |
 | ✅ **Leave / remove member, transfer ownership, archive class** | **Shipped** — `leave` (owner blocked → 403), `DELETE .../members/{memberId}` (owner), `archive` (owner; hidden from all rosters), **`POST /classrooms/{id}/transfer`** (owner → a member becomes owner, old owner joins as a member; non-member → 404). Web: remove / make-owner / archive / leave in `ClassroomsManager`. Verified curl + browser | Low | Low |
 
@@ -126,15 +126,17 @@ grace period + real period-end `expires_at`, trials/coupons/proration, annual/mo
 **seat billing** (Stripe quantity).
 
 Also shipped since: **tiered plans** (content `tier` + ranked entitlements — `pro` ⊃ `premium`; catalogue
-gates per tier; redeem codes mint a tier; Premium/Pro lock badges) and the **teacher role**
-(`classroom:create` permission + `teacher` role; only teachers/admins create classrooms; `teacher@local.dev`
-seeded; web hides the create form for non-teachers).
+gates per tier; redeem codes mint a tier; Premium/Pro lock badges), the **teacher role**
+(`classroom:create` + `teacher` role; `teacher@local.dev`), **pro-via-checkout** (`POST /me/checkout
+{ plan }` records the tier on the session; the webhook grants it; Premium/Pro subscribe UI + mock
+checkout; status reflects any tier; cancel revokes all tiers), and a **mail transport + classroom email
+invitations** (`MailSender` port — `LogMailSender` dev / `SmtpMailSender` when `SMTP_URL` set; invite →
+accept-link email → accept joins the class).
 
 **Remaining — genuinely gated on real Stripe test keys:** raw-body capture, `invoice.payment_failed`
 grace + real period-end expiry, trials/coupons/proration, annual/monthly price IDs, seat billing
-(Stripe quantity), and **pro-via-checkout** (`POST /me/checkout?plan=pro` — redeem codes grant `pro`
-today; threading the plan through checkout→webhook is the small remaining piece).
+(Stripe quantity).
 
-**Remaining — no keys needed:** **email invitations** for classrooms (needs a mail transport — join
-codes work today), and an `institution` tier (the tier machinery already generalizes — add the key +
-seed content). All slot in behind the existing `Entitlements` / `CheckoutGateway` ports.
+**Remaining — no keys needed:** an `institution` tier (the tier machinery already generalizes — add the
+key + tag content). Everything else in Phase 6 is delivered; all slots behind the existing
+`Entitlements` / `CheckoutGateway` / `MailSender` ports.

@@ -266,6 +266,7 @@ export const checkoutSessions = pgTable('checkout_sessions', {
     .references(() => user.id, { onDelete: 'cascade' }),
   provider: text('provider').notNull().default('mock'), // mock | stripe
   status: text('status').notNull().default('pending'), // pending | completed | canceled
+  entitlementKey: text('entitlement_key').notNull().default('premium'), // which tier this checkout grants
   stripeCustomerId: text('stripe_customer_id'),
   stripeSubscriptionId: text('stripe_subscription_id'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
@@ -345,6 +346,18 @@ export const classroomAssignments = pgTable(
   },
   (t) => [primaryKey({ columns: [t.classroomId, t.contentId] })],
 );
+
+// --- Classroom invitations (Phase 6, 6C): an emailed invite (token) to join a class. ---
+export const classroomInvitations = pgTable('classroom_invitations', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  classroomId: uuid('classroom_id')
+    .notNull()
+    .references(() => classrooms.id, { onDelete: 'cascade' }),
+  email: text('email').notNull(),
+  token: text('token').notNull().unique(),
+  acceptedAt: timestamp('accepted_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
 
 // --- Info View (Phase 2): context-sensitive help topics keyed by slug (e.g. a term or skill_topic). ---
 export const helpTopics = pgTable('help_topics', {

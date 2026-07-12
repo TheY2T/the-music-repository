@@ -129,3 +129,36 @@ export const transferOwnership = (id: string, memberId: string) =>
   send(`/classrooms/${id}/transfer`, 'POST', { memberId });
 export const leaveClassroom = (id: string) => send(`/classrooms/${id}/leave`, 'POST');
 export const archiveClassroom = (id: string) => send(`/classrooms/${id}/archive`, 'POST');
+
+export interface InvitationItem {
+  email: string;
+  accepted: boolean;
+}
+
+/** Invite an email to a class; returns the accept URL (also emailed) or an error. */
+export async function inviteToClassroom(
+  id: string,
+  email: string,
+): Promise<{ acceptUrl?: string; error?: string }> {
+  const response = await fetch(`${API_BASE}/classrooms/${id}/invitations`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+  if (response.ok) {
+    return { acceptUrl: ((await response.json()) as { acceptUrl: string }).acceptUrl };
+  }
+  return { error: 'Could not send the invitation.' };
+}
+
+export async function listInvitations(id: string): Promise<InvitationItem[]> {
+  const response = await fetch(`${API_BASE}/classrooms/${id}/invitations`, {
+    credentials: 'include',
+  });
+  return response.ok ? ((await response.json()) as { items: InvitationItem[] }).items : [];
+}
+
+/** Accept an invitation token → join the class. Returns ok. */
+export const acceptInvitation = (token: string) =>
+  send(`/classrooms/invitations/${encodeURIComponent(token)}/accept`, 'POST');

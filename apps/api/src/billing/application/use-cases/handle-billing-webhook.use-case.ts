@@ -27,8 +27,8 @@ export class HandleBillingWebhookUseCase {
       return; // already handled (provider retry) — idempotent
     }
     if (event.kind === 'activate') {
-      await this.entitlements.grantPremium(event.userId, 'subscription', event.expiresAt);
-      this.logger.log(`Premium granted to ${event.userId} via webhook ${event.eventId}`);
+      await this.entitlements.grant(event.userId, event.key, 'subscription', event.expiresAt);
+      this.logger.log(`Granted '${event.key}' to ${event.userId} via webhook ${event.eventId}`);
     } else {
       await this.entitlements.revokePremium(event.userId);
       this.logger.log(`Premium revoked for ${event.userId} via webhook ${event.eventId}`);

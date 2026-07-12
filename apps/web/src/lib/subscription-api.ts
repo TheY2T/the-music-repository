@@ -32,12 +32,14 @@ export async function cancelPremium(): Promise<void> {
   await fetch(`${API_BASE}/me/subscription`, { method: 'DELETE', credentials: 'include' });
 }
 
-/** Start a checkout — returns the provider URL to redirect the browser to (Stripe, or the mock
- * checkout page in dev). Premium is granted by the webhook on completion, not here. */
-export async function startCheckout(): Promise<{ url: string } | null> {
+/** Start a checkout for a plan (`premium` | `pro`) — returns the provider URL to redirect to (Stripe,
+ * or the mock checkout page in dev). The entitlement is granted by the webhook on completion, not here. */
+export async function startCheckout(plan = 'premium'): Promise<{ url: string } | null> {
   const response = await fetch(`${API_BASE}/me/checkout`, {
     method: 'POST',
     credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ plan }),
   });
   if (!response.ok) {
     return null;

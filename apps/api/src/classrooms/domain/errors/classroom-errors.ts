@@ -34,3 +34,10 @@ export class MemberNotFoundError extends NotFoundError {
     super(`No member '${memberId}' is in this classroom.`, { memberId });
   }
 }
+
+export class InvalidInvitationError extends NotFoundError {
+  readonly code = 'CLASSROOM_INVITATION_INVALID';
+  constructor() {
+    super(`This invitation is invalid or has already been used.`);
+  }
+}

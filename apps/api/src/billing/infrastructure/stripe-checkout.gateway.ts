@@ -24,6 +24,7 @@ export class StripeCheckoutGateway extends CheckoutGateway {
   readonly provider = 'stripe';
   private readonly stripe: Stripe;
   private readonly priceId: string;
+  private readonly proPriceId: string | undefined;
   private readonly webhookSecret: string;
 
   constructor(
@@ -33,13 +34,15 @@ export class StripeCheckoutGateway extends CheckoutGateway {
     super();
     this.stripe = new Stripe(this.config.getOrThrow<string>('STRIPE_SECRET_KEY'));
     this.priceId = this.config.getOrThrow<string>('STRIPE_PRICE_ID');
+    this.proPriceId = this.config.get<string>('STRIPE_PRO_PRICE_ID');
     this.webhookSecret = this.config.getOrThrow<string>('STRIPE_WEBHOOK_SECRET');
   }
 
   async createCheckoutSession(req: CreateCheckoutRequest): Promise<CreateCheckoutResult> {
+    const price = req.plan === 'pro' && this.proPriceId ? this.proPriceId : this.priceId;
     const session = await this.stripe.checkout.sessions.create({
       mode: 'subscription',
-      line_items: [{ price: this.priceId, quantity: 1 }],
+      line_items: [{ price, quantity: 1 }],
       success_url: req.successUrl,
       cancel_url: req.cancelUrl,
       client_reference_id: req.userId,
@@ -82,6 +85,8 @@ export class StripeCheckoutGateway extends CheckoutGateway {
         return null;
       }
       const subscriptionId = asId(session.subscription);
+      // The tier being purchased was recorded on our session at checkout start.
+      const stored = await this.sessions.findById(session.id);
       await this.sessions.markCompleted(session.id, {
         customerId: asId(session.customer),
         subscriptionId,
@@ -90,6 +95,7 @@ export class StripeCheckoutGateway extends CheckoutGateway {
         kind: 'activate',
         eventId: event.id,
         userId,
+        key: stored?.entitlementKey ?? 'premium',
         expiresAt: null, // renewal/expiry handled by subscription lifecycle events (follow-up)
         stripeCustomerId: asId(session.customer),
         stripeSubscriptionId: subscriptionId,
@@ -97,7 +103,7 @@ export class StripeCheckoutGateway extends CheckoutGateway {
     }
 
     if (event.type === 'invoice.paid') {
-      // Subscription renewal — extend premium for another billing period.
+      // Subscription renewal — extend the tier for another billing period.
       const invoice = event.data.object as Stripe.Invoice & {
         subscription?: string | { id: string };
       };
@@ -113,6 +119,7 @@ export class StripeCheckoutGateway extends CheckoutGateway {
         kind: 'activate',
         eventId: event.id,
         userId: session.userId,
+        key: session.entitlementKey,
         expiresAt: null, // period end available on the subscription object (lifecycle follow-up)
       };
     }

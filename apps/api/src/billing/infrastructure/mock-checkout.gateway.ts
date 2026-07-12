@@ -33,6 +33,7 @@ export class MockCheckoutGateway extends CheckoutGateway {
     const webBase = this.config.get<string>('WEB_BASE_URL') ?? 'http://localhost:4321';
     const params = new URLSearchParams({
       session: sessionId,
+      plan: req.plan,
       success: req.successUrl,
       cancel: req.cancelUrl,
     });
@@ -68,6 +69,7 @@ export class MockCheckoutGateway extends CheckoutGateway {
         kind: 'activate',
         eventId,
         userId: session.userId,
+        key: session.entitlementKey,
         expiresAt: new Date(Date.now() + THIRTY_DAYS_MS),
       };
     }

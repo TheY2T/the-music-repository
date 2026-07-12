@@ -20,9 +20,9 @@ export default function UpgradePanel() {
     void refresh();
   }, []);
 
-  async function onSubscribe() {
+  async function onSubscribe(plan: string) {
     setBusy(true);
-    const session = await startCheckout();
+    const session = await startCheckout(plan);
     if (session?.url) {
       window.location.href = session.url; // → provider checkout (Stripe, or the mock page in dev)
       return;
@@ -77,14 +77,24 @@ export default function UpgradePanel() {
           {busy ? 'Working…' : 'Cancel premium'}
         </button>
       ) : (
-        <button
-          type="button"
-          onClick={onSubscribe}
-          disabled={busy}
-          className="rounded-md bg-primary px-6 py-2 text-sm font-medium text-primary-foreground"
-        >
-          {busy ? 'Redirecting…' : 'Subscribe'}
-        </button>
+        <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={() => onSubscribe('premium')}
+            disabled={busy}
+            className="rounded-md bg-primary px-6 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
+          >
+            {busy ? 'Redirecting…' : 'Subscribe — Premium'}
+          </button>
+          <button
+            type="button"
+            onClick={() => onSubscribe('pro')}
+            disabled={busy}
+            className="rounded-md border border-primary px-6 py-2 text-sm font-medium text-primary disabled:opacity-50"
+          >
+            {busy ? 'Redirecting…' : 'Subscribe — Pro'}
+          </button>
+        </div>
       )}
 
       <p className="text-xs text-muted-foreground">

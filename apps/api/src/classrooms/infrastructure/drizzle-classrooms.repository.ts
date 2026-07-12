@@ -5,6 +5,7 @@ import { ContentNotFoundError } from '../../catalogue/domain/errors/content-not-
 import { DATABASE, type Database } from '../../infrastructure/database/database.module';
 import {
   classroomAssignments,
+  classroomInvitations,
   classroomMembers,
   classrooms,
   contentItems,
@@ -198,6 +199,41 @@ export class DrizzleClassrooms extends ClassroomsRepository {
         ),
       );
     return rows.map((r) => ({ memberId: r.memberId, slug: r.slug }));
+  }
+
+  async createInvitation(classroomId: string, email: string, token: string): Promise<void> {
+    await this.db.insert(classroomInvitations).values({ classroomId, email, token });
+  }
+
+  async findInvitationByToken(
+    token: string,
+  ): Promise<{ classroomId: string; email: string; acceptedAt: Date | null } | null> {
+    const [row] = await this.db
+      .select({
+        classroomId: classroomInvitations.classroomId,
+        email: classroomInvitations.email,
+        acceptedAt: classroomInvitations.acceptedAt,
+      })
+      .from(classroomInvitations)
+      .where(eq(classroomInvitations.token, token))
+      .limit(1);
+    return row ?? null;
+  }
+
+  async markInvitationAccepted(token: string): Promise<void> {
+    await this.db
+      .update(classroomInvitations)
+      .set({ acceptedAt: new Date() })
+      .where(eq(classroomInvitations.token, token));
+  }
+
+  async listInvitations(classroomId: string): Promise<{ email: string; accepted: boolean }[]> {
+    const rows = await this.db
+      .select({ email: classroomInvitations.email, acceptedAt: classroomInvitations.acceptedAt })
+      .from(classroomInvitations)
+      .where(eq(classroomInvitations.classroomId, classroomId))
+      .orderBy(desc(classroomInvitations.createdAt));
+    return rows.map((r) => ({ email: r.email, accepted: r.acceptedAt !== null }));
   }
 
   private async contentIdBySlug(slug: string): Promise<string | null> {

@@ -719,12 +719,18 @@ model CheckoutSession {
   url: string;
 }
 
-/** Start a subscription checkout — returns the URL to redirect to. Premium is granted by the
+/** Body for starting a checkout. */
+model StartCheckoutInput {
+  /** Tier to purchase: "premium" (default) or "pro". */
+  plan?: string;
+}
+
+/** Start a subscription checkout — returns the URL to redirect to. The entitlement is granted by the
  * provider webhook (`POST /billing/webhook`) on completion, not here. */
 @route("/me/checkout")
 @tag("monetization")
 @post
-op startCheckout(): CheckoutSession;
+op startCheckout(@body body: StartCheckoutInput): CheckoutSession;
 
 /** A payment-provider billing-portal session (manage card / cancel / invoices). */
 model BillingPortalSession {
@@ -960,3 +966,45 @@ op unassignContent(@path id: string, @path slug: string): {
 @tag("classrooms")
 @get
 op getClassProgress(@path id: string): ClassProgress;
+
+// ----- Email invitations (6C) -----
+
+model InviteInput {
+  email: string;
+}
+
+/** A created invitation — the accept URL is returned so the teacher can share it directly too. */
+model Invitation {
+  email: string;
+  acceptUrl: string;
+}
+
+model InvitationListItem {
+  email: string;
+  accepted: boolean;
+}
+
+model InvitationList {
+  items: InvitationListItem[];
+}
+
+/** Invite an email to the class (owner only) — emails an accept link. */
+@route("/classrooms/{id}/invitations")
+@tag("classrooms")
+@post
+op inviteToClassroom(@path id: string, @body body: InviteInput): {
+  @statusCode statusCode: 201;
+  @body body: Invitation;
+};
+
+/** The class's invitations (owner only). */
+@route("/classrooms/{id}/invitations")
+@tag("classrooms")
+@get
+op listInvitations(@path id: string): InvitationList;
+
+/** Accept an invitation token → the signed-in user joins the class. */
+@route("/classrooms/invitations/{token}/accept")
+@tag("classrooms")
+@post
+op acceptInvitation(@path token: string): Classroom;

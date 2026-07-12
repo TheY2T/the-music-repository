@@ -8,6 +8,8 @@ export type BillingEvent =
       /** Provider event id — the idempotency key. */
       eventId: string;
       userId: string;
+      /** Entitlement tier to grant (`premium` | `pro`). */
+      key: string;
       /** null = no expiry; subscriptions set the end of the billing period. */
       expiresAt: Date | null;
       stripeCustomerId?: string;

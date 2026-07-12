@@ -10,10 +10,13 @@ import {
   getClassProgress,
   getClassroom,
   grantClassroomPremium,
+  type InvitationItem,
+  inviteToClassroom,
   joinClassroom,
   leaveClassroom,
   listAssignments,
   listClassrooms,
+  listInvitations,
   removeMember,
   transferOwnership,
   unassignContent,
@@ -27,6 +30,9 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
   const [busy, setBusy] = useState(false);
   const [slug, setSlug] = useState('');
   const [assignError, setAssignError] = useState<string | null>(null);
+  const [invitations, setInvitations] = useState<InvitationItem[]>([]);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteMsg, setInviteMsg] = useState<string | null>(null);
   const isOwner = classroom.role === 'owner';
 
   async function load() {
@@ -34,6 +40,19 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
     setDetail(d);
     setAssignments(a);
     setProgress(isOwner ? await getClassProgress(classroom.id) : null);
+    setInvitations(isOwner ? await listInvitations(classroom.id) : []);
+  }
+
+  async function onInvite(e: React.FormEvent) {
+    e.preventDefault();
+    setInviteMsg(null);
+    if (!inviteEmail.trim()) {
+      return;
+    }
+    const result = await inviteToClassroom(classroom.id, inviteEmail.trim());
+    setInviteMsg(result.error ?? 'Invitation sent.');
+    setInviteEmail('');
+    await load();
   }
 
   async function toggle() {
@@ -182,6 +201,39 @@ function ClassroomCard({ classroom, onChanged }: { classroom: Classroom; onChang
               </form>
             ) : null}
           </div>
+
+          {/* Invitations (owner) */}
+          {isOwner ? (
+            <div className="space-y-1">
+              <h3 className="text-sm font-medium">Invitations</h3>
+              {invitations.length ? (
+                <ul className="space-y-1 text-sm text-muted-foreground">
+                  {invitations.map((inv) => (
+                    <li key={inv.email}>
+                      {inv.email} — {inv.accepted ? 'joined' : 'pending'}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-muted-foreground">No invitations yet.</p>
+              )}
+              <form onSubmit={onInvite} className="flex flex-wrap items-center gap-2 pt-1">
+                <input
+                  type="email"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  placeholder="student@email.com"
+                  className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+                />
+                <button type="submit" className="rounded-md border border-border px-3 py-1 text-sm">
+                  Invite by email
+                </button>
+                {inviteMsg ? (
+                  <span className="text-xs text-muted-foreground">{inviteMsg}</span>
+                ) : null}
+              </form>
+            </div>
+          ) : null}
 
           {/* Progress overview (owner) */}
           {isOwner && progress && progress.assignments.length > 0 ? (

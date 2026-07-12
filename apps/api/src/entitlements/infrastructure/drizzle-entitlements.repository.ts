@@ -69,14 +69,15 @@ export class DrizzleEntitlements extends Entitlements {
   }
 
   async revokePremium(userId: string): Promise<void> {
-    const [deleted] = await this.db
+    // Cancel = remove all paid tiers (premium + pro), not just the premium key.
+    const deleted = await this.db
       .delete(entitlements)
-      .where(and(eq(entitlements.userId, userId), eq(entitlements.key, PREMIUM)))
-      .returning({ source: entitlements.source });
-    if (deleted) {
+      .where(eq(entitlements.userId, userId))
+      .returning({ key: entitlements.key, source: entitlements.source });
+    if (deleted.length > 0) {
       await this.db
         .insert(entitlementEvents)
-        .values({ userId, key: PREMIUM, action: 'revoke', source: deleted.source });
+        .values(deleted.map((d) => ({ userId, key: d.key, action: 'revoke', source: d.source })));
     }
   }
 

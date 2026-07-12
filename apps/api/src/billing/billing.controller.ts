@@ -1,5 +1,5 @@
 import { FlagKeys } from '@TheY2T/tmr-flags';
-import { Controller, Headers, HttpCode, Post, Req } from '@nestjs/common';
+import { Body, Controller, Headers, HttpCode, Post, Req } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RequireFlagsEnabled } from '@openfeature/nestjs-sdk';
 import { CurrentUser } from '../auth/application/current-user';
@@ -7,6 +7,7 @@ import { RequireAuth } from '../auth/require-permissions.decorator';
 import { HandleBillingWebhookUseCase } from './application/use-cases/handle-billing-webhook.use-case';
 import { OpenBillingPortalUseCase } from './application/use-cases/open-billing-portal.use-case';
 import { StartCheckoutUseCase } from './application/use-cases/start-checkout.use-case';
+import { StartCheckoutDto } from './dto/billing.dto';
 
 /** The bits of the inbound request we read for the webhook. `rawBody` is present only when raw-body
  * capture is enabled (Phase-6 hardening); otherwise we re-serialize the parsed `body` (mock path). */
@@ -33,10 +34,12 @@ export class BillingController {
   @Post('me/checkout')
   @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.Premium }] })
   @RequireAuth()
-  checkout(): Promise<{ url: string }> {
+  checkout(@Body() body: StartCheckoutDto): Promise<{ url: string }> {
     const webBase = this.config.get<string>('WEB_BASE_URL') ?? 'http://localhost:4321';
+    const plan = body.plan === 'pro' ? 'pro' : 'premium';
     return this.startCheckout.execute(
       this.currentUser.require().id,
+      plan,
       `${webBase}/upgrade?status=success`,
       `${webBase}/upgrade?status=cancel`,
     );

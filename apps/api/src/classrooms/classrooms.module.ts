@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { EntitlementsModule } from '../entitlements/entitlements.module';
+import { MailModule } from '../mail/mail.module';
 import {
+  AcceptInvitationUseCase,
   ArchiveClassroomUseCase,
   AssignContentUseCase,
   CreateClassroomUseCase,
@@ -9,9 +11,11 @@ import {
   GetClassProgressUseCase,
   GetClassroomUseCase,
   GrantClassroomPremiumUseCase,
+  InviteToClassroomUseCase,
   JoinClassroomUseCase,
   LeaveClassroomUseCase,
   ListClassroomsUseCase,
+  ListInvitationsUseCase,
   RemoveMemberUseCase,
   TransferOwnershipUseCase,
   UnassignContentUseCase,
@@ -25,7 +29,7 @@ import { DrizzleClassrooms } from './infrastructure/drizzle-classrooms.repositor
  * `Entitlements` port (granting premium to a class = seat entitlements).
  */
 @Module({
-  imports: [AuthModule, EntitlementsModule],
+  imports: [AuthModule, EntitlementsModule, MailModule],
   controllers: [ClassroomsController],
   providers: [
     CreateClassroomUseCase,
@@ -41,6 +45,9 @@ import { DrizzleClassrooms } from './infrastructure/drizzle-classrooms.repositor
     UnassignContentUseCase,
     GetAssignmentsUseCase,
     GetClassProgressUseCase,
+    InviteToClassroomUseCase,
+    ListInvitationsUseCase,
+    AcceptInvitationUseCase,
     { provide: ClassroomsRepository, useClass: DrizzleClassrooms },
   ],
 })

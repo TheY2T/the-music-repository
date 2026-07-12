@@ -1,14 +1,19 @@
-import { randomInt } from 'node:crypto';
+import { randomInt, randomUUID } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Entitlements } from '../../entitlements/application/ports/entitlements.port';
+import { MailSender } from '../../mail/mail.port';
 import type {
   AssignmentView,
   ClassProgressView,
   ClassroomDetailView,
   ClassroomView,
+  InvitationListItem,
+  InvitationView,
 } from '../domain/classroom';
 import {
   ClassroomNotFoundError,
+  InvalidInvitationError,
   InvalidJoinCodeError,
   MemberNotFoundError,
   NotClassroomOwnerError,
@@ -269,5 +274,70 @@ export class GrantClassroomPremiumUseCase {
     }
     await this.repository.markPremiumGranted(id);
     return this.getClassroom.execute(id, ownerId);
+  }
+}
+
+@Injectable()
+export class InviteToClassroomUseCase {
+  constructor(
+    private readonly repository: ClassroomsRepository,
+    private readonly mail: MailSender,
+    private readonly config: ConfigService,
+  ) {}
+
+  /** Owner invites an email to the class: mints a token, emails an accept link, returns it too so the
+   * teacher can share it directly (useful in dev, where mail is only logged). */
+  async execute(id: string, ownerId: string, email: string): Promise<InvitationView> {
+    await requireOwned(this.repository, id, ownerId);
+    const token = randomUUID();
+    await this.repository.createInvitation(id, email.trim(), token);
+    const webBase = this.config.get<string>('WEB_BASE_URL') ?? 'http://localhost:4321';
+    const acceptUrl = `${webBase}/classrooms/accept?token=${token}`;
+    await this.mail.send({
+      to: email.trim(),
+      subject: 'You have been invited to a classroom',
+      text: `You've been invited to join a classroom on The Music Repository.\n\nAccept: ${acceptUrl}`,
+    });
+    return { email: email.trim(), acceptUrl };
+  }
+}
+
+@Injectable()
+export class ListInvitationsUseCase {
+  constructor(private readonly repository: ClassroomsRepository) {}
+
+  async execute(id: string, ownerId: string): Promise<InvitationListItem[]> {
+    await requireOwned(this.repository, id, ownerId);
+    return this.repository.listInvitations(id);
+  }
+}
+
+@Injectable()
+export class AcceptInvitationUseCase {
+  constructor(
+    private readonly repository: ClassroomsRepository,
+    private readonly entitlements: Entitlements,
+  ) {}
+
+  /** The signed-in user accepts an invitation token → joins the class (auto-granting premium if the
+   * class already has it). Idempotent-ish: a used/invalid token is rejected. */
+  async execute(token: string, userId: string): Promise<ClassroomView> {
+    const invitation = await this.repository.findInvitationByToken(token);
+    if (!invitation || invitation.acceptedAt) {
+      throw new InvalidInvitationError();
+    }
+    const row = await this.repository.findById(invitation.classroomId);
+    if (!row) {
+      throw new InvalidInvitationError();
+    }
+    if (row.ownerId !== userId) {
+      await this.repository.addMember(row.id, userId);
+      if (row.premiumGranted) {
+        await this.entitlements.grantPremium(userId, 'classroom');
+      }
+    }
+    await this.repository.markInvitationAccepted(token);
+    const memberCount = (await this.repository.memberIds(row.id)).length;
+    return toView(row, userId, memberCount);
   }
 }

@@ -2,6 +2,8 @@ import type { BillingEvent } from '../../domain/billing-event';
 
 export interface CreateCheckoutRequest {
   userId: string;
+  /** Entitlement tier being purchased (`premium` | `pro`) — selects the price / grant. */
+  plan: string;
   /** Where the provider sends the browser after success / cancel. */
   successUrl: string;
   cancelUrl: string;

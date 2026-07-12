@@ -39,3 +39,15 @@ export interface ClassProgressView {
   assignments: AssignmentView[];
   members: MemberProgressView[];
 }
+
+/** A created invitation (returned to the owner so they can also share the link directly). */
+export interface InvitationView {
+  email: string;
+  acceptUrl: string;
+}
+
+/** One pending/accepted invitation in the owner's list. */
+export interface InvitationListItem {
+  email: string;
+  accepted: boolean;
+}

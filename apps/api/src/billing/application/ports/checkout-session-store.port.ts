@@ -3,14 +3,21 @@ export interface CheckoutSessionRecord {
   userId: string;
   provider: string;
   status: string;
+  /** Which entitlement tier this checkout grants on completion (`premium` | `pro`). */
+  entitlementKey: string;
   stripeCustomerId: string | null;
   stripeSubscriptionId: string | null;
 }
 
 /** CheckoutSessionStore (ADR 0012) — persist provider checkout sessions so a later webhook can map
- * a provider session/subscription back to the user. */
+ * a provider session/subscription back to the user + the tier to grant. */
 export abstract class CheckoutSessionStore {
-  abstract create(rec: { id: string; userId: string; provider: string }): Promise<void>;
+  abstract create(rec: {
+    id: string;
+    userId: string;
+    provider: string;
+    entitlementKey: string;
+  }): Promise<void>;
   abstract findById(id: string): Promise<CheckoutSessionRecord | null>;
   abstract findBySubscriptionId(subscriptionId: string): Promise<CheckoutSessionRecord | null>;
   /** The user's most recent completed session (holds the Stripe customer id for the portal). */

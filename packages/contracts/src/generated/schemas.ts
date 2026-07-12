@@ -493,6 +493,23 @@ export const GetRelatedContentResponse = zod.object({
 
 
 /**
+ * Accept an invitation token → the signed-in user joins the class.
+ */
+export const AcceptInvitationParams = zod.object({
+  "token": zod.string()
+})
+
+export const AcceptInvitationResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "joinCode": zod.string(),
+  "memberCount": zod.number(),
+  "role": zod.enum(['owner', 'member']).describe('The acting user\'s relationship to the classroom.'),
+  "premiumGranted": zod.boolean().describe('True once the teacher has granted premium to the class.')
+})
+
+
+/**
  * Join a classroom by its code.
  */
 export const JoinClassroomBody = zod.object({
@@ -604,6 +621,38 @@ export const GrantClassroomPremiumResponse = zod.object({
   "id": zod.string(),
   "name": zod.string(),
   "email": zod.string()
+}))
+})
+
+
+/**
+ * Invite an email to the class (owner only) — emails an accept link.
+ */
+export const InviteToClassroomParams = zod.object({
+  "id": zod.string()
+})
+
+export const InviteToClassroomBody = zod.object({
+  "email": zod.string()
+})
+
+export const InviteToClassroomResponse = zod.object({
+  "email": zod.string(),
+  "acceptUrl": zod.string()
+}).describe('A created invitation — the accept URL is returned so the teacher can share it directly too.')
+
+
+/**
+ * The class's invitations (owner only).
+ */
+export const ListInvitationsParams = zod.object({
+  "id": zod.string()
+})
+
+export const ListInvitationsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "email": zod.string(),
+  "accepted": zod.boolean()
 }))
 })
 
@@ -1090,9 +1139,13 @@ export const OpenBillingPortalResponse = zod.object({
 
 
 /**
- * Start a subscription checkout — returns the URL to redirect to. Premium is granted by the
+ * Start a subscription checkout — returns the URL to redirect to. The entitlement is granted by the
  * provider webhook (`POST /billing/webhook`) on completion, not here.
  */
+export const StartCheckoutBody = zod.object({
+  "plan": zod.string().optional().describe('Tier to purchase: \"premium\" (default) or \"pro\".')
+}).describe('Body for starting a checkout.')
+
 export const StartCheckoutResponse = zod.object({
   "url": zod.string().describe('URL to redirect the browser to (Stripe Checkout, or the mock checkout page in dev).')
 }).describe('A payment-provider checkout session to redirect the user to.')

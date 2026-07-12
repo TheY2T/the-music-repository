@@ -32,7 +32,13 @@ export const envSchema = z.object({
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().default('whsec_mock_dev_secret'),
   STRIPE_PRICE_ID: z.string().optional(),
+  STRIPE_PRO_PRICE_ID: z.string().optional(),
   WEB_BASE_URL: z.string().default('http://localhost:4321'),
+
+  // Mail (Phase 6). Unset SMTP_URL → the LogMailSender (dev/CI, logs instead of sending). Set a
+  // connection string (e.g. smtps://user:pass@host:465) to switch to real SMTP delivery.
+  SMTP_URL: z.string().optional(),
+  MAIL_FROM: z.string().default('The Music Repository <no-reply@localhost>'),
 });
 
 export type Env = z.infer<typeof envSchema>;
