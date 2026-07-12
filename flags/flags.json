@@ -369,6 +369,46 @@
       },
       "defaultVariant": "on"
     },
+    "tools.melodic-dictation": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
+    "tools.rhythm-dictation": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
+    "tools.grooves": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
+    "tools.solfege": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
+    "tools.key-quiz": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "demo.new-banner": {
       "state": "ENABLED",
       "variants": {
@@ -378,9 +418,27 @@
       "defaultVariant": "off",
       "targeting": {
         "if": [
-          { "in": ["beta", { "var": "roles" }] },
+          {
+            "in": [
+              "beta",
+              {
+                "var": "roles"
+              }
+            ]
+          },
           "on",
-          { "fractional": [["on", 10], ["off", 90]] }
+          {
+            "fractional": [
+              [
+                "on",
+                10
+              ],
+              [
+                "off",
+                90
+              ]
+            ]
+          }
         ]
       }
     }

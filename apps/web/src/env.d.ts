@@ -49,6 +49,11 @@ declare namespace App {
       toolAnalyzer: boolean;
       toolTransposer: boolean;
       toolBassline: boolean;
+      toolMelodicDictation: boolean;
+      toolRhythmDictation: boolean;
+      toolGrooves: boolean;
+      toolSolfege: boolean;
+      toolKeyQuiz: boolean;
       premium: boolean;
       classrooms: boolean;
     };

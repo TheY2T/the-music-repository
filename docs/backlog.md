@@ -21,20 +21,20 @@ Status legend: 🟢 dependency-free · 📚 needs a client library · 💳 needs
 | Idea | Notes | Effort | Value |
 |---|---|---|---|
 | 🟢 **More content, not tools** | More songs (Song Player), licks/turnarounds (jazz ii-V, country, funk), voicings (9/13, quartal), CAGED for minor/7th chords, rhythm figures (triplets, 16ths, ties) | Low | Med |
-| ◑ **Web MIDI input** | **Mostly done** — `useMidiInput` hook (built-in Web MIDI, no dep) wired into the **keyboard** (notes light up + sound) and the **chord identifier** (hold a chord → live detection). Verified with a mocked device. Ear-trainers (answer-by-playing) still open | Med | **High** |
-| 🟢 **Metronome upgrades** | Subdivisions, accent patterns, polyrhythm, tap-tempo — fold into the existing metronome | Low | Med |
+| ◑ **Web MIDI input** | **Mostly done** — `useMidiInput` hook (built-in Web MIDI, no dep) wired into the **keyboard** (notes light up + sound) and the **chord identifier** (hold a chord → live detection). Verified with a mocked device. Ear-trainer answer-by-playing done | Med | **High** |
+| ◑ **Metronome upgrades** | **Shipped** subdivisions (quarter/eighth/triplet/sixteenth) + polyrhythm layer in the metronome. Tap-tempo still open | Low | Med |
 
 ## Group 2 — New dependency-free tools (medium effort)
 
 | Idea | Notes | Effort | Value |
 |---|---|---|---|
-| 🟢 **Melodic dictation** | Hear a short phrase, reconstruct it on a staff (ear-training's harder sibling) | Med | High |
-| 🟢 **Sight-singing / solfège trainer** | Scale degrees on a staff, movable-do | Med | Med |
-| 🟢 **Rhythm dictation / tap-to-match** | A rhythm plays; tap it back → timing-accuracy scoring | Med | High |
-| 🟢 **Key-signature & interval-construction quizzes** | Round out the quiz family | Low | Med |
+| ✅ **Melodic dictation** | **Shipped** `/tools/melodic-dictation` — hear a C-major melody, rebuild it from a note palette, Check/Reveal | Med | High |
+| ✅ **Sight-singing / solfège** | **Shipped** `/tools/solfege` — melody on the staff with movable-do solfège / scale-degree / note-name labels | Med | Med |
+| ✅ **Rhythm dictation** | **Shipped** `/tools/rhythm-dictation` — hear a one-bar rhythm, rebuild it from note values, Check/Reveal | Med | High |
+| ◑ **Key-signature & interval-construction quizzes** | **Key-signature quiz shipped** `/tools/key-quiz` (name the major key from its signature). Interval-construction still open | Low | Med |
 | ✅ **Roman-numeral analyzer** | **Shipped** `/tools/analyzer` (`tools.analyzer`) — Roman numerals + Tonic/Predominant/Dominant function + borrowed-chord flag (`analyzeChordInKey`). Reharmonization suggestions still open | Med | High |
 | ✅ **Transposer / capo tool** | **Shipped** `/tools/transposer` (`tools.transposer`) — transpose a progression + capo suggestions (`capoSuggestions`) | Low | Med |
-| 🟢 **Drum-pattern / groove library** | Genre grooves on the existing sequencer engine | Low | Med |
+| ✅ **Drum-pattern / groove library** | **Shipped** `/tools/grooves` — rock / pop / funk / half-time grooves (K/S/H) looped with a step cursor | Low | Med |
 | ✅ **Bass-line generator** | **Shipped** `/tools/bassline` (`tools.bassline`) — roots / root–fifth / walking (root·3rd·5th·chromatic-approach) bass over a progression, with per-beat display | Med | Med |
 
 ## Group 3 — Integrative / "make it feel like an app" (medium–high effort)

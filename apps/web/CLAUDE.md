@@ -131,6 +131,10 @@ src/
   `onmidimessage`.
 - Bass-line generator `/tools/bassline` (`tools.bassline`) — roots / root-fifth / walking bass over a
   progression (`scheduleTone` sine bass + hihat).
+- Ear-trainer answers by MIDI (play the 2 notes → interval); Metronome has subdivisions + a polyrhythm
+  layer. More backlog tools: melodic/rhythm dictation, groove library, solfège, key-signature quiz
+  (`tools.melodic-dictation` / `.rhythm-dictation` / `.grooves` / `.solfege` / `.key-quiz`). All reuse
+  `music-theory.ts` / `StaffSequence` / `audio.ts`. See `docs/backlog.md` for what's done vs open.
 - Progression play-along at `/tools/progression-player` (`tools.progression-player`) — loops a chord
   progression one bar per chord (reuses the chord exports + `strumChord`).
 - Rhythm trainer at `/tools/rhythm` (`tools.rhythm`) — `RhythmTrainer.tsx` plays a one-bar rhythm over a

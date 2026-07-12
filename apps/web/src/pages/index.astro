@@ -49,6 +49,11 @@ const {
   toolAnalyzer,
   toolTransposer,
   toolBassline,
+  toolMelodicDictation,
+  toolRhythmDictation,
+  toolGrooves,
+  toolSolfege,
+  toolKeyQuiz,
 } = Astro.locals.flags;
 const showTools =
   toolKeyboard ||
@@ -87,7 +92,12 @@ const showTools =
   toolPracticePlayer ||
   toolAnalyzer ||
   toolTransposer ||
-  toolBassline;
+  toolBassline ||
+  toolMelodicDictation ||
+  toolRhythmDictation ||
+  toolGrooves ||
+  toolSolfege ||
+  toolKeyQuiz;
 ---
 
 <html lang="en">

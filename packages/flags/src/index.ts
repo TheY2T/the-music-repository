@@ -107,6 +107,16 @@ export const FlagKeys = {
   ToolTransposer: 'tools.transposer',
   /** Phase 5 — bass-line generator (roots / root-fifth / walking). */
   ToolBassline: 'tools.bassline',
+  /** Phase 5 — melodic dictation (hear a melody, rebuild it). */
+  ToolMelodicDictation: 'tools.melodic-dictation',
+  /** Phase 5 — rhythm dictation (hear a rhythm, rebuild it). */
+  ToolRhythmDictation: 'tools.rhythm-dictation',
+  /** Phase 5 — drum-groove library. */
+  ToolGrooves: 'tools.grooves',
+  /** Phase 5 — sight-singing / solfège. */
+  ToolSolfege: 'tools.solfege',
+  /** Phase 5 — key-signature quiz. */
+  ToolKeyQuiz: 'tools.key-quiz',
   /** Phase 6 — premium entitlements gate `visibility=premium` content + the subscription flow. */
   Premium: 'monetization.premium',
   /** Phase 6 — teacher/classroom mode (create/join classrooms, grant premium to a class). */
@@ -162,6 +172,11 @@ export const FlagDefaults = {
   [FlagKeys.ToolAnalyzer]: true,
   [FlagKeys.ToolTransposer]: true,
   [FlagKeys.ToolBassline]: true,
+  [FlagKeys.ToolMelodicDictation]: true,
+  [FlagKeys.ToolRhythmDictation]: true,
+  [FlagKeys.ToolGrooves]: true,
+  [FlagKeys.ToolSolfege]: true,
+  [FlagKeys.ToolKeyQuiz]: true,
   [FlagKeys.Premium]: true,
   [FlagKeys.Classrooms]: true,
 } satisfies Record<FlagKey, boolean>;

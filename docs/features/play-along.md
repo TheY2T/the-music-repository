@@ -326,6 +326,23 @@ Two of the Group-2 backlog tools shipped (dependency-free, reusing `music-theory
   **chord identifier** (`/tools/chord-identifier` — held notes union with manual toggles → live chord
   detection). Both show a device status line and degrade gracefully. *Verified* with a mocked MIDI
   device: keyboard note-on → C4 highlighted + "Last note: C4"; chord identifier holding C-E-G → "C Major".
+- **Ear-trainer, MIDI answering** (`/tools/ear-trainer`) — with a MIDI keyboard, answer an interval by
+  **playing the two notes** (`useMidiInput` collects a 2-note buffer → interval → submitted as the guess).
+  *Verified:* playing C4+G4 auto-submits and scores.
+- **Metronome upgrades** (`/tools/metronome`) — **subdivisions** (quarter/eighth/triplet/sixteenth — soft
+  high tick between beats) and a **polyrhythm** layer (N evenly-spaced ticks per bar, distinct pitch),
+  both scheduled in the lookahead scheduler. *Verified:* controls present, triplets + 3:4 poll run.
+- **Melodic dictation** `/tools/melodic-dictation` (`tools.melodic-dictation`) — hear a C-major melody,
+  rebuild it from a note palette, Check (per-note grading) / Reveal (staff). *Verified:* entering the
+  target scores "Perfect".
+- **Rhythm dictation** `/tools/rhythm-dictation` (`tools.rhythm-dictation`) — hear a one-bar rhythm,
+  rebuild it from note values (♪ ♩ ♩. 𝅗𝅥), Check / Reveal. *Verified:* entering the target scores "Correct".
+- **Groove library** `/tools/grooves` (`tools.grooves`) — rock / pop / funk / half-time drum grooves
+  (kick/snare/hi-hat over eighths) looped with a step cursor. *Verified:* rock = hi-hat×8, snare 2·4, kick 1·3.
+- **Sight-singing / solfège** `/tools/solfege` (`tools.solfege`) — a C-major melody on the staff labelled
+  with movable-do solfège / scale degrees / note names. *Verified:* fa sol mi… ↔ 4 5 3….
+- **Key-signature quiz** `/tools/key-quiz` (`tools.key-quiz`) — name the major key from its signature
+  (count + ordered accidental names). *Verified:* 2 flats → B♭ major, graded correct.
 - **Bass-line generator** `/tools/bassline` (`tools.bassline`) — generates a bass line under a progression
   in three styles: **roots**, **root–fifth**, or a **walking** line (root · 3rd · 5th · chromatic approach
   to the next chord), shown per beat with a moving cursor. *Verified:* walking over Dm (ii–V–I) → D F A F♯.

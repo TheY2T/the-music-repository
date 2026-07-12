@@ -39,6 +39,11 @@ const {
   toolAnalyzer,
   toolTransposer,
   toolBassline,
+  toolMelodicDictation,
+  toolRhythmDictation,
+  toolGrooves,
+  toolSolfege,
+  toolKeyQuiz,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -262,6 +267,36 @@ const tools = [
     title: 'Bass-line generator',
     summary: 'Roots, root–fifth, or a walking bass under a progression.',
     enabled: toolBassline,
+  },
+  {
+    href: '/tools/melodic-dictation',
+    title: 'Melodic dictation',
+    summary: 'Hear a melody, then rebuild it by ear.',
+    enabled: toolMelodicDictation,
+  },
+  {
+    href: '/tools/rhythm-dictation',
+    title: 'Rhythm dictation',
+    summary: 'Hear a one-bar rhythm, then rebuild it.',
+    enabled: toolRhythmDictation,
+  },
+  {
+    href: '/tools/grooves',
+    title: 'Groove library',
+    summary: 'Classic drum grooves to play along to.',
+    enabled: toolGrooves,
+  },
+  {
+    href: '/tools/solfege',
+    title: 'Sight-singing',
+    summary: 'Sing with movable-do solfège or scale degrees.',
+    enabled: toolSolfege,
+  },
+  {
+    href: '/tools/key-quiz',
+    title: 'Key signature quiz',
+    summary: 'Name the major key from its signature.',
+    enabled: toolKeyQuiz,
   },
 ].filter((tool) => tool.enabled);
 

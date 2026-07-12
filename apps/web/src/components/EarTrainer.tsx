@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { playTone } from '@/lib/audio';
 import { INTERVAL_NAMES, midiToFrequency } from '@/lib/music-theory';
+import { useMidiInput } from '@/lib/use-midi-input';
 
 interface Question {
   root: number;
@@ -8,7 +9,6 @@ interface Question {
 }
 
 function makeQuestion(): Question {
-  // Root C3–B4; any interval up to an octave.
   return { root: 48 + Math.floor(Math.random() * 24), semitones: Math.floor(Math.random() * 13) };
 }
 
@@ -17,30 +17,74 @@ function playInterval(question: Question) {
   window.setTimeout(() => playTone(midiToFrequency(question.root + question.semitones), 0.7), 550);
 }
 
+/** Reduce a raw MIDI note distance to an interval within an octave (0–12). */
+function reduceInterval(distance: number): number {
+  let d = Math.abs(distance);
+  while (d > 12) {
+    d -= 12;
+  }
+  return d;
+}
+
 export default function EarTrainer() {
   const [question, setQuestion] = useState<Question>(makeQuestion);
   const [answered, setAnswered] = useState<number | null>(null);
   const [score, setScore] = useState({ correct: 0, total: 0 });
   const [started, setStarted] = useState(false);
 
+  const questionRef = useRef(question);
+  const answeredRef = useRef(answered);
+  const startedRef = useRef(started);
+  const bufferRef = useRef<number[]>([]);
+  useEffect(() => {
+    questionRef.current = question;
+  }, [question]);
+  useEffect(() => {
+    answeredRef.current = answered;
+  }, [answered]);
+  useEffect(() => {
+    startedRef.current = started;
+  }, [started]);
+
+  const submit = useCallback((semitones: number) => {
+    if (answeredRef.current !== null) {
+      return;
+    }
+    answeredRef.current = semitones;
+    setAnswered(semitones);
+    setScore((s) => ({
+      correct: s.correct + (semitones === questionRef.current.semitones ? 1 : 0),
+      total: s.total + 1,
+    }));
+  }, []);
+
+  // MIDI: play the two notes of the interval to answer.
+  const onMidiNote = useCallback(
+    (midiNote: number, isOn: boolean) => {
+      if (!isOn || !startedRef.current || answeredRef.current !== null) {
+        return;
+      }
+      const buf = bufferRef.current;
+      buf.push(midiNote);
+      if (buf.length >= 2) {
+        submit(reduceInterval(buf[1] - buf[0]));
+        bufferRef.current = [];
+      }
+    },
+    [submit],
+  );
+  const midi = useMidiInput(onMidiNote);
+
   function start() {
     setStarted(true);
     playInterval(question);
   }
 
-  function guess(semitones: number) {
-    if (answered !== null) {
-      return;
-    }
-    setAnswered(semitones);
-    setScore((s) => ({
-      correct: s.correct + (semitones === question.semitones ? 1 : 0),
-      total: s.total + 1,
-    }));
-  }
-
   function next() {
     const q = makeQuestion();
+    questionRef.current = q;
+    answeredRef.current = null;
+    bufferRef.current = [];
     setQuestion(q);
     setAnswered(null);
     playInterval(q);
@@ -50,7 +94,7 @@ export default function EarTrainer() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         {!started ? (
           <button
             type="button"
@@ -76,6 +120,18 @@ export default function EarTrainer() {
         </span>
       </div>
 
+      <p className="text-xs" data-help="keyboard">
+        {midi.connected ? (
+          <span className="text-green-600 dark:text-green-400">
+            🎹 {midi.deviceName ?? 'MIDI'} connected — answer by playing the two notes.
+          </span>
+        ) : midi.supported ? (
+          <span className="text-muted-foreground">
+            🎹 Connect a MIDI keyboard to answer by playing.
+          </span>
+        ) : null}
+      </p>
+
       {started ? (
         <>
           <p className="text-sm font-medium" data-help="ear-training">
@@ -89,7 +145,7 @@ export default function EarTrainer() {
                 <button
                   type="button"
                   key={name}
-                  onClick={() => guess(semis)}
+                  onClick={() => submit(semis)}
                   disabled={answered !== null}
                   className={`rounded-md border px-3 py-2 text-sm ${
                     revealCorrect
