@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
-import { playTone } from '@/lib/audio';
+import { getAudioContext, playTone, scheduleClick } from '@/lib/audio';
 import {
   midiToFrequency,
   pitchName,
@@ -100,6 +100,7 @@ export default function NotationPlayer() {
   const [root, setRoot] = useState(0);
   const [bpm, setBpm] = useState(100);
   const [loop, setLoop] = useState(true);
+  const [click, setClick] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [active, setActive] = useState(-1);
 
@@ -176,6 +177,25 @@ export default function NotationPlayer() {
     // notes is derived from pieceKey + root; restart playback when either changes.
   }, [playing, pieceKey, root]);
 
+  // Optional metronome click: an independent beat timer that runs alongside playback.
+  useEffect(() => {
+    if (!playing || !click) {
+      return;
+    }
+    let beat = 0;
+    let timer = 0;
+    const tick = () => {
+      const ctx = getAudioContext();
+      if (ctx) {
+        scheduleClick(ctx.currentTime + 0.02, beat % 4 === 0);
+      }
+      beat += 1;
+      timer = window.setTimeout(tick, 60000 / bpmRef.current);
+    };
+    tick();
+    return () => window.clearTimeout(timer);
+  }, [playing, click]);
+
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end gap-4">
@@ -229,6 +249,10 @@ export default function NotationPlayer() {
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} />
           Loop
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={click} onChange={(e) => setClick(e.target.checked)} />
+          Click
         </label>
       </div>
 

@@ -22,6 +22,7 @@ const {
   toolNotationPlayer,
   toolLicks,
   toolChordDiagrams,
+  toolStrumming,
 } = Astro.locals.flags;
 const tools = [
   {
@@ -143,6 +144,12 @@ const tools = [
     title: 'Chord diagrams',
     summary: 'Common open and barre guitar chord shapes — click to strum.',
     enabled: toolChordDiagrams,
+  },
+  {
+    href: '/tools/strumming',
+    title: 'Strumming trainer',
+    summary: 'Loop a strum pattern over a chord and play along.',
+    enabled: toolStrumming,
   },
 ].filter((tool) => tool.enabled);
 

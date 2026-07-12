@@ -3,16 +3,16 @@ import { playTone } from '@/lib/audio';
 import { midiToFrequency } from '@/lib/music-theory';
 
 // Open-string MIDI, low-E first (diagram convention: low E on the left).
-const TUNING_LOW_FIRST = [40, 45, 50, 55, 59, 64];
+export const TUNING_LOW_FIRST = [40, 45, 50, 55, 59, 64];
 
-interface ChordShape {
+export interface ChordShape {
   name: string;
   quality: 'major' | 'minor' | 'barre';
   /** Fret per string, low-E first. -1 = muted, 0 = open. */
   frets: number[];
 }
 
-const CHORDS: ChordShape[] = [
+export const GUITAR_CHORDS: ChordShape[] = [
   { name: 'C', quality: 'major', frets: [-1, 3, 2, 0, 1, 0] },
   { name: 'A', quality: 'major', frets: [-1, 0, 2, 2, 2, 0] },
   { name: 'G', quality: 'major', frets: [3, 2, 0, 0, 0, 3] },
@@ -24,6 +24,29 @@ const CHORDS: ChordShape[] = [
   { name: 'F', quality: 'barre', frets: [1, 3, 3, 2, 1, 1] },
   { name: 'Bm', quality: 'barre', frets: [-1, 2, 4, 4, 3, 2] },
 ];
+
+/** Strum a chord: sound each non-muted string in sequence, low→high (down) or high→low (up). */
+export function strumChord(
+  frets: number[],
+  direction: 'down' | 'up' = 'down',
+  duration = 1.1,
+): void {
+  const order = frets.map((_, i) => i);
+  if (direction === 'up') {
+    order.reverse();
+  }
+  let delay = 0;
+  for (const i of order) {
+    if (frets[i] < 0) {
+      continue;
+    }
+    window.setTimeout(
+      () => playTone(midiToFrequency(TUNING_LOW_FIRST[i] + frets[i]), duration),
+      delay,
+    );
+    delay += 22;
+  }
+}
 
 const CATEGORIES = [
   { key: 'all', label: 'All' },
@@ -42,7 +65,7 @@ const fretY = (f: number) => TOP + f * ROW;
 const WIDTH = LEFT * 2 + (TUNING_LOW_FIRST.length - 1) * COL;
 const HEIGHT = TOP + FRETS * ROW + 16;
 
-function Diagram({ chord }: { chord: ChordShape }) {
+export function ChordDiagram({ chord }: { chord: ChordShape }) {
   return (
     <svg
       viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -118,18 +141,7 @@ function Diagram({ chord }: { chord: ChordShape }) {
 
 export default function ChordDiagrams() {
   const [category, setCategory] = useState('all');
-  const chords = CHORDS.filter((c) => category === 'all' || c.quality === category);
-
-  function strum(chord: ChordShape) {
-    let delay = 0;
-    chord.frets.forEach((fret, i) => {
-      if (fret < 0) {
-        return;
-      }
-      window.setTimeout(() => playTone(midiToFrequency(TUNING_LOW_FIRST[i] + fret), 1.1), delay);
-      delay += 35;
-    });
-  }
+  const chords = GUITAR_CHORDS.filter((c) => category === 'all' || c.quality === category);
 
   return (
     <div className="space-y-5">
@@ -155,11 +167,11 @@ export default function ChordDiagrams() {
           <button
             key={chord.name}
             type="button"
-            onClick={() => strum(chord)}
+            onClick={() => strumChord(chord.frets)}
             className="flex flex-col items-center gap-1 rounded-lg border border-border p-3 transition-colors hover:bg-muted"
           >
             <span className="font-semibold">{chord.name}</span>
-            <Diagram chord={chord} />
+            <ChordDiagram chord={chord} />
             <span className="text-xs text-muted-foreground">▶ Strum</span>
           </button>
         ))}

@@ -3,7 +3,7 @@
 - **Phase:** 5 · **Status:** shipped (Slices A–K)
 - **Flag keys:** `tools.backing-track` (`ToolBackingTrack`), `tools.voicings` (`ToolVoicings`),
   `tools.notation-player` (`ToolNotationPlayer`), `tools.licks` (`ToolLicks`), `tools.chord-diagrams`
-  (`ToolChordDiagrams`) — from `@TheY2T/tmr-flags`. Default on.
+  (`ToolChordDiagrams`), `tools.strumming` (`ToolStrumming`) — from `@TheY2T/tmr-flags`. Default on.
 
 ## Purpose
 
@@ -137,6 +137,19 @@ The lick library gained a **Speed trainer** toggle. With it on, playing a lick l
 `SPEED_STEP` (15) BPM each pass up to `SPEED_PASSES` (4) faster — the tempo slider tracks the ramp — so
 you drill a lick from slow to fast automatically. Implemented in the existing `playLick` loop via refs.
 
+## Slice L — Strumming pattern trainer
+
+A new tool `/tools/strumming` (`tools.strumming`): pick a **chord** + a **strum pattern** (all-downs,
+down-up eighths, D–DU–UDU pop, folk) + tempo, and loop one bar of eighth-note strums to play along.
+Each slot shows ↓ / ↑ / · with the current beat highlighted; the selected chord's diagram is shown.
+`ChordDiagrams.tsx` was refactored to export `GUITAR_CHORDS`, `ChordShape`, `ChordDiagram`, and a
+`strumChord(frets, direction)` helper, reused by `StrummingTrainer.tsx` (down = low→high, up = high→low).
+
+## Slice M — Metronome click in the notation player
+
+The notation player gained a **Click** toggle: an independent beat timer runs alongside playback and
+sounds `scheduleClick` on each beat (accented every 4), so you can play along in time.
+
 ## Tests
 
 - **Web (browser) — backing track:** the 12-bar-blues grid renders the textbook form in C —
@@ -172,6 +185,10 @@ you drill a lick from slow to fast automatically. Implemented in the existing `p
   × muted, ○ open); clicking C strums without error.
 - **Web (browser) — speed trainer (Slice K):** with the trainer on, playing a lick ramps the tempo
   110 → 125 BPM per pass (verified live).
+- **Web (browser) — strumming (Slice L):** the pop pattern renders `↓ · ↓ ↑ · ↑ ↓ ↑`, the chord diagram
+  shows, and Play advances the highlighted slot in time.
+- **Web (browser) — click (Slice M):** the notation player's Click toggle enables and playback runs with
+  it on (independent beat timer, no errors).
 - Build/lint/check-types green across the workspace (25/25).
 
 ## Next slices (Phase 5 menu)

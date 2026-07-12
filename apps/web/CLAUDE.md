@@ -113,8 +113,11 @@ src/
   as plain heads (backward-compatible). Lick tab notes also support `legatoTo` (`5h7`/`7p5`); the lick
   library has a **speed trainer** (loop + tempo ramp).
 - Chord diagrams at `/tools/chord-diagrams` (gated on `tools.chord-diagrams`) — `ChordDiagrams.tsx`
-  renders curated open/barre guitar shapes as SVG fret grids (low E left), click to strum. See
-  `docs/features/play-along.md`.
+  renders curated open/barre guitar shapes as SVG fret grids (low E left), click to strum. It **exports**
+  `GUITAR_CHORDS`, `ChordShape`, `ChordDiagram`, and `strumChord(frets, direction)` for reuse.
+- Strumming trainer at `/tools/strumming` (gated on `tools.strumming`) — `StrummingTrainer.tsx` loops a
+  strum pattern (↓/↑/· eighth slots) over a chord, reusing the chord exports. The notation player has a
+  **Click** metronome toggle (independent beat timer via `scheduleClick`). See `docs/features/play-along.md`.
 
 ## Trainers / drills (Phase 4)
 

@@ -73,6 +73,8 @@ export const FlagKeys = {
   ToolLicks: 'tools.licks',
   /** Phase 5 — guitar chord-diagram library. */
   ToolChordDiagrams: 'tools.chord-diagrams',
+  /** Phase 5 — strumming pattern trainer. */
+  ToolStrumming: 'tools.strumming',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -107,4 +109,5 @@ export const FlagDefaults = {
   [FlagKeys.ToolNotationPlayer]: true,
   [FlagKeys.ToolLicks]: true,
   [FlagKeys.ToolChordDiagrams]: true,
+  [FlagKeys.ToolStrumming]: true,
 } satisfies Record<FlagKey, boolean>;
