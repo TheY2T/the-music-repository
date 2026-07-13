@@ -1,74 +1,212 @@
 /*
  * @TheY2T/tmr-design-tokens — design tokens (CSS custom properties).
  *
- * PURE CSS: this file defines only :root / .dark variables. It contains NO Tailwind
- * directives (no `@import "tailwindcss"`, no `@theme`, no `@custom-variant`) so it can be
- * imported anywhere — the web app, Storybook, or any standalone context — without pulling in
- * a Tailwind build. The `@theme` mapping that turns these variables into Tailwind utilities
- * lives in `theme.css`.
+ * PURE CSS: this file defines only variables on :root / [data-theme] / .dark. It contains NO
+ * Tailwind directives so it can be imported anywhere (web app, Storybook, standalone). The
+ * `@theme` mapping that turns these variables into Tailwind utilities lives in `theme.css`;
+ * the `@font-face` declarations live in `fonts.css`.
  *
- * Light values preserve the app's original palette (hue 240 neutrals); the reconciled set adds
- * the tokens the codebase already referenced but never defined (input, destructive, accent,
- * secondary, popover) plus semantic status tokens (success / warning / info) that replace the
- * previously hardcoded raw `text-red-500` / `bg-amber-500/20` / `text-green-600` colors.
+ * MULTI-THEME MODEL (ADR 0021)
+ * ---------------------------------------------------------------------------------------------
+ * The site ships THREE vintage aesthetics × TWO modes, selected by two independent hooks on
+ * <html>:
+ *   - AESTHETIC → `data-theme="hybrid" | "heritage" | "warm-minimal"` (default `hybrid`, set
+ *     statically on <html> in BaseLayout and overridden pre-paint from localStorage).
+ *   - MODE      → the `.dark` class (unchanged shadcn mechanism, also set pre-paint).
+ * Combined selectors give the six palettes, e.g. `[data-theme="heritage"].dark`. `:root` holds
+ * only what is shared (radius, texture defaults, status colors). Because every real page carries
+ * a `data-theme`, aesthetic rules are plain attribute selectors (specificity 0,1,0) and the dark
+ * combinations are 0,2,0 — they always win over the shared `.dark` status block.
+ *
+ * The three aesthetics:
+ *   - hybrid       — heritage record-shop meets modern library: cream/ink/sepia + mustard.
+ *   - heritage     — antique sheet-music / playbill: oxblood + gold on antique cream, engraved.
+ *   - warm-minimal — restrained editorial: warm off-white + ink + a single sage accent.
  */
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.5rem;
 
-  --background: hsl(0 0% 100%);
-  --foreground: hsl(240 10% 3.9%);
-  --card: hsl(0 0% 100%);
-  --card-foreground: hsl(240 10% 3.9%);
-  --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(240 10% 3.9%);
-  --primary: hsl(240 5.9% 10%);
-  --primary-foreground: hsl(0 0% 98%);
-  --secondary: hsl(240 4.8% 95.9%);
-  --secondary-foreground: hsl(240 5.9% 10%);
-  --muted: hsl(240 4.8% 95.9%);
-  --muted-foreground: hsl(240 3.8% 46.1%);
-  --accent: hsl(240 4.8% 95.9%);
-  --accent-foreground: hsl(240 5.9% 10%);
-  --border: hsl(240 5.9% 90%);
-  --input: hsl(240 5.9% 90%);
-  --ring: hsl(240 5% 64.9%);
+  /* Texture defaults (overridden per aesthetic). `--texture-grain` is a data-URI noise tile
+     painted by the `body::before` overlay at `--paper-overlay` opacity; chrome utilities read
+     `--frame-width` / `--shadow-offset`. */
+  --paper-overlay: 0;
+  --frame-width: 1px;
+  --shadow-offset: 2px;
+  --texture-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
-  --destructive: hsl(0 84.2% 60.2%);
-  --destructive-foreground: hsl(0 0% 98%);
-  --success: hsl(142 71% 45%);
-  --success-foreground: hsl(0 0% 98%);
-  --warning: hsl(38 92% 50%);
-  --warning-foreground: hsl(48 96% 9%);
-  --info: hsl(221 83% 53%);
-  --info-foreground: hsl(0 0% 98%);
+  /* Status colors — shared across aesthetics (light). Warm-tinted to sit on paper grounds. */
+  --destructive: #9b3b2e;
+  --destructive-foreground: #fbf8f0;
+  --success: #4f7a48;
+  --success-foreground: #fbf8f0;
+  --warning: #b07d1f;
+  --warning-foreground: #1a1613;
+  --info: #3e6b8c;
+  --info-foreground: #fbf8f0;
 }
 
 .dark {
-  --background: hsl(240 10% 3.9%);
-  --foreground: hsl(0 0% 98%);
-  --card: hsl(240 10% 3.9%);
-  --card-foreground: hsl(0 0% 98%);
-  --popover: hsl(240 10% 3.9%);
-  --popover-foreground: hsl(0 0% 98%);
-  --primary: hsl(0 0% 98%);
-  --primary-foreground: hsl(240 5.9% 10%);
-  --secondary: hsl(240 3.7% 15.9%);
-  --secondary-foreground: hsl(0 0% 98%);
-  --muted: hsl(240 3.7% 15.9%);
-  --muted-foreground: hsl(240 5% 64.9%);
-  --accent: hsl(240 3.7% 15.9%);
-  --accent-foreground: hsl(0 0% 98%);
-  --border: hsl(240 3.7% 15.9%);
-  --input: hsl(240 3.7% 15.9%);
-  --ring: hsl(240 4.9% 83.9%);
+  /* Status colors — shared across aesthetics (dark). */
+  --destructive: #d4634f;
+  --destructive-foreground: #17130f;
+  --success: #7fa877;
+  --success-foreground: #17130f;
+  --warning: #d6a94a;
+  --warning-foreground: #17130f;
+  --info: #7fa8c6;
+  --info-foreground: #17130f;
+}
 
-  --destructive: hsl(0 62.8% 30.6%);
-  --destructive-foreground: hsl(0 0% 98%);
-  --success: hsl(142 71% 45%);
-  --success-foreground: hsl(0 0% 98%);
-  --warning: hsl(38 92% 50%);
-  --warning-foreground: hsl(48 96% 9%);
-  --info: hsl(217 91% 60%);
-  --info-foreground: hsl(0 0% 98%);
+/* ============================================================================================
+ * HYBRID (default) — cream paper, sepia ink, mustard accent.
+ * ========================================================================================== */
+[data-theme='hybrid'] {
+  --font-display: 'Fraunces Variable', 'Fraunces', ui-serif, Georgia, serif;
+  --font-body: 'Source Sans 3 Variable', 'Source Sans 3', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  --paper-overlay: 0.035;
+  --frame-width: 1px;
+  --shadow-offset: 2px;
+
+  --background: #f4f0e6;
+  --foreground: #1a1613;
+  --card: #fbf8f0;
+  --card-foreground: #1a1613;
+  --popover: #fbf8f0;
+  --popover-foreground: #1a1613;
+  --primary: #6b4e32;
+  --primary-foreground: #fbf8f0;
+  --secondary: #e7dec9;
+  --secondary-foreground: #3a2e20;
+  --muted: #eae3d2;
+  --muted-foreground: #6a5c46;
+  --accent: #c79a3b;
+  --accent-foreground: #1a1613;
+  --border: #d8cdb5;
+  --input: #d8cdb5;
+  --ring: #c79a3b;
+}
+
+[data-theme='hybrid'].dark {
+  --background: #17130f;
+  --foreground: #ede6d6;
+  --card: #1f1a14;
+  --card-foreground: #ede6d6;
+  --popover: #1f1a14;
+  --popover-foreground: #ede6d6;
+  --primary: #d8ad4d;
+  --primary-foreground: #17130f;
+  --secondary: #2a2319;
+  --secondary-foreground: #ede6d6;
+  --muted: #241e17;
+  --muted-foreground: #b0a68e;
+  --accent: #c79a3b;
+  --accent-foreground: #17130f;
+  --border: #362d20;
+  --input: #362d20;
+  --ring: #c79a3b;
+}
+
+/* ============================================================================================
+ * HERITAGE — antique cream, oxblood + gold, engraved frames.
+ * ========================================================================================== */
+[data-theme='heritage'] {
+  --font-display: 'Playfair Display Variable', 'Playfair Display', ui-serif, Georgia, serif;
+  --font-body: 'Libre Baskerville', 'Playfair Display', ui-serif, Georgia, serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  --paper-overlay: 0.06;
+  --frame-width: 2px;
+  --shadow-offset: 3px;
+
+  --background: #efe7d3;
+  --foreground: #211b15;
+  --card: #f6efdc;
+  --card-foreground: #211b15;
+  --popover: #f6efdc;
+  --popover-foreground: #211b15;
+  --primary: #7a2e28;
+  --primary-foreground: #f6efdc;
+  --secondary: #e0d3b4;
+  --secondary-foreground: #3a2a16;
+  --muted: #e4d8be;
+  --muted-foreground: #6b5a3c;
+  --accent: #a6812f;
+  --accent-foreground: #211b15;
+  --border: #cdbb92;
+  --input: #cdbb92;
+  --ring: #a6812f;
+}
+
+[data-theme='heritage'].dark {
+  --background: #16110c;
+  --foreground: #e9dec4;
+  --card: #1e1710;
+  --card-foreground: #e9dec4;
+  --popover: #1e1710;
+  --popover-foreground: #e9dec4;
+  --primary: #c25a44;
+  --primary-foreground: #16110c;
+  --secondary: #2c2115;
+  --secondary-foreground: #e9dec4;
+  --muted: #251c12;
+  --muted-foreground: #ac9a76;
+  --accent: #c9a552;
+  --accent-foreground: #16110c;
+  --border: #382b1b;
+  --input: #382b1b;
+  --ring: #c9a552;
+}
+
+/* ============================================================================================
+ * WARM-MINIMAL — warm off-white, ink, single sage accent, no texture.
+ * ========================================================================================== */
+[data-theme='warm-minimal'] {
+  --font-display: 'Newsreader Variable', 'Newsreader', ui-serif, Georgia, serif;
+  --font-body: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  --paper-overlay: 0;
+  --frame-width: 1px;
+  --shadow-offset: 0px;
+
+  --background: #faf7f0;
+  --foreground: #2b2a27;
+  --card: #fffdf8;
+  --card-foreground: #2b2a27;
+  --popover: #fffdf8;
+  --popover-foreground: #2b2a27;
+  --primary: #2b2a27;
+  --primary-foreground: #faf7f0;
+  --secondary: #efebe1;
+  --secondary-foreground: #2b2a27;
+  --muted: #f0ece2;
+  --muted-foreground: #6a675e;
+  --accent: #7c8b6f;
+  --accent-foreground: #fffdf8;
+  --border: #e4dfd2;
+  --input: #e4dfd2;
+  --ring: #7c8b6f;
+}
+
+[data-theme='warm-minimal'].dark {
+  --background: #1b1a17;
+  --foreground: #edebe4;
+  --card: #232019;
+  --card-foreground: #edebe4;
+  --popover: #232019;
+  --popover-foreground: #edebe4;
+  --primary: #edebe4;
+  --primary-foreground: #1b1a17;
+  --secondary: #2a2822;
+  --secondary-foreground: #edebe4;
+  --muted: #252219;
+  --muted-foreground: #a8a596;
+  --accent: #92a283;
+  --accent-foreground: #1b1a17;
+  --border: #34322a;
+  --input: #34322a;
+  --ring: #92a283;
 }

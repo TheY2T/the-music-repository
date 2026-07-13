@@ -65,6 +65,11 @@ src/
 - **SSR session:** `src/middleware.ts` forwards the request cookie to the API's `get-session` and sets
   `Astro.locals.user` (null when anonymous). Gate a page with
   `if (!Astro.locals.user) return Astro.redirect('/signin?redirect=…')`.
+- **SSR API origin (containers):** the middleware's session check runs server-side, so it uses
+  `API_INTERNAL_URL` (→ `http://api:3000` in compose) and only falls back to the browser's
+  `PUBLIC_API_BASE_URL` (`http://localhost:3000`) for host dev. Inside the web container
+  `localhost:3000` is the web container itself — without `API_INTERNAL_URL` the session check always
+  fails and every gated page bounces to `/signin` even after a valid sign-in.
 - **Same-site cookie (dev):** web `:4321` and API `:3000` share the site (cookies ignore port), so the
   `SameSite=Lax` session cookie reaches both. The gate is UX-only — the API re-authorizes mutations.
 - Sign-in island: `SignInForm.tsx`; sign-out: `SignOutButton.tsx`; gated page: `pages/admin/index.astro`.

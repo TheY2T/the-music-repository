@@ -12,8 +12,23 @@
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
-  font-family:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* Body face comes from the active aesthetic (design-tokens `--font-body`). */
+  font-family: var(--font-body);
+}
+
+/* Aged-paper texture: a fixed, low-opacity noise wash painted behind all content. The opacity is
+   theme-driven (`--paper-overlay`: 0 for warm-minimal, subtle for hybrid, stronger for heritage),
+   so switching aesthetics changes the grain. Purely decorative — never intercepts pointer events
+   and always sits under text, preserving contrast. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--texture-grain);
+  background-size: 120px 120px;
+  opacity: var(--paper-overlay);
 }
 
 /* Chinese (zh-Hans): prefer a system CJK face and loosen leading — set via `.lang-zh` on <html>

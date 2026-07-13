@@ -1,204 +1,36 @@
 ---
-import FlagBanner from '@/components/FlagBanner.tsx';
-import HealthCard from '@/components/HealthCard.tsx';
+import HomePage from '@/components/HomePage.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
-import Icon from '@TheY2T/tmr-ui/astro/Icon.astro';
-import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
-const { demoNewBanner, authEnabled, adminCms, favorites, collections, progress } = Astro.locals.flags;
+/**
+ * Homepage (Phase D) — a vintage landing built from the design-system molecules (Hero /
+ * FeaturedShelf / MediaCard / CoverArt), composed in one `HomePage` island so the featured shelf
+ * can fetch live catalogue data. Global header/footer come from BaseLayout. Nav/tool/premium
+ * visibility follows the same flag+auth gating as the rest of the site.
+ */
+const { collections, premium } = Astro.locals.flags;
 const locale = Astro.locals.locale;
 const user = Astro.locals.user;
-const canAuthor = adminCms && (user?.role === 'admin' || user?.role === 'editor');
-const showFavorites = favorites && !!user;
-const showProgress = progress && !!user;
-const showDrills = Astro.locals.flags.trainers && !!user;
-const showUpgrade = Astro.locals.flags.premium && !!user;
-const showClassrooms = Astro.locals.flags.classrooms && !!user;
-const {
-  toolKeyboard,
-  toolCircleOfFifths,
-  toolFretboard,
-  toolChords,
-  toolScaleExplorer,
-  toolChordId,
-  toolModes,
-  toolProgression,
-  toolMetronome,
-  toolTuner,
-  toolIntervals,
-  toolStaff,
-  toolEarTrainer,
-  toolSequencer,
-  toolSightReading,
-  toolBackingTrack,
-  toolVoicings,
-  toolNotationPlayer,
-  toolLicks,
-  toolChordDiagrams,
-  toolStrumming,
-  toolFingerpicking,
-  toolArpeggio,
-  toolProgressionPlayer,
-  toolRhythm,
-  toolCaged,
-  toolScaleBoxes,
-  toolSong,
-  toolProgressionEar,
-  toolChordQualityEar,
-  toolFretQuiz,
-  toolMusicXml,
-  toolMultiVoice,
-  toolPracticePlayer,
-  toolAnalyzer,
-  toolTransposer,
-  toolBassline,
-  toolMelodicDictation,
-  toolRhythmDictation,
-  toolGrooves,
-  toolSolfege,
-  toolKeyQuiz,
-  toolIntervalQuiz,
-  toolPracticeRoom,
-  toolScore,
-  toolSoundfont,
-} = Astro.locals.flags;
-const showTools =
-  toolKeyboard ||
-  toolCircleOfFifths ||
-  toolFretboard ||
-  toolChords ||
-  toolScaleExplorer ||
-  toolChordId ||
-  toolModes ||
-  toolProgression ||
-  toolMetronome ||
-  toolTuner ||
-  toolIntervals ||
-  toolStaff ||
-  toolEarTrainer ||
-  toolSequencer ||
-  toolSightReading ||
-  toolBackingTrack ||
-  toolVoicings ||
-  toolNotationPlayer ||
-  toolLicks ||
-  toolChordDiagrams ||
-  toolStrumming ||
-  toolFingerpicking ||
-  toolArpeggio ||
-  toolProgressionPlayer ||
-  toolRhythm ||
-  toolCaged ||
-  toolScaleBoxes ||
-  toolSong ||
-  toolProgressionEar ||
-  toolChordQualityEar ||
-  toolFretQuiz ||
-  toolMusicXml ||
-  toolMultiVoice ||
-  toolPracticePlayer ||
-  toolAnalyzer ||
-  toolTransposer ||
-  toolBassline ||
-  toolMelodicDictation ||
-  toolRhythmDictation ||
-  toolGrooves ||
-  toolSolfege ||
-  toolKeyQuiz ||
-  toolIntervalQuiz ||
-  toolPracticeRoom ||
-  toolScore ||
-  toolSoundfont;
+
+// Any of the ~48 tool flags on? (mirrors src/lib/nav.ts)
+const showTools = Object.entries(Astro.locals.flags).some(
+  ([k, v]) => k.startsWith('tool') && k !== 'toolPractice' && v === true,
+);
+const showCollections = collections;
+const showUpgrade = premium && !!user;
 ---
 
-<BaseLayout title={t(locale, 'home.title')}>
-  <PageShell title={t(locale, 'home.title')} subtitle={t(locale, 'home.tagline')} maxWidth="max-w-2xl">
-      <div class="flex flex-wrap items-center gap-3">
-        <a
-          href={localizedPath(locale, '/catalogue')}
-          class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-        >
-          {t(locale, 'nav.catalogue')}
-          <Icon name="arrow-right" class="size-4" />
-        </a>
-        {
-          collections && (
-            <a href={localizedPath(locale, '/collections')} class="text-sm underline">
-              {t(locale, 'nav.collections')}
-            </a>
-          )
-        }
-        {
-          showTools && (
-            <a href={localizedPath(locale, '/tools')} class="text-sm underline">
-              {t(locale, 'nav.tools')}
-            </a>
-          )
-        }
-        {
-          authEnabled &&
-            (user ? (
-              <span class="text-sm text-muted-foreground">
-                {user.name || user.email}
-                {showProgress && (
-                  <>
-                    {' · '}
-                    <a href={localizedPath(locale, '/me/progress')} class="underline">
-                      {t(locale, 'nav.myProgress')}
-                    </a>
-                  </>
-                )}
-                {showDrills && (
-                  <>
-                    {' · '}
-                    <a href={localizedPath(locale, '/drills')} class="underline">
-                      {t(locale, 'nav.drills')}
-                    </a>
-                  </>
-                )}
-                {showFavorites && (
-                  <>
-                    {' · '}
-                    <a href={localizedPath(locale, '/me/favorites')} class="underline">
-                      {t(locale, 'nav.myFavorites')}
-                    </a>
-                  </>
-                )}
-                {showUpgrade && (
-                  <>
-                    {' · '}
-                    <a href={localizedPath(locale, '/upgrade')} class="underline">
-                      {t(locale, 'nav.premium')}
-                    </a>
-                  </>
-                )}
-                {showClassrooms && (
-                  <>
-                    {' · '}
-                    <a href={localizedPath(locale, '/classrooms')} class="underline">
-                      {t(locale, 'nav.classrooms')}
-                    </a>
-                  </>
-                )}
-                {canAuthor && (
-                  <>
-                    {' · '}
-                    <a href={localizedPath(locale, '/admin')} class="underline">
-                      {t(locale, 'nav.admin')}
-                    </a>
-                  </>
-                )}
-              </span>
-            ) : (
-              <a href={localizedPath(locale, '/signin')} class="text-sm underline">
-                {t(locale, 'nav.signIn')}
-              </a>
-            ))
-        }
-      </div>
-
-    <FlagBanner client:load initial={demoNewBanner} />
-    <HealthCard client:load />
-  </PageShell>
+<BaseLayout title={t(locale, 'home.pageTitle')}>
+  <HomePage
+    client:load
+    locale={locale}
+    catalogueHref={localizedPath(locale, '/catalogue')}
+    toolsHref={localizedPath(locale, '/tools')}
+    collectionsHref={localizedPath(locale, '/collections')}
+    upgradeHref={localizedPath(locale, '/upgrade')}
+    showTools={showTools}
+    showCollections={showCollections}
+    showUpgrade={showUpgrade}
+  />
 </BaseLayout>

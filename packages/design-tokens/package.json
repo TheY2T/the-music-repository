@@ -7,12 +7,22 @@
     ".": "./src/index.css",
     "./index.css": "./src/index.css",
     "./tokens.css": "./src/tokens.css",
-    "./theme.css": "./src/theme.css"
+    "./theme.css": "./src/theme.css",
+    "./fonts.css": "./src/fonts.css"
   },
   "files": [
     "src"
   ],
   "scripts": {
     "lint": "biome check ."
+  },
+  "dependencies": {
+    "@fontsource-variable/fraunces": "catalog:",
+    "@fontsource-variable/playfair-display": "catalog:",
+    "@fontsource-variable/newsreader": "catalog:",
+    "@fontsource-variable/source-sans-3": "catalog:",
+    "@fontsource-variable/inter": "catalog:",
+    "@fontsource/libre-baskerville": "catalog:",
+    "@fontsource/ibm-plex-mono": "catalog:"
   }
 }

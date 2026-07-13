@@ -20,8 +20,11 @@
     "test:e2e:live": "TMR_E2E_MODE=live turbo run test:e2e",
     "db:generate": "pnpm --filter @TheY2T/tmr-api db:generate",
     "db:migrate": "pnpm --filter @TheY2T/tmr-api db:migrate",
-    "infra:up": "docker compose -f infra/podman/compose.yaml up -d db flagd meilisearch minio",
+    "infra:up": "docker compose -f infra/podman/compose.yaml up -d",
     "infra:down": "docker compose -f infra/podman/compose.yaml down",
+    "app:up": "docker compose -f infra/podman/compose.yaml --profile app up -d --build",
+    "app:down": "docker compose -f infra/podman/compose.yaml down",
+    "app:seed": "docker compose -f infra/podman/compose.yaml run --rm init",
     "obs:up": "docker compose -f infra/podman/observability/compose.observability.yaml up -d",
     "obs:down": "docker compose -f infra/podman/observability/compose.observability.yaml down",
     "spec:generate": "turbo run build:openapi generate"

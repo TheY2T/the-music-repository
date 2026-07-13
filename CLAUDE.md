@@ -82,8 +82,9 @@ pnpm build | pnpm lint | pnpm check-types | pnpm test   # turbo across workspace
 pnpm test:coverage | pnpm test:integration              # v8 coverage · api Testcontainers (Docker)
 pnpm test:e2e | pnpm test:e2e:live                      # Playwright: mocked (hermetic) · full stack
 pnpm --filter @TheY2T/tmr-api db:generate               # drizzle migration from schema
-pnpm infra:up                                           # db + flagd (docker/podman); infra:down to stop
-podman compose -f infra/podman/compose.yaml up          # full stack (db+flagd+api+web)
+pnpm infra:up                                           # backing services only: db+flagd+meili+minio (run api/web on host); infra:down to stop
+pnpm app:up                                             # full containerized app: infra + api + web via `--profile app` (builds images); app:down to stop
+pnpm obs:up                                             # optional observability stack (separate project); obs:down to stop
 ```
 
 ## Gotchas
@@ -98,6 +99,12 @@ podman compose -f infra/podman/compose.yaml up          # full stack (db+flagd+a
   extends resolver does **not** do node package resolution → package-name extends throws
   `[TSCONFIG_ERROR] Tsconfig not found`. Code imports still use scoped names (`@TheY2T/tmr-*`); only
   `tsconfig extends` is relative. See ADR 0005.
+- **Docker builds must copy `tsconfig.base.json` back in after `turbo prune`.** The app Dockerfiles
+  build from `turbo prune --docker`, which copies workspace packages (incl. `config-typescript`) but
+  **not** root-level config files. Since `packages/config-typescript/base.json` extends the repo-root
+  `../../tsconfig.base.json` (where the real `compilerOptions` incl. `esModuleInterop` live), the DTS/tsc
+  builds silently lose those options and fail (e.g. pino `can only be default-imported` errors). Both
+  `apps/*/Dockerfile`s `COPY --from=pruner /app/tsconfig.base.json ./` before `turbo run build` — keep it.
 - TypeScript is pinned to the **5.x** line and ESLint to **9.x** (newer majors break NestJS/Astro
   tooling and typescript-eslint). Don't bump these blindly.
 - Don't set `rootDir`/`outDir` in the shared `config-typescript/*.json` — TS resolves those relative

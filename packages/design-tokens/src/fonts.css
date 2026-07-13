@@ -1,0 +1,26 @@
+/*
+ * @TheY2T/tmr-design-tokens — self-hosted @font-face declarations.
+ *
+ * Vintage typefaces for the three aesthetics (ADR 0021), self-hosted via @fontsource so there is
+ * NO external CDN dependency. One display + one body face per aesthetic, plus a shared mono:
+ *   - hybrid       → Fraunces (display) · Source Sans 3 (body)
+ *   - heritage     → Playfair Display (display) · Libre Baskerville (body)
+ *   - warm-minimal → Newsreader (display) · Inter (body)
+ *   - shared       → IBM Plex Mono (code / numerals)
+ *
+ * Imported first from `index.css` so the faces are registered before the token variables that
+ * reference them. Family names must match the `--font-*` tokens in `tokens.css`.
+ */
+
+/* Variable display + body faces (one file each). */
+@import "@fontsource-variable/fraunces";
+@import "@fontsource-variable/source-sans-3";
+@import "@fontsource-variable/playfair-display";
+@import "@fontsource-variable/newsreader";
+@import "@fontsource-variable/inter";
+
+/* Non-variable faces — only the weights actually used. */
+@import "@fontsource/libre-baskerville/400.css";
+@import "@fontsource/libre-baskerville/700.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";

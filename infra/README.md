@@ -25,12 +25,22 @@ App **Dockerfiles** live next to each app (`apps/api/Dockerfile`, `apps/web/Dock
 
 | Script | What it does |
 |---|---|
-| `pnpm infra:up` | start **db + flagd + meilisearch + minio** (`compose.yaml`) — the core stack for everyday dev |
-| `pnpm infra:down` | stop the core stack |
-| `pnpm obs:up` | start the **observability** stack (`compose.observability.yaml`) |
+Three opt-in layers — `infra` (base) → `app` (full app) → `obs` (optional telemetry):
+
+| Command | What it does |
+|---|---|
+| `pnpm infra:up` | start the **backing services** — db + flagd + meilisearch + minio (`compose.yaml`). The everyday case: you run api/web on the host via `pnpm dev`. |
+| `pnpm infra:down` | stop the app project (backing **and** app, if running) |
+| `pnpm app:up` | start the **full containerized app** — backing services **+ api + web** (builds images). Adds the `app` compose profile on top of `infra:up`. |
+| `pnpm app:down` | stop the app project (alias of `infra:down` — one project, one teardown) |
+| `pnpm obs:up` | start the **optional observability** stack (`compose.observability.yaml`) |
 | `pnpm obs:down` | stop the observability stack |
 
-Full containerized app run (db + flagd + api + web): `podman compose -f infra/podman/compose.yaml up`.
+`api` and `web` carry the `app` compose **profile**, so a plain `docker compose up` (= `infra:up`)
+starts only the backing services; `--profile app` (= `app:up`) opts the app containers in. A single
+`down` tears the whole project down regardless of how it came up — hence one `down`, aliased.
+On `app:up`, the `web` service waits for `api` to report **healthy** (via the api's `/health` check) so
+first-paint SSR data fetches succeed. Web is served at http://localhost:4321.
 
 ## Port map
 
@@ -66,7 +76,8 @@ Full containerized app run (db + flagd + api + web): `podman compose -f infra/po
 **To run everything at once** (prod-like / demo), merge the files instead of duplicating:
 ```bash
 docker compose -f infra/podman/compose.yaml \
-               -f infra/podman/observability/compose.observability.yaml up
+               -f infra/podman/observability/compose.observability.yaml \
+               --profile app up   # --profile app pulls in the api + web containers
 ```
 
 ### Why the folder is `podman/` but the files run on Docker too

@@ -12,6 +12,10 @@ FROM base AS installer
 COPY --from=pruner /app/out/json/ .
 RUN pnpm install --frozen-lockfile
 COPY --from=pruner /app/out/full/ .
+# turbo prune omits root-level config files, but packages/config-typescript/base.json extends
+# `../../tsconfig.base.json` (the real compilerOptions incl. esModuleInterop). Copy it back in so
+# tsc/tsup DTS builds resolve it — otherwise strict/interop options vanish and builds fail. ADR 0005.
+COPY --from=pruner /app/tsconfig.base.json ./tsconfig.base.json
 RUN pnpm turbo run build --filter=@TheY2T/tmr-web
 
 FROM base AS runner

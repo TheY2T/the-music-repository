@@ -1,5 +1,7 @@
 ---
-import LanguageSwitcher from '@/components/LanguageSwitcher.tsx';
+import SiteFooter from '@/components/SiteFooter.astro';
+import SiteHeader from '@/components/SiteHeader.tsx';
+import { buildAccountNav, buildPrimaryNav } from '@/lib/nav';
 import '@/styles/global.css';
 import { LOCALES, htmlLang, localizedPath, splitLocalePath, t } from '@TheY2T/tmr-i18n';
 
@@ -15,23 +17,42 @@ interface Props {
 const { title } = Astro.props;
 const locale = Astro.locals.locale;
 const i18nEnabled = Astro.locals.flags.i18nEnabled;
-const { path } = splitLocalePath(new URL(Astro.request.url).pathname);
+const rawPath = new URL(Astro.request.url).pathname;
+const { path } = splitLocalePath(rawPath);
 const site = Astro.site;
 const alternateHref = (target: (typeof LOCALES)[number]) =>
   site ? new URL(localizedPath(target, path), site).href : localizedPath(target, path);
+
+// Global navigation model (see src/lib/nav.ts) — shared by the header, mobile drawer, and footer.
+const navCtx = { flags: Astro.locals.flags, user: Astro.locals.user, locale, path: rawPath };
+const primaryNav = buildPrimaryNav(navCtx);
+const accountNav = buildAccountNav(navCtx);
+const siteName = t(locale, 'site.name');
+const year = new Date().getFullYear();
 ---
 
-<html lang={htmlLang(locale)} class:list={[locale === 'zh-Hans' && 'lang-zh']}>
+<html
+  lang={htmlLang(locale)}
+  data-theme="hybrid"
+  class:list={[locale === 'zh-Hans' && 'lang-zh']}
+>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <script is:inline>
-      // Apply theme before paint to avoid a flash (shadcn dark mode = `.dark` on <html>).
+      // Apply the aesthetic + mode before paint to avoid a flash. Two independent hooks on <html>:
+      // aesthetic → `data-theme` (default `hybrid`, from `tmr.aesthetic`); mode → `.dark` class
+      // (from `theme`, falling back to the OS preference). See design-tokens/tokens.css (ADR 0021).
+      const doc = document.documentElement;
+      const aesthetic = localStorage.getItem('tmr.aesthetic');
+      if (aesthetic === 'hybrid' || aesthetic === 'heritage' || aesthetic === 'warm-minimal') {
+        doc.setAttribute('data-theme', aesthetic);
+      }
       const stored = localStorage.getItem('theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       if (stored === 'dark' || (!stored && prefersDark)) {
-        document.documentElement.classList.add('dark');
+        doc.classList.add('dark');
       }
     </script>
     {
@@ -46,17 +67,27 @@ const alternateHref = (target: (typeof LOCALES)[number]) =>
     }
     <slot name="head" />
   </head>
-  <body>
-    {
-      i18nEnabled && (
-        <div class="flex items-center justify-between gap-4 border-b border-border px-4 py-2 text-sm">
-          <a href={localizedPath(locale, '/')} class="font-medium text-muted-foreground hover:underline">
-            {t(locale, 'site.name')}
-          </a>
-          <LanguageSwitcher client:load locale={locale} />
-        </div>
-      )
-    }
-    <slot />
+  <body class="flex min-h-svh flex-col">
+    <SiteHeader
+      client:load
+      locale={locale}
+      siteName={siteName}
+      primaryNav={primaryNav}
+      accountNav={accountNav}
+      user={Astro.locals.user}
+      i18nEnabled={i18nEnabled}
+      catalogueHref={localizedPath(locale, '/catalogue')}
+      homeHref={localizedPath(locale, '/')}
+    />
+    <div class="flex-1">
+      <slot />
+    </div>
+    <SiteFooter
+      locale={locale}
+      siteName={siteName}
+      primaryNav={primaryNav}
+      accountNav={accountNav}
+      year={year}
+    />
   </body>
 </html>

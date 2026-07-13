@@ -14,7 +14,12 @@ const FLAGD_HOST = process.env.FLAGD_HOST ?? 'localhost';
 const FLAGD_PORT = Number(process.env.FLAGD_PORT ?? 8013);
 const CONNECTION_ERROR = /deadline|connect|unavailable|initialization/i;
 
-const API_BASE = process.env.PUBLIC_API_BASE_URL ?? 'http://localhost:3000';
+// SSR runs on the server, so it needs a server-reachable API origin. In a container that's the compose
+// service name (`http://api:3000`), NOT the browser's host-published `PUBLIC_API_BASE_URL`
+// (`http://localhost:3000`) — which inside the web container points at the web container itself. Prefer
+// the server-only `API_INTERNAL_URL`; fall back to the public URL for local dev where SSR runs on the host.
+const API_BASE =
+  process.env.API_INTERNAL_URL ?? process.env.PUBLIC_API_BASE_URL ?? 'http://localhost:3000';
 
 /**
  * Resolve the session server-side by forwarding the request's cookies to the API's Better Auth

@@ -5,5 +5,6 @@
  * token variables (`tokens.css`) and the Tailwind theme mapping + dark variant (`theme.css`).
  * For a non-Tailwind context (rare), import `./tokens.css` alone.
  */
+@import "./fonts.css";
 @import "./tokens.css";
 @import "./theme.css";
