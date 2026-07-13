@@ -218,7 +218,7 @@ export function CoverArt({
   const rot = -6 + Math.floor(rng() * 13); // ornament rotation −6..+6
 
   return (
-    <div className={cn('relative w-full', className)}>
+    <div className={cn('w-full', className)}>
       <svg
         viewBox={`0 0 ${W} ${H}`}
         width="100%"
@@ -264,24 +264,13 @@ export function CoverArt({
         </g>
 
         {renderMotif(chosen, rng)}
-
-        {/* Title band (only when labelled) */}
-        {showLabel ? (
-          <rect
-            x={20}
-            y={H - 64}
-            width={W - 40}
-            height={44}
-            rx={6}
-            fill="var(--muted)"
-            opacity={0.85}
-          />
-        ) : null}
       </svg>
 
-      {/* HTML title overlay so long titles wrap and stay legible; token-colored. */}
+      {/* Caption in normal flow BELOW the art — can't overflow the tile at any size. Token-colored;
+          single-line truncation keeps long titles/attributions tidy. Omitted when `showLabel` is
+          false (e.g. inside MediaCard, which prints its own title). */}
       {showLabel ? (
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 px-6 pb-4">
+        <div className="min-w-0 px-1 pt-2">
           <p className="truncate font-display text-sm font-semibold text-foreground">{title}</p>
           {subtitle ? (
             <p className="truncate font-body text-xs text-muted-foreground">{subtitle}</p>

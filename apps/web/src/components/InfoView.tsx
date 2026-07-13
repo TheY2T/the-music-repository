@@ -8,8 +8,10 @@ const DISMISS_KEY = 'infoview-dismissed';
 
 /**
  * Ableton-style Info View: a persistent, dismissible panel that shows context help for whatever the
- * user hovers or focuses. Elements opt in with `data-help="<topic-slug>"`; topics are preloaded once
- * and resolved via event delegation, so it works across every island on the page.
+ * user hovers, focuses, or taps. Elements opt in with `data-help="<topic-slug>"`; topics are
+ * preloaded once and resolved via event delegation, so it works across every island on the page.
+ * `click` is included alongside `mouseover`/`focusin` so it also works on touch/trackpad (tap), where
+ * there is no hover.
  */
 export default function InfoView() {
   const [topics, setTopics] = useState<Map<string, HelpTopic>>(new Map());
@@ -32,9 +34,11 @@ export default function InfoView() {
     }
     document.addEventListener('mouseover', onContext);
     document.addEventListener('focusin', onContext);
+    document.addEventListener('click', onContext);
     return () => {
       document.removeEventListener('mouseover', onContext);
       document.removeEventListener('focusin', onContext);
+      document.removeEventListener('click', onContext);
     };
   }, [topics]);
 
