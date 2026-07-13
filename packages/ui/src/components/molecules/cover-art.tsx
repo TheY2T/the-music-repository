@@ -9,6 +9,8 @@ export interface CoverArtProps {
   /** Deterministic seed — same seed always yields identical art (SSR-safe). Varies layout only, never colors. */
   seed: string;
   motif?: CoverArtMotif;
+  /** Show the title band + label overlay. Off for MediaCard (which prints its own title). Default true. */
+  showLabel?: boolean;
   className?: string;
 }
 
@@ -199,7 +201,14 @@ function renderMotif(motif: Exclude<CoverArtMotif, 'auto'>, rng: () => number): 
  * `seed` (SSR-safe, no `Math.random`): the seed varies motif + ornament layout only. All fills/strokes
  * use global CSS token variables so the art re-themes across every palette. Presentational, i18n-by-prop.
  */
-export function CoverArt({ title, subtitle, seed, motif = 'auto', className }: CoverArtProps) {
+export function CoverArt({
+  title,
+  subtitle,
+  seed,
+  motif = 'auto',
+  showLabel = true,
+  className,
+}: CoverArtProps) {
   const rng = mulberry32(hashSeed(seed));
   // Draw the motif choice first so downstream ornament picks stay stable per seed.
   const chosen: Exclude<CoverArtMotif, 'auto'> =
@@ -256,25 +265,29 @@ export function CoverArt({ title, subtitle, seed, motif = 'auto', className }: C
 
         {renderMotif(chosen, rng)}
 
-        {/* Title band */}
-        <rect
-          x={20}
-          y={H - 64}
-          width={W - 40}
-          height={44}
-          rx={6}
-          fill="var(--muted)"
-          opacity={0.85}
-        />
+        {/* Title band (only when labelled) */}
+        {showLabel ? (
+          <rect
+            x={20}
+            y={H - 64}
+            width={W - 40}
+            height={44}
+            rx={6}
+            fill="var(--muted)"
+            opacity={0.85}
+          />
+        ) : null}
       </svg>
 
       {/* HTML title overlay so long titles wrap and stay legible; token-colored. */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 px-6 pb-4">
-        <p className="truncate font-display text-sm font-semibold text-foreground">{title}</p>
-        {subtitle ? (
-          <p className="truncate font-body text-xs text-muted-foreground">{subtitle}</p>
-        ) : null}
-      </div>
+      {showLabel ? (
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 px-6 pb-4">
+          <p className="truncate font-display text-sm font-semibold text-foreground">{title}</p>
+          {subtitle ? (
+            <p className="truncate font-body text-xs text-muted-foreground">{subtitle}</p>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }

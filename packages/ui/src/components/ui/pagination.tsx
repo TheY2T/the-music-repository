@@ -8,6 +8,9 @@ export interface PaginationProps extends Omit<React.HTMLAttributes<HTMLElement>,
   /** Total number of pages. */
   pageCount: number;
   onPageChange: (page: number) => void;
+  /** Already-localized Prev/Next labels (i18n-by-prop). Default to English. */
+  prevLabel?: string;
+  nextLabel?: string;
 }
 
 /** Build a compact page list with `'ellipsis'` gaps: always show first/last + a window around page. */
@@ -28,6 +31,8 @@ export function Pagination({
   page,
   pageCount,
   onPageChange,
+  prevLabel = 'Prev',
+  nextLabel = 'Next',
   className,
   ...props
 }: PaginationProps) {
@@ -44,7 +49,7 @@ export function Pagination({
         disabled={page <= 1}
         onClick={() => onPageChange(page - 1)}
       >
-        Prev
+        {prevLabel}
       </button>
       {pages.map((item, index) =>
         item === 'ellipsis' ? (
@@ -71,7 +76,7 @@ export function Pagination({
         disabled={page >= pageCount}
         onClick={() => onPageChange(page + 1)}
       >
-        Next
+        {nextLabel}
       </button>
     </nav>
   );

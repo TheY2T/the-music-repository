@@ -6,13 +6,13 @@ import {
   Card,
   CardContent,
   CoverArt,
+  cn,
   FeaturedShelf,
   Hero,
   Icon,
   type IconName,
   MediaCard,
   Skeleton,
-  cn,
 } from '@TheY2T/tmr-ui';
 
 /**
@@ -99,7 +99,17 @@ function FeaturedRow({ locale }: { locale: Locale }) {
   );
 }
 
-function WayCard({ icon, title, desc, href }: { icon: IconName; title: string; desc: string; href: string }) {
+function WayCard({
+  icon,
+  title,
+  desc,
+  href,
+}: {
+  icon: IconName;
+  title: string;
+  desc: string;
+  href: string;
+}) {
   return (
     <a href={href} className="group">
       <Card className="h-full transition-colors group-hover:border-accent">
@@ -115,7 +125,16 @@ function WayCard({ icon, title, desc, href }: { icon: IconName; title: string; d
   );
 }
 
-function Home({ locale, catalogueHref, toolsHref, collectionsHref, upgradeHref, showTools, showCollections, showUpgrade }: HomePageProps) {
+function Home({
+  locale,
+  catalogueHref,
+  toolsHref,
+  collectionsHref,
+  upgradeHref,
+  showTools,
+  showCollections,
+  showUpgrade,
+}: HomePageProps) {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 md:py-16">
       <Hero
@@ -129,7 +148,10 @@ function Home({ locale, catalogueHref, toolsHref, collectionsHref, upgradeHref, 
               {t(locale, 'home.browseCta')}
             </a>
             {showTools && (
-              <a href={toolsHref} className={cn(buttonVariants({ size: 'lg', variant: 'outline' }))}>
+              <a
+                href={toolsHref}
+                className={cn(buttonVariants({ size: 'lg', variant: 'outline' }))}
+              >
                 <Icon name="wrench" className="size-4" />
                 {t(locale, 'home.toolsCta')}
               </a>
@@ -138,10 +160,32 @@ function Home({ locale, catalogueHref, toolsHref, collectionsHref, upgradeHref, 
         }
         media={
           <div className="grid grid-cols-2 gap-4">
-            <CoverArt seed="bach-prelude" title="Prelude in C" subtitle="J. S. Bach" motif="staff" />
-            <CoverArt seed="entertainer" title="The Entertainer" subtitle="S. Joplin" motif="keys" className="mt-6" />
-            <CoverArt seed="greensleeves" title="Greensleeves" subtitle="Traditional" motif="strings" />
-            <CoverArt seed="blues" title="12-Bar Blues" subtitle="Study" motif="record" className="mt-6" />
+            <CoverArt
+              seed="bach-prelude"
+              title="Prelude in C"
+              subtitle="J. S. Bach"
+              motif="staff"
+            />
+            <CoverArt
+              seed="entertainer"
+              title="The Entertainer"
+              subtitle="S. Joplin"
+              motif="keys"
+              className="mt-6"
+            />
+            <CoverArt
+              seed="greensleeves"
+              title="Greensleeves"
+              subtitle="Traditional"
+              motif="strings"
+            />
+            <CoverArt
+              seed="blues"
+              title="12-Bar Blues"
+              subtitle="Study"
+              motif="record"
+              className="mt-6"
+            />
           </div>
         }
       />
@@ -151,14 +195,31 @@ function Home({ locale, catalogueHref, toolsHref, collectionsHref, upgradeHref, 
       </section>
 
       <section className="mt-16">
-        <h2 className="font-display text-2xl font-semibold tracking-tight">{t(locale, 'home.waysTitle')}</h2>
+        <h2 className="font-display text-2xl font-semibold tracking-tight">
+          {t(locale, 'home.waysTitle')}
+        </h2>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
-          <WayCard icon="library" title={t(locale, 'home.wayCatalogueTitle')} desc={t(locale, 'home.wayCatalogueDesc')} href={catalogueHref} />
+          <WayCard
+            icon="library"
+            title={t(locale, 'home.wayCatalogueTitle')}
+            desc={t(locale, 'home.wayCatalogueDesc')}
+            href={catalogueHref}
+          />
           {showTools && (
-            <WayCard icon="wrench" title={t(locale, 'home.wayToolsTitle')} desc={t(locale, 'home.wayToolsDesc')} href={toolsHref} />
+            <WayCard
+              icon="wrench"
+              title={t(locale, 'home.wayToolsTitle')}
+              desc={t(locale, 'home.wayToolsDesc')}
+              href={toolsHref}
+            />
           )}
           {showCollections && (
-            <WayCard icon="list-music" title={t(locale, 'home.wayCollectionsTitle')} desc={t(locale, 'home.wayCollectionsDesc')} href={collectionsHref} />
+            <WayCard
+              icon="list-music"
+              title={t(locale, 'home.wayCollectionsTitle')}
+              desc={t(locale, 'home.wayCollectionsDesc')}
+              href={collectionsHref}
+            />
           )}
         </div>
       </section>
@@ -167,13 +228,19 @@ function Home({ locale, catalogueHref, toolsHref, collectionsHref, upgradeHref, 
         <section className="mt-16">
           <FeaturedShelf title={t(locale, 'home.toolsShelfTitle')}>
             {POPULAR_TOOLS.map((tool) => (
-              <a key={tool.slug} href={localizedPath(locale, `/tools/${tool.slug}`)} className="group w-44">
+              <a
+                key={tool.slug}
+                href={localizedPath(locale, `/tools/${tool.slug}`)}
+                className="group w-44"
+              >
                 <Card className="h-full transition-colors group-hover:border-accent">
                   <CardContent className="flex flex-col items-start gap-3 p-5">
                     <span className="flex size-10 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
                       <Icon name={tool.icon} className="size-5" />
                     </span>
-                    <span className="font-display font-medium leading-tight">{t(locale, tool.titleKey)}</span>
+                    <span className="font-display font-medium leading-tight">
+                      {t(locale, tool.titleKey)}
+                    </span>
                   </CardContent>
                 </Card>
               </a>
@@ -191,8 +258,12 @@ function Home({ locale, catalogueHref, toolsHref, collectionsHref, upgradeHref, 
                   <Icon name="crown" className="size-6" />
                 </span>
                 <div>
-                  <h2 className="font-display text-xl font-semibold">{t(locale, 'home.premiumTitle')}</h2>
-                  <p className="mt-1 max-w-xl text-sm text-muted-foreground">{t(locale, 'home.premiumDesc')}</p>
+                  <h2 className="font-display text-xl font-semibold">
+                    {t(locale, 'home.premiumTitle')}
+                  </h2>
+                  <p className="mt-1 max-w-xl text-sm text-muted-foreground">
+                    {t(locale, 'home.premiumDesc')}
+                  </p>
                 </div>
               </div>
               <a href={upgradeHref} className={cn(buttonVariants({ size: 'lg' }), 'shrink-0')}>

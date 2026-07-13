@@ -1,14 +1,24 @@
-import {
-  ApiProvider,
-  type FacetValue,
-  type SearchCatalogueType,
-  useSearchCatalogue,
-} from '@TheY2T/tmr-api-client';
+import { ApiProvider, type SearchCatalogueType, useSearchCatalogue } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
-import { Badge, CardGrid, Chip, Icon, SearchField } from '@TheY2T/tmr-ui';
+import {
+  type ActiveFilterItem,
+  ActiveFilters,
+  Badge,
+  CardGrid,
+  EmptyState,
+  type FacetGroup,
+  FacetPanel,
+  Icon,
+  MediaCard,
+  Pagination,
+  SearchField,
+  Skeleton,
+} from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import FavoriteHeart from '@/components/FavoriteHeart';
 import { listFavoriteSlugs } from '@/lib/favorites-api';
+
+const PAGE_SIZE = 24;
 
 /** Localized label for a premium tier (`premium`/`pro`/`institution`; unknown → premium). */
 function tierLabel(locale: Locale, tier?: string): string {
@@ -21,50 +31,13 @@ function toggle(list: string[], value: string): string[] {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
 }
 
-function FacetGroup({
-  title,
-  facets,
-  selected,
-  onToggle,
-}: {
-  title: string;
-  facets: FacetValue[];
-  selected: string[];
-  onToggle: (value: string) => void;
-}) {
-  if (!facets.length) {
-    return null;
-  }
-  return (
-    <div className="space-y-1.5">
-      <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        {title}
-      </h3>
-      <ul className="space-y-1">
-        {facets.map((facet) => (
-          <li key={facet.value}>
-            <label className="flex cursor-pointer items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={selected.includes(facet.value)}
-                onChange={() => onToggle(facet.value)}
-              />
-              <span>{facet.label}</span>
-              <span className="ml-auto text-xs text-muted-foreground">{facet.count}</span>
-            </label>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
 function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Locale }) {
   const [q, setQ] = useState('');
   const [genre, setGenre] = useState<string[]>([]);
   const [instrument, setInstrument] = useState<string[]>([]);
   const [topic, setTopic] = useState<string[]>([]);
   const [type, setType] = useState<string | undefined>();
+  const [page, setPage] = useState(1);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -76,11 +49,8 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
   function onFavoriteChange(slug: string, next: boolean) {
     setFavorites((prev) => {
       const updated = new Set(prev);
-      if (next) {
-        updated.add(slug);
-      } else {
-        updated.delete(slug);
-      }
+      if (next) updated.add(slug);
+      else updated.delete(slug);
       return updated;
     });
   }
@@ -91,96 +61,210 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
     instrument,
     topic,
     type: type as SearchCatalogueType | undefined,
-    pageSize: 24,
+    page,
+    pageSize: PAGE_SIZE,
   });
   const result = data?.data;
+  const items = result?.items ?? [];
+  const total = result?.total ?? 0;
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+  const groups: FacetGroup[] = [
+    {
+      key: 'type',
+      label: t(locale, 'catalogue.facetType'),
+      options: (result?.facets.types ?? []).map((f) => ({
+        value: f.value,
+        label: f.label,
+        count: f.count,
+        selected: type === f.value,
+      })),
+    },
+    {
+      key: 'genre',
+      label: t(locale, 'catalogue.facetGenre'),
+      options: (result?.facets.genres ?? []).map((f) => ({
+        value: f.value,
+        label: f.label,
+        count: f.count,
+        selected: genre.includes(f.value),
+      })),
+    },
+    {
+      key: 'instrument',
+      label: t(locale, 'catalogue.facetInstrument'),
+      options: (result?.facets.instruments ?? []).map((f) => ({
+        value: f.value,
+        label: f.label,
+        count: f.count,
+        selected: instrument.includes(f.value),
+      })),
+    },
+    {
+      key: 'topic',
+      label: t(locale, 'catalogue.facetTopic'),
+      options: (result?.facets.topics ?? []).map((f) => ({
+        value: f.value,
+        label: f.label,
+        count: f.count,
+        selected: topic.includes(f.value),
+      })),
+    },
+  ];
+
+  function onToggleFacet(groupKey: string, value: string) {
+    setPage(1);
+    if (groupKey === 'type') setType((cur) => (cur === value ? undefined : value));
+    else if (groupKey === 'genre') setGenre((cur) => toggle(cur, value));
+    else if (groupKey === 'instrument') setInstrument((cur) => toggle(cur, value));
+    else if (groupKey === 'topic') setTopic((cur) => toggle(cur, value));
+  }
+
+  // Active-filter chips: look each selected value up in its facet group for the display label.
+  const labelFor = (groupKey: string, value: string) =>
+    groups.find((g) => g.key === groupKey)?.options.find((o) => o.value === value)?.label ?? value;
+
+  const activeFilters: ActiveFilterItem[] = [];
+  if (type) {
+    activeFilters.push({
+      key: `type:${type}`,
+      label: labelFor('type', type),
+      onRemove: () => {
+        setType(undefined);
+        setPage(1);
+      },
+    });
+  }
+  for (const [dim, values, setter] of [
+    ['genre', genre, setGenre],
+    ['instrument', instrument, setInstrument],
+    ['topic', topic, setTopic],
+  ] as const) {
+    for (const value of values) {
+      activeFilters.push({
+        key: `${dim}:${value}`,
+        label: labelFor(dim, value),
+        onRemove: () => {
+          setter((cur) => cur.filter((v) => v !== value));
+          setPage(1);
+        },
+      });
+    }
+  }
+
+  function clearAll() {
+    setType(undefined);
+    setGenre([]);
+    setInstrument([]);
+    setTopic([]);
+    setQ('');
+    setPage(1);
+  }
+
+  const hasActive = activeFilters.length > 0;
 
   return (
-    <div className="grid gap-8 md:grid-cols-[220px_1fr]">
+    <div className="grid gap-8 md:grid-cols-[240px_1fr]">
       <aside className="space-y-6">
         <SearchField
           value={q}
-          onChange={(event) => setQ(event.target.value)}
-          onClear={() => setQ('')}
+          onChange={(event) => {
+            setQ(event.target.value);
+            setPage(1);
+          }}
+          onClear={() => {
+            setQ('');
+            setPage(1);
+          }}
           placeholder={t(locale, 'catalogue.search')}
         />
-        <FacetGroup
-          title={t(locale, 'catalogue.facetType')}
-          facets={result?.facets.types ?? []}
-          selected={type ? [type] : []}
-          onToggle={(value) => setType((current) => (current === value ? undefined : value))}
-        />
-        <FacetGroup
-          title={t(locale, 'catalogue.facetGenre')}
-          facets={result?.facets.genres ?? []}
-          selected={genre}
-          onToggle={(value) => setGenre((current) => toggle(current, value))}
-        />
-        <FacetGroup
-          title={t(locale, 'catalogue.facetInstrument')}
-          facets={result?.facets.instruments ?? []}
-          selected={instrument}
-          onToggle={(value) => setInstrument((current) => toggle(current, value))}
-        />
-        <FacetGroup
-          title={t(locale, 'catalogue.facetTopic')}
-          facets={result?.facets.topics ?? []}
-          selected={topic}
-          onToggle={(value) => setTopic((current) => toggle(current, value))}
-        />
+        <FacetPanel groups={groups} onToggle={onToggleFacet} />
       </aside>
 
       <section className="space-y-4">
-        <p className="text-sm text-muted-foreground">
-          {isFetching
-            ? t(locale, 'catalogue.searching')
-            : t(locale, 'catalogue.results', { count: result?.total ?? 0 })}
-        </p>
-        <CardGrid>
-          {(result?.items ?? []).map((item) => (
-            <li key={item.slug} className="relative">
-              {showFavorites ? (
-                <div className="absolute right-3 top-3 z-10">
-                  <FavoriteHeart
-                    slug={item.slug}
-                    favorited={favorites.has(item.slug)}
-                    onChange={onFavoriteChange}
-                  />
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm text-muted-foreground">
+            {isFetching
+              ? t(locale, 'catalogue.searching')
+              : t(locale, 'catalogue.results', { count: total })}
+          </p>
+        </div>
+
+        {hasActive ? (
+          <ActiveFilters
+            filters={activeFilters}
+            onClear={clearAll}
+            clearLabel={t(locale, 'catalogue.clearFilters')}
+          />
+        ) : null}
+
+        {isFetching && items.length === 0 ? (
+          <CardGrid>
+            {Array.from({ length: 6 }).map((_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: fixed-length skeleton placeholders.
+              <li key={i} className="space-y-3 rounded-lg border border-border p-0">
+                <Skeleton className="aspect-[4/3] w-full rounded-b-none" />
+                <div className="space-y-2 p-4">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-3 w-full" />
                 </div>
-              ) : null}
-              <a
-                href={localizedPath(locale, `/catalogue/${item.slug}`)}
-                className="flex h-full flex-col gap-2 rounded-lg border border-border p-4 transition-colors hover:bg-muted"
-              >
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="font-mono">
-                    {item.type}
-                  </Badge>
-                  {item.difficulty ? (
-                    <span className="text-xs text-muted-foreground">
-                      {t(locale, 'catalogue.grade', { level: item.difficulty })}
-                    </span>
-                  ) : null}
-                  {item.locked ? (
-                    <Badge variant="warning">
-                      <Icon name="lock" className="size-3" />
-                      {tierLabel(locale, item.tier)}
-                    </Badge>
-                  ) : null}
-                </div>
-                <h2 className="font-semibold leading-snug">{item.title}</h2>
-                {item.summary ? (
-                  <p className="line-clamp-2 text-sm text-muted-foreground">{item.summary}</p>
-                ) : null}
-                <div className="mt-auto flex flex-wrap gap-1 pt-2">
-                  {[...item.genres, ...item.instruments].map((ref) => (
-                    <Chip key={ref.slug}>{ref.name}</Chip>
-                  ))}
-                </div>
-              </a>
-            </li>
-          ))}
-        </CardGrid>
+              </li>
+            ))}
+          </CardGrid>
+        ) : items.length === 0 ? (
+          <EmptyState
+            icon={<Icon name="search" className="size-6" />}
+            title={t(locale, 'catalogue.emptyTitle')}
+            description={t(locale, 'catalogue.emptyDesc')}
+          />
+        ) : (
+          <CardGrid>
+            {items.map((item) => (
+              <li key={item.slug}>
+                <MediaCard
+                  title={item.title}
+                  href={localizedPath(locale, `/catalogue/${item.slug}`)}
+                  summary={item.summary ?? undefined}
+                  typeLabel={item.type}
+                  difficultyLabel={
+                    item.difficulty
+                      ? t(locale, 'catalogue.grade', { level: item.difficulty })
+                      : undefined
+                  }
+                  seed={item.slug}
+                  tags={[...item.genres, ...item.instruments].map((r) => r.name)}
+                  badgeSlot={
+                    item.locked ? (
+                      <Badge variant="warning">
+                        <Icon name="lock" className="size-3" />
+                        {tierLabel(locale, item.tier)}
+                      </Badge>
+                    ) : undefined
+                  }
+                  actionSlot={
+                    showFavorites ? (
+                      <FavoriteHeart
+                        slug={item.slug}
+                        favorited={favorites.has(item.slug)}
+                        onChange={onFavoriteChange}
+                      />
+                    ) : undefined
+                  }
+                />
+              </li>
+            ))}
+          </CardGrid>
+        )}
+
+        {pageCount > 1 ? (
+          <Pagination
+            page={page}
+            pageCount={pageCount}
+            onPageChange={setPage}
+            prevLabel={t(locale, 'common.prev')}
+            nextLabel={t(locale, 'common.next')}
+          />
+        ) : null}
       </section>
     </div>
   );

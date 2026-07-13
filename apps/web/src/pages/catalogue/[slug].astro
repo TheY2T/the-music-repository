@@ -4,7 +4,7 @@ import ContentDetail from '@/components/ContentDetail.tsx';
 import FavoriteButton from '@/components/FavoriteButton.tsx';
 import InfoView from '@/components/InfoView.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import { t } from '@TheY2T/tmr-i18n';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 const { slug = '' } = Astro.params;
@@ -16,16 +16,15 @@ const locale = Astro.locals.locale;
 ---
 
 <BaseLayout title={t(locale, 'home.title')}>
-  <PageShell maxWidth="max-w-3xl">
-    <div class="flex items-center justify-between">
-      <a href={localizedPath(locale, '/catalogue')} class="text-sm text-muted-foreground underline">
-        {t(locale, 'common.backCatalogue')}
-      </a>
-      <div class="flex items-center gap-3">
-        {showComplete && <CompleteButton client:load slug={slug} />}
-        {showFavorite && <FavoriteButton client:load slug={slug} />}
-      </div>
-    </div>
+  <PageShell maxWidth="max-w-4xl">
+    {
+      (showComplete || showFavorite) && (
+        <div class="mb-4 flex items-center justify-end gap-3">
+          {showComplete && <CompleteButton client:load slug={slug} />}
+          {showFavorite && <FavoriteButton client:load slug={slug} />}
+        </div>
+      )
+    }
     <ContentDetail client:load slug={slug} locale={locale} />
   </PageShell>
   {showInfoView && <InfoView client:idle />}

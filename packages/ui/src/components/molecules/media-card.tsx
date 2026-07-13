@@ -53,8 +53,8 @@ export function MediaCard({
         <span className="sr-only">{title}</span>
       </a>
 
-      <div className="relative">
-        <CoverArt title={title} subtitle={difficultyLabel} seed={seed ?? href} />
+      <div className="relative border-b border-border">
+        <CoverArt title={title} seed={seed ?? href} showLabel={false} />
         {badgeSlot ? <div className="absolute right-2 top-2 z-20">{badgeSlot}</div> : null}
       </div>
 
