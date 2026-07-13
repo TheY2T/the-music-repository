@@ -1,14 +1,23 @@
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
-import { Badge, Button, Icon } from '@TheY2T/tmr-ui';
+import {
+  Badge,
+  Button,
+  buttonVariants,
+  Card,
+  cn,
+  EmptyState,
+  Icon,
+  Progress,
+} from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { DECKS, findDeck } from '@/lib/drill-decks';
 import { getDeckReviews, gradeCard } from '@/lib/reviews-api';
 
 const SESSION_LIMIT = 12;
 const GRADES: { labelKey: MessageKey; quality: number; className: string }[] = [
-  { labelKey: 'review.again', quality: 2, className: 'border-red-500 text-red-600' },
-  { labelKey: 'review.good', quality: 4, className: 'border-green-600 text-green-700' },
-  { labelKey: 'review.easy', quality: 5, className: 'border-blue-500 text-blue-600' },
+  { labelKey: 'review.again', quality: 2, className: 'border-destructive text-destructive' },
+  { labelKey: 'review.good', quality: 4, className: 'border-success text-success' },
+  { labelKey: 'review.easy', quality: 5, className: 'border-info text-info' },
 ];
 
 interface QueueItem {
@@ -70,13 +79,18 @@ export default function ReviewSession({ deckKey, locale }: { deckKey?: string; l
   }
   if (queue.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground">
-        {t(locale, 'review.nothingDue')}{' '}
-        <a href={localizedPath(locale, '/drills')} className="underline">
-          {t(locale, 'review.pickADeck')}
-        </a>
-        .
-      </p>
+      <EmptyState
+        icon={<Icon name="circle-check" className="size-6" />}
+        title={t(locale, 'review.allCaughtUp')}
+        action={
+          <a
+            href={localizedPath(locale, '/drills')}
+            className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}
+          >
+            {t(locale, 'review.pickADeck')}
+          </a>
+        }
+      />
     );
   }
   if (!item || !deck) {
@@ -109,47 +123,50 @@ export default function ReviewSession({ deckKey, locale }: { deckKey?: string; l
 
   return (
     <div className="space-y-6">
-      <p className="text-sm text-muted-foreground">
-        {t(locale, 'review.cardProgress', { current: index + 1, total: queue.length })}
-        {!deckKey ? (
-          <Badge variant="secondary" className="ml-2">
-            {deck.title}
-          </Badge>
-        ) : null}
-      </p>
-
-      {deck.prompt ? <div className="flex justify-center">{deck.prompt(item.card)}</div> : null}
-      {deck.play ? (
-        <div className="flex justify-center">
-          <Button variant="outline" size="lg" onClick={() => deck.play?.(item.card)}>
-            <Icon name="play" className="size-4" />
-            {t(locale, 'review.play')}
-          </Button>
+      <div className="space-y-2">
+        <div className="flex items-center justify-between gap-2 text-sm text-muted-foreground">
+          <span>
+            {t(locale, 'review.cardProgress', { current: index + 1, total: queue.length })}
+          </span>
+          {!deckKey ? <Badge variant="secondary">{deck.title}</Badge> : null}
         </div>
-      ) : null}
+        <Progress value={(index / queue.length) * 100} />
+      </div>
 
-      {revealed ? (
-        <div className="space-y-4 text-center">
-          <div className="text-2xl font-bold">{deck.answer(item.card)}</div>
-          <div className="flex justify-center gap-3">
-            {GRADES.map((g) => (
-              <Button
-                key={g.labelKey}
-                variant="outline"
-                disabled={busy}
-                className={g.className}
-                onClick={() => grade(g.quality)}
-              >
-                {t(locale, g.labelKey)}
-              </Button>
-            ))}
+      <Card className="space-y-6 p-8">
+        {deck.prompt ? <div className="flex justify-center">{deck.prompt(item.card)}</div> : null}
+        {deck.play ? (
+          <div className="flex justify-center">
+            <Button variant="outline" size="lg" onClick={() => deck.play?.(item.card)}>
+              <Icon name="play" className="size-4" />
+              {t(locale, 'review.play')}
+            </Button>
           </div>
-        </div>
-      ) : (
-        <div className="text-center">
-          <Button onClick={() => setRevealed(true)}>{t(locale, 'review.showAnswer')}</Button>
-        </div>
-      )}
+        ) : null}
+
+        {revealed ? (
+          <div className="space-y-4 text-center">
+            <div className="font-display text-3xl font-semibold">{deck.answer(item.card)}</div>
+            <div className="flex justify-center gap-3">
+              {GRADES.map((g) => (
+                <Button
+                  key={g.labelKey}
+                  variant="outline"
+                  disabled={busy}
+                  className={g.className}
+                  onClick={() => grade(g.quality)}
+                >
+                  {t(locale, g.labelKey)}
+                </Button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="text-center">
+            <Button onClick={() => setRevealed(true)}>{t(locale, 'review.showAnswer')}</Button>
+          </div>
+        )}
+      </Card>
     </div>
   );
 }

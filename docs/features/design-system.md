@@ -62,6 +62,20 @@ Tailwind utilities via `@theme inline` and declares `@custom-variant dark`. The 
 `--success` / `--warning` / `--info`. `tokens.css` is pure CSS (no Tailwind directives) so it loads
 anywhere.
 
+## Theming — 3 aesthetics × light/dark (ADR 0021)
+
+The site ships **three vintage aesthetics** — `hybrid` (default), `heritage`, `warm-minimal` — each
+with a light and a dark ("after-hours") mode, selected by two independent hooks on `<html>`:
+**aesthetic → `data-theme="…"`** (default `hybrid`, static in `BaseLayout` + restored pre-paint from
+`localStorage['tmr.aesthetic']`) and **mode → the `.dark` class** (`localStorage['theme']`).
+`tokens.css` holds six palette blocks (`[data-theme='X']` and `[data-theme='X'].dark`) plus per-aesthetic
+**font tokens** (`--font-display/-body/-mono`) and **texture tokens** (`--paper-overlay`, `--frame-width`,
+`--shadow-offset`, `--texture-grain`). Faces are self-hosted via `@fontsource` in
+`design-tokens/src/fonts.css` (no external CDN). The grain wash is painted by a `body::before` overlay in
+`apps/web`'s `global.css`. Switch via `apps/web/src/components/ThemeSwitcher.tsx` (in `SiteHeader`).
+**Any new component MUST use semantic tokens only** (no hardcoded palette colors) or it won't re-theme;
+music-notation SVG colors are the sole exception. Storybook's `preview.tsx` has Aesthetic + Mode toolbars.
+
 ## Wiring (already done in `apps/web`)
 
 1. `src/styles/global.css`: `@import "tailwindcss";` → `@import "@TheY2T/tmr-design-tokens/index.css";`

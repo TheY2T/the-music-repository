@@ -260,8 +260,27 @@ src/
 Tailwind v4 is configured in CSS (`@import "tailwindcss"`), not a JS config. Design tokens + the
 `@theme inline` mapping + the `.dark` variant come from `@TheY2T/tmr-design-tokens` (imported in
 `global.css`); `@source` globs there make library utilities generate. shadcn config is
-`components.json` (aliases point at `@TheY2T/tmr-ui`). Dark mode = `.dark` on `<html>`, set pre-paint
-in the layout. Component workbench: `pnpm --filter @TheY2T/tmr-ui storybook`.
+`components.json` (aliases point at `@TheY2T/tmr-ui`). Component workbench:
+`pnpm --filter @TheY2T/tmr-ui storybook`.
+
+### Theming — 3 aesthetics × light/dark (ADR 0021, `docs/features/design-system.md`)
+
+Two independent hooks on `<html>`: **aesthetic → `data-theme="hybrid|heritage|warm-minimal"`**
+(default `hybrid`, set statically in `BaseLayout` + restored pre-paint from `localStorage['tmr.aesthetic']`)
+and **mode → the `.dark` class** (`localStorage['theme']`, else OS pref) — both set pre-paint in
+`BaseLayout.astro` to avoid a flash. Switch via `src/components/ThemeSwitcher.tsx` (in `SiteHeader`).
+**Compose from semantic token utilities ONLY** (`bg-background/bg-card/bg-primary/bg-muted/bg-accent`,
+`text-foreground/text-muted-foreground`, `border-border`, `font-display/font-body`) — hardcoded
+palette colors (`bg-amber-500`, `text-red-500`, hex) do NOT re-theme. Music-notation SVG colors are the
+sole exception. Six palettes + per-aesthetic fonts (`@fontsource`) + texture live in the tokens package.
+
+### Global chrome
+
+`BaseLayout.astro` renders `SiteHeader` (`src/components/SiteHeader.tsx` — one island: wordmark, nav,
+search, `ThemeSwitcher`, `LanguageSwitcher`, account dropdown, mobile `Sheet` drawer) + `SiteFooter.astro`.
+Nav is derived per-request in `src/lib/nav.ts` (`buildPrimaryNav`/`buildAccountNav` from `Astro.locals`
+flags+user) and passed in. Add a nav destination there, not inline per-page. The `.astro` `Icon` and the
+React `Icon` share kebab names; a few diverge in Iconify and are aliased in `packages/ui/src/astro/Icon.astro`.
 
 ## Testing (ADR 0020, `docs/features/testing.md`)
 

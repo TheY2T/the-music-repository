@@ -4,7 +4,7 @@ import {
   useGetCollectionBySlug,
 } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
-import { Badge } from '@TheY2T/tmr-ui';
+import { Badge, buttonVariants, Card, cn, EmptyState, Icon } from '@TheY2T/tmr-ui';
 
 function Detail({ slug, locale }: { slug: string; locale: Locale }) {
   const { data, isLoading } = useGetCollectionBySlug(slug);
@@ -14,38 +14,72 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
     return <p className="text-sm text-muted-foreground">{t(locale, 'common.loading')}</p>;
   }
   if (!collection) {
-    return <p className="text-sm text-red-500">{t(locale, 'collections.notFound')}</p>;
+    return (
+      <EmptyState
+        icon={<Icon name="list-music" className="size-6" />}
+        title={t(locale, 'collections.notFound')}
+        action={
+          <a
+            href={localizedPath(locale, '/collections')}
+            className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}
+          >
+            {t(locale, 'common.backCollections')}
+          </a>
+        }
+      />
+    );
   }
 
   return (
-    <article className="space-y-6">
-      <header className="space-y-2">
-        <Badge variant="secondary" className="font-mono">
-          {collection.kind}
-        </Badge>
-        <h1 className="text-3xl font-bold">{collection.title}</h1>
-        {collection.summary ? <p className="text-muted-foreground">{collection.summary}</p> : null}
+    <article className="space-y-8">
+      <header className="space-y-3">
+        <div className="flex items-center gap-2">
+          <Badge variant="secondary">{collection.kind}</Badge>
+          <span className="text-xs text-muted-foreground">
+            {collection.itemCount}{' '}
+            {t(
+              locale,
+              collection.itemCount === 1 ? 'collections.itemOne' : 'collections.itemOther',
+            )}
+          </span>
+        </div>
+        <h1 className="font-display text-4xl font-semibold leading-tight tracking-tight">
+          {collection.title}
+        </h1>
+        {collection.summary ? (
+          <p className="text-lg text-muted-foreground">{collection.summary}</p>
+        ) : null}
       </header>
 
-      <ol className="space-y-2">
+      <ol className="space-y-3">
         {collection.items.map((entry) => (
           <li key={entry.content.slug}>
             <a
               href={localizedPath(locale, `/catalogue/${entry.content.slug}`)}
-              className="flex items-center gap-3 rounded-lg border border-border p-3 transition-colors hover:bg-muted"
+              className="group block"
             >
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-medium">
-                {entry.position + 1}
-              </span>
-              <span className="flex flex-col">
-                <span className="font-medium leading-snug">{entry.content.title}</span>
-                <span className="font-mono text-xs text-muted-foreground">
-                  {entry.content.type}
-                  {entry.content.difficulty
-                    ? ` · ${t(locale, 'catalogue.grade', { level: entry.content.difficulty })}`
-                    : ''}
+              <Card className="flex items-center gap-4 p-4 transition group-hover:-translate-y-0.5 group-hover:border-accent group-hover:shadow-md">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent/15 font-display text-sm font-semibold text-accent tabular-nums">
+                  {entry.position + 1}
                 </span>
-              </span>
+                <span className="flex min-w-0 flex-col gap-1">
+                  <span className="font-display font-semibold leading-snug">
+                    {entry.content.title}
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <Badge variant="secondary">{entry.content.type}</Badge>
+                    {entry.content.difficulty ? (
+                      <span className="text-xs text-muted-foreground">
+                        {t(locale, 'catalogue.grade', { level: entry.content.difficulty })}
+                      </span>
+                    ) : null}
+                  </span>
+                </span>
+                <Icon
+                  name="chevron-right"
+                  className="ml-auto size-5 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-accent"
+                />
+              </Card>
             </a>
           </li>
         ))}

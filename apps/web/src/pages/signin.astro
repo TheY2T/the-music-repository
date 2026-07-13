@@ -2,6 +2,7 @@
 import SignInForm from '@/components/SignInForm.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import { buttonVariants, cn } from '@TheY2T/tmr-ui';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 // Already authenticated? Skip the form.
@@ -14,11 +15,16 @@ const locale = Astro.locals.locale;
 
 <BaseLayout title={t(locale, 'signin.title')}>
   <PageShell maxWidth="max-w-md" class="flex min-h-screen flex-col justify-center">
-    <header class="space-y-1 text-center">
-      <a href={localizedPath(locale, '/')} class="text-sm text-muted-foreground underline">
+    <header class="mb-6 space-y-1 text-center">
+      <a
+        href={localizedPath(locale, '/')}
+        class={cn(buttonVariants({ variant: 'link', size: 'sm' }), 'text-muted-foreground')}
+      >
         {t(locale, 'common.backHome')}
       </a>
-      <h1 class="text-3xl font-bold">{t(locale, 'signin.heading')}</h1>
+      <h1 class="font-display text-3xl font-semibold tracking-tight">
+        {t(locale, 'signin.heading')}
+      </h1>
       <p class="text-muted-foreground">{t(locale, 'signin.subtitle')}</p>
     </header>
     <SignInForm client:load redirectTo={redirectTo} locale={locale} />

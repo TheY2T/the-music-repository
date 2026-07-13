@@ -1,6 +1,19 @@
 import type { CollectionSummary } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
-import { Button, Card } from '@TheY2T/tmr-ui';
+import {
+  Badge,
+  buttonVariants,
+  Card,
+  cn,
+  EmptyState,
+  Icon,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { collectionsAdminApi } from '@/lib/admin-api';
 
@@ -25,47 +38,59 @@ export default function AdminCollectionList({ locale }: { locale: Locale }) {
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <a href={localizedPath(locale, '/admin/collections/new')}>
-          <Button size="sm">{t(locale, 'acoll.newCollection')}</Button>
+        <a
+          href={localizedPath(locale, '/admin/collections/new')}
+          className={cn(buttonVariants({ size: 'sm' }))}
+        >
+          <Icon name="plus" className="size-4" />
+          {t(locale, 'acoll.newCollection')}
         </a>
       </div>
       {items.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{t(locale, 'acoll.empty')}</p>
+        <EmptyState
+          icon={<Icon name="list-music" className="size-6" />}
+          title={t(locale, 'acoll.empty')}
+        />
       ) : (
-        <Card className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="border-b bg-muted/40 text-left">
-              <tr>
-                <th className="p-3 font-medium">{t(locale, 'acoll.colTitle')}</th>
-                <th className="p-3 font-medium">{t(locale, 'acoll.colKind')}</th>
-                <th className="p-3 font-medium">{t(locale, 'acoll.colItems')}</th>
-                <th className="p-3" />
-              </tr>
-            </thead>
-            <tbody>
+        <Card className="overflow-hidden">
+          <Table>
+            <TableHeader className="bg-muted/40">
+              <TableRow className="hover:bg-transparent">
+                <TableHead>{t(locale, 'acoll.colTitle')}</TableHead>
+                <TableHead>{t(locale, 'acoll.colKind')}</TableHead>
+                <TableHead>{t(locale, 'acoll.colItems')}</TableHead>
+                <TableHead className="text-right" />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {items.map((collection) => (
-                <tr key={collection.slug} className="border-b last:border-0">
-                  <td className="p-3">
-                    <div className="font-medium">{collection.title}</div>
+                <TableRow key={collection.slug}>
+                  <TableCell>
+                    <div className="font-medium text-foreground">{collection.title}</div>
                     <div className="text-xs text-muted-foreground">{collection.slug}</div>
-                  </td>
-                  <td className="p-3">{collection.kind}</td>
-                  <td className="p-3">{collection.itemCount}</td>
-                  <td className="p-3 text-right">
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="secondary">{collection.kind}</Badge>
+                  </TableCell>
+                  <TableCell className="tabular-nums text-muted-foreground">
+                    {collection.itemCount}
+                  </TableCell>
+                  <TableCell className="text-right">
                     <a
                       href={localizedPath(
                         locale,
                         `/admin/collections/${encodeURIComponent(collection.slug)}/edit`,
                       )}
-                      className="text-sm underline"
+                      className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}
                     >
+                      <Icon name="pencil" className="size-4" />
                       {t(locale, 'acoll.edit')}
                     </a>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </Card>
       )}
     </div>

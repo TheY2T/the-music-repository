@@ -19,11 +19,24 @@ interface Props {
   label?: string;
 }
 
+// A few React-registry names (icon.tsx) map to Lucide components whose Iconify slug differs
+// (e.g. `chart` → BarChart3 → `bar-chart-3`). Alias them so the SAME `name` works in React and
+// Astro. Names that already match Iconify's `lucide:*` slug pass through unchanged.
+const ICONIFY_ALIASES: Record<string, string> = {
+  chart: 'bar-chart-3',
+  disc: 'disc-3',
+  sliders: 'sliders-horizontal',
+  volume: 'volume-2',
+  refresh: 'refresh-cw',
+  'alert-triangle': 'triangle-alert',
+};
+
 const { name, class: className, size, label } = Astro.props;
+const iconifyName = ICONIFY_ALIASES[name] ?? name;
 ---
 
 <Iconify
-  name={`lucide:${name}`}
+  name={`lucide:${iconifyName}`}
   class:list={['shrink-0', className]}
   {size}
   aria-hidden={label ? undefined : 'true'}

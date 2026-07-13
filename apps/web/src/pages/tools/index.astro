@@ -1,7 +1,59 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
+import { Card } from '@TheY2T/tmr-ui';
+import Icon from '@TheY2T/tmr-ui/astro/Icon.astro';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+// A registered Icon-atom name per tool (falls back to `music`). Purely presentational.
+const toolIcons: Record<string, string> = {
+  keyboard: 'piano',
+  fretboard: 'guitar',
+  'circle-of-fifths': 'disc',
+  'scale-explorer': 'music',
+  chords: 'piano',
+  'chord-identifier': 'search',
+  modes: 'music',
+  progression: 'list-music',
+  metronome: 'clock',
+  tuner: 'volume',
+  intervals: 'music',
+  staff: 'book-open',
+  'ear-trainer': 'headphones',
+  sequencer: 'sliders',
+  'sight-reading': 'book-open',
+  'backing-track': 'play',
+  voicings: 'piano',
+  player: 'play',
+  licks: 'guitar',
+  'chord-diagrams': 'guitar',
+  strumming: 'guitar',
+  fingerpicking: 'guitar',
+  arpeggio: 'music',
+  'progression-player': 'play',
+  rhythm: 'clock',
+  caged: 'guitar',
+  'scale-boxes': 'guitar',
+  song: 'music',
+  'progression-ear': 'headphones',
+  'chord-quality-ear': 'headphones',
+  'fret-quiz': 'guitar',
+  musicxml: 'book-open',
+  'multi-voice': 'book-open',
+  'practice-player': 'play',
+  analyzer: 'chart',
+  transposer: 'sliders',
+  bassline: 'music',
+  'melodic-dictation': 'headphones',
+  'rhythm-dictation': 'headphones',
+  grooves: 'disc',
+  solfege: 'music',
+  'key-quiz': 'graduation-cap',
+  'interval-quiz': 'graduation-cap',
+  'practice-room': 'gauge',
+  score: 'book-open',
+  soundfont: 'volume',
+};
 
 const {
   toolKeyboard,
@@ -114,18 +166,24 @@ if (tools.length === 0) {
     subtitle={t(locale, 'tools.subtitle')}
     back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
   >
-    <ul class="grid gap-4 sm:grid-cols-2">
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {
         tools.map((tool) => (
           <li>
-            <a
-              href={localizedPath(locale, `/tools/${tool.slug}`)}
-              class="flex h-full flex-col gap-1 rounded-lg border border-border p-4 transition-colors hover:bg-muted"
-            >
-              <span class="font-semibold">{t(locale, `tool.${tool.slug}.title` as MessageKey)}</span>
-              <span class="text-sm text-muted-foreground">
-                {t(locale, `tool.${tool.slug}.summary` as MessageKey)}
-              </span>
+            <a href={localizedPath(locale, `/tools/${tool.slug}`)} class="group block h-full">
+              <Card className="flex h-full items-start gap-3 p-4 transition group-hover:-translate-y-0.5 group-hover:border-accent group-hover:shadow-md">
+                <span class="flex size-10 shrink-0 items-center justify-center rounded-md bg-accent/15 text-accent">
+                  <Icon name={toolIcons[tool.slug] ?? 'music'} class="size-5" />
+                </span>
+                <span class="flex min-w-0 flex-col gap-1">
+                  <span class="font-display font-semibold leading-tight">
+                    {t(locale, `tool.${tool.slug}.title` as MessageKey)}
+                  </span>
+                  <span class="text-sm text-muted-foreground">
+                    {t(locale, `tool.${tool.slug}.summary` as MessageKey)}
+                  </span>
+                </span>
+              </Card>
             </a>
           </li>
         ))

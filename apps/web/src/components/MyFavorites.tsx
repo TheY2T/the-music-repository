@@ -1,8 +1,24 @@
 import type { ContentSummary } from '@TheY2T/tmr-api-client';
-import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
-import { Badge, CardGrid, Icon } from '@TheY2T/tmr-ui';
+import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
+import {
+  Badge,
+  buttonVariants,
+  CardGrid,
+  cn,
+  EmptyState,
+  Icon,
+  MediaCard,
+  Skeleton,
+} from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { listFavorites } from '@/lib/favorites-api';
+
+/** Localized label for a premium tier (`premium`/`pro`/`institution`; unknown → premium). */
+function tierLabel(locale: Locale, tier?: string): string {
+  const key: MessageKey =
+    tier === 'pro' ? 'tier.pro' : tier === 'institution' ? 'tier.institution' : 'tier.premium';
+  return t(locale, key);
+}
 
 export default function MyFavorites({ locale }: { locale: Locale }) {
   const [items, setItems] = useState<ContentSummary[] | null>(null);
@@ -12,18 +28,36 @@ export default function MyFavorites({ locale }: { locale: Locale }) {
   }, []);
 
   if (!items) {
-    return <p className="text-sm text-muted-foreground">{t(locale, 'myfav.loading')}</p>;
+    return (
+      <CardGrid>
+        {Array.from({ length: 6 }).map((_, i) => (
+          <li key={i} className="space-y-3 rounded-lg border border-border p-0">
+            <Skeleton className="aspect-[4/3] w-full rounded-b-none" />
+            <div className="space-y-2 p-4">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-3 w-full" />
+            </div>
+          </li>
+        ))}
+      </CardGrid>
+    );
   }
   if (items.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground">
-        {t(locale, 'myfav.emptyBefore')}{' '}
-        <a href={localizedPath(locale, '/catalogue')} className="underline">
-          {t(locale, 'myfav.catalogue')}
-        </a>{' '}
-        {t(locale, 'myfav.emptyAfter')}{' '}
-        <Icon name="heart" className="inline size-4 fill-current align-text-bottom text-red-500" />
-      </p>
+      <EmptyState
+        icon={<Icon name="heart" className="size-6" />}
+        title={t(locale, 'myfav.emptyTitle')}
+        description={t(locale, 'myfav.emptyDesc')}
+        action={
+          <a
+            href={localizedPath(locale, '/catalogue')}
+            className={cn(buttonVariants({ size: 'sm' }))}
+          >
+            <Icon name="library" className="size-4" />
+            {t(locale, 'myfav.catalogue')}
+          </a>
+        }
+      />
     );
   }
 
@@ -31,25 +65,27 @@ export default function MyFavorites({ locale }: { locale: Locale }) {
     <CardGrid>
       {items.map((item) => (
         <li key={item.slug}>
-          <a
+          <MediaCard
+            title={item.title}
             href={localizedPath(locale, `/catalogue/${item.slug}`)}
-            className="flex h-full flex-col gap-2 rounded-lg border border-border p-4 transition-colors hover:bg-muted"
-          >
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="font-mono">
-                {item.type}
-              </Badge>
-              {item.difficulty ? (
-                <span className="text-xs text-muted-foreground">
-                  {t(locale, 'myfav.grade', { difficulty: item.difficulty })}
-                </span>
-              ) : null}
-            </div>
-            <h2 className="font-semibold leading-snug">{item.title}</h2>
-            {item.summary ? (
-              <p className="line-clamp-2 text-sm text-muted-foreground">{item.summary}</p>
-            ) : null}
-          </a>
+            summary={item.summary ?? undefined}
+            typeLabel={item.type}
+            difficultyLabel={
+              item.difficulty
+                ? t(locale, 'myfav.grade', { difficulty: item.difficulty })
+                : undefined
+            }
+            seed={item.slug}
+            tags={[...item.genres, ...item.instruments].map((r) => r.name)}
+            badgeSlot={
+              item.locked ? (
+                <Badge variant="warning">
+                  <Icon name="lock" className="size-3" />
+                  {tierLabel(locale, item.tier)}
+                </Badge>
+              ) : undefined
+            }
+          />
         </li>
       ))}
     </CardGrid>

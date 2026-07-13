@@ -1,6 +1,20 @@
 import type { ContentAdminSummary } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
-import { Badge, Button, Card } from '@TheY2T/tmr-ui';
+import {
+  Badge,
+  type BadgeProps,
+  buttonVariants,
+  Card,
+  cn,
+  EmptyState,
+  Icon,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { adminApi } from '@/lib/admin-api';
 
@@ -13,6 +27,11 @@ function statusLabel(locale: Locale, status: string): string {
         ? 'acl.statusReview'
         : 'acl.statusDraft';
   return t(locale, key);
+}
+
+/** Badge tone for a content status. */
+function statusVariant(status: string): BadgeProps['variant'] {
+  return status === 'published' ? 'success' : status === 'review' ? 'warning' : 'secondary';
 }
 
 export default function AdminContentList({ locale }: { locale: Locale }) {
@@ -36,51 +55,59 @@ export default function AdminContentList({ locale }: { locale: Locale }) {
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <a href={localizedPath(locale, '/admin/content/new')}>
-          <Button size="sm">+ {t(locale, 'acl.newContent')}</Button>
+        <a
+          href={localizedPath(locale, '/admin/content/new')}
+          className={cn(buttonVariants({ size: 'sm' }))}
+        >
+          <Icon name="plus" className="size-4" />
+          {t(locale, 'acl.newContent')}
         </a>
       </div>
       {items.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{t(locale, 'acl.empty')}</p>
+        <EmptyState
+          icon={<Icon name="book-open" className="size-6" />}
+          title={t(locale, 'acl.empty')}
+        />
       ) : (
-        <Card className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="border-b bg-muted/40 text-left">
-              <tr>
-                <th className="p-3 font-medium">{t(locale, 'acl.colTitle')}</th>
-                <th className="p-3 font-medium">{t(locale, 'acl.colType')}</th>
-                <th className="p-3 font-medium">{t(locale, 'acl.colStatus')}</th>
-                <th className="p-3" />
-              </tr>
-            </thead>
-            <tbody>
+        <Card className="overflow-hidden">
+          <Table>
+            <TableHeader className="bg-muted/40">
+              <TableRow className="hover:bg-transparent">
+                <TableHead>{t(locale, 'acl.colTitle')}</TableHead>
+                <TableHead>{t(locale, 'acl.colType')}</TableHead>
+                <TableHead>{t(locale, 'acl.colStatus')}</TableHead>
+                <TableHead className="text-right" />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {items.map((item) => (
-                <tr key={item.slug} className="border-b last:border-0">
-                  <td className="p-3">
-                    <div className="font-medium">{item.title}</div>
+                <TableRow key={item.slug}>
+                  <TableCell>
+                    <div className="font-medium text-foreground">{item.title}</div>
                     <div className="text-xs text-muted-foreground">{item.slug}</div>
-                  </td>
-                  <td className="p-3">{item.type}</td>
-                  <td className="p-3">
-                    <Badge variant={item.status === 'published' ? 'success' : 'secondary'}>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">{item.type}</TableCell>
+                  <TableCell>
+                    <Badge variant={statusVariant(item.status)}>
                       {statusLabel(locale, item.status)}
                     </Badge>
-                  </td>
-                  <td className="p-3 text-right">
+                  </TableCell>
+                  <TableCell className="text-right">
                     <a
                       href={localizedPath(
                         locale,
                         `/admin/content/${encodeURIComponent(item.slug)}/edit`,
                       )}
-                      className="text-sm underline"
+                      className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}
                     >
+                      <Icon name="pencil" className="size-4" />
                       {t(locale, 'acl.edit')}
                     </a>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </Card>
       )}
     </div>

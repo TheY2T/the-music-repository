@@ -1,42 +1,49 @@
 import { ApiProvider, type CollectionSummary, useListCollections } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
-import { Badge, CardGrid } from '@TheY2T/tmr-ui';
+import { CardGrid, EmptyState, Icon, MediaCard, Skeleton } from '@TheY2T/tmr-ui';
 
 function List({ locale }: { locale: Locale }) {
   const { data, isLoading } = useListCollections();
   const items: CollectionSummary[] = data?.status === 200 ? data.data.items : [];
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">{t(locale, 'common.loading')}</p>;
+    return (
+      <CardGrid>
+        {Array.from({ length: 6 }).map((_, i) => (
+          <li key={i} className="space-y-3 rounded-lg border border-border p-0">
+            <Skeleton className="aspect-[4/3] w-full rounded-b-none" />
+            <div className="space-y-2 p-4">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-3 w-full" />
+            </div>
+          </li>
+        ))}
+      </CardGrid>
+    );
   }
   if (!items.length) {
-    return <p className="text-sm text-muted-foreground">{t(locale, 'collections.empty')}</p>;
+    return (
+      <EmptyState
+        icon={<Icon name="list-music" className="size-6" />}
+        title={t(locale, 'collections.empty')}
+      />
+    );
   }
   return (
     <CardGrid>
       {items.map((collection) => (
         <li key={collection.slug}>
-          <a
+          <MediaCard
+            title={collection.title}
             href={localizedPath(locale, `/collections/${collection.slug}`)}
-            className="flex h-full flex-col gap-2 rounded-lg border border-border p-4 transition-colors hover:bg-muted"
-          >
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="font-mono">
-                {collection.kind}
-              </Badge>
-              <span className="text-xs text-muted-foreground">
-                {collection.itemCount}{' '}
-                {t(
-                  locale,
-                  collection.itemCount === 1 ? 'collections.itemOne' : 'collections.itemOther',
-                )}
-              </span>
-            </div>
-            <h2 className="font-semibold leading-snug">{collection.title}</h2>
-            {collection.summary ? (
-              <p className="line-clamp-2 text-sm text-muted-foreground">{collection.summary}</p>
-            ) : null}
-          </a>
+            summary={collection.summary ?? undefined}
+            typeLabel={collection.kind}
+            difficultyLabel={`${collection.itemCount} ${t(
+              locale,
+              collection.itemCount === 1 ? 'collections.itemOne' : 'collections.itemOther',
+            )}`}
+            seed={collection.slug}
+          />
         </li>
       ))}
     </CardGrid>

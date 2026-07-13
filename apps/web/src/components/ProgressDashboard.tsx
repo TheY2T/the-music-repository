@@ -1,6 +1,6 @@
 import type { ProgressSummary } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
-import { Button, Field, Input, Progress, StatCard } from '@TheY2T/tmr-ui';
+import { Button, Card, EmptyState, Field, Icon, Input, Progress, StatTile } from '@TheY2T/tmr-ui';
 import { type FormEvent, useEffect, useState } from 'react';
 import { getProgress, logPractice } from '@/lib/progress-api';
 
@@ -35,7 +35,12 @@ export default function ProgressDashboard({ locale }: { locale: Locale }) {
     return <p className="text-sm text-muted-foreground">{t(locale, 'prog.loading')}</p>;
   }
   if (!summary) {
-    return <p className="text-sm text-red-500">{t(locale, 'prog.loadError')}</p>;
+    return (
+      <EmptyState
+        icon={<Icon name="alert-triangle" className="size-6" />}
+        title={t(locale, 'prog.loadError')}
+      />
+    );
   }
 
   const streak = summary.currentStreakDays;
@@ -43,37 +48,48 @@ export default function ProgressDashboard({ locale }: { locale: Locale }) {
   return (
     <div className="space-y-8">
       <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard label={t(locale, 'prog.itemsCompleted')} value={summary.completedCount} />
-        <StatCard
+        <StatTile
+          iconName="circle-check"
+          label={t(locale, 'prog.itemsCompleted')}
+          value={summary.completedCount}
+        />
+        <StatTile
+          iconName="flame"
           label={t(locale, 'prog.dayStreakLabel')}
           value={t(locale, streak === 1 ? 'prog.dayStreakOne' : 'prog.dayStreakOther', {
             count: streak,
           })}
         />
-        <StatCard label={t(locale, 'prog.practiceMinutes')} value={summary.totalPracticeMinutes} />
+        <StatTile
+          iconName="clock"
+          label={t(locale, 'prog.practiceMinutes')}
+          value={summary.totalPracticeMinutes}
+        />
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-medium">{t(locale, 'prog.collections')}</h2>
+        <h2 className="font-display text-xl font-semibold tracking-tight">
+          {t(locale, 'prog.collections')}
+        </h2>
         {summary.collections.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t(locale, 'prog.noCollections')}</p>
         ) : (
-          <ul className="space-y-3">
+          <ul className="space-y-4">
             {summary.collections.map((collection) => {
               const percent =
                 collection.totalItems === 0
                   ? 0
                   : Math.round((collection.completedItems / collection.totalItems) * 100);
               return (
-                <li key={collection.slug} className="space-y-1">
-                  <div className="flex justify-between text-sm">
+                <li key={collection.slug} className="space-y-1.5">
+                  <div className="flex items-center justify-between gap-2 text-sm">
                     <a
                       href={localizedPath(locale, `/collections/${collection.slug}`)}
-                      className="font-medium underline"
+                      className="font-medium text-foreground hover:text-accent hover:underline"
                     >
                       {collection.title}
                     </a>
-                    <span className="text-muted-foreground">
+                    <span className="tabular-nums text-muted-foreground">
                       {collection.completedItems}/{collection.totalItems}
                     </span>
                   </div>
@@ -85,8 +101,10 @@ export default function ProgressDashboard({ locale }: { locale: Locale }) {
         )}
       </section>
 
-      <section className="space-y-3 border-t pt-6">
-        <h2 className="text-lg font-medium">{t(locale, 'prog.logPractice')}</h2>
+      <Card className="space-y-3 p-6">
+        <h2 className="font-display text-xl font-semibold tracking-tight">
+          {t(locale, 'prog.logPractice')}
+        </h2>
         <form onSubmit={onLog} className="flex items-end gap-3">
           <Field label={t(locale, 'prog.minutes')} htmlFor="practice-minutes">
             <Input
@@ -103,7 +121,7 @@ export default function ProgressDashboard({ locale }: { locale: Locale }) {
             {busy ? t(locale, 'prog.logging') : t(locale, 'prog.logPractice')}
           </Button>
         </form>
-      </section>
+      </Card>
     </div>
   );
 }

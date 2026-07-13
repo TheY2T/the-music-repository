@@ -1,6 +1,6 @@
 import type { CollectionWriteInput } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
-import { Button, Field, Input, Select, Textarea } from '@TheY2T/tmr-ui';
+import { Badge, Button, Card, Field, Icon, Input, Select, Textarea } from '@TheY2T/tmr-ui';
 import { type FormEvent, useEffect, useState } from 'react';
 import { collectionsAdminApi } from '@/lib/admin-api';
 
@@ -108,118 +108,131 @@ export default function CollectionForm({ slug, locale }: { slug?: string; locale
   return (
     <div className="space-y-6">
       {error ? (
-        <p role="alert" className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <p
+          role="alert"
+          className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+        >
+          <Icon name="alert-triangle" className="size-4" />
           {error}
         </p>
       ) : null}
       {notice ? (
-        <p className="rounded-md bg-green-100 px-3 py-2 text-sm text-green-800 dark:bg-green-900 dark:text-green-100">
+        <p className="flex items-center gap-2 rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
+          <Icon name="circle-check" className="size-4" />
           {notice}
         </p>
       ) : null}
       {status ? (
-        <p className="text-sm text-muted-foreground">
-          {t(locale, 'colform.statusLabel', { status })}
+        <p className="flex items-center gap-2 text-sm text-muted-foreground">
+          {t(locale, 'colform.status')}
+          <Badge variant={status === 'published' ? 'success' : 'secondary'}>{status}</Badge>
         </p>
       ) : null}
 
-      <form onSubmit={onSave} className="space-y-4">
-        <Field label={t(locale, 'colform.slug')} htmlFor="colform-slug">
-          <Input
-            id="colform-slug"
-            value={form.slug}
-            readOnly={isEdit}
-            onChange={(e) => set('slug', e.target.value)}
-            placeholder="beginner-piano-path"
-          />
-        </Field>
-        <Field label={t(locale, 'colform.title')} htmlFor="colform-title">
-          <Input
-            id="colform-title"
-            value={form.title}
-            onChange={(e) => set('title', e.target.value)}
-          />
-        </Field>
-        <Field label={t(locale, 'colform.summary')} htmlFor="colform-summary">
-          <Input
-            id="colform-summary"
-            value={form.summary}
-            onChange={(e) => set('summary', e.target.value)}
-          />
-        </Field>
-        <Field label={t(locale, 'colform.kind')} htmlFor="colform-kind">
-          <Select
-            id="colform-kind"
-            value={form.kind}
-            onChange={(e) => set('kind', e.target.value as CollectionWriteInput['kind'])}
-          >
-            {KINDS.map((k) => (
-              <option key={k} value={k}>
-                {k}
-              </option>
-            ))}
-          </Select>
-        </Field>
-        <Field label={t(locale, 'colform.itemsHelp')} htmlFor="colform-items">
-          <Textarea
-            id="colform-items"
-            className="h-40 font-mono"
-            value={form.items}
-            onChange={(e) => set('items', e.target.value)}
-            placeholder={'c-major-scale-two-octaves\nczerny-op-599-no-1'}
-          />
-        </Field>
+      <Card className="p-5">
+        <form onSubmit={onSave} className="space-y-4">
+          <Field label={t(locale, 'colform.slug')} htmlFor="colform-slug">
+            <Input
+              id="colform-slug"
+              value={form.slug}
+              readOnly={isEdit}
+              onChange={(e) => set('slug', e.target.value)}
+              placeholder="beginner-piano-path"
+            />
+          </Field>
+          <Field label={t(locale, 'colform.title')} htmlFor="colform-title">
+            <Input
+              id="colform-title"
+              value={form.title}
+              onChange={(e) => set('title', e.target.value)}
+            />
+          </Field>
+          <Field label={t(locale, 'colform.summary')} htmlFor="colform-summary">
+            <Input
+              id="colform-summary"
+              value={form.summary}
+              onChange={(e) => set('summary', e.target.value)}
+            />
+          </Field>
+          <Field label={t(locale, 'colform.kind')} htmlFor="colform-kind">
+            <Select
+              id="colform-kind"
+              value={form.kind}
+              onChange={(e) => set('kind', e.target.value as CollectionWriteInput['kind'])}
+            >
+              {KINDS.map((k) => (
+                <option key={k} value={k}>
+                  {k}
+                </option>
+              ))}
+            </Select>
+          </Field>
+          <Field label={t(locale, 'colform.itemsHelp')} htmlFor="colform-items">
+            <Textarea
+              id="colform-items"
+              className="h-40 font-mono"
+              value={form.items}
+              onChange={(e) => set('items', e.target.value)}
+              placeholder={'c-major-scale-two-octaves\nczerny-op-599-no-1'}
+            />
+          </Field>
 
-        <div className="flex flex-wrap gap-3 border-t pt-4">
-          <Button type="submit" disabled={busy}>
-            {isEdit ? t(locale, 'colform.saveChanges') : t(locale, 'colform.create')}
-          </Button>
-          {isEdit && slug ? (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                disabled={busy}
-                onClick={() =>
-                  act(() => collectionsAdminApi.publish(slug), t(locale, 'colform.publishedNotice'))
-                }
-              >
-                {t(locale, 'colform.publish')}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                disabled={busy}
-                onClick={() =>
-                  act(
-                    () => collectionsAdminApi.unpublish(slug),
-                    t(locale, 'colform.unpublishedNotice'),
-                  )
-                }
-              >
-                {t(locale, 'colform.unpublish')}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                disabled={busy}
-                onClick={() => {
-                  if (confirm(t(locale, 'colform.confirmDelete'))) {
+          <div className="flex flex-wrap gap-3 border-t border-border pt-4">
+            <Button type="submit" disabled={busy}>
+              <Icon name="check" className="size-4" />
+              {isEdit ? t(locale, 'colform.saveChanges') : t(locale, 'colform.create')}
+            </Button>
+            {isEdit && slug ? (
+              <>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={busy}
+                  onClick={() =>
                     act(
-                      () => collectionsAdminApi.remove(slug),
-                      t(locale, 'colform.deletedNotice'),
-                    ).then(() => {
-                      window.location.href = localizedPath(locale, '/admin/collections');
-                    });
+                      () => collectionsAdminApi.publish(slug),
+                      t(locale, 'colform.publishedNotice'),
+                    )
                   }
-                }}
-              >
-                {t(locale, 'colform.delete')}
-              </Button>
-            </>
-          ) : null}
-        </div>
-      </form>
+                >
+                  {t(locale, 'colform.publish')}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={busy}
+                  onClick={() =>
+                    act(
+                      () => collectionsAdminApi.unpublish(slug),
+                      t(locale, 'colform.unpublishedNotice'),
+                    )
+                  }
+                >
+                  {t(locale, 'colform.unpublish')}
+                </Button>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  disabled={busy}
+                  onClick={() => {
+                    if (confirm(t(locale, 'colform.confirmDelete'))) {
+                      act(
+                        () => collectionsAdminApi.remove(slug),
+                        t(locale, 'colform.deletedNotice'),
+                      ).then(() => {
+                        window.location.href = localizedPath(locale, '/admin/collections');
+                      });
+                    }
+                  }}
+                >
+                  <Icon name="trash" className="size-4" />
+                  {t(locale, 'colform.delete')}
+                </Button>
+              </>
+            ) : null}
+          </div>
+        </form>
+      </Card>
     </div>
   );
 }

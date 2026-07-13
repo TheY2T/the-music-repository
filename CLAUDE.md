@@ -40,6 +40,12 @@ Biome + thin ESLint · podman-compose deploy.
   shells) in `apps/web`. Both are **raw-source ESM** (not dual-build). Templates/pages stay in
   `apps/web`. Library components are presentational + i18n-by-prop (never call `t()` inside). Follow
   the **`add-ui-component`** skill. ADR 0018 · `docs/features/design-system.md`.
+- **Theme with tokens, not colors (web).** The site ships **3 vintage aesthetics × light/dark** (ADR
+  0021) via `data-theme` (`hybrid`/`heritage`/`warm-minimal`) + the `.dark` class on `<html>`, switched
+  by `ThemeSwitcher` in the global `SiteHeader`. Every component MUST use **semantic token utilities**
+  (`bg-primary`, `text-muted-foreground`, `border-border`, `bg-accent/15`, `font-display`) — hardcoded
+  palette colors (`bg-amber-500`, `text-red-500`, hex) don't re-theme (music-notation SVG excepted).
+  Global chrome (`SiteHeader`/`SiteFooter`) lives in `BaseLayout`; nav is built in `apps/web/src/lib/nav.ts`.
 - **Icons from the design system (web).** No emoji/unicode as icons in `apps/web` — use the **`Icon`
   atom** from `@TheY2T/tmr-ui` (`<Icon name="lock" className="size-4" />`) in React, and
   `@TheY2T/tmr-ui/astro/Icon.astro` in `.astro`. Both are Lucide; add an icon via the registry in

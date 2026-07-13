@@ -1,6 +1,6 @@
 import type { ReviewSummary } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
-import { Badge, Button, CardGrid, Icon, StatCard } from '@TheY2T/tmr-ui';
+import { Badge, Button, Card, CardGrid, Icon, StatTile } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { DECKS } from '@/lib/drill-decks';
 import { getReviewSummary } from '@/lib/reviews-api';
@@ -18,21 +18,18 @@ export default function DrillsHub({ locale }: { locale: Locale }) {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-4">
-        <div className="grid grid-cols-3 gap-3">
-          <StatCard
+        <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-3">
+          <StatTile
+            iconName="flame"
             label={t(locale, 'drillhub.dayStreak')}
-            value={
-              <span className="inline-flex items-center gap-1.5">
-                {summary?.streakDays ?? 0}
-                <Icon name="flame" className="size-5 text-orange-500" />
-              </span>
-            }
+            value={summary?.streakDays ?? 0}
           />
-          <StatCard
+          <StatTile
+            iconName="circle-check"
             label={t(locale, 'drillhub.reviewedToday')}
             value={summary?.reviewsToday ?? 0}
           />
-          <StatCard label={t(locale, 'drillhub.dueNow')} value={totalDue} />
+          <StatTile iconName="clock" label={t(locale, 'drillhub.dueNow')} value={totalDue} />
         </div>
         {totalDue > 0 ? (
           <a href={localizedPath(locale, '/drills/review')} className="ml-auto">
@@ -52,21 +49,24 @@ export default function DrillsHub({ locale }: { locale: Locale }) {
           const fresh = deck.cards.length - learned;
           return (
             <li key={deck.key}>
-              <a
-                href={localizedPath(locale, `/drills/${deck.key}`)}
-                className="flex h-full flex-col gap-2 rounded-lg border border-border p-4 transition-colors hover:bg-muted"
-              >
-                <span className="font-semibold" data-help="ear-training">
-                  {deck.title}
-                </span>
-                <span className="text-sm text-muted-foreground">{deck.description}</span>
-                <span className="mt-auto flex gap-3 pt-2">
-                  <Badge variant="info">{t(locale, 'drillhub.due', { count: due })}</Badge>
-                  <Badge variant="secondary">{t(locale, 'drillhub.new', { count: fresh })}</Badge>
-                  <Badge variant="secondary">
-                    {t(locale, 'drillhub.learned', { count: learned })}
-                  </Badge>
-                </span>
+              <a href={localizedPath(locale, `/drills/${deck.key}`)} className="group block h-full">
+                <Card className="flex h-full flex-col gap-2 p-4 transition group-hover:-translate-y-0.5 group-hover:border-accent group-hover:shadow-md">
+                  <span
+                    className="flex items-center gap-2 font-display font-semibold"
+                    data-help="ear-training"
+                  >
+                    <Icon name="graduation-cap" className="size-4 text-accent" />
+                    {deck.title}
+                  </span>
+                  <span className="text-sm text-muted-foreground">{deck.description}</span>
+                  <span className="mt-auto flex flex-wrap gap-2 pt-2">
+                    <Badge variant="info">{t(locale, 'drillhub.due', { count: due })}</Badge>
+                    <Badge variant="secondary">{t(locale, 'drillhub.new', { count: fresh })}</Badge>
+                    <Badge variant="success">
+                      {t(locale, 'drillhub.learned', { count: learned })}
+                    </Badge>
+                  </span>
+                </Card>
               </a>
             </li>
           );

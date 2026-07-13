@@ -1,5 +1,5 @@
 import { type Locale, type MessageKey, t } from '@TheY2T/tmr-i18n';
-import { Button, Field, Input } from '@TheY2T/tmr-ui';
+import { Button, Card, Field, Input } from '@TheY2T/tmr-ui';
 import { type FormEvent, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 
@@ -36,7 +36,7 @@ export default function SignInForm({
   }
 
   return (
-    <div className="mx-auto w-full max-w-sm space-y-6">
+    <Card className="mx-auto w-full max-w-sm space-y-6 p-6">
       <form onSubmit={onSubmit} className="space-y-4">
         <Field label={t(locale, 'signin.email')} htmlFor="email">
           <Input
@@ -66,9 +66,9 @@ export default function SignInForm({
         </Button>
       </form>
 
-      <div className="space-y-2 border-t pt-4">
+      <div className="space-y-2 border-t border-border pt-4">
         <p className="text-xs text-muted-foreground">{t(locale, 'signin.devAccounts')}</p>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {DEV_ACCOUNTS.map((account) => (
             <Button
               key={account.email}
@@ -85,6 +85,6 @@ export default function SignInForm({
           ))}
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

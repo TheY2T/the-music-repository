@@ -1,6 +1,6 @@
 import type { ContentWriteInput, MediaUploadRequestKind } from '@TheY2T/tmr-api-client';
 import { type Locale, t } from '@TheY2T/tmr-i18n';
-import { Button, Field, Input, Select, Textarea } from '@TheY2T/tmr-ui';
+import { Button, Card, Field, Icon, Input, Select, Textarea } from '@TheY2T/tmr-ui';
 import { marked } from 'marked';
 import { type FormEvent, useEffect, useMemo, useState } from 'react';
 import { adminApi, uploadToTicket } from '@/lib/admin-api';
@@ -238,18 +238,26 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
   return (
     <div className="space-y-6">
       {error ? (
-        <p role="alert" className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <p
+          role="alert"
+          className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+        >
+          <Icon name="alert-triangle" className="size-4" />
           {error}
         </p>
       ) : null}
       {notice ? (
-        <p className="rounded-md bg-green-100 px-3 py-2 text-sm text-green-800 dark:bg-green-900 dark:text-green-100">
+        <p className="flex items-center gap-2 rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
+          <Icon name="circle-check" className="size-4" />
           {notice}
         </p>
       ) : null}
 
       <form onSubmit={onSave} className="grid gap-6 md:grid-cols-2">
-        <div className="space-y-4">
+        <Card className="space-y-4 p-5">
+          <h2 className="font-display text-lg font-semibold tracking-tight">
+            {t(locale, 'cform.sectionDetails')}
+          </h2>
           <Field label={t(locale, 'cform.slug')} htmlFor="cform-slug">
             <Input
               id="cform-slug"
@@ -348,25 +356,30 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
               />
             </Field>
           </div>
-        </div>
+        </Card>
 
-        <div className="space-y-2">
-          <span className="text-sm font-medium">{t(locale, 'cform.body')}</span>
-          <Textarea
-            className="h-64 font-mono"
-            value={form.bodyMdx}
-            onChange={(e) => set('bodyMdx', e.target.value)}
-          />
-          <span className="text-sm font-medium">{t(locale, 'cform.preview')}</span>
-          {/* biome-ignore lint/security/noDangerouslySetInnerHtml: admin-authored markdown preview. */}
-          <div
-            className="prose prose-sm max-w-none rounded-md border p-3 dark:prose-invert"
-            dangerouslySetInnerHTML={{ __html: previewHtml }}
-          />
-        </div>
+        <Card className="flex flex-col gap-3 p-5">
+          <Field label={t(locale, 'cform.body')} htmlFor="cform-body">
+            <Textarea
+              id="cform-body"
+              className="h-64 font-mono"
+              value={form.bodyMdx}
+              onChange={(e) => set('bodyMdx', e.target.value)}
+            />
+          </Field>
+          <div className="space-y-1.5">
+            <span className="text-sm font-medium">{t(locale, 'cform.preview')}</span>
+            {/* biome-ignore lint/security/noDangerouslySetInnerHtml: admin-authored markdown preview. */}
+            <div
+              className="prose prose-sm max-w-none rounded-md border border-border bg-muted/20 p-3 dark:prose-invert"
+              dangerouslySetInnerHTML={{ __html: previewHtml }}
+            />
+          </div>
+        </Card>
 
-        <div className="md:col-span-2 flex flex-wrap gap-3 border-t pt-4">
+        <div className="md:col-span-2 flex flex-wrap gap-3">
           <Button type="submit" disabled={busy}>
+            <Icon name="check" className="size-4" />
             {isEdit ? t(locale, 'cform.saveChanges') : t(locale, 'cform.create')}
           </Button>
           {isEdit && slug ? (
@@ -393,7 +406,7 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
               </Button>
               <Button
                 type="button"
-                variant="outline"
+                variant="destructive"
                 disabled={busy}
                 onClick={() => {
                   if (confirm(t(locale, 'cform.confirmDelete'))) {
@@ -403,6 +416,7 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
                   }
                 }}
               >
+                <Icon name="trash" className="size-4" />
                 {t(locale, 'cform.delete')}
               </Button>
             </>
@@ -411,11 +425,13 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
       </form>
 
       {isEdit && slug ? (
-        <section className="space-y-3 border-t pt-4">
-          <h2 className="text-lg font-medium">{t(locale, 'cform.media')}</h2>
+        <Card className="space-y-3 p-5">
+          <h2 className="font-display text-lg font-semibold tracking-tight">
+            {t(locale, 'cform.media')}
+          </h2>
           <input
             type="file"
-            className="text-sm"
+            className="text-sm text-muted-foreground file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent/15 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-accent hover:file:bg-accent/25"
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) {
@@ -427,18 +443,24 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
           {media.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t(locale, 'cform.noMedia')}</p>
           ) : (
-            <ul className="space-y-1 text-sm">
+            <ul className="space-y-1.5 text-sm">
               {media.map((m) => (
-                <li key={m.id}>
-                  <a href={m.url} target="_blank" rel="noreferrer" className="underline">
+                <li key={m.id} className="flex items-center gap-2">
+                  <Icon name="external-link" className="size-4 text-muted-foreground" />
+                  <a
+                    href={m.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium text-foreground underline-offset-4 hover:text-accent hover:underline"
+                  >
                     {m.filename}
-                  </a>{' '}
+                  </a>
                   <span className="text-muted-foreground">({m.kind})</span>
                 </li>
               ))}
             </ul>
           )}
-        </section>
+        </Card>
       ) : null}
     </div>
   );

@@ -1,6 +1,18 @@
 import type { HelpTopic } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
-import { Button, Card } from '@TheY2T/tmr-ui';
+import {
+  buttonVariants,
+  Card,
+  cn,
+  EmptyState,
+  Icon,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { listHelpTopics } from '@/lib/help-api';
 
@@ -18,42 +30,50 @@ export default function AdminHelpList({ locale }: { locale: Locale }) {
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <a href={localizedPath(locale, '/admin/help/new')}>
-          <Button size="sm">{t(locale, 'ahelp.newTopic')}</Button>
+        <a
+          href={localizedPath(locale, '/admin/help/new')}
+          className={cn(buttonVariants({ size: 'sm' }))}
+        >
+          <Icon name="plus" className="size-4" />
+          {t(locale, 'ahelp.newTopic')}
         </a>
       </div>
       {items.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{t(locale, 'ahelp.empty')}</p>
+        <EmptyState
+          icon={<Icon name="info" className="size-6" />}
+          title={t(locale, 'ahelp.empty')}
+        />
       ) : (
-        <Card className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="border-b bg-muted/40 text-left">
-              <tr>
-                <th className="p-3 font-medium">{t(locale, 'ahelp.colTerm')}</th>
-                <th className="p-3 font-medium">{t(locale, 'ahelp.colSlug')}</th>
-                <th className="p-3" />
-              </tr>
-            </thead>
-            <tbody>
+        <Card className="overflow-hidden">
+          <Table>
+            <TableHeader className="bg-muted/40">
+              <TableRow className="hover:bg-transparent">
+                <TableHead>{t(locale, 'ahelp.colTerm')}</TableHead>
+                <TableHead>{t(locale, 'ahelp.colSlug')}</TableHead>
+                <TableHead className="text-right" />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {items.map((topic) => (
-                <tr key={topic.slug} className="border-b last:border-0">
-                  <td className="p-3 font-medium">{topic.term}</td>
-                  <td className="p-3 text-muted-foreground">{topic.slug}</td>
-                  <td className="p-3 text-right">
+                <TableRow key={topic.slug}>
+                  <TableCell className="font-medium text-foreground">{topic.term}</TableCell>
+                  <TableCell className="text-muted-foreground">{topic.slug}</TableCell>
+                  <TableCell className="text-right">
                     <a
                       href={localizedPath(
                         locale,
                         `/admin/help/${encodeURIComponent(topic.slug)}/edit`,
                       )}
-                      className="text-sm underline"
+                      className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}
                     >
+                      <Icon name="pencil" className="size-4" />
                       {t(locale, 'ahelp.edit')}
                     </a>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </Card>
       )}
     </div>

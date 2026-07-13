@@ -1,10 +1,10 @@
 ---
 import AdminContentList from '@/components/AdminContentList.tsx';
+import AdminNav from '@/components/AdminNav.tsx';
 import SignOutButton from '@/components/SignOutButton.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { guardAdmin } from '@/lib/admin-guard';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
-import Icon from '@TheY2T/tmr-ui/astro/Icon.astro';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 const redirect = guardAdmin(Astro);
@@ -17,7 +17,7 @@ const locale = Astro.locals.locale;
 
 <BaseLayout title={`${t(locale, 'nav.admin')} — ${t(locale, 'site.name')}`}>
   <PageShell
-    title={t(locale, 'admin.content')}
+    title={t(locale, 'nav.admin')}
     subtitle={t(locale, 'admin.signedInAs', { who: user.name || user.email, role: user.role ?? '' })}
     back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
     maxWidth="max-w-5xl"
@@ -26,31 +26,19 @@ const locale = Astro.locals.locale;
       <SignOutButton client:load locale={locale} />
     </Fragment>
 
-    <div class="flex flex-wrap gap-4">
-      {
-        Astro.locals.flags.collections && (
-          <a
-            href={localizedPath(locale, '/admin/collections')}
-            class="inline-flex items-center gap-1 text-sm underline"
-          >
-            {t(locale, 'admin.manageCollections')}
-            <Icon name="arrow-right" class="size-4" />
-          </a>
-        )
-      }
-      {
-        Astro.locals.flags.infoView && (
-          <a
-            href={localizedPath(locale, '/admin/help')}
-            class="inline-flex items-center gap-1 text-sm underline"
-          >
-            {t(locale, 'admin.manageHelp')}
-            <Icon name="arrow-right" class="size-4" />
-          </a>
-        )
-      }
-    </div>
+    <div class="space-y-8">
+      <AdminNav
+        locale={locale}
+        showCollections={Astro.locals.flags.collections}
+        showHelp={Astro.locals.flags.infoView}
+      />
 
-    <AdminContentList client:load locale={locale} />
+      <section id="admin-content" class="space-y-4">
+        <h2 class="font-display text-xl font-semibold tracking-tight">
+          {t(locale, 'admin.content')}
+        </h2>
+        <AdminContentList client:load locale={locale} />
+      </section>
+    </div>
   </PageShell>
 </BaseLayout>

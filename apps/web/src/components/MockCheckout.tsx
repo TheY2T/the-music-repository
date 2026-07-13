@@ -1,5 +1,5 @@
 import { type Locale, type MessageKey, t } from '@TheY2T/tmr-i18n';
-import { Button, Card } from '@TheY2T/tmr-ui';
+import { Button, buttonVariants, Card, cn, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { completeMockCheckout } from '@/lib/subscription-api';
 
@@ -57,16 +57,21 @@ export default function MockCheckout({ locale }: { locale: Locale }) {
 
   return (
     <Card className="space-y-6 p-6">
-      <div>
-        <p className="text-sm font-medium text-muted-foreground">
-          {t(locale, 'checkout.provider')}
-        </p>
-        <p className="text-lg font-semibold">
-          {t(locale, 'checkout.planLine', { plan: planLabel(locale, params.plan) })}
-        </p>
-        <p className="text-sm text-muted-foreground">
-          {t(locale, 'checkout.priceLine', { price })}
-        </p>
+      <div className="flex items-start gap-3">
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-accent/15 text-accent">
+          <Icon name="crown" className="size-5" />
+        </span>
+        <div className="min-w-0 space-y-0.5">
+          <p className="text-sm font-medium text-muted-foreground">
+            {t(locale, 'checkout.provider')}
+          </p>
+          <p className="font-display text-lg font-semibold tracking-tight">
+            {t(locale, 'checkout.planLine', { plan: planLabel(locale, params.plan) })}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {t(locale, 'checkout.priceLine', { price })}
+          </p>
+        </div>
       </div>
       <div className="flex gap-3">
         <Button
@@ -77,10 +82,7 @@ export default function MockCheckout({ locale }: { locale: Locale }) {
         >
           {busy ? t(locale, 'checkout.processing') : t(locale, 'checkout.pay', { price })}
         </Button>
-        <a
-          href={params.cancel}
-          className="rounded-md border border-border px-4 py-2 text-sm font-medium"
-        >
+        <a href={params.cancel} className={cn(buttonVariants({ variant: 'outline' }))}>
           {t(locale, 'checkout.cancel')}
         </a>
       </div>

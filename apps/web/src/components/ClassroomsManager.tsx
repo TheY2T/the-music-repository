@@ -1,5 +1,18 @@
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
-import { Badge, Button, Input } from '@TheY2T/tmr-ui';
+import {
+  Badge,
+  Button,
+  Card,
+  Field,
+  Icon,
+  type IconName,
+  Input,
+  Progress,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+} from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import {
   type Assignment,
@@ -23,6 +36,15 @@ import {
   transferOwnership,
   unassignContent,
 } from '@/lib/classrooms-api';
+
+function SectionHeading({ iconName, children }: { iconName: IconName; children: React.ReactNode }) {
+  return (
+    <h3 className="flex items-center gap-1.5 font-display text-sm font-semibold tracking-tight">
+      <Icon name={iconName} className="size-4 text-muted-foreground" />
+      {children}
+    </h3>
+  );
+}
 
 function ClassroomCard({
   classroom,
@@ -98,216 +120,263 @@ function ClassroomCard({
   }
 
   return (
-    <li className="space-y-2 rounded-lg border border-border p-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <span className="font-semibold">{classroom.name}</span>
-          <Badge variant="secondary" className="ml-2">
-            {classroom.role}
-          </Badge>
-          {classroom.premiumGranted ? (
-            <Badge variant="success" className="ml-2">
-              {t(locale, 'classmgr.premiumGranted')}
-            </Badge>
-          ) : null}
-        </div>
-        <div className="flex items-center gap-3 text-sm text-muted-foreground">
-          <span>{t(locale, 'classmgr.memberCount', { count: classroom.memberCount })}</span>
-          {isOwner ? (
-            <span>
-              {t(locale, 'classmgr.codeLabel')}{' '}
-              <span className="font-mono font-semibold text-foreground">{classroom.joinCode}</span>
-            </span>
-          ) : null}
-          <button type="button" onClick={toggle} className="underline">
-            {open ? t(locale, 'classmgr.hide') : t(locale, 'classmgr.manage')}
-          </button>
-        </div>
-      </div>
-
-      {open ? (
-        <div className="space-y-4 border-t border-border pt-3">
-          {/* Roster */}
-          <div className="space-y-1">
-            <h3 className="text-sm font-medium">{t(locale, 'classmgr.members')}</h3>
-            {detail?.members.length ? (
-              <ul className="space-y-1 text-sm">
-                {detail.members.map((m) => (
-                  <li key={m.id} className="flex items-center gap-2 text-muted-foreground">
-                    <span>
-                      {m.name || m.email} <span className="text-xs">({m.email})</span>
-                    </span>
-                    {isOwner ? (
-                      <>
-                        <button
-                          type="button"
-                          onClick={async () => {
-                            await removeMember(classroom.id, m.id);
-                            await load();
-                            onChanged();
-                          }}
-                          className="text-xs underline"
-                        >
-                          {t(locale, 'classmgr.remove')}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={async () => {
-                            await transferOwnership(classroom.id, m.id);
-                            onChanged();
-                          }}
-                          className="text-xs underline"
-                        >
-                          {t(locale, 'classmgr.makeOwner')}
-                        </button>
-                      </>
-                    ) : null}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground">{t(locale, 'classmgr.noMembers')}</p>
-            )}
-          </div>
-
-          {/* Assignments */}
-          <div className="space-y-1">
-            <h3 className="text-sm font-medium">{t(locale, 'classmgr.assignedContent')}</h3>
-            {assignments.length ? (
-              <ul className="space-y-1 text-sm">
-                {assignments.map((a) => (
-                  <li key={a.slug} className="flex items-center gap-2">
-                    <a href={localizedPath(locale, `/catalogue/${a.slug}`)} className="underline">
-                      {a.title}
-                    </a>
-                    {isOwner ? (
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          await unassignContent(classroom.id, a.slug);
-                          await load();
-                        }}
-                        className="text-xs text-muted-foreground underline"
-                      >
-                        {t(locale, 'classmgr.remove')}
-                      </button>
-                    ) : null}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                {t(locale, 'classmgr.nothingAssigned')}
-              </p>
-            )}
-            {isOwner ? (
-              <form onSubmit={onAssign} className="flex flex-wrap items-center gap-2 pt-1">
-                <Input
-                  value={slug}
-                  onChange={(e) => setSlug(e.target.value)}
-                  placeholder={t(locale, 'classmgr.contentSlugPlaceholder')}
-                  className="w-auto"
-                />
-                <Button type="submit" variant="outline" size="sm">
-                  {t(locale, 'classmgr.assign')}
-                </Button>
-                {assignError ? <span className="text-xs text-red-600">{assignError}</span> : null}
-              </form>
+    <li>
+      <Card className="space-y-2 p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-display font-semibold tracking-tight">{classroom.name}</span>
+            <Badge variant="secondary">{classroom.role}</Badge>
+            {classroom.premiumGranted ? (
+              <Badge variant="success">
+                <Icon name="crown" className="size-3" />
+                {t(locale, 'classmgr.premiumGranted')}
+              </Badge>
             ) : null}
           </div>
+          <div className="flex items-center gap-3 text-sm text-muted-foreground">
+            <span className="inline-flex items-center gap-1">
+              <Icon name="users" className="size-4" />
+              {t(locale, 'classmgr.memberCount', { count: classroom.memberCount })}
+            </span>
+            {isOwner ? (
+              <span>
+                {t(locale, 'classmgr.codeLabel')}{' '}
+                <span className="font-mono font-semibold text-foreground">
+                  {classroom.joinCode}
+                </span>
+              </span>
+            ) : null}
+            <Button type="button" variant="outline" size="sm" onClick={toggle}>
+              <Icon name={open ? 'chevron-down' : 'chevron-right'} className="size-4" />
+              {open ? t(locale, 'classmgr.hide') : t(locale, 'classmgr.manage')}
+            </Button>
+          </div>
+        </div>
 
-          {/* Invitations (owner) */}
-          {isOwner ? (
-            <div className="space-y-1">
-              <h3 className="text-sm font-medium">{t(locale, 'classmgr.invitations')}</h3>
-              {invitations.length ? (
-                <ul className="space-y-1 text-sm text-muted-foreground">
-                  {invitations.map((inv) => (
-                    <li key={inv.email}>
-                      {inv.email} —{' '}
-                      {inv.accepted
-                        ? t(locale, 'classmgr.invitationJoined')
-                        : t(locale, 'classmgr.invitationPending')}
+        {open ? (
+          <div className="space-y-5 border-t border-border pt-4">
+            {/* Roster */}
+            <div className="space-y-2">
+              <SectionHeading iconName="users">{t(locale, 'classmgr.members')}</SectionHeading>
+              {detail?.members.length ? (
+                <Table>
+                  <TableBody>
+                    {detail.members.map((m) => (
+                      <TableRow key={m.id}>
+                        <TableCell className="text-sm">
+                          <span className="font-medium text-foreground">{m.name || m.email}</span>{' '}
+                          <span className="text-xs text-muted-foreground">({m.email})</span>
+                        </TableCell>
+                        {isOwner ? (
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-1">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={async () => {
+                                  await transferOwnership(classroom.id, m.id);
+                                  onChanged();
+                                }}
+                              >
+                                {t(locale, 'classmgr.makeOwner')}
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="text-destructive"
+                                onClick={async () => {
+                                  await removeMember(classroom.id, m.id);
+                                  await load();
+                                  onChanged();
+                                }}
+                              >
+                                <Icon name="trash" className="size-4" />
+                                {t(locale, 'classmgr.remove')}
+                              </Button>
+                            </div>
+                          </TableCell>
+                        ) : null}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <p className="text-sm text-muted-foreground">{t(locale, 'classmgr.noMembers')}</p>
+              )}
+            </div>
+
+            {/* Assignments */}
+            <div className="space-y-2">
+              <SectionHeading iconName="book-open">
+                {t(locale, 'classmgr.assignedContent')}
+              </SectionHeading>
+              {assignments.length ? (
+                <ul className="space-y-1 text-sm">
+                  {assignments.map((a) => (
+                    <li key={a.slug} className="flex items-center gap-2">
+                      <a
+                        href={localizedPath(locale, `/catalogue/${a.slug}`)}
+                        className="font-medium text-foreground hover:text-accent hover:underline"
+                      >
+                        {a.title}
+                      </a>
+                      {isOwner ? (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="text-muted-foreground"
+                          onClick={async () => {
+                            await unassignContent(classroom.id, a.slug);
+                            await load();
+                          }}
+                        >
+                          <Icon name="trash" className="size-4" />
+                          {t(locale, 'classmgr.remove')}
+                        </Button>
+                      ) : null}
                     </li>
                   ))}
                 </ul>
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  {t(locale, 'classmgr.noInvitations')}
+                  {t(locale, 'classmgr.nothingAssigned')}
                 </p>
               )}
-              <form onSubmit={onInvite} className="flex flex-wrap items-center gap-2 pt-1">
-                <Input
-                  type="email"
-                  value={inviteEmail}
-                  onChange={(e) => setInviteEmail(e.target.value)}
-                  placeholder={t(locale, 'classmgr.inviteEmailPlaceholder')}
-                  className="w-auto"
-                />
-                <Button type="submit" variant="outline" size="sm">
-                  {t(locale, 'classmgr.inviteByEmail')}
-                </Button>
-                {inviteMsg ? (
-                  <span className="text-xs text-muted-foreground">{inviteMsg}</span>
-                ) : null}
-              </form>
+              {isOwner ? (
+                <form onSubmit={onAssign} className="flex flex-wrap items-center gap-2 pt-1">
+                  <Input
+                    value={slug}
+                    onChange={(e) => setSlug(e.target.value)}
+                    placeholder={t(locale, 'classmgr.contentSlugPlaceholder')}
+                    className="w-auto"
+                  />
+                  <Button type="submit" variant="outline" size="sm">
+                    <Icon name="plus" className="size-4" />
+                    {t(locale, 'classmgr.assign')}
+                  </Button>
+                  {assignError ? (
+                    <span className="text-xs text-destructive">{assignError}</span>
+                  ) : null}
+                </form>
+              ) : null}
             </div>
-          ) : null}
 
-          {/* Progress overview (owner) */}
-          {isOwner && progress && progress.assignments.length > 0 ? (
-            <div className="space-y-1">
-              <h3 className="text-sm font-medium">{t(locale, 'classmgr.classProgress')}</h3>
-              <ul className="space-y-1 text-sm text-muted-foreground">
-                {progress.members.map((m) => (
-                  <li key={m.id}>
-                    {t(locale, 'classmgr.memberProgress', {
-                      name: m.name || m.email,
-                      done: m.completedCount,
-                      total: m.total,
-                    })}
-                  </li>
-                ))}
-                {progress.members.length === 0 ? (
-                  <li>{t(locale, 'classmgr.noMembersToTrack')}</li>
-                ) : null}
-              </ul>
-            </div>
-          ) : null}
-
-          {/* Actions */}
-          <div className="flex flex-wrap gap-3">
-            {isOwner && !classroom.premiumGranted ? (
-              <Button type="button" onClick={grant} disabled={busy || classroom.memberCount === 0}>
-                {busy ? t(locale, 'classmgr.granting') : t(locale, 'classmgr.grantPremium')}
-              </Button>
-            ) : null}
+            {/* Invitations (owner) */}
             {isOwner ? (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={async () => {
-                  await archiveClassroom(classroom.id);
-                  onChanged();
-                }}
-              >
-                {t(locale, 'classmgr.archiveClass')}
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={async () => {
-                  await leaveClassroom(classroom.id);
-                  onChanged();
-                }}
-              >
-                {t(locale, 'classmgr.leaveClass')}
-              </Button>
-            )}
+              <div className="space-y-2">
+                <SectionHeading iconName="user">{t(locale, 'classmgr.invitations')}</SectionHeading>
+                {invitations.length ? (
+                  <ul className="space-y-1 text-sm text-muted-foreground">
+                    {invitations.map((inv) => (
+                      <li key={inv.email} className="flex items-center gap-2">
+                        <span className="text-foreground">{inv.email}</span>
+                        <Badge variant={inv.accepted ? 'success' : 'secondary'}>
+                          {inv.accepted
+                            ? t(locale, 'classmgr.invitationJoined')
+                            : t(locale, 'classmgr.invitationPending')}
+                        </Badge>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    {t(locale, 'classmgr.noInvitations')}
+                  </p>
+                )}
+                <form onSubmit={onInvite} className="flex flex-wrap items-center gap-2 pt-1">
+                  <Input
+                    type="email"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                    placeholder={t(locale, 'classmgr.inviteEmailPlaceholder')}
+                    className="w-auto"
+                  />
+                  <Button type="submit" variant="outline" size="sm">
+                    <Icon name="plus" className="size-4" />
+                    {t(locale, 'classmgr.inviteByEmail')}
+                  </Button>
+                  {inviteMsg ? (
+                    <span className="text-xs text-muted-foreground">{inviteMsg}</span>
+                  ) : null}
+                </form>
+              </div>
+            ) : null}
+
+            {/* Progress overview (owner) */}
+            {isOwner && progress && progress.assignments.length > 0 ? (
+              <div className="space-y-2">
+                <SectionHeading iconName="gauge">
+                  {t(locale, 'classmgr.classProgress')}
+                </SectionHeading>
+                {progress.members.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    {t(locale, 'classmgr.noMembersToTrack')}
+                  </p>
+                ) : (
+                  <ul className="space-y-2.5">
+                    {progress.members.map((m) => {
+                      const percent =
+                        m.total === 0 ? 0 : Math.round((m.completedCount / m.total) * 100);
+                      return (
+                        <li key={m.id} className="space-y-1.5">
+                          <div className="flex items-center justify-between gap-2 text-sm">
+                            <span className="font-medium text-foreground">{m.name || m.email}</span>
+                            <span className="tabular-nums text-muted-foreground">
+                              {m.completedCount}/{m.total}
+                            </span>
+                          </div>
+                          <Progress value={percent} />
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            ) : null}
+
+            {/* Actions */}
+            <div className="flex flex-wrap gap-3 border-t border-border pt-4">
+              {isOwner && !classroom.premiumGranted ? (
+                <Button
+                  type="button"
+                  onClick={grant}
+                  disabled={busy || classroom.memberCount === 0}
+                >
+                  <Icon name="crown" className="size-4" />
+                  {busy ? t(locale, 'classmgr.granting') : t(locale, 'classmgr.grantPremium')}
+                </Button>
+              ) : null}
+              {isOwner ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={async () => {
+                    await archiveClassroom(classroom.id);
+                    onChanged();
+                  }}
+                >
+                  {t(locale, 'classmgr.archiveClass')}
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={async () => {
+                    await leaveClassroom(classroom.id);
+                    onChanged();
+                  }}
+                >
+                  <Icon name="log-out" className="size-4" />
+                  {t(locale, 'classmgr.leaveClass')}
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
+      </Card>
     </li>
   );
 }
@@ -359,38 +428,68 @@ export default function ClassroomsManager({
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2">
         {canCreate ? (
-          <form onSubmit={onCreate} className="space-y-2 rounded-lg border border-border p-4">
-            <h2 className="font-semibold">{t(locale, 'classmgr.createClassroom')}</h2>
-            <p className="text-sm text-muted-foreground">
-              {t(locale, 'classmgr.createDescription')}
-            </p>
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder={t(locale, 'classmgr.classroomNamePlaceholder')}
-            />
-            <Button type="submit">{t(locale, 'classmgr.create')}</Button>
-          </form>
+          <Card className="p-5">
+            <form onSubmit={onCreate} className="space-y-3">
+              <div className="space-y-1">
+                <h2 className="flex items-center gap-1.5 font-display text-lg font-semibold tracking-tight">
+                  <Icon name="graduation-cap" className="size-5 text-accent" />
+                  {t(locale, 'classmgr.createClassroom')}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {t(locale, 'classmgr.createDescription')}
+                </p>
+              </div>
+              <Field label={t(locale, 'classmgr.createClassroom')} htmlFor="classroom-name">
+                <Input
+                  id="classroom-name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder={t(locale, 'classmgr.classroomNamePlaceholder')}
+                />
+              </Field>
+              <Button type="submit">
+                <Icon name="plus" className="size-4" />
+                {t(locale, 'classmgr.create')}
+              </Button>
+            </form>
+          </Card>
         ) : null}
 
-        <form onSubmit={onJoin} className="space-y-2 rounded-lg border border-border p-4">
-          <h2 className="font-semibold">{t(locale, 'classmgr.joinClassroom')}</h2>
-          <p className="text-sm text-muted-foreground">{t(locale, 'classmgr.joinDescription')}</p>
-          <Input
-            value={code}
-            onChange={(e) => setCode(e.target.value.toUpperCase())}
-            placeholder={t(locale, 'classmgr.joinCodePlaceholder')}
-            className="font-mono uppercase"
-          />
-          {joinError ? <p className="text-sm text-red-600">{joinError}</p> : null}
-          <Button type="submit" variant="outline">
-            {t(locale, 'classmgr.join')}
-          </Button>
-        </form>
+        <Card className="p-5">
+          <form onSubmit={onJoin} className="space-y-3">
+            <div className="space-y-1">
+              <h2 className="flex items-center gap-1.5 font-display text-lg font-semibold tracking-tight">
+                <Icon name="users" className="size-5 text-accent" />
+                {t(locale, 'classmgr.joinClassroom')}
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                {t(locale, 'classmgr.joinDescription')}
+              </p>
+            </div>
+            <Field
+              label={t(locale, 'classmgr.joinClassroom')}
+              htmlFor="join-code"
+              error={joinError ?? undefined}
+            >
+              <Input
+                id="join-code"
+                value={code}
+                onChange={(e) => setCode(e.target.value.toUpperCase())}
+                placeholder={t(locale, 'classmgr.joinCodePlaceholder')}
+                className="font-mono uppercase"
+              />
+            </Field>
+            <Button type="submit" variant="outline">
+              {t(locale, 'classmgr.join')}
+            </Button>
+          </form>
+        </Card>
       </div>
 
       <section className="space-y-3">
-        <h2 className="font-semibold">{t(locale, 'classmgr.myClassrooms')}</h2>
+        <h2 className="font-display text-xl font-semibold tracking-tight">
+          {t(locale, 'classmgr.myClassrooms')}
+        </h2>
         {loading ? (
           <p className="text-sm text-muted-foreground">{t(locale, 'classmgr.loading')}</p>
         ) : rooms.length === 0 ? (
