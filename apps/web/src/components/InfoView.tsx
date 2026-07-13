@@ -30,6 +30,11 @@ export default function InfoView() {
       const slug = element?.getAttribute('data-help');
       if (slug && topics.has(slug)) {
         setActive(topics.get(slug) ?? null);
+        // Interacting with a highlighted term brings the panel back if it was dismissed.
+        if (dismissed) {
+          setDismissed(false);
+          localStorage.removeItem(DISMISS_KEY);
+        }
       }
     }
     document.addEventListener('mouseover', onContext);
@@ -40,7 +45,7 @@ export default function InfoView() {
       document.removeEventListener('focusin', onContext);
       document.removeEventListener('click', onContext);
     };
-  }, [topics]);
+  }, [topics, dismissed]);
 
   const bodyHtml = useMemo(() => (active ? (marked.parse(active.body) as string) : ''), [active]);
 
