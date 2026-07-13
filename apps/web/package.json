@@ -27,6 +27,7 @@
     "@openfeature/react-sdk": "catalog:",
     "@openfeature/server-sdk": "catalog:",
     "@openfeature/web-sdk": "catalog:",
+    "@tailwindcss/typography": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/react-query": "catalog:",
     "astro": "catalog:",

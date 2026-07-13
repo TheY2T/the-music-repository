@@ -103,6 +103,12 @@
   "common.prev": "Prev",
   "common.next": "Next",
 
+  "score.play": "Play",
+  "score.stop": "Stop",
+  "score.speed": "Speed",
+  "score.loading": "Loading notation…",
+  "score.error": "Could not render this score.",
+
   "content.related": "Related",
   "content.notFound": "This content could not be found.",
   "content.score": "Score",

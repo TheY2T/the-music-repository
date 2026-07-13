@@ -45,6 +45,8 @@ export interface SeedContent {
   slug: string;
   title: string;
   summary: string;
+  /** Lesson/article body in Markdown — rendered on the detail page (ScoreViewer handles notation). */
+  bodyMdx?: string;
   type: string;
   difficulty: number | null;
   genres: string[];
@@ -1241,6 +1243,8 @@ export const CONTENT: SeedContent[] = [
     slug: 'omt-cadences',
     title: 'Cadences',
     summary: 'Authentic, plagal, half, and deceptive cadences — how phrases come to rest.',
+    bodyMdx:
+      '## What is a cadence?\n\nA **cadence** is a harmonic formula that closes a phrase — punctuation for music. The four you meet first:\n\n- **Authentic (V–I):** the strongest close, dominant resolving to tonic. A *perfect* authentic cadence puts both chords in root position with the tonic on top.\n- **Plagal (IV–I):** the gentle "Amen" close, often following an authentic cadence.\n- **Half (…–V):** ends *on* the dominant, leaving the phrase open like a comma.\n- **Deceptive (V–vi):** promises the tonic, then slips elsewhere for a surprise.\n\n### Train your ear\n\nListen for cadences at the ends of phrases in pieces from the catalogue — they tell you where the music breathes. Try the **progression ear-training** tool to test yourself.',
     type: 'lesson',
     difficulty: null,
     genres: [],
@@ -1283,6 +1287,8 @@ export const CONTENT: SeedContent[] = [
     slug: 'omt-voice-leading',
     title: 'Voice-Leading Principles',
     summary: 'Smooth part-writing: contrary motion, resolving tendency tones, avoiding parallels.',
+    bodyMdx:
+      '## Voice-leading in a nutshell\n\n**Voice leading** is how individual melodic lines (voices) move from one chord to the next. Good voice leading makes harmony sound connected rather than blocky.\n\n### Core principles\n\n1. **Keep common tones.** If two chords share a note, hold it in the same voice.\n2. **Move by the smallest interval.** Prefer steps over leaps in the inner voices.\n3. **Resolve tendency tones.** The leading tone wants to rise to the tonic; the seventh of a chord wants to fall.\n4. **Favour contrary motion.** When the bass rises, let an upper voice fall — it keeps voices independent.\n5. **Avoid parallel fifths and octaves.** They collapse two independent voices into one.\n\nApply these when you harmonise a melody or arrange a lead sheet — small, smooth moves beat big jumps almost every time.',
     type: 'lesson',
     difficulty: null,
     genres: [],
@@ -1297,6 +1303,8 @@ export const CONTENT: SeedContent[] = [
     slug: 'omt-secondary-dominants',
     title: 'Secondary Dominants',
     summary: 'Tonicising other scale degrees with V/x chords for richer harmony.',
+    bodyMdx:
+      '## Secondary dominants\n\nA **secondary dominant** is a dominant chord that resolves to a chord other than the tonic — it briefly makes another scale degree *feel* like a temporary "home".\n\nWrite them as **V/x** ("five of x"). For example, in C major:\n\n- **V/V** is D7 → it resolves to G (the dominant).\n- **V/ii** is A7 → it resolves to Dm.\n- **V/vi** is E7 → it resolves to Am.\n\n### How to hear it\n\nThe giveaway is a chromatic note that isn\'t in the key — the raised third of the secondary dominant, its own leading tone. That pull toward the target chord is what gives progressions like **C – A7 – Dm – G7 – C** their extra colour. Build them in the **chord-progression** and **analyzer** tools to hear the resolution.',
     type: 'lesson',
     difficulty: null,
     genres: [],

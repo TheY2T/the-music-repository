@@ -25,6 +25,8 @@ import {
   MediaCard,
   Skeleton,
 } from '@TheY2T/tmr-ui';
+import { marked } from 'marked';
+import ScoreViewer from '@/components/ScoreViewer';
 
 /** Localized label for a premium tier (`premium`/`pro`/`institution`; unknown → premium). */
 function tierLabel(locale: Locale, tier?: string | null): string {
@@ -98,8 +100,10 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
     );
   }
 
+  const score = item.media.find((asset) => asset.kind === 'musicxml');
   const pdf = item.media.find((asset) => asset.kind === 'score_pdf');
   const audio = item.media.find((asset) => asset.kind === 'audio');
+  const bodyHtml = item.bodyMdx ? (marked.parse(item.bodyMdx) as string) : '';
 
   return (
     <article className="space-y-8">
@@ -186,7 +190,20 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
         </Card>
       ) : (
         <>
-          {pdf ? (
+          {bodyHtml ? (
+            <section
+              className="prose max-w-none prose-headings:font-display"
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: rendered from trusted seeded/CMS markdown via marked.
+              dangerouslySetInnerHTML={{ __html: bodyHtml }}
+            />
+          ) : null}
+
+          {score ? (
+            <section className="space-y-2">
+              <h2 className="font-display text-lg font-semibold">{t(locale, 'content.score')}</h2>
+              <ScoreViewer url={score.url} locale={locale} />
+            </section>
+          ) : pdf ? (
             <section className="space-y-2">
               <h2 className="font-display text-lg font-semibold">{t(locale, 'content.score')}</h2>
               <iframe

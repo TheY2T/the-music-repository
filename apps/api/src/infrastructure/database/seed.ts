@@ -17,6 +17,7 @@ import {
   SKILL_TOPICS,
   TAGS,
 } from './seed-data';
+import { SCORE_XML } from './seed-scores';
 
 const log = new Logger('Seed');
 
@@ -47,6 +48,7 @@ async function main(): Promise<void> {
         slug: item.slug,
         title: item.title,
         summary: item.summary,
+        bodyMdx: item.bodyMdx ?? null,
         type: item.type,
         visibility: item.visibility ?? 'public',
         tier: item.tier ?? null,
@@ -61,6 +63,7 @@ async function main(): Promise<void> {
         set: {
           title: item.title,
           summary: item.summary,
+          bodyMdx: item.bodyMdx ?? null,
           type: item.type,
           visibility: item.visibility ?? 'public',
           tier: item.tier ?? null,
@@ -95,6 +98,26 @@ async function main(): Promise<void> {
     await replaceJoins(db, schema.contentTags, 'tagId', contentId, ids(item.tags, tagIds));
 
     await db.delete(schema.mediaAssets).where(eq(schema.mediaAssets.contentId, contentId));
+
+    // Real engraved score (MusicXML) when we have one for this slug — rendered by the web
+    // ScoreViewer via Verovio. Takes precedence over the placeholder PDF.
+    const xml = SCORE_XML[item.slug];
+    if (xml) {
+      const key = `scores/${item.slug}.musicxml`;
+      const bytes = new TextEncoder().encode(xml);
+      await media.putObject(key, bytes, 'application/vnd.recordare.musicxml+xml');
+      await db.insert(schema.mediaAssets).values({
+        contentId,
+        kind: 'musicxml',
+        storageKey: key,
+        filename: `${item.slug}.musicxml`,
+        mime: 'application/vnd.recordare.musicxml+xml',
+        bytes: bytes.byteLength,
+        license: item.license,
+        attribution: item.attribution,
+      });
+    }
+
     if (item.withPdf) {
       const key = `scores/${item.slug}.pdf`;
       const bytes = makeMinimalPdf(item.title);

@@ -14,7 +14,15 @@ import { MediaLibrary } from '../application/ports/media-library.port';
 @Injectable()
 export class S3MediaLibrary extends MediaLibrary implements OnApplicationBootstrap {
   private readonly logger = new Logger(S3MediaLibrary.name);
+  /** Talks to storage server-side (bucket setup, uploads) over the internal endpoint. */
   private readonly client: S3Client;
+  /**
+   * Used ONLY to presign browser-facing URLs. Pointed at the PUBLIC endpoint so the SigV4-signed
+   * Host header matches the host the browser actually requests — rewriting the host after signing
+   * (the old approach) invalidates the signature (`SignatureDoesNotMatch`). Presigning is pure URL
+   * construction (no network), so this client never needs to reach the public host itself.
+   */
+  private readonly signer: S3Client;
   private readonly bucket: string;
   private readonly internalEndpoint: string;
   private readonly publicEndpoint: string;
@@ -29,15 +37,26 @@ export class S3MediaLibrary extends MediaLibrary implements OnApplicationBootstr
       .split(',')
       .map((origin) => origin.trim())
       .filter(Boolean);
+    const region = config.get<string>('S3_REGION') ?? 'us-east-1';
+    const credentials = {
+      accessKeyId: config.getOrThrow<string>('S3_ACCESS_KEY_ID'),
+      secretAccessKey: config.getOrThrow<string>('S3_SECRET_ACCESS_KEY'),
+    };
     this.client = new S3Client({
       endpoint: this.internalEndpoint,
-      region: config.get<string>('S3_REGION') ?? 'us-east-1',
+      region,
       forcePathStyle: true, // required for MinIO / path-style S3
-      credentials: {
-        accessKeyId: config.getOrThrow<string>('S3_ACCESS_KEY_ID'),
-        secretAccessKey: config.getOrThrow<string>('S3_SECRET_ACCESS_KEY'),
-      },
+      credentials,
     });
+    this.signer =
+      this.publicEndpoint === this.internalEndpoint
+        ? this.client
+        : new S3Client({
+            endpoint: this.publicEndpoint,
+            region,
+            forcePathStyle: true,
+            credentials,
+          });
   }
 
   /** Ensure the bucket + CORS exist on boot so browser presigned uploads work. Graceful if MinIO is down. */
@@ -98,27 +117,18 @@ export class S3MediaLibrary extends MediaLibrary implements OnApplicationBootstr
   }
 
   async presignGetUrl(storageKey: string): Promise<string> {
-    const url = await getSignedUrl(
-      this.client,
+    return getSignedUrl(
+      this.signer,
       new GetObjectCommand({ Bucket: this.bucket, Key: storageKey }),
       { expiresIn: 3600 },
     );
-    return this.toPublicUrl(url);
   }
 
   async presignPutUrl(storageKey: string, contentType: string): Promise<string> {
-    const url = await getSignedUrl(
-      this.client,
+    return getSignedUrl(
+      this.signer,
       new PutObjectCommand({ Bucket: this.bucket, Key: storageKey, ContentType: contentType }),
       { expiresIn: 3600 },
     );
-    return this.toPublicUrl(url);
-  }
-
-  /** The SDK signs against the internal endpoint (e.g. minio:9000); rewrite to the browser-reachable host. */
-  private toPublicUrl(url: string): string {
-    return this.internalEndpoint === this.publicEndpoint
-      ? url
-      : url.replace(this.internalEndpoint, this.publicEndpoint);
   }
 }

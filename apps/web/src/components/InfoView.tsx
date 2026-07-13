@@ -75,7 +75,7 @@ export default function InfoView() {
             <>
               <div className="text-sm font-semibold">{active.term}</div>
               <div
-                className="prose prose-sm max-w-none text-muted-foreground dark:prose-invert"
+                className="prose prose-sm max-w-none prose-headings:font-display"
                 dangerouslySetInnerHTML={{ __html: bodyHtml }}
               />
               {active.linkSlug ? (

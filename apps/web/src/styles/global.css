@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+/* Rendered-Markdown typography (lesson bodies, Info View help) via the official plugin. */
+@plugin "@tailwindcss/typography";
 /* Design tokens + Tailwind theme mapping + `.dark` variant live in the shared package. */
 @import "@TheY2T/tmr-design-tokens/index.css";
 
@@ -45,4 +47,27 @@ body::before {
   cursor: help;
   text-decoration: underline dotted;
   text-underline-offset: 3px;
+}
+
+/* Map the typography plugin's palette to our design tokens so `prose` (lesson bodies, Info View)
+   themes with the site — warm ink, accent links, muted quotes — and flips automatically across all
+   aesthetics + light/dark without needing `dark:prose-invert`. Headings use the display face via the
+   `prose-headings:font-display` utility on the element. */
+.prose {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: var(--muted-foreground);
+  --tw-prose-links: var(--accent);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: var(--border);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--muted-foreground);
+  --tw-prose-quote-borders: var(--border);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-pre-code: var(--card);
+  --tw-prose-pre-bg: var(--foreground);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
 }

@@ -103,6 +103,12 @@
   "common.prev": "上一页",
   "common.next": "下一页",
 
+  "score.play": "播放",
+  "score.stop": "停止",
+  "score.speed": "速度",
+  "score.loading": "加载乐谱…",
+  "score.error": "无法渲染此乐谱。",
+
   "content.related": "相关内容",
   "content.notFound": "找不到该内容。",
   "content.score": "乐谱",
