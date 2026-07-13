@@ -12,6 +12,7 @@
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "test:integration": "vitest run --config vitest.integration.config.ts --passWithNoTests",
+    "content:build": "node scripts/build-seed-content.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "node dist/infrastructure/database/seed.js",

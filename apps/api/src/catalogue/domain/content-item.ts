@@ -22,6 +22,22 @@ export interface TaxonomyRef {
   name: string;
 }
 
+/** Structured facts stored on a content item (JSONB `details`). `related` = curated "if you like
+ * this" slugs (served via the related endpoint, not shown in the Details panel). */
+export interface ContentDetails {
+  key?: string;
+  era?: string;
+  form?: string;
+  timeSignature?: string;
+  composer?: string;
+  composerDates?: string;
+  composedYear?: string;
+  related?: string[];
+}
+
+/** The facts subset surfaced on the detail page (no `related`) — matches the `ContentDetails` DTO. */
+export type ContentDetailsView = Omit<ContentDetails, 'related'>;
+
 export interface MediaAssetMeta {
   id: string;
   kind: string;
@@ -46,6 +62,7 @@ export interface ContentItem {
   source: string | null;
   attribution: string | null;
   license: string | null;
+  details: ContentDetails | null;
   createdAt: Date;
   updatedAt: Date;
   genres: TaxonomyRef[];
@@ -87,6 +104,7 @@ export interface ContentDetailView extends ContentSummaryView {
   source?: string;
   attribution?: string;
   license?: string;
+  details?: ContentDetailsView;
   tags: TaxonomyRef[];
   media: MediaView[];
   createdAt: string;
@@ -98,6 +116,7 @@ export interface CatalogueQuery {
   genres: string[];
   instruments: string[];
   topics: string[];
+  eras: string[];
   type?: string;
   difficulty?: number;
   page: number;
@@ -114,6 +133,7 @@ export interface Facets {
   genres: FacetValue[];
   instruments: FacetValue[];
   topics: FacetValue[];
+  eras: FacetValue[];
   types: FacetValue[];
   difficulties: FacetValue[];
 }
@@ -130,6 +150,19 @@ export interface CatalogueResult {
 export function slugToLabel(slug: string): string {
   const text = slug.replace(/[-_]/g, ' ');
   return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/** Facts subset for the detail-page Details panel — drops the internal `related` slugs. */
+export function toContentDetailsView(details: ContentDetails): ContentDetailsView {
+  return {
+    key: details.key,
+    era: details.era,
+    form: details.form,
+    timeSignature: details.timeSignature,
+    composer: details.composer,
+    composerDates: details.composerDates,
+    composedYear: details.composedYear,
+  };
 }
 
 /** Project a hydrated {@link ContentItem} into the list/card summary shape. */
@@ -166,6 +199,7 @@ export function toContentDetailView(item: ContentItem, media: MediaView[]): Cont
     source: item.source ?? undefined,
     attribution: item.attribution ?? undefined,
     license: item.license ?? undefined,
+    details: item.details ? toContentDetailsView(item.details) : undefined,
     tags: item.tags,
     media,
     createdAt: item.createdAt.toISOString(),

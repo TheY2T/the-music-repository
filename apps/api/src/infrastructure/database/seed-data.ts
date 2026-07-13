@@ -39,6 +39,13 @@ export const TAGS = [
   { slug: 'intermediate', name: 'Intermediate' },
   { slug: 'cc-by-sa', name: 'CC BY-SA' },
   { slug: 'advanced', name: 'Advanced' },
+  // Curated descriptor tags harvested from the content research (non-genre/-topic descriptors).
+  { slug: 'americana', name: 'Americana' },
+  { slug: 'gospel', name: 'Gospel' },
+  { slug: 'hymn', name: 'Hymn' },
+  { slug: 'irish', name: 'Irish' },
+  { slug: 'ballad', name: 'Ballad' },
+  { slug: 'hawaiian', name: 'Hawaiian' },
 ];
 
 export interface SeedContent {

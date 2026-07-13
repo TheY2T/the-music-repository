@@ -112,6 +112,17 @@ model ContentSummary {
   topics: TaxonomyRef[];
 }
 
+/** Structured "facts" for the detail-page Details panel + the Era facet. All optional. */
+model ContentDetails {
+  key?: string;
+  era?: string;
+  form?: string;
+  timeSignature?: string;
+  composer?: string;
+  composerDates?: string;
+  composedYear?: string;
+}
+
 /** Full detail view of a catalogue item. */
 model ContentDetail {
   ...ContentSummary;
@@ -119,6 +130,7 @@ model ContentDetail {
   source?: string;
   attribution?: string;
   license?: string;
+  details?: ContentDetails;
   tags: TaxonomyRef[];
   media: MediaAsset[];
   createdAt: string;
@@ -137,6 +149,7 @@ model Facets {
   genres: FacetValue[];
   instruments: FacetValue[];
   topics: FacetValue[];
+  eras: FacetValue[];
   types: FacetValue[];
   difficulties: FacetValue[];
 }
@@ -159,6 +172,7 @@ op searchCatalogue(
   @query genre?: string[],
   @query instrument?: string[],
   @query topic?: string[],
+  @query era?: string[],
   @query type?: ContentType,
   @query difficulty?: int32,
   @query page?: int32,

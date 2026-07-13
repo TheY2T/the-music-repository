@@ -469,6 +469,18 @@
             "explode": false
           },
           {
+            "name": "era",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "explode": false
+          },
+          {
             "name": "type",
             "in": "query",
             "required": false,
@@ -2709,6 +2721,9 @@
           "license": {
             "type": "string"
           },
+          "details": {
+            "$ref": "#/components/schemas/ContentDetails"
+          },
           "tags": {
             "type": "array",
             "items": {
@@ -2729,6 +2744,33 @@
           }
         },
         "description": "Full detail view of a catalogue item."
+      },
+      "ContentDetails": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "era": {
+            "type": "string"
+          },
+          "form": {
+            "type": "string"
+          },
+          "timeSignature": {
+            "type": "string"
+          },
+          "composer": {
+            "type": "string"
+          },
+          "composerDates": {
+            "type": "string"
+          },
+          "composedYear": {
+            "type": "string"
+          }
+        },
+        "description": "Structured \"facts\" for the detail-page Details panel + the Era facet. All optional."
       },
       "ContentSummary": {
         "type": "object",
@@ -3019,6 +3061,7 @@
           "genres",
           "instruments",
           "topics",
+          "eras",
           "types",
           "difficulties"
         ],
@@ -3036,6 +3079,12 @@
             }
           },
           "topics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FacetValue"
+            }
+          },
+          "eras": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FacetValue"

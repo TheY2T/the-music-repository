@@ -10,6 +10,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { user } from '../../auth/auth-schema';
+import type { ContentDetails } from './content-details';
 
 /**
  * Catalogue schema (Phase 1). The repository core: content items + taxonomy + media assets.
@@ -29,6 +30,8 @@ export const contentItems = pgTable('content_items', {
   source: text('source'),
   attribution: text('attribution'),
   license: text('license'),
+  /** Structured facts (key/era/form/composer/…) + curated related slugs — see content-details.ts. */
+  details: jsonb('details').$type<ContentDetails>(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });

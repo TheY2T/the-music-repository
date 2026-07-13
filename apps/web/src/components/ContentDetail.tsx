@@ -35,6 +35,55 @@ function tierLabel(locale: Locale, tier?: string | null): string {
   return t(locale, key);
 }
 
+/**
+ * Compact "Details" panel for a content item's structured facts. Renders a row only for each
+ * present field; returns null when nothing to show. Field values are DATA — rendered as-is.
+ */
+function DetailsPanel({
+  details,
+  locale,
+}: {
+  details: NonNullable<ContentDetailDto['details']>;
+  locale: Locale;
+}) {
+  const rows: Array<{ label: string; value: string }> = [];
+  if (details.key) rows.push({ label: t(locale, 'content.factKey'), value: details.key });
+  if (details.form) rows.push({ label: t(locale, 'content.factForm'), value: details.form });
+  if (details.era) rows.push({ label: t(locale, 'content.factEra'), value: details.era });
+  if (details.composer) {
+    rows.push({
+      label: t(locale, 'content.factComposer'),
+      value: details.composerDates
+        ? `${details.composer} (${details.composerDates})`
+        : details.composer,
+    });
+  }
+  if (details.composedYear)
+    rows.push({ label: t(locale, 'content.factComposed'), value: details.composedYear });
+  if (details.timeSignature)
+    rows.push({ label: t(locale, 'content.factTime'), value: details.timeSignature });
+
+  if (!rows.length) {
+    return null;
+  }
+
+  return (
+    <Card className="space-y-2.5 p-5 text-sm">
+      <p className="font-display font-semibold text-foreground">
+        {t(locale, 'content.detailsTitle')}
+      </p>
+      <dl className="grid gap-1.5">
+        {rows.map((row) => (
+          <div key={row.label} className="flex gap-2">
+            <dt className="w-24 shrink-0 text-muted-foreground">{row.label}</dt>
+            <dd className="text-foreground">{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </Card>
+  );
+}
+
 function RelatedSection({ slug, locale }: { slug: string; locale: Locale }) {
   const { data } = useGetRelatedContent(slug);
   const items = data?.status === 200 ? (data.data.items as ContentSummary[]) : [];
@@ -169,6 +218,8 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
           />
         </div>
       </header>
+
+      {item.details ? <DetailsPanel details={item.details} locale={locale} /> : null}
 
       {item.locked ? (
         <Card className="space-y-3 border-accent/40 bg-accent/10 p-8 text-center">

@@ -70,6 +70,15 @@ export class DrizzleContentRepository extends ContentRepository {
       .map((scored) => scored.item);
   }
 
+  async findManyBySlugs(slugs: string[]): Promise<ContentItem[]> {
+    // Curated related lists are short, so per-slug hydration (reusing getBySlug) is fine. Preserve
+    // the requested order; skip missing or unpublished slugs.
+    const items = await Promise.all(slugs.map((slug) => this.getBySlug(slug)));
+    return items.filter(
+      (item): item is ContentItem => item !== null && item.status === 'published',
+    );
+  }
+
   private async hydrate(row: ContentRow): Promise<ContentItem> {
     const [genreRefs, instrumentRefs, topicRefs, tagRefs, media] = await Promise.all([
       this.taxonomy(contentGenres, contentGenres.genreId, genres, row.id),
@@ -93,6 +102,7 @@ export class DrizzleContentRepository extends ContentRepository {
       source: row.source,
       attribution: row.attribution,
       license: row.license,
+      details: row.details ?? null,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
       genres: genreRefs,

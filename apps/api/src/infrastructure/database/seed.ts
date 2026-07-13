@@ -7,6 +7,7 @@ import { MediaLibrary } from '../../catalogue/application/ports/media-library.po
 import { CatalogueReindexService } from '../../catalogue/infrastructure/catalogue-reindex.service';
 import { DATABASE, type Database } from './database.module';
 import * as schema from './schema';
+import { SEED_CONTENT } from './seed-content';
 import {
   COLLECTIONS,
   CONTENT,
@@ -18,6 +19,11 @@ import {
   TAGS,
 } from './seed-data';
 import { SCORE_XML } from './seed-scores';
+
+/** Fold the near-synonym era "Folk" into "Traditional" so the Era facet isn't split. */
+function normalizeEra(era: string): string {
+  return era === 'Folk' ? 'Traditional' : era;
+}
 
 const log = new Logger('Seed');
 
@@ -42,13 +48,23 @@ async function main(): Promise<void> {
   const tagIds = await idMap(db, schema.tags);
 
   for (const item of CONTENT) {
+    // Enriched content authored via research (body + structured facts + suggested tags). Falls back
+    // to any inline body on the seed item (e.g. the pre-bodied OMT lessons) when not in the bundle.
+    const extra = SEED_CONTENT[item.slug];
+    const bodyMdx = extra?.bodyMdx ?? item.bodyMdx ?? null;
+    const details = extra?.details
+      ? { ...extra.details, ...(extra.details.era ? { era: normalizeEra(extra.details.era) } : {}) }
+      : null;
+    const tagSlugs = [...new Set([...item.tags, ...(extra?.extraTags ?? [])])];
+
     const [row] = await db
       .insert(schema.contentItems)
       .values({
         slug: item.slug,
         title: item.title,
         summary: item.summary,
-        bodyMdx: item.bodyMdx ?? null,
+        bodyMdx,
+        details,
         type: item.type,
         visibility: item.visibility ?? 'public',
         tier: item.tier ?? null,
@@ -63,7 +79,8 @@ async function main(): Promise<void> {
         set: {
           title: item.title,
           summary: item.summary,
-          bodyMdx: item.bodyMdx ?? null,
+          bodyMdx,
+          details,
           type: item.type,
           visibility: item.visibility ?? 'public',
           tier: item.tier ?? null,
@@ -95,7 +112,7 @@ async function main(): Promise<void> {
       contentId,
       ids(item.topics, topicIds),
     );
-    await replaceJoins(db, schema.contentTags, 'tagId', contentId, ids(item.tags, tagIds));
+    await replaceJoins(db, schema.contentTags, 'tagId', contentId, ids(tagSlugs, tagIds));
 
     await db.delete(schema.mediaAssets).where(eq(schema.mediaAssets.contentId, contentId));
 

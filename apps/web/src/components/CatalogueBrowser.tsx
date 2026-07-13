@@ -34,6 +34,7 @@ function toggle(list: string[], value: string): string[] {
 function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Locale }) {
   const [q, setQ] = useState('');
   const [genre, setGenre] = useState<string[]>([]);
+  const [era, setEra] = useState<string[]>([]);
   const [instrument, setInstrument] = useState<string[]>([]);
   const [topic, setTopic] = useState<string[]>([]);
   const [type, setType] = useState<string | undefined>();
@@ -58,6 +59,7 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
   const { data, isFetching } = useSearchCatalogue({
     q: q || undefined,
     genre,
+    era,
     instrument,
     topic,
     type: type as SearchCatalogueType | undefined,
@@ -91,6 +93,16 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
       })),
     },
     {
+      key: 'era',
+      label: t(locale, 'catalogue.facetEra'),
+      options: (result?.facets.eras ?? []).map((f) => ({
+        value: f.value,
+        label: f.label,
+        count: f.count,
+        selected: era.includes(f.value),
+      })),
+    },
+    {
       key: 'instrument',
       label: t(locale, 'catalogue.facetInstrument'),
       options: (result?.facets.instruments ?? []).map((f) => ({
@@ -116,6 +128,7 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
     setPage(1);
     if (groupKey === 'type') setType((cur) => (cur === value ? undefined : value));
     else if (groupKey === 'genre') setGenre((cur) => toggle(cur, value));
+    else if (groupKey === 'era') setEra((cur) => toggle(cur, value));
     else if (groupKey === 'instrument') setInstrument((cur) => toggle(cur, value));
     else if (groupKey === 'topic') setTopic((cur) => toggle(cur, value));
   }
@@ -137,6 +150,7 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
   }
   for (const [dim, values, setter] of [
     ['genre', genre, setGenre],
+    ['era', era, setEra],
     ['instrument', instrument, setInstrument],
     ['topic', topic, setTopic],
   ] as const) {
@@ -155,6 +169,7 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
   function clearAll() {
     setType(undefined);
     setGenre([]);
+    setEra([]);
     setInstrument([]);
     setTopic([]);
     setQ('');

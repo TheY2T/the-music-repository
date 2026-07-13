@@ -37,6 +37,11 @@ the controller drops empties. MinIO presigned URLs use `S3_PUBLIC_ENDPOINT` so t
 - Schema: `src/infrastructure/database/schema.ts`. Client: `DatabaseModule` (token `DATABASE`).
 - Only `infrastructure/` adapters may import Drizzle. Map ORM rows ↔ domain in a mapper.
 - `pnpm --filter @TheY2T/tmr-api db:generate` after schema changes; migrations live in `drizzle/`.
+- **Catalogue content** (rich `body_mdx` + `details` JSONB facts + curated `related`) is authored as
+  one Markdown file per item in `src/infrastructure/database/content/<slug>.md`; run
+  `pnpm --filter @TheY2T/tmr-api content:build` to regenerate the build-safe `seed-content.ts` bundle
+  the seed consumes. Era is a Meilisearch facet derived from `details.era` (no SQL taxonomy table). See
+  `docs/features/catalogue.md`.
 
 ## Feature flags
 

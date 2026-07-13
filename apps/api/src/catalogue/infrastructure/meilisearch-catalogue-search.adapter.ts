@@ -22,6 +22,8 @@ interface IndexDoc {
   difficulty: number | null;
   visibility: string;
   tier: string | null;
+  /** Period/style facet value from `details.era` (e.g. "Baroque"); null when unset. */
+  era: string | null;
   genreSlugs: string[];
   instrumentSlugs: string[];
   topicSlugs: string[];
@@ -64,6 +66,7 @@ export class MeilisearchCatalogueSearch extends CatalogueSearch implements OnMod
         'genreSlugs',
         'instrumentSlugs',
         'topicSlugs',
+        'era',
         'type',
         'difficulty',
         'visibility',
@@ -103,10 +106,13 @@ export class MeilisearchCatalogueSearch extends CatalogueSearch implements OnMod
     if (query.topics.length) {
       filter.push(query.topics.map((t) => `topicSlugs = '${t}'`));
     }
+    if (query.eras.length) {
+      filter.push(query.eras.map((e) => `era = '${e}'`));
+    }
 
     const result = await this.client.index(INDEX_UID).search(query.q ?? '', {
       filter,
-      facets: ['genreSlugs', 'instrumentSlugs', 'topicSlugs', 'type', 'difficulty'],
+      facets: ['genreSlugs', 'instrumentSlugs', 'topicSlugs', 'era', 'type', 'difficulty'],
       limit: query.pageSize,
       offset: (query.page - 1) * query.pageSize,
     });
@@ -117,6 +123,7 @@ export class MeilisearchCatalogueSearch extends CatalogueSearch implements OnMod
       genres: toFacet(dist.genreSlugs),
       instruments: toFacet(dist.instrumentSlugs),
       topics: toFacet(dist.topicSlugs),
+      eras: toEraFacet(dist.era),
       types: toFacet(dist.type),
       difficulties: toDifficultyFacet(dist.difficulty),
     };
@@ -152,6 +159,7 @@ function toIndexDoc(item: ContentItem): IndexDoc {
     difficulty: item.difficulty,
     visibility: item.visibility,
     tier: item.tier,
+    era: item.details?.era ?? null,
     genreSlugs: item.genres.map((g) => g.slug),
     instrumentSlugs: item.instruments.map((i) => i.slug),
     topicSlugs: item.topics.map((t) => t.slug),
@@ -170,6 +178,16 @@ function toFacet(distribution: Record<string, number> | undefined): FacetValue[]
   }
   return Object.entries(distribution)
     .map(([value, count]) => ({ value, label: slugToLabel(value), count }))
+    .sort((a, b) => b.count - a.count);
+}
+
+/** Era facet — the stored value is already a display string ("Baroque"), so value == label. */
+function toEraFacet(distribution: Record<string, number> | undefined): FacetValue[] {
+  if (!distribution) {
+    return [];
+  }
+  return Object.entries(distribution)
+    .map(([value, count]) => ({ value, label: value, count }))
     .sort((a, b) => b.count - a.count);
 }
 

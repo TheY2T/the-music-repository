@@ -24,6 +24,7 @@ const QUERY: CatalogueQuery = {
   genres: [],
   instruments: [],
   topics: [],
+  eras: [],
   page: 1,
   pageSize: 20,
 };
@@ -31,7 +32,7 @@ const QUERY: CatalogueQuery = {
 function stubSearch(items: ContentSummaryView[]): CatalogueSearch {
   const result: CatalogueResult = {
     items,
-    facets: { genres: [], instruments: [], topics: [], types: [], difficulties: [] },
+    facets: { genres: [], instruments: [], topics: [], eras: [], types: [], difficulties: [] },
     total: items.length,
     page: 1,
     pageSize: 20,

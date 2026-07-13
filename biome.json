@@ -16,6 +16,7 @@
       "!**/drizzle",
       "!**/.turbo",
       "!**/generated",
+      "!**/seed-content.ts",
       "!**/openapi.json",
       "!**/*.astro",
       "!**/*.css"

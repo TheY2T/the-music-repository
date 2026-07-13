@@ -74,6 +74,7 @@ function normalizeQuery(query: RawQuery): CatalogueQuery {
     genres: toArray(query.genre),
     instruments: toArray(query.instrument),
     topics: toArray(query.topic),
+    eras: toArray(query.era),
     type: typeof query.type === 'string' ? query.type : undefined,
     difficulty: Number.isFinite(difficultyRaw) ? difficultyRaw : undefined,
     page: Math.max(1, toInt(query.page, 1)),

@@ -350,6 +350,7 @@ export const SearchCatalogueQueryParams = zod.object({
   "genre": zod.array(zod.string()).optional(),
   "instrument": zod.array(zod.string()).optional(),
   "topic": zod.array(zod.string()).optional(),
+  "era": zod.array(zod.string()).optional(),
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']).optional(),
   "difficulty": zod.number().optional(),
   "page": zod.number().optional(),
@@ -391,6 +392,11 @@ export const SearchCatalogueResponse = zod.object({
   "count": zod.number()
 }).describe('One facet bucket (a value + its result count).')),
   "topics": zod.array(zod.object({
+  "value": zod.string(),
+  "label": zod.string(),
+  "count": zod.number()
+}).describe('One facet bucket (a value + its result count).')),
+  "eras": zod.array(zod.object({
   "value": zod.string(),
   "label": zod.string(),
   "count": zod.number()
@@ -444,6 +450,15 @@ export const GetContentBySlugResponse = zod.object({
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
   "license": zod.string().optional(),
+  "details": zod.object({
+  "key": zod.string().optional(),
+  "era": zod.string().optional(),
+  "form": zod.string().optional(),
+  "timeSignature": zod.string().optional(),
+  "composer": zod.string().optional(),
+  "composerDates": zod.string().optional(),
+  "composedYear": zod.string().optional()
+}).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
   "tags": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -830,6 +845,15 @@ export const CreateContentResponse = zod.object({
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
   "license": zod.string().optional(),
+  "details": zod.object({
+  "key": zod.string().optional(),
+  "era": zod.string().optional(),
+  "form": zod.string().optional(),
+  "timeSignature": zod.string().optional(),
+  "composer": zod.string().optional(),
+  "composerDates": zod.string().optional(),
+  "composedYear": zod.string().optional()
+}).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
   "tags": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -880,6 +904,15 @@ export const GetContentForEditResponse = zod.object({
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
   "license": zod.string().optional(),
+  "details": zod.object({
+  "key": zod.string().optional(),
+  "era": zod.string().optional(),
+  "form": zod.string().optional(),
+  "timeSignature": zod.string().optional(),
+  "composer": zod.string().optional(),
+  "composerDates": zod.string().optional(),
+  "composedYear": zod.string().optional()
+}).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
   "tags": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -947,6 +980,15 @@ export const UpdateContentResponse = zod.object({
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
   "license": zod.string().optional(),
+  "details": zod.object({
+  "key": zod.string().optional(),
+  "era": zod.string().optional(),
+  "form": zod.string().optional(),
+  "timeSignature": zod.string().optional(),
+  "composer": zod.string().optional(),
+  "composerDates": zod.string().optional(),
+  "composedYear": zod.string().optional()
+}).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
   "tags": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -1023,6 +1065,15 @@ export const PublishContentResponse = zod.object({
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
   "license": zod.string().optional(),
+  "details": zod.object({
+  "key": zod.string().optional(),
+  "era": zod.string().optional(),
+  "form": zod.string().optional(),
+  "timeSignature": zod.string().optional(),
+  "composer": zod.string().optional(),
+  "composerDates": zod.string().optional(),
+  "composedYear": zod.string().optional()
+}).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
   "tags": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()
@@ -1070,6 +1121,15 @@ export const UnpublishContentResponse = zod.object({
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
   "license": zod.string().optional(),
+  "details": zod.object({
+  "key": zod.string().optional(),
+  "era": zod.string().optional(),
+  "form": zod.string().optional(),
+  "timeSignature": zod.string().optional(),
+  "composer": zod.string().optional(),
+  "composerDates": zod.string().optional(),
+  "composedYear": zod.string().optional()
+}).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
   "tags": zod.array(zod.object({
   "slug": zod.string(),
   "name": zod.string()

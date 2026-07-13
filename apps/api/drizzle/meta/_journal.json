@@ -120,6 +120,13 @@
       "when": 1783846406758,
       "tag": "0016_unusual_leech",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1783946386373,
+      "tag": "0017_keen_jack_power",
+      "breakpoints": true
     }
   ]
 }
