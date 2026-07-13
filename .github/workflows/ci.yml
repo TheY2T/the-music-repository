@@ -1,9 +1,12 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
-  pull_request:
+  # CI is PAUSED for now — no deploy infrastructure is set up yet and the automated lanes were
+  # failing. The pipeline is manual-only (Actions tab → "Run workflow"). To re-enable on every
+  # push/PR, restore the two triggers below:
+  #   push:
+  #     branches: [main]
+  #   pull_request:
   workflow_dispatch:
 
 concurrency:
