@@ -597,6 +597,12 @@ model CollectionSearchResult {
   pageSize: int32;
 }
 
+/** Published collections that feature a given catalogue item (cross-linking from a content page). */
+@route("/collections/by-content/{slug}")
+@tag("collections")
+@get
+op listCollectionsForContent(@path slug: string): CollectionList;
+
 /** Faceted discovery over published collections. */
 @route("/collections/search")
 @tag("collections")

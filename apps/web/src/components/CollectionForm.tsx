@@ -1,22 +1,71 @@
-import type { CollectionWriteInput } from '@TheY2T/tmr-api-client';
+import type { CollectionItemInput, CollectionWriteInput } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
-import { Badge, Button, Card, Field, Icon, Input, Select, Textarea } from '@TheY2T/tmr-ui';
+import {
+  Badge,
+  Button,
+  Card,
+  Field,
+  Icon,
+  Input,
+  SegmentedToggle,
+  Select,
+  Textarea,
+} from '@TheY2T/tmr-ui';
 import { type FormEvent, useEffect, useState } from 'react';
 import { collectionsAdminApi } from '@/lib/admin-api';
 
 const KINDS = ['course', 'path', 'syllabus', 'songlist'] as const;
 
+interface SectionForm {
+  title: string;
+  description: string;
+  /** newline-separated `slug` or `slug | curator note`. */
+  items: string;
+}
+
 const emptyForm = {
   slug: '',
   title: '',
   summary: '',
+  bodyMdx: '',
   kind: 'course' as CollectionWriteInput['kind'],
-  items: '', // newline-separated content slugs
+  curatorName: '',
+  curatorBio: '',
+  difficultyMin: '',
+  difficultyMax: '',
+  estMinutes: '',
+  featured: false,
+  tags: '', // comma-separated
+  outcomes: '', // newline-separated
+  ungrouped: '', // newline-separated content slugs with no section
 };
+
+function toInt(value: string): number | undefined {
+  const n = Number.parseInt(value, 10);
+  return Number.isFinite(n) ? n : undefined;
+}
+
+function splitLines(text: string): string[] {
+  return text
+    .split('\n')
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+function parseItemLine(line: string): { contentSlug: string; curatorNote?: string } | null {
+  const [slugPart, ...noteParts] = line.split('|');
+  const contentSlug = slugPart.trim();
+  if (!contentSlug) {
+    return null;
+  }
+  const note = noteParts.join('|').trim();
+  return { contentSlug, curatorNote: note || undefined };
+}
 
 export default function CollectionForm({ slug, locale }: { slug?: string; locale: Locale }) {
   const isEdit = Boolean(slug);
   const [form, setForm] = useState({ ...emptyForm });
+  const [sections, setSections] = useState<SectionForm[]>([]);
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -33,9 +82,30 @@ export default function CollectionForm({ slug, locale }: { slug?: string; locale
           slug: c.slug,
           title: c.title,
           summary: c.summary ?? '',
+          bodyMdx: c.bodyMdx ?? '',
           kind: c.kind,
-          items: c.items.map((e) => e.content.slug).join('\n'),
+          curatorName: c.curatorName ?? '',
+          curatorBio: c.curatorBio ?? '',
+          difficultyMin: c.difficultyMin != null ? String(c.difficultyMin) : '',
+          difficultyMax: c.difficultyMax != null ? String(c.difficultyMax) : '',
+          estMinutes: c.estMinutes != null ? String(c.estMinutes) : '',
+          featured: c.featured ?? false,
+          tags: (c.tags ?? []).join(', '),
+          outcomes: (c.outcomes ?? []).join('\n'),
+          ungrouped: c.items
+            .filter((e) => !e.sectionId)
+            .map((e) => e.content.slug)
+            .join('\n'),
         });
+        setSections(
+          c.sections.map((s) => ({
+            title: s.title,
+            description: s.description ?? '',
+            items: s.items
+              .map((e) => (e.curatorNote ? `${e.content.slug} | ${e.curatorNote}` : e.content.slug))
+              .join('\n'),
+          })),
+        );
         setStatus(c.status);
       })
       .catch((e: Error) => setError(e.message));
@@ -45,21 +115,59 @@ export default function CollectionForm({ slug, locale }: { slug?: string; locale
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
+  function setSection(index: number, patch: Partial<SectionForm>) {
+    setSections((cur) => cur.map((s, i) => (i === index ? { ...s, ...patch } : s)));
+  }
+
   function meta(): CollectionWriteInput {
+    const tags = form.tags
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const outcomes = splitLines(form.outcomes);
     return {
       slug: form.slug.trim(),
       title: form.title.trim(),
       summary: form.summary.trim() || undefined,
+      bodyMdx: form.bodyMdx.trim() || undefined,
       kind: form.kind,
       visibility: 'public',
+      featured: form.featured,
+      difficultyMin: toInt(form.difficultyMin),
+      difficultyMax: toInt(form.difficultyMax),
+      estMinutes: toInt(form.estMinutes),
+      curatorName: form.curatorName.trim() || undefined,
+      curatorBio: form.curatorBio.trim() || undefined,
+      tags: tags.length ? tags : undefined,
+      outcomes: outcomes.length ? outcomes : undefined,
     };
   }
 
-  function itemSlugs(): string[] {
-    return form.items
-      .split(/[\n,]/)
-      .map((s) => s.trim())
-      .filter(Boolean);
+  function buildItems(): CollectionItemInput[] {
+    const items: CollectionItemInput[] = splitLines(form.ungrouped).map((contentSlug) => ({
+      contentSlug,
+    }));
+    sections.forEach((sec, sectionIndex) => {
+      for (const line of splitLines(sec.items)) {
+        const parsed = parseItemLine(line);
+        if (parsed) {
+          items.push({ ...parsed, sectionIndex });
+        }
+      }
+    });
+    return items;
+  }
+
+  /** Persist metadata → sections → items (sections before items so `sectionIndex` resolves). */
+  async function persist(targetSlug: string) {
+    await collectionsAdminApi.setSections(
+      targetSlug,
+      sections.map((s) => ({
+        title: s.title.trim(),
+        description: s.description.trim() || undefined,
+      })),
+    );
+    await collectionsAdminApi.setItems(targetSlug, buildItems());
   }
 
   async function onSave(event: FormEvent) {
@@ -70,11 +178,11 @@ export default function CollectionForm({ slug, locale }: { slug?: string; locale
     try {
       if (isEdit && slug) {
         await collectionsAdminApi.update(slug, meta());
-        await collectionsAdminApi.setItems(slug, itemSlugs());
+        await persist(slug);
         setNotice(t(locale, 'colform.savedNotice'));
       } else {
         const created = await collectionsAdminApi.create(meta());
-        await collectionsAdminApi.setItems(created.slug, itemSlugs());
+        await persist(created.slug);
         window.location.href = localizedPath(
           locale,
           `/admin/collections/${encodeURIComponent(created.slug)}/edit`,
@@ -129,8 +237,8 @@ export default function CollectionForm({ slug, locale }: { slug?: string; locale
         </p>
       ) : null}
 
-      <Card className="p-5">
-        <form onSubmit={onSave} className="space-y-4">
+      <form onSubmit={onSave} className="space-y-6">
+        <Card className="space-y-4 p-5">
           <Field label={t(locale, 'colform.slug')} htmlFor="colform-slug">
             <Input
               id="colform-slug"
@@ -167,72 +275,200 @@ export default function CollectionForm({ slug, locale }: { slug?: string; locale
               ))}
             </Select>
           </Field>
-          <Field label={t(locale, 'colform.itemsHelp')} htmlFor="colform-items">
+          <Field label={t(locale, 'colform.body')} htmlFor="colform-body">
             <Textarea
-              id="colform-items"
-              className="h-40 font-mono"
-              value={form.items}
-              onChange={(e) => set('items', e.target.value)}
+              id="colform-body"
+              className="h-28"
+              value={form.bodyMdx}
+              onChange={(e) => set('bodyMdx', e.target.value)}
+            />
+          </Field>
+        </Card>
+
+        <Card className="space-y-4 p-5">
+          <p className="font-display font-semibold">{t(locale, 'colform.metaHeading')}</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label={t(locale, 'colform.curator')} htmlFor="colform-curator">
+              <Input
+                id="colform-curator"
+                value={form.curatorName}
+                onChange={(e) => set('curatorName', e.target.value)}
+              />
+            </Field>
+            <Field label={t(locale, 'colform.featured')}>
+              <SegmentedToggle<'yes' | 'no'>
+                options={[
+                  { value: 'no', label: t(locale, 'colform.no') },
+                  { value: 'yes', label: t(locale, 'colform.yes') },
+                ]}
+                value={form.featured ? 'yes' : 'no'}
+                onValueChange={(v) => set('featured', v === 'yes')}
+              />
+            </Field>
+            <Field label={t(locale, 'colform.difficultyFrom')} htmlFor="colform-dmin">
+              <Input
+                id="colform-dmin"
+                type="number"
+                value={form.difficultyMin}
+                onChange={(e) => set('difficultyMin', e.target.value)}
+              />
+            </Field>
+            <Field label={t(locale, 'colform.difficultyTo')} htmlFor="colform-dmax">
+              <Input
+                id="colform-dmax"
+                type="number"
+                value={form.difficultyMax}
+                onChange={(e) => set('difficultyMax', e.target.value)}
+              />
+            </Field>
+            <Field label={t(locale, 'colform.duration')} htmlFor="colform-mins">
+              <Input
+                id="colform-mins"
+                type="number"
+                value={form.estMinutes}
+                onChange={(e) => set('estMinutes', e.target.value)}
+              />
+            </Field>
+            <Field label={t(locale, 'colform.tags')} htmlFor="colform-tags">
+              <Input
+                id="colform-tags"
+                value={form.tags}
+                onChange={(e) => set('tags', e.target.value)}
+                placeholder="piano, baroque"
+              />
+            </Field>
+          </div>
+          <Field label={t(locale, 'colform.curatorBio')} htmlFor="colform-bio">
+            <Textarea
+              id="colform-bio"
+              className="h-20"
+              value={form.curatorBio}
+              onChange={(e) => set('curatorBio', e.target.value)}
+            />
+          </Field>
+          <Field label={t(locale, 'colform.outcomes')} htmlFor="colform-outcomes">
+            <Textarea
+              id="colform-outcomes"
+              className="h-24"
+              value={form.outcomes}
+              onChange={(e) => set('outcomes', e.target.value)}
+              placeholder={t(locale, 'colform.outcomesHelp')}
+            />
+          </Field>
+        </Card>
+
+        <Card className="space-y-4 p-5">
+          <Field label={t(locale, 'colform.ungroupedHelp')} htmlFor="colform-ungrouped">
+            <Textarea
+              id="colform-ungrouped"
+              className="h-24 font-mono"
+              value={form.ungrouped}
+              onChange={(e) => set('ungrouped', e.target.value)}
               placeholder={'c-major-scale-two-octaves\nczerny-op-599-no-1'}
             />
           </Field>
 
-          <div className="flex flex-wrap gap-3 border-t border-border pt-4">
-            <Button type="submit" disabled={busy}>
-              <Icon name="check" className="size-4" />
-              {isEdit ? t(locale, 'colform.saveChanges') : t(locale, 'colform.create')}
-            </Button>
-            {isEdit && slug ? (
-              <>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={busy}
-                  onClick={() =>
-                    act(
-                      () => collectionsAdminApi.publish(slug),
-                      t(locale, 'colform.publishedNotice'),
-                    )
-                  }
-                >
-                  {t(locale, 'colform.publish')}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={busy}
-                  onClick={() =>
-                    act(
-                      () => collectionsAdminApi.unpublish(slug),
-                      t(locale, 'colform.unpublishedNotice'),
-                    )
-                  }
-                >
-                  {t(locale, 'colform.unpublish')}
-                </Button>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  disabled={busy}
-                  onClick={() => {
-                    if (confirm(t(locale, 'colform.confirmDelete'))) {
-                      act(
-                        () => collectionsAdminApi.remove(slug),
-                        t(locale, 'colform.deletedNotice'),
-                      ).then(() => {
-                        window.location.href = localizedPath(locale, '/admin/collections');
-                      });
-                    }
-                  }}
-                >
-                  <Icon name="trash" className="size-4" />
-                  {t(locale, 'colform.delete')}
-                </Button>
-              </>
-            ) : null}
+          <div className="space-y-4 border-t border-border pt-4">
+            <div className="flex items-center justify-between">
+              <p className="font-display font-semibold">{t(locale, 'colform.sectionsHeading')}</p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  setSections((cur) => [...cur, { title: '', description: '', items: '' }])
+                }
+              >
+                <Icon name="plus" className="size-4" />
+                {t(locale, 'colform.addSection')}
+              </Button>
+            </div>
+            {sections.map((section, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: sections are positional (index = order).
+              <Card key={index} className="space-y-3 border-dashed p-4">
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={section.title}
+                    onChange={(e) => setSection(index, { title: e.target.value })}
+                    placeholder={t(locale, 'colform.sectionTitle')}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setSections((cur) => cur.filter((_, i) => i !== index))}
+                    aria-label={t(locale, 'colform.removeSection')}
+                    className="shrink-0 text-muted-foreground hover:text-destructive"
+                  >
+                    <Icon name="trash" className="size-4" />
+                  </button>
+                </div>
+                <Input
+                  value={section.description}
+                  onChange={(e) => setSection(index, { description: e.target.value })}
+                  placeholder={t(locale, 'colform.sectionSummary')}
+                />
+                <Textarea
+                  className="h-24 font-mono text-sm"
+                  value={section.items}
+                  onChange={(e) => setSection(index, { items: e.target.value })}
+                  placeholder={t(locale, 'colform.sectionItemsHelp')}
+                />
+              </Card>
+            ))}
           </div>
-        </form>
-      </Card>
+        </Card>
+
+        <div className="flex flex-wrap gap-3 border-t border-border pt-4">
+          <Button type="submit" disabled={busy}>
+            <Icon name="check" className="size-4" />
+            {isEdit ? t(locale, 'colform.saveChanges') : t(locale, 'colform.create')}
+          </Button>
+          {isEdit && slug ? (
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={busy}
+                onClick={() =>
+                  act(() => collectionsAdminApi.publish(slug), t(locale, 'colform.publishedNotice'))
+                }
+              >
+                {t(locale, 'colform.publish')}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={busy}
+                onClick={() =>
+                  act(
+                    () => collectionsAdminApi.unpublish(slug),
+                    t(locale, 'colform.unpublishedNotice'),
+                  )
+                }
+              >
+                {t(locale, 'colform.unpublish')}
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                disabled={busy}
+                onClick={() => {
+                  if (confirm(t(locale, 'colform.confirmDelete'))) {
+                    act(
+                      () => collectionsAdminApi.remove(slug),
+                      t(locale, 'colform.deletedNotice'),
+                    ).then(() => {
+                      window.location.href = localizedPath(locale, '/admin/collections');
+                    });
+                  }
+                }}
+              >
+                <Icon name="trash" className="size-4" />
+                {t(locale, 'colform.delete')}
+              </Button>
+            </>
+          ) : null}
+        </div>
+      </form>
     </div>
   );
 }

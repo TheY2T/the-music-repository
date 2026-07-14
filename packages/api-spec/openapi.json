@@ -1121,6 +1121,37 @@
         ]
       }
     },
+    "/collections/by-content/{slug}": {
+      "get": {
+        "operationId": "listCollectionsForContent",
+        "description": "Published collections that feature a given catalogue item (cross-linking from a content page).",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      }
+    },
     "/collections/search": {
       "get": {
         "operationId": "searchCollections",

@@ -21,6 +21,7 @@ import {
 import { GetCollectionWithProgressUseCase } from './application/use-cases/get-collection-progress.use-case';
 import {
   ListCollectionsAdminUseCase,
+  ListCollectionsForContentUseCase,
   ListCollectionsUseCase,
 } from './application/use-cases/list-collections.use-case';
 import {
@@ -68,6 +69,7 @@ import { MeilisearchCollectionSearch } from './infrastructure/meilisearch-collec
     // Public + admin reads/writes
     ListCollectionsUseCase,
     ListCollectionsAdminUseCase,
+    ListCollectionsForContentUseCase,
     SearchCollectionsUseCase,
     GetCollectionBySlugUseCase,
     GetCollectionForEditUseCase,

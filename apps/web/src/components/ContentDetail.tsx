@@ -1,9 +1,11 @@
 import {
   ApiProvider,
+  type CollectionSummary,
   type ContentDetail as ContentDetailDto,
   type ContentSummary,
   useGetContentBySlug,
   useGetRelatedContent,
+  useListCollectionsForContent,
 } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import {
@@ -81,6 +83,36 @@ function DetailsPanel({
         ))}
       </dl>
     </Card>
+  );
+}
+
+function AppearsInCollections({ slug, locale }: { slug: string; locale: Locale }) {
+  const { data } = useListCollectionsForContent(slug);
+  const items = data?.status === 200 ? (data.data.items as CollectionSummary[]) : [];
+  if (!items.length) {
+    return null;
+  }
+  return (
+    <section className="space-y-3 border-t border-border pt-8">
+      <h2 className="flex items-center gap-2 font-display text-xl font-semibold tracking-tight">
+        <Icon name="list-music" className="size-5 text-accent" />
+        {t(locale, 'content.appearsIn')}
+      </h2>
+      <CardGrid className="gap-4">
+        {items.map((item) => (
+          <li key={item.slug}>
+            <MediaCard
+              title={item.title}
+              href={localizedPath(locale, `/collections/${item.slug}`)}
+              summary={item.summary ?? undefined}
+              typeLabel={item.kind}
+              difficultyLabel={`${item.itemCount} ${t(locale, item.itemCount === 1 ? 'collections.itemOne' : 'collections.itemOther')}`}
+              seed={item.slug}
+            />
+          </li>
+        ))}
+      </CardGrid>
+    </section>
   );
 }
 
@@ -310,6 +342,8 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
           </div>
         </Card>
       ) : null}
+
+      <AppearsInCollections slug={slug} locale={locale} />
 
       <RelatedSection slug={slug} locale={locale} />
     </article>

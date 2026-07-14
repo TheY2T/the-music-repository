@@ -1,4 +1,4 @@
-import { ApiProvider, useSearchCatalogue } from '@TheY2T/tmr-api-client';
+import { ApiProvider, useSearchCatalogue, useSearchCollections } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import {
   Badge,
@@ -118,6 +118,37 @@ function FeaturedRow({ locale }: { locale: Locale }) {
   );
 }
 
+function CollectionsRow({ locale, href }: { locale: Locale; href: string }) {
+  const { data } = useSearchCollections({ featured: true, sort: 'featured', pageSize: 8 });
+  const items = data?.data?.items ?? [];
+  if (items.length === 0) {
+    return null;
+  }
+  return (
+    <FeaturedShelf
+      title={t(locale, 'home.collectionsShelfTitle')}
+      action={
+        <a href={href} className="text-sm text-accent underline-offset-4 hover:underline">
+          {t(locale, 'home.browseCta')}
+        </a>
+      }
+    >
+      {items.map((c) => (
+        <MediaCard
+          key={c.slug}
+          className="w-64"
+          title={c.title}
+          href={localizedPath(locale, `/collections/${c.slug}`)}
+          summary={c.summary ?? undefined}
+          typeLabel={c.kind}
+          difficultyLabel={`${c.itemCount} ${t(locale, c.itemCount === 1 ? 'collections.itemOne' : 'collections.itemOther')}`}
+          seed={c.slug}
+        />
+      ))}
+    </FeaturedShelf>
+  );
+}
+
 function WayCard({
   icon,
   title,
@@ -208,6 +239,12 @@ function Home({
       <section className="mt-16">
         <FeaturedRow locale={locale} />
       </section>
+
+      {showCollections && (
+        <section className="mt-16">
+          <CollectionsRow locale={locale} href={collectionsHref} />
+        </section>
+      )}
 
       <section className="mt-16">
         <h2 className="font-display text-2xl font-semibold tracking-tight">

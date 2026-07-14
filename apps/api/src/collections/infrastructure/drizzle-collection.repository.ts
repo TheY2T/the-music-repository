@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { asc, desc, eq, inArray, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, ne, sql } from 'drizzle-orm';
 import { DATABASE, type Database } from '../../infrastructure/database/database.module';
 import {
   collectionItems,
@@ -39,6 +39,30 @@ export class DrizzleCollectionRepository extends CollectionRepository {
       .select()
       .from(collections)
       .where(eq(collections.status, 'published'))
+      .orderBy(asc(collections.title));
+    return Promise.all(rows.map((row) => this.hydrate(row)));
+  }
+
+  async findPublishedContaining(contentSlug: string): Promise<Collection[]> {
+    const idRows = await this.db
+      .select({ id: collectionItems.collectionId })
+      .from(collectionItems)
+      .innerJoin(contentItems, eq(collectionItems.contentId, contentItems.id))
+      .where(eq(contentItems.slug, contentSlug));
+    const ids = [...new Set(idRows.map((r) => r.id))];
+    if (!ids.length) {
+      return [];
+    }
+    const rows = await this.db
+      .select()
+      .from(collections)
+      .where(
+        and(
+          inArray(collections.id, ids),
+          eq(collections.status, 'published'),
+          ne(collections.visibility, 'private'),
+        ),
+      )
       .orderBy(asc(collections.title));
     return Promise.all(rows.map((row) => this.hydrate(row)));
   }

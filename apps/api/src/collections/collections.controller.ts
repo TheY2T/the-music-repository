@@ -4,7 +4,10 @@ import { ResolveOptionalAuth } from '../auth/require-permissions.decorator';
 import { RecordCollectionOpenUseCase } from './application/use-cases/collection-engagement.use-case';
 import { GetCollectionBySlugUseCase } from './application/use-cases/get-collection.use-case';
 import { GetCollectionWithProgressUseCase } from './application/use-cases/get-collection-progress.use-case';
-import { ListCollectionsUseCase } from './application/use-cases/list-collections.use-case';
+import {
+  ListCollectionsForContentUseCase,
+  ListCollectionsUseCase,
+} from './application/use-cases/list-collections.use-case';
 import { SearchCollectionsUseCase } from './application/use-cases/search-collections.use-case';
 import { type CollectionSearchQuery, parseCollectionSort } from './domain/collection-search';
 
@@ -19,6 +22,7 @@ export class CollectionsController {
     private readonly getCollection: GetCollectionBySlugUseCase,
     private readonly getWithProgress: GetCollectionWithProgressUseCase,
     private readonly recordOpen: RecordCollectionOpenUseCase,
+    private readonly listForContent: ListCollectionsForContentUseCase,
     private readonly currentUser: CurrentUser,
   ) {}
 
@@ -30,6 +34,11 @@ export class CollectionsController {
   @Get('search')
   search(@Query() query: RawQuery) {
     return this.searchCollections.execute(normalizeQuery(query));
+  }
+
+  @Get('by-content/:slug')
+  async byContent(@Param('slug') slug: string) {
+    return { items: await this.listForContent.execute(slug) };
   }
 
   @Get(':slug')

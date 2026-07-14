@@ -13,6 +13,8 @@ import type {
 export abstract class CollectionRepository {
   abstract getBySlug(slug: string): Promise<Collection | null>; // any status
   abstract findAllPublished(): Promise<Collection[]>;
+  /** Published, non-private collections that contain the given content slug (for cross-linking). */
+  abstract findPublishedContaining(contentSlug: string): Promise<Collection[]>;
   abstract listAll(): Promise<Collection[]>;
   /** Collections owned by a user (curationType='user'), most-recently-updated first. */
   abstract listByOwner(userId: string): Promise<Collection[]>;

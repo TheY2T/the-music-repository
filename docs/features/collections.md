@@ -89,7 +89,13 @@ reuses the `content` resource; user-collection ownership is enforced in the use-
 - **E2E** (Playwright): index facets/sort/search + progress; detail sections/completion/resume/save/rate;
   saved tabs + anon redirect; create/reorder.
 
-## Follow-ups (deferred)
+## Discovery graph + surfacing
 
-Admin sections-editor UI (file authoring covers editorial today; admin still edits flat items + metadata),
-"appears in N collections" cross-link on catalogue detail, home featured-collections shelf.
+- **Cross-link:** catalogue detail (`ContentDetail`) shows an "Appears in collections" section
+  (`GET /collections/by-content/{slug}` → `ListCollectionsForContentUseCase` →
+  `CollectionRepository.findPublishedContaining`), turning collections into a two-way discovery graph.
+- **Home shelf:** `HomePage` renders a featured-collections `FeaturedShelf`
+  (`useSearchCollections({ featured: true })`) alongside the catalogue shelf.
+- **Admin authoring UI:** `CollectionForm` edits the full metadata (curator/difficulty/duration/featured/
+  tags/outcomes/bodyMdx) + a **sections editor** (repeatable chapters with `slug | note` item lines) +
+  ungrouped items; save = `update` → `setSections` → structured `setItems`.

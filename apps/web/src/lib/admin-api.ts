@@ -1,6 +1,8 @@
 import type {
   CollectionDetail,
+  CollectionItemInput,
   CollectionList,
+  CollectionSectionInput,
   CollectionWriteInput,
   ContentAdminList,
   ContentDetail,
@@ -68,10 +70,15 @@ export const collectionsAdminApi = {
       method: 'PUT',
       body: JSON.stringify(body),
     }),
-  setItems: (slug: string, contentSlugs: string[]) =>
+  setItems: (slug: string, items: CollectionItemInput[]) =>
     request<CollectionDetail>(`/admin/collections/${encodeURIComponent(slug)}/items`, {
       method: 'PUT',
-      body: JSON.stringify({ items: contentSlugs.map((contentSlug) => ({ contentSlug })) }),
+      body: JSON.stringify({ items }),
+    }),
+  setSections: (slug: string, sections: CollectionSectionInput[]) =>
+    request<CollectionDetail>(`/admin/collections/${encodeURIComponent(slug)}/sections`, {
+      method: 'PUT',
+      body: JSON.stringify({ sections }),
     }),
   publish: (slug: string) =>
     request<CollectionDetail>(`/admin/collections/${encodeURIComponent(slug)}/publish`, {

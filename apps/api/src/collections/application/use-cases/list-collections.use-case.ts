@@ -30,3 +30,18 @@ export class ListCollectionsAdminUseCase {
     return collections.map((c) => toCollectionSummaryView(c));
   }
 }
+
+@Injectable()
+export class ListCollectionsForContentUseCase {
+  constructor(
+    private readonly repository: CollectionRepository,
+    private readonly ratings: CollectionRatings,
+  ) {}
+
+  /** Published, non-private collections that feature a given catalogue item (for cross-linking). */
+  async execute(contentSlug: string): Promise<CollectionSummaryView[]> {
+    const collections = await this.repository.findPublishedContaining(contentSlug);
+    const aggregate = await this.ratings.getAggregate(collections.map((c) => c.slug));
+    return collections.map((c) => toCollectionSummaryView(c, aggregate.get(c.slug)));
+  }
+}

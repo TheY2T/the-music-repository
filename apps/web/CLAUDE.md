@@ -108,9 +108,13 @@ src/
   \| `/[slug]/edit` (`UserCollectionForm` — catalogue picker + reorder + per-item notes + public/private).
   Auth-gated (redirect to `/signin`). Account nav item added in `nav.ts`.
 - Admin: `/admin/collections/*` (guard + `learning.collections`) — `AdminCollectionList` +
-  `CollectionForm`; `collectionsAdminApi.setItems` now sends the **structured `{ items: [{contentSlug}] }`**
-  envelope (contract change). UI: `StarRating` molecule + `MediaCard` `metaSlot`/`footerSlot` in
-  `@TheY2T/tmr-ui`. Islands with hooks (e.g. `StarRating`) are covered by E2E, not unit tests (dup-React).
+  `CollectionForm` (full metadata + **sections editor** with `slug | note` item lines + ungrouped items;
+  save = `update` → `setSections` → structured `setItems`). `collectionsAdminApi.setItems` takes
+  `CollectionItemInput[]` and `setSections` takes `CollectionSectionInput[]`.
+- Cross-link: `ContentDetail` shows "Appears in collections" via `useListCollectionsForContent`. Home:
+  `HomePage` has a featured-collections shelf (`useSearchCollections({ featured: true })`).
+- UI: `StarRating` molecule + `MediaCard` `metaSlot`/`footerSlot` in `@TheY2T/tmr-ui`. Islands with hooks
+  (e.g. `StarRating`) are covered by E2E, not unit tests (dup-React).
 
 ## Progress (Phase 2)
 

@@ -1303,6 +1303,44 @@ export const ListCollectionsResponse = zod.object({
 
 
 /**
+ * Published collections that feature a given catalogue item (cross-linking from a content page).
+ */
+export const ListCollectionsForContentParams = zod.object({
+  "slug": zod.string()
+})
+
+export const ListCollectionsForContentResponse = zod.object({
+  "items": zod.array(zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
+  "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number()
+}).describe('List\/card view of a collection.'))
+})
+
+
+/**
  * Faceted discovery over published collections.
  */
 export const SearchCollectionsQueryParams = zod.object({
