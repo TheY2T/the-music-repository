@@ -46,6 +46,7 @@ export interface MediaAssetMeta {
   mime: string;
   license?: string | null;
   attribution?: string | null;
+  sourceUrl?: string | null;
 }
 
 export interface ContentItem {
@@ -97,6 +98,7 @@ export interface MediaView {
   mime: string;
   license?: string;
   attribution?: string;
+  sourceUrl?: string;
 }
 
 export interface ContentDetailView extends ContentSummaryView {

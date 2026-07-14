@@ -4538,6 +4538,10 @@
           },
           "attribution": {
             "type": "string"
+          },
+          "sourceUrl": {
+            "type": "string",
+            "description": "Provenance URL of the engraving (source edition or transcription reference)."
           }
         },
         "description": "A media file attached to a content item, with a ready-to-use (presigned) URL."

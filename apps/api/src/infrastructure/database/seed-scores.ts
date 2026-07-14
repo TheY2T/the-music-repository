@@ -1,72 +1,48 @@
 /**
- * Hand-authored, public-domain MusicXML for a few seed pieces, keyed by content slug. The seed
- * uploads each as a `musicxml` media asset (see `seed.ts`); the web detail page engraves it with
- * Verovio + notation-synced playback (`ScoreViewer`). Kept compact + valid (MusicXML 3.1 partwise);
- * add more entries here to give a piece a real engraved score.
+ * GENERATED FILE — do not edit by hand.
+ * Source: src/infrastructure/database/content/scores/<slug>.{musicxml,meta.json}
+ * Regenerate: pnpm --filter @TheY2T/tmr-api scores:build
+ *
+ * Real engraved scores (4) keyed by content slug. The seed (seed.ts) uploads each
+ * SCORE_XML entry as a `musicxml` media asset and records its SCORE_META provenance/licensing on
+ * the asset. The web ScoreViewer engraves it with Verovio + notation-synced playback.
  */
-export const SCORE_XML: Record<string, string> = {
-  // Beethoven — "Ode to Joy" theme (C major, 4/4). divisions=2 (eighth=1, quarter=2, half=4).
-  'beethoven-ode-to-joy': `<?xml version="1.0" encoding="UTF-8"?>
-<score-partwise version="3.1">
-  <part-list><score-part id="P1"><part-name>Ode to Joy</part-name></score-part></part-list>
-  <part id="P1">
-    <measure number="1">
-      <attributes><divisions>2</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes>
-      <note><pitch><step>E</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>
-      <note><pitch><step>E</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>
-      <note><pitch><step>F</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>
-      <note><pitch><step>G</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>
-    </measure>
-    <measure number="2">
-      <note><pitch><step>G</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>
-      <note><pitch><step>F</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>
-      <note><pitch><step>E</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>
-      <note><pitch><step>D</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>
-    </measure>
-    <measure number="3">
-      <note><pitch><step>C</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>
-      <note><pitch><step>C</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>
-      <note><pitch><step>D</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>
-      <note><pitch><step>E</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>
-    </measure>
-    <measure number="4">
-      <note><pitch><step>E</step><octave>4</octave></pitch><duration>3</duration><type>quarter</type><dot/></note>
-      <note><pitch><step>D</step><octave>4</octave></pitch><duration>1</duration><type>eighth</type></note>
-      <note><pitch><step>D</step><octave>4</octave></pitch><duration>4</duration><type>half</type></note>
-    </measure>
-  </part>
-</score-partwise>`,
+import type { ScoreMeta } from './content-details';
 
-  // C major scale, two octaves worth of shape shown one octave up then down (C major, 4/4).
-  'c-major-scale-two-octaves': `<?xml version="1.0" encoding="UTF-8"?>
-<score-partwise version="3.1">
-  <part-list><score-part id="P1"><part-name>C Major Scale</part-name></score-part></part-list>
-  <part id="P1">
-    <measure number="1">
-      <attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes>
-      <note><pitch><step>C</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>
-      <note><pitch><step>D</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>
-      <note><pitch><step>E</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>
-      <note><pitch><step>F</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>
-    </measure>
-    <measure number="2">
-      <note><pitch><step>G</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>
-      <note><pitch><step>A</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>
-      <note><pitch><step>B</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>
-      <note><pitch><step>C</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>
-    </measure>
-    <measure number="3">
-      <note><pitch><step>C</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>
-      <note><pitch><step>B</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>
-      <note><pitch><step>A</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>
-      <note><pitch><step>G</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>
-    </measure>
-    <measure number="4">
-      <note><pitch><step>F</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>
-      <note><pitch><step>E</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>
-      <note><pitch><step>D</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>
-      <note><pitch><step>C</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>
-    </measure>
-  </part>
-</score-partwise>`,
+export const SCORE_XML: Record<string, string> = {
+  "bass-major-scale-fingerings": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<score-partwise version=\"3.1\">\n  <part-list><score-part id=\"P1\"><part-name>C Major Scale (Bass)</part-name></score-part></part-list>\n  <part id=\"P1\">\n    <measure number=\"1\">\n      <attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>F</sign><line>4</line></clef></attributes>\n      <note><pitch><step>C</step><octave>2</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>D</step><octave>2</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>E</step><octave>2</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>F</step><octave>2</octave></pitch><duration>1</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"2\">\n      <note><pitch><step>G</step><octave>2</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>A</step><octave>2</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>B</step><octave>2</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>C</step><octave>3</octave></pitch><duration>1</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"3\">\n      <note><pitch><step>B</step><octave>2</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>A</step><octave>2</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>G</step><octave>2</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>F</step><octave>2</octave></pitch><duration>1</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"4\">\n      <note><pitch><step>E</step><octave>2</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>D</step><octave>2</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>C</step><octave>2</octave></pitch><duration>2</duration><type>half</type></note>\n    </measure>\n  </part>\n</score-partwise>",
+  "beethoven-ode-to-joy": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<score-partwise version=\"3.1\">\n  <part-list><score-part id=\"P1\"><part-name>Ode to Joy</part-name></score-part></part-list>\n  <part id=\"P1\">\n    <measure number=\"1\">\n      <attributes><divisions>2</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes>\n      <note><pitch><step>E</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>E</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>F</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>G</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"2\">\n      <note><pitch><step>G</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>F</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>E</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>D</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"3\">\n      <note><pitch><step>C</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>C</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>D</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>E</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"4\">\n      <note><pitch><step>E</step><octave>4</octave></pitch><duration>3</duration><type>quarter</type><dot/></note>\n      <note><pitch><step>D</step><octave>4</octave></pitch><duration>1</duration><type>eighth</type></note>\n      <note><pitch><step>D</step><octave>4</octave></pitch><duration>4</duration><type>half</type></note>\n    </measure>\n    <measure number=\"5\">\n      <note><pitch><step>E</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>E</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>F</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>G</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"6\">\n      <note><pitch><step>G</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>F</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>E</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>D</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"7\">\n      <note><pitch><step>C</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>C</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>D</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n      <note><pitch><step>E</step><octave>4</octave></pitch><duration>2</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"8\">\n      <note><pitch><step>D</step><octave>4</octave></pitch><duration>3</duration><type>quarter</type><dot/></note>\n      <note><pitch><step>C</step><octave>4</octave></pitch><duration>1</duration><type>eighth</type></note>\n      <note><pitch><step>C</step><octave>4</octave></pitch><duration>4</duration><type>half</type></note>\n    </measure>\n  </part>\n</score-partwise>",
+  "c-major-scale-two-octaves": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<score-partwise version=\"3.1\">\n  <part-list><score-part id=\"P1\"><part-name>C Major Scale</part-name></score-part></part-list>\n  <part id=\"P1\">\n    <measure number=\"1\">\n      <attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes>\n      <note><pitch><step>C</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>D</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>E</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>F</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"2\">\n      <note><pitch><step>G</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>A</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>B</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>C</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"3\">\n      <note><pitch><step>D</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>E</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>F</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>G</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"4\">\n      <note><pitch><step>A</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>B</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>C</step><octave>6</octave></pitch><duration>2</duration><type>half</type></note>\n    </measure>\n    <measure number=\"5\">\n      <note><pitch><step>B</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>A</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>G</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>F</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"6\">\n      <note><pitch><step>E</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>D</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>C</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>B</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"7\">\n      <note><pitch><step>A</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>G</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>F</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>E</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"8\">\n      <note><pitch><step>D</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>C</step><octave>4</octave></pitch><duration>3</duration><type>half</type><dot/></note>\n    </measure>\n  </part>\n</score-partwise>",
+  "ukulele-major-scale-shapes": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<score-partwise version=\"3.1\">\n  <part-list><score-part id=\"P1\"><part-name>C Major Scale</part-name></score-part></part-list>\n  <part id=\"P1\">\n    <measure number=\"1\">\n      <attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes>\n      <note><pitch><step>C</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>D</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>E</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>F</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"2\">\n      <note><pitch><step>G</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>A</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>B</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>C</step><octave>5</octave></pitch><duration>1</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"3\">\n      <note><pitch><step>B</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>A</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>G</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>F</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n    </measure>\n    <measure number=\"4\">\n      <note><pitch><step>E</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>D</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>\n      <note><pitch><step>C</step><octave>4</octave></pitch><duration>2</duration><type>half</type></note>\n    </measure>\n  </part>\n</score-partwise>"
+};
+
+export const SCORE_META: Record<string, ScoreMeta> = {
+  "bass-major-scale-fingerings": {
+    "origin": "hand-authored",
+    "source": "The Music Repository",
+    "sourceUrl": null,
+    "license": "CC BY-SA 4.0",
+    "attribution": "Engraving: The Music Repository"
+  },
+  "beethoven-ode-to-joy": {
+    "origin": "hand-authored",
+    "source": "The Music Repository",
+    "sourceUrl": "https://imslp.org/wiki/Symphony_No.9,_Op.125_(Beethoven,_Ludwig_van)",
+    "license": "CC BY-SA 4.0",
+    "attribution": "Engraving: The Music Repository (theme after Beethoven, public domain)"
+  },
+  "c-major-scale-two-octaves": {
+    "origin": "hand-authored",
+    "source": "The Music Repository",
+    "sourceUrl": null,
+    "license": "CC BY-SA 4.0",
+    "attribution": "Engraving: The Music Repository"
+  },
+  "ukulele-major-scale-shapes": {
+    "origin": "hand-authored",
+    "source": "The Music Repository",
+    "sourceUrl": null,
+    "license": "CC BY-SA 4.0",
+    "attribution": "Engraving: The Music Repository"
+  }
 };

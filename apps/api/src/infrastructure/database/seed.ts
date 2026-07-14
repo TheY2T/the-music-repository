@@ -10,16 +10,8 @@ import { DATABASE, type Database } from './database.module';
 import * as schema from './schema';
 import { SEED_COLLECTIONS } from './seed-collections';
 import { SEED_CONTENT } from './seed-content';
-import {
-  CONTENT,
-  GENRES,
-  HELP_TOPICS,
-  INSTRUMENTS,
-  makeMinimalPdf,
-  SKILL_TOPICS,
-  TAGS,
-} from './seed-data';
-import { SCORE_XML } from './seed-scores';
+import { CONTENT, GENRES, HELP_TOPICS, INSTRUMENTS, SKILL_TOPICS, TAGS } from './seed-data';
+import { SCORE_META, SCORE_XML } from './seed-scores';
 
 /** Fold the near-synonym era "Folk" into "Traditional" so the Era facet isn't split. */
 function normalizeEra(era: string): string {
@@ -118,10 +110,13 @@ async function main(): Promise<void> {
 
     await db.delete(schema.mediaAssets).where(eq(schema.mediaAssets.contentId, contentId));
 
-    // Real engraved score (MusicXML) when we have one for this slug — rendered by the web
-    // ScoreViewer via Verovio. Takes precedence over the placeholder PDF.
+    // Real engraved score (MusicXML) when we have one for this slug — the web ScoreViewer engraves
+    // it with Verovio (notation-synced playback + client-side PDF export). Provenance/licensing come
+    // from the score's own meta (the engraving's license, not the piece's), falling back to the
+    // item's attribution for the two legacy hand-authored scores.
     const xml = SCORE_XML[item.slug];
     if (xml) {
+      const scoreMeta = SCORE_META[item.slug];
       const key = `scores/${item.slug}.musicxml`;
       const bytes = new TextEncoder().encode(xml);
       await media.putObject(key, bytes, 'application/vnd.recordare.musicxml+xml');
@@ -132,24 +127,9 @@ async function main(): Promise<void> {
         filename: `${item.slug}.musicxml`,
         mime: 'application/vnd.recordare.musicxml+xml',
         bytes: bytes.byteLength,
-        license: item.license,
-        attribution: item.attribution,
-      });
-    }
-
-    if (item.withPdf) {
-      const key = `scores/${item.slug}.pdf`;
-      const bytes = makeMinimalPdf(item.title);
-      await media.putObject(key, bytes, 'application/pdf');
-      await db.insert(schema.mediaAssets).values({
-        contentId,
-        kind: 'score_pdf',
-        storageKey: key,
-        filename: `${item.slug}.pdf`,
-        mime: 'application/pdf',
-        bytes: bytes.byteLength,
-        license: item.license,
-        attribution: item.attribution,
+        license: scoreMeta?.license ?? item.license,
+        attribution: scoreMeta?.attribution ?? item.attribution,
+        sourceUrl: scoreMeta?.sourceUrl ?? null,
       });
     }
   }

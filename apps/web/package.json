@@ -45,7 +45,7 @@
     "tailwind-merge": "catalog:",
     "tailwindcss": "catalog:",
     "tw-animate-css": "catalog:",
-    "verovio": "^6.2.0"
+    "verovio": "catalog:"
   },
   "devDependencies": {
     "@TheY2T/tmr-config-eslint": "workspace:*",

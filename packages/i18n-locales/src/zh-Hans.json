@@ -109,6 +109,8 @@
   "score.speed": "速度",
   "score.loading": "加载乐谱…",
   "score.error": "无法渲染此乐谱。",
+  "score.downloadPdf": "下载 PDF",
+  "score.creditLabel": "乐谱来源：",
 
   "content.related": "相关内容",
   "content.notFound": "找不到该内容。",

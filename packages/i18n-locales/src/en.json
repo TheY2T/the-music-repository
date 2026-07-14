@@ -109,6 +109,8 @@
   "score.speed": "Speed",
   "score.loading": "Loading notation…",
   "score.error": "Could not render this score.",
+  "score.downloadPdf": "Download PDF",
+  "score.creditLabel": "Score:",
 
   "content.related": "Related",
   "content.notFound": "This content could not be found.",

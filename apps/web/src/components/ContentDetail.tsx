@@ -284,7 +284,16 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
           {score ? (
             <section className="space-y-2">
               <h2 className="font-display text-lg font-semibold">{t(locale, 'content.score')}</h2>
-              <ScoreViewer url={score.url} locale={locale} />
+              <ScoreViewer
+                url={score.url}
+                locale={locale}
+                credit={{
+                  license: score.license ?? undefined,
+                  attribution: score.attribution ?? undefined,
+                  sourceUrl: score.sourceUrl ?? undefined,
+                  title: item.title,
+                }}
+              />
             </section>
           ) : pdf ? (
             <section className="space-y-2">

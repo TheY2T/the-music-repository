@@ -53,6 +53,21 @@ the controller drops empties. MinIO presigned URLs use `S3_PUBLIC_ENDPOINT` so t
   (reads `content_progress` — avoids a cycle with `ProgressModule`). User-collection ownership is enforced
   in the use-cases (403), not the path. See `docs/features/collections.md`.
 
+## Scores (real MusicXML, ADR 0024)
+
+Sheet music is authored file-based like the catalogue: `content/scores/<slug>.musicxml` +
+`<slug>.meta.json` (provenance/licensing — `ScoreMeta`: `origin` `openscore|kern|hand-authored`,
+`source`, `sourceUrl`, `license`, `attribution`) → `pnpm --filter @TheY2T/tmr-api scores:build` →
+committed `seed-scores.ts` (`SCORE_XML` + `SCORE_META`). The seed uploads each as a `musicxml` media
+asset and records the **engraving's** license/attribution/`source_url` (not the piece's). **MusicXML is
+the single source of truth** — the web `ScoreViewer` engraves it (Verovio), plays it back, and exports
+the downloadable PDF client-side; there is **no stored PDF** (the old `makeMinimalPdf`/`withPdf`
+placeholder path is gone). `scores:validate` (Verovio) is the fidelity gate — it engraves each score +
+writes a preview SVG to `.score-previews/` (git-ignored) for proofing against the PD reference.
+**Licensing:** ship only CC0 (OpenScore) or hand-authored (ours); never MuseScore/musetrainer uploads,
+the unlicensed CCARH kern, or ODbL/anti-LLM ABC. Full sourcing matrix + status in
+`docs/features/scores.md`.
+
 ## Feature flags
 
 `FeatureFlagsModule` registers OpenFeature + flagd with a per-request `contextFactory`. Gate routes

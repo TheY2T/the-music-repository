@@ -232,7 +232,12 @@ src/
     a Play button + speed slider — `renderToTimemap` + `getMIDIValuesForElement` schedule the audio
     (`scheduleTone`), and an rAF loop calls `getElementsAtTime(scoreMs)` to paint the sounding note ids
     red on the engraved SVG (scoped to the container ref — Verovio emits a defs `<svg>` too). Note ids
-    from the toolkit match the SVG `g.note` ids.
+    from the toolkit match the SVG `g.note` ids. **Catalogue scores** (ADR 0024) use the leaner
+    `ScoreViewer.tsx` (a `musicxml` media asset on the detail page): same engrave+playback, plus a
+    **Download PDF** button (re-lays the score into portrait pages via the loaded toolkit → print
+    window → browser "Save as PDF"; no stored binary) and an **engraving-credit** line from the
+    `MediaAsset` `attribution`/`license`/`sourceUrl` fields. Scores are authored in `apps/api`
+    (`content/scores/*`) — see `docs/features/scores.md`.
   - Sampled instruments `/tools/soundfont` (`tools.soundfont`) — `SoundfontPlayer.tsx` over
     `src/lib/soundfont.ts`, which **lazily `import('smplr')`** and loads a GM `Soundfont`. Samples stream
     from a CDN, so `loadSoundfont` catches failures and returns `'fallback'`; `playNote` then uses the

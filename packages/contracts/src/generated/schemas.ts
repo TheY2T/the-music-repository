@@ -1012,7 +1012,8 @@ export const GetContentBySlugResponse = zod.object({
   "filename": zod.string(),
   "mime": zod.string(),
   "license": zod.string().optional(),
-  "attribution": zod.string().optional()
+  "attribution": zod.string().optional(),
+  "sourceUrl": zod.string().optional().describe('Provenance URL of the engraving (source edition or transcription reference).')
 }).describe('A media file attached to a content item, with a ready-to-use (presigned) URL.')),
   "createdAt": zod.string(),
   "updatedAt": zod.string()
@@ -1733,7 +1734,8 @@ export const CreateContentResponse = zod.object({
   "filename": zod.string(),
   "mime": zod.string(),
   "license": zod.string().optional(),
-  "attribution": zod.string().optional()
+  "attribution": zod.string().optional(),
+  "sourceUrl": zod.string().optional().describe('Provenance URL of the engraving (source edition or transcription reference).')
 }).describe('A media file attached to a content item, with a ready-to-use (presigned) URL.')),
   "createdAt": zod.string(),
   "updatedAt": zod.string()
@@ -1792,7 +1794,8 @@ export const GetContentForEditResponse = zod.object({
   "filename": zod.string(),
   "mime": zod.string(),
   "license": zod.string().optional(),
-  "attribution": zod.string().optional()
+  "attribution": zod.string().optional(),
+  "sourceUrl": zod.string().optional().describe('Provenance URL of the engraving (source edition or transcription reference).')
 }).describe('A media file attached to a content item, with a ready-to-use (presigned) URL.')),
   "createdAt": zod.string(),
   "updatedAt": zod.string()
@@ -1868,7 +1871,8 @@ export const UpdateContentResponse = zod.object({
   "filename": zod.string(),
   "mime": zod.string(),
   "license": zod.string().optional(),
-  "attribution": zod.string().optional()
+  "attribution": zod.string().optional(),
+  "sourceUrl": zod.string().optional().describe('Provenance URL of the engraving (source edition or transcription reference).')
 }).describe('A media file attached to a content item, with a ready-to-use (presigned) URL.')),
   "createdAt": zod.string(),
   "updatedAt": zod.string()
@@ -1953,7 +1957,8 @@ export const PublishContentResponse = zod.object({
   "filename": zod.string(),
   "mime": zod.string(),
   "license": zod.string().optional(),
-  "attribution": zod.string().optional()
+  "attribution": zod.string().optional(),
+  "sourceUrl": zod.string().optional().describe('Provenance URL of the engraving (source edition or transcription reference).')
 }).describe('A media file attached to a content item, with a ready-to-use (presigned) URL.')),
   "createdAt": zod.string(),
   "updatedAt": zod.string()
@@ -2009,7 +2014,8 @@ export const UnpublishContentResponse = zod.object({
   "filename": zod.string(),
   "mime": zod.string(),
   "license": zod.string().optional(),
-  "attribution": zod.string().optional()
+  "attribution": zod.string().optional(),
+  "sourceUrl": zod.string().optional().describe('Provenance URL of the engraving (source edition or transcription reference).')
 }).describe('A media file attached to a content item, with a ready-to-use (presigned) URL.')),
   "createdAt": zod.string(),
   "updatedAt": zod.string()

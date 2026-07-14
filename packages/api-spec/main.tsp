@@ -93,6 +93,8 @@ model MediaAsset {
   mime: string;
   license?: string;
   attribution?: string;
+  /** Provenance URL of the engraving (source edition or transcription reference). */
+  sourceUrl?: string;
 }
 
 /** List/card view of a catalogue item. */

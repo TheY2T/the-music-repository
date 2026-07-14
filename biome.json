@@ -18,6 +18,7 @@
       "!**/generated",
       "!**/seed-content.ts",
       "!**/seed-collections.ts",
+      "!**/seed-scores.ts",
       "!**/openapi.json",
       "!**/*.astro",
       "!**/*.css"

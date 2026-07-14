@@ -143,6 +143,7 @@ export class DrizzleContentRepository extends ContentRepository {
       mime: m.mime,
       license: m.license,
       attribution: m.attribution,
+      sourceUrl: m.sourceUrl,
     }));
   }
 }

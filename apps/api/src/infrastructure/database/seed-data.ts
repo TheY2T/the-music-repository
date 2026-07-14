@@ -63,7 +63,6 @@ export interface SeedContent {
   source: string;
   attribution: string;
   license: string;
-  withPdf?: boolean;
   /** Phase 6 — `premium` gates the item behind an entitlement; defaults to `public`. */
   visibility?: string;
   /** Phase 6 (6B) — which plan unlocks a premium item: `premium` (default) or `pro`. */
@@ -86,7 +85,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'J. S. Bach',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'hanon-virtuoso-pianist-no-1',
@@ -101,7 +99,6 @@ export const CONTENT: SeedContent[] = [
     source: 'Hanon',
     attribution: 'Charles-Louis Hanon',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'czerny-op-599-no-1',
@@ -117,7 +114,6 @@ export const CONTENT: SeedContent[] = [
     attribution: 'Carl Czerny',
     license: PD,
     visibility: 'premium',
-    withPdf: true,
   },
   {
     slug: 'omt-intervals',
@@ -178,7 +174,6 @@ export const CONTENT: SeedContent[] = [
     source: 'Traditional',
     attribution: 'Traditional (arr. public domain)',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'joplin-the-entertainer',
@@ -193,7 +188,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Scott Joplin',
     license: PD,
-    withPdf: true,
   },
   {
     slug: '12-bar-blues-in-a',
@@ -236,7 +230,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Ludwig van Beethoven',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'carulli-guitar-study',
@@ -251,7 +244,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Ferdinando Carulli',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'circle-of-fifths-reference',
@@ -323,7 +315,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'C. Petzold (attrib. J. S. Bach)',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'carcassi-guitar-study-op60-no1',
@@ -338,7 +329,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Matteo Carcassi',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'joplin-maple-leaf-rag',
@@ -353,7 +343,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Scott Joplin',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'ukulele-first-four-chords',
@@ -467,7 +456,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Ludwig van Beethoven',
     license: PD,
-    withPdf: true,
     visibility: 'premium',
     tier: 'premium',
   },
@@ -484,7 +472,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Ludwig van Beethoven',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'beethoven-sonatina-in-g-anh5',
@@ -499,7 +486,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'attrib. Ludwig van Beethoven',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'mozart-minuet-in-f-k2',
@@ -514,7 +500,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Wolfgang Amadeus Mozart',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'mozart-sonata-k545-1st-mvt',
@@ -529,7 +514,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Wolfgang Amadeus Mozart',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'chopin-prelude-e-minor-op28-no4',
@@ -544,7 +528,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Frédéric Chopin',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'chopin-nocturne-op9-no2',
@@ -559,7 +542,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Frédéric Chopin',
     license: PD,
-    withPdf: true,
     visibility: 'premium',
     tier: 'pro',
   },
@@ -576,7 +558,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Frédéric Chopin',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'schumann-the-wild-horseman-op68',
@@ -591,7 +572,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Robert Schumann',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'schumann-melody-op68-no1',
@@ -606,7 +586,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Robert Schumann',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'clementi-sonatina-op36-no1-1st-mvt',
@@ -621,7 +600,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Muzio Clementi',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'kuhlau-sonatina-op20-no1-1st-mvt',
@@ -636,7 +614,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Friedrich Kuhlau',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'burgmuller-arabesque-op100-no2',
@@ -651,7 +628,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Friedrich Burgmüller',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'burgmuller-la-candeur-op100-no1',
@@ -666,7 +642,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Friedrich Burgmüller',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'schubert-ave-maria',
@@ -681,7 +656,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Franz Schubert',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'schubert-landler-d366',
@@ -696,7 +670,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Franz Schubert',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'satie-gymnopedie-no1',
@@ -711,7 +684,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Erik Satie',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'satie-gnossienne-no1',
@@ -726,7 +698,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Erik Satie',
     license: PD,
-    withPdf: true,
     visibility: 'premium',
     tier: 'premium',
   },
@@ -743,7 +714,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Claude Debussy',
     license: PD,
-    withPdf: true,
     visibility: 'premium',
     tier: 'pro',
   },
@@ -760,7 +730,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Claude Debussy',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'bach-invention-no1-bwv772',
@@ -775,7 +744,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'J. S. Bach',
     license: PD,
-    withPdf: true,
   },
   // --- Ragtime ---
   {
@@ -791,7 +759,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Scott Joplin',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'joplin-solace',
@@ -806,7 +773,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Scott Joplin',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'joplin-ragtime-dance',
@@ -821,7 +787,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Scott Joplin',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'lamb-american-beauty-rag',
@@ -836,7 +801,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Joseph Lamb',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'scott-frog-legs-rag',
@@ -851,7 +815,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'James Scott',
     license: PD,
-    withPdf: true,
   },
   // --- Blues / early jazz ---
   {
@@ -867,7 +830,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'W. C. Handy',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'frankie-and-johnny',
@@ -882,7 +844,6 @@ export const CONTENT: SeedContent[] = [
     source: 'Traditional',
     attribution: 'Traditional',
     license: PD,
-    withPdf: true,
   },
   // --- Traditional / folk ---
   {
@@ -898,7 +859,6 @@ export const CONTENT: SeedContent[] = [
     source: 'Traditional',
     attribution: 'Traditional (arr. public domain)',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'danny-boy',
@@ -913,7 +873,6 @@ export const CONTENT: SeedContent[] = [
     source: 'Traditional',
     attribution: 'Traditional',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'house-of-the-rising-sun',
@@ -928,7 +887,6 @@ export const CONTENT: SeedContent[] = [
     source: 'Traditional',
     attribution: 'Traditional',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'shenandoah',
@@ -943,7 +901,6 @@ export const CONTENT: SeedContent[] = [
     source: 'Traditional',
     attribution: 'Traditional',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'wildwood-flower',
@@ -958,7 +915,6 @@ export const CONTENT: SeedContent[] = [
     source: 'Traditional',
     attribution: 'Traditional',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'simple-gifts',
@@ -973,7 +929,6 @@ export const CONTENT: SeedContent[] = [
     source: 'Traditional',
     attribution: 'Traditional (Joseph Brackett)',
     license: PD,
-    withPdf: true,
   },
   // --- Spirituals ---
   {
@@ -989,7 +944,6 @@ export const CONTENT: SeedContent[] = [
     source: 'Traditional',
     attribution: 'Traditional (spiritual)',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'when-the-saints-go-marching-in',
@@ -1004,7 +958,6 @@ export const CONTENT: SeedContent[] = [
     source: 'Traditional',
     attribution: 'Traditional (spiritual)',
     license: PD,
-    withPdf: true,
   },
   // --- Classical guitar studies ---
   {
@@ -1020,7 +973,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Fernando Sor',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'sor-study-op35-no22',
@@ -1035,7 +987,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Fernando Sor',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'carcassi-study-op60-no7',
@@ -1050,7 +1001,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Matteo Carcassi',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'tarrega-lagrima',
@@ -1065,7 +1015,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Francisco Tárrega',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'tarrega-adelita',
@@ -1080,7 +1029,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Francisco Tárrega',
     license: PD,
-    withPdf: true,
   },
   {
     slug: 'tarrega-recuerdos-de-la-alhambra',
@@ -1095,7 +1043,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Francisco Tárrega',
     license: PD,
-    withPdf: true,
     visibility: 'premium',
     tier: 'pro',
   },
@@ -1112,7 +1059,6 @@ export const CONTENT: SeedContent[] = [
     source: 'IMSLP',
     attribution: 'Ferdinando Carulli',
     license: PD,
-    withPdf: true,
   },
   // --- Ukulele ---
   {
@@ -1156,7 +1102,6 @@ export const CONTENT: SeedContent[] = [
     source: 'Original',
     attribution: 'The Music Repository',
     license: 'CC BY-SA 4.0',
-    withPdf: true,
   },
   {
     slug: 'aloha-oe-ukulele',
@@ -1171,7 +1116,6 @@ export const CONTENT: SeedContent[] = [
     source: 'Traditional',
     attribution: 'Queen Liliʻuokalani',
     license: PD,
-    withPdf: true,
   },
   // --- Bass ---
   {
@@ -1201,7 +1145,6 @@ export const CONTENT: SeedContent[] = [
     source: 'Original',
     attribution: 'The Music Repository',
     license: 'CC BY-SA 4.0',
-    withPdf: true,
   },
   {
     slug: 'bass-blues-line-basics',
@@ -1392,30 +1335,3 @@ export const HELP_TOPICS: SeedHelpTopic[] = [
     linkSlug: 'omt-modes-of-major',
   },
 ];
-
-/** Build a small but valid single-page PDF (with a correct xref) titled with the given text. */
-export function makeMinimalPdf(title: string): Uint8Array {
-  const safe = title.replace(/[()\\]/g, ' ');
-  const stream = `BT /F1 20 Tf 64 720 Td (${safe}) Tj 0 -28 Td /F1 12 Tf (The Music Repository - sample score) Tj ET`;
-  const objects = [
-    '<< /Type /Catalog /Pages 2 0 R >>',
-    '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
-    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>',
-    `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`,
-    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
-  ];
-
-  let pdf = '%PDF-1.4\n';
-  const offsets: number[] = [];
-  objects.forEach((obj, index) => {
-    offsets.push(pdf.length);
-    pdf += `${index + 1} 0 obj\n${obj}\nendobj\n`;
-  });
-  const xrefStart = pdf.length;
-  pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
-  for (const offset of offsets) {
-    pdf += `${offset.toString().padStart(10, '0')} 00000 n \n`;
-  }
-  pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefStart}\n%%EOF`;
-  return new TextEncoder().encode(pdf);
-}

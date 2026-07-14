@@ -49,6 +49,7 @@ export const mediaAssets = pgTable('media_assets', {
   bytes: integer('bytes').notNull().default(0),
   license: text('license'),
   attribution: text('attribution'),
+  sourceUrl: text('source_url'), // provenance of the engraving (score meta), nullable
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 

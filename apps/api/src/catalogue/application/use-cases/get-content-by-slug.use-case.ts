@@ -38,6 +38,7 @@ export class GetContentBySlugUseCase {
         mime: asset.mime,
         license: asset.license ?? undefined,
         attribution: asset.attribution ?? undefined,
+        sourceUrl: asset.sourceUrl ?? undefined,
         url: await this.media.presignGetUrl(asset.storageKey),
       })),
     );

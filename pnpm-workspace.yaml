@@ -87,6 +87,10 @@ catalog:
   "pixi.js": ^8.19.0
   "@pixi/react": ^8.0.5
 
+  # --- Music notation (Verovio WASM): engraves MusicXML → SVG + timemap for notation-synced
+  # playback (apps/web ScoreViewer) and score validation/proofing (apps/api scores:validate). ---
+  verovio: ^6.2.0
+
   # --- Design tokens: self-hosted vintage typefaces (@fontsource, no external CDN) ---
   # One display + one body face per aesthetic (ADR 0021). Variable where available to keep the
   # footprint to a single file per family.

@@ -34,6 +34,24 @@ export interface SeedCollectionSection {
   items: SeedCollectionItem[];
 }
 
+/**
+ * Provenance + licensing for one engraved score (the `<slug>.meta.json` sidecar next to its
+ * `<slug>.musicxml`). Recorded on the `musicxml` media asset by the seed so the UI can show an
+ * engraving credit and we keep an auditable licensing trail. `origin` says how we obtained it:
+ * `openscore` (CC0 MusicXML), `kern` (CCARH/KernScores encoding), or `hand-authored` (by us).
+ */
+export interface ScoreMeta {
+  origin: 'openscore' | 'kern' | 'hand-authored';
+  /** Human-readable source name, e.g. "OpenScore" or "The Music Repository". */
+  source: string;
+  /** URL of the source edition/reference (may be the transcription reference for hand-authored). */
+  sourceUrl: string | null;
+  /** SPDX-ish license label, e.g. "CC0", "CC BY-SA 4.0", "Public Domain". */
+  license: string;
+  /** Attribution line, e.g. "OpenScore (musescore.com/openscore)". */
+  attribution: string;
+}
+
 /** A fully-authored collection, built from Markdown and applied by the seed. */
 export interface SeedCollectionDoc {
   slug: string;

@@ -14,10 +14,20 @@ import { useNotationPlayhead } from '@/lib/pixi/use-notation-playhead';
 interface VerovioToolkitLike {
   setOptions(options: Record<string, unknown>): void;
   loadData(data: string): boolean;
+  getPageCount(): number;
   renderToSVG(page: number): string;
   renderToTimemap(options?: Record<string, unknown>): { tstamp: number; on?: string[] }[];
   getElementsAtTime(millisec: number): { notes?: string[] };
   getMIDIValuesForElement(xmlId: string): { pitch?: number; duration?: number };
+}
+
+/** Engraving provenance shown as a credit line + used for the PDF filename. */
+export interface ScoreCredit {
+  license?: string;
+  attribution?: string;
+  sourceUrl?: string;
+  /** Title used for the exported PDF filename + print document title. */
+  title?: string;
 }
 
 interface ScheduledNote {
@@ -28,7 +38,15 @@ interface ScheduledNote {
 
 const HIGHLIGHT = '#b3402f'; // oxblood play-head; notation coloring (exempt from token rule).
 
-export default function ScoreViewer({ url, locale }: { url: string; locale: Locale }) {
+export default function ScoreViewer({
+  url,
+  locale,
+  credit,
+}: {
+  url: string;
+  locale: Locale;
+  credit?: ScoreCredit;
+}) {
   const [svg, setSvg] = useState('');
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [playing, setPlaying] = useState(false);
@@ -159,6 +177,56 @@ export default function ScoreViewer({ url, locale }: { url: string; locale: Loca
     rafRef.current = requestAnimationFrame(tick);
   }
 
+  /**
+   * Export a printable PDF from the same MusicXML, engraved by the already-loaded Verovio toolkit.
+   * We re-lay the score into portrait pages (A4-ish), open a print window with one SVG per page, and
+   * let the browser's "Save as PDF" produce the download — no extra dependency, and it always matches
+   * the on-screen score (the displayed SVG lives in React state and is untouched by these options).
+   */
+  function downloadPdf() {
+    const tk = toolkitRef.current;
+    if (!tk || status !== 'ready') return;
+    stop();
+    tk.setOptions({
+      scale: 40,
+      adjustPageHeight: false,
+      pageWidth: 2100,
+      pageHeight: 2970,
+      pageMarginTop: 100,
+      pageMarginBottom: 100,
+      footer: 'auto',
+      header: 'none',
+      breaks: 'auto',
+    });
+    const pages: string[] = [];
+    const count = tk.getPageCount();
+    for (let p = 1; p <= count; p += 1) pages.push(tk.renderToSVG(p));
+    // Restore the on-screen layout options (the displayed SVG state itself is unaffected).
+    tk.setOptions({
+      scale: 40,
+      adjustPageHeight: true,
+      pageWidth: 2100,
+      footer: 'none',
+      header: 'none',
+    });
+
+    const title = credit?.title ?? 'score';
+    const win = window.open('', '_blank');
+    if (!win) return;
+    const body = pages.map((p) => `<div class="page">${p}</div>`).join('');
+    win.document.write(
+      `<!doctype html><html><head><meta charset="utf-8"><title>${title}</title><style>` +
+        '@page{margin:12mm}body{margin:0;background:#fff}' +
+        '.page{page-break-after:always;display:flex;justify-content:center}' +
+        '.page:last-child{page-break-after:auto}svg{width:100%;height:auto}' +
+        `</style></head><body>${body}</body></html>`,
+    );
+    win.document.close();
+    win.focus();
+    // Give the new document a tick to lay out the SVGs before invoking print.
+    win.setTimeout(() => win.print(), 300);
+  }
+
   useEffect(
     () => () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
@@ -202,6 +270,10 @@ export default function ScoreViewer({ url, locale }: { url: string; locale: Loca
           />
           <span className="w-10 tabular-nums">{tempo.toFixed(1)}×</span>
         </label>
+        <Button type="button" variant="outline" onClick={downloadPdf} disabled={status !== 'ready'}>
+          <Icon name="download" className="size-4" />
+          {t(locale, 'score.downloadPdf')}
+        </Button>
       </div>
 
       {status === 'loading' ? (
@@ -222,6 +294,26 @@ export default function ScoreViewer({ url, locale }: { url: string; locale: Loca
           {/* WebGL play-head overlay mounts its canvas here (empty; React leaves it alone). */}
           <div ref={overlayRef} className="pointer-events-none absolute inset-0" aria-hidden />
         </div>
+      ) : null}
+
+      {credit && (credit.attribution || credit.license) ? (
+        <p className="text-xs text-muted-foreground">
+          {t(locale, 'score.creditLabel')}{' '}
+          {credit.sourceUrl ? (
+            <a
+              href={credit.sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="underline-offset-4 hover:underline"
+            >
+              {credit.attribution}
+            </a>
+          ) : (
+            credit.attribution
+          )}
+          {credit.attribution && credit.license ? ' · ' : ''}
+          {credit.license}
+        </p>
       ) : null}
     </div>
   );

@@ -13,6 +13,9 @@ generated/
 # Test / coverage
 coverage/
 
+# Score proofing previews (apps/api scores:validate — QA artifact, not committed)
+**/.score-previews/
+
 # Env
 .env
 .env.*
