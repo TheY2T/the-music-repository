@@ -1,59 +1,14 @@
 ---
+import ToolsBrowser, { type ToolItem } from '@/components/ToolsBrowser.tsx';
+import {
+  categoryOf,
+  TOOL_CATEGORY_ORDER,
+  TOOL_ICON,
+  type ToolCategory,
+} from '@/lib/tools-taxonomy';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
-import { Card } from '@TheY2T/tmr-ui';
-import Icon from '@TheY2T/tmr-ui/astro/Icon.astro';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
-
-// A registered Icon-atom name per tool (falls back to `music`). Purely presentational.
-const toolIcons: Record<string, string> = {
-  keyboard: 'piano',
-  fretboard: 'guitar',
-  'circle-of-fifths': 'disc',
-  'scale-explorer': 'music',
-  chords: 'piano',
-  'chord-identifier': 'search',
-  modes: 'music',
-  progression: 'list-music',
-  metronome: 'clock',
-  tuner: 'volume',
-  intervals: 'music',
-  staff: 'book-open',
-  'ear-trainer': 'headphones',
-  sequencer: 'sliders',
-  'sight-reading': 'book-open',
-  'backing-track': 'play',
-  voicings: 'piano',
-  player: 'play',
-  licks: 'guitar',
-  'chord-diagrams': 'guitar',
-  strumming: 'guitar',
-  fingerpicking: 'guitar',
-  arpeggio: 'music',
-  'progression-player': 'play',
-  rhythm: 'clock',
-  caged: 'guitar',
-  'scale-boxes': 'guitar',
-  song: 'music',
-  'progression-ear': 'headphones',
-  'chord-quality-ear': 'headphones',
-  'fret-quiz': 'guitar',
-  musicxml: 'book-open',
-  'multi-voice': 'book-open',
-  'practice-player': 'play',
-  analyzer: 'chart',
-  transposer: 'sliders',
-  bassline: 'music',
-  'melodic-dictation': 'headphones',
-  'rhythm-dictation': 'headphones',
-  grooves: 'disc',
-  solfege: 'music',
-  'key-quiz': 'graduation-cap',
-  'interval-quiz': 'graduation-cap',
-  'practice-room': 'gauge',
-  score: 'book-open',
-  soundfont: 'volume',
-};
 
 const {
   toolKeyboard,
@@ -106,58 +61,92 @@ const {
 const locale = Astro.locals.locale;
 
 // Each tool references shared `tool.<slug>.title`/`.summary` keys (also used by its own page).
-const tools: { slug: string; enabled: boolean }[] = [
-  { slug: 'keyboard', enabled: toolKeyboard },
-  { slug: 'fretboard', enabled: toolFretboard },
-  { slug: 'circle-of-fifths', enabled: toolCircleOfFifths },
-  { slug: 'scale-explorer', enabled: toolScaleExplorer },
-  { slug: 'chords', enabled: toolChords },
-  { slug: 'chord-identifier', enabled: toolChordId },
-  { slug: 'modes', enabled: toolModes },
-  { slug: 'progression', enabled: toolProgression },
-  { slug: 'metronome', enabled: toolMetronome },
-  { slug: 'tuner', enabled: toolTuner },
-  { slug: 'intervals', enabled: toolIntervals },
-  { slug: 'staff', enabled: toolStaff },
-  { slug: 'ear-trainer', enabled: toolEarTrainer },
-  { slug: 'sequencer', enabled: toolSequencer },
-  { slug: 'sight-reading', enabled: toolSightReading },
-  { slug: 'backing-track', enabled: toolBackingTrack },
-  { slug: 'voicings', enabled: toolVoicings },
-  { slug: 'player', enabled: toolNotationPlayer },
-  { slug: 'licks', enabled: toolLicks },
-  { slug: 'chord-diagrams', enabled: toolChordDiagrams },
-  { slug: 'strumming', enabled: toolStrumming },
-  { slug: 'fingerpicking', enabled: toolFingerpicking },
-  { slug: 'arpeggio', enabled: toolArpeggio },
-  { slug: 'progression-player', enabled: toolProgressionPlayer },
-  { slug: 'rhythm', enabled: toolRhythm },
-  { slug: 'caged', enabled: toolCaged },
-  { slug: 'scale-boxes', enabled: toolScaleBoxes },
-  { slug: 'song', enabled: toolSong },
-  { slug: 'progression-ear', enabled: toolProgressionEar },
-  { slug: 'chord-quality-ear', enabled: toolChordQualityEar },
-  { slug: 'fret-quiz', enabled: toolFretQuiz },
-  { slug: 'musicxml', enabled: toolMusicXml },
-  { slug: 'multi-voice', enabled: toolMultiVoice },
-  { slug: 'practice-player', enabled: toolPracticePlayer },
-  { slug: 'analyzer', enabled: toolAnalyzer },
-  { slug: 'transposer', enabled: toolTransposer },
-  { slug: 'bassline', enabled: toolBassline },
-  { slug: 'melodic-dictation', enabled: toolMelodicDictation },
-  { slug: 'rhythm-dictation', enabled: toolRhythmDictation },
-  { slug: 'grooves', enabled: toolGrooves },
-  { slug: 'solfege', enabled: toolSolfege },
-  { slug: 'key-quiz', enabled: toolKeyQuiz },
-  { slug: 'interval-quiz', enabled: toolIntervalQuiz },
-  { slug: 'practice-room', enabled: toolPracticeRoom },
-  { slug: 'score', enabled: toolScore },
-  { slug: 'soundfont', enabled: toolSoundfont },
-].filter((tool) => tool.enabled);
+const enabledSlugs: string[] = (
+  [
+    { slug: 'keyboard', enabled: toolKeyboard },
+    { slug: 'fretboard', enabled: toolFretboard },
+    { slug: 'circle-of-fifths', enabled: toolCircleOfFifths },
+    { slug: 'scale-explorer', enabled: toolScaleExplorer },
+    { slug: 'chords', enabled: toolChords },
+    { slug: 'chord-identifier', enabled: toolChordId },
+    { slug: 'modes', enabled: toolModes },
+    { slug: 'progression', enabled: toolProgression },
+    { slug: 'metronome', enabled: toolMetronome },
+    { slug: 'tuner', enabled: toolTuner },
+    { slug: 'intervals', enabled: toolIntervals },
+    { slug: 'staff', enabled: toolStaff },
+    { slug: 'ear-trainer', enabled: toolEarTrainer },
+    { slug: 'sequencer', enabled: toolSequencer },
+    { slug: 'sight-reading', enabled: toolSightReading },
+    { slug: 'backing-track', enabled: toolBackingTrack },
+    { slug: 'voicings', enabled: toolVoicings },
+    { slug: 'player', enabled: toolNotationPlayer },
+    { slug: 'licks', enabled: toolLicks },
+    { slug: 'chord-diagrams', enabled: toolChordDiagrams },
+    { slug: 'strumming', enabled: toolStrumming },
+    { slug: 'fingerpicking', enabled: toolFingerpicking },
+    { slug: 'arpeggio', enabled: toolArpeggio },
+    { slug: 'progression-player', enabled: toolProgressionPlayer },
+    { slug: 'rhythm', enabled: toolRhythm },
+    { slug: 'caged', enabled: toolCaged },
+    { slug: 'scale-boxes', enabled: toolScaleBoxes },
+    { slug: 'song', enabled: toolSong },
+    { slug: 'progression-ear', enabled: toolProgressionEar },
+    { slug: 'chord-quality-ear', enabled: toolChordQualityEar },
+    { slug: 'fret-quiz', enabled: toolFretQuiz },
+    { slug: 'musicxml', enabled: toolMusicXml },
+    { slug: 'multi-voice', enabled: toolMultiVoice },
+    { slug: 'practice-player', enabled: toolPracticePlayer },
+    { slug: 'analyzer', enabled: toolAnalyzer },
+    { slug: 'transposer', enabled: toolTransposer },
+    { slug: 'bassline', enabled: toolBassline },
+    { slug: 'melodic-dictation', enabled: toolMelodicDictation },
+    { slug: 'rhythm-dictation', enabled: toolRhythmDictation },
+    { slug: 'grooves', enabled: toolGrooves },
+    { slug: 'solfege', enabled: toolSolfege },
+    { slug: 'key-quiz', enabled: toolKeyQuiz },
+    { slug: 'interval-quiz', enabled: toolIntervalQuiz },
+    { slug: 'practice-room', enabled: toolPracticeRoom },
+    { slug: 'score', enabled: toolScore },
+    { slug: 'soundfont', enabled: toolSoundfont },
+  ] satisfies { slug: string; enabled: boolean }[]
+)
+  .filter((tool) => tool.enabled)
+  .map((tool) => tool.slug);
 
-if (tools.length === 0) {
+if (enabledSlugs.length === 0) {
   return Astro.redirect('/');
 }
+
+// Resolve i18n strings + href + icon + category server-side; the island stays presentational.
+const toolItems: ToolItem[] = enabledSlugs.map((slug) => ({
+  slug,
+  title: t(locale, `tool.${slug}.title` as MessageKey),
+  summary: t(locale, `tool.${slug}.summary` as MessageKey),
+  iconName: TOOL_ICON[slug] ?? 'music',
+  href: localizedPath(locale, `/tools/${slug}`),
+  category: categoryOf(slug),
+}));
+
+const CATEGORY_LABEL_KEY: Record<ToolCategory, MessageKey> = {
+  'keyboard-fretboard': 'tools.category.keyboardFretboard',
+  'theory-harmony': 'tools.category.theoryHarmony',
+  'ear-quizzes': 'tools.category.earQuizzes',
+  'rhythm-time': 'tools.category.rhythmTime',
+  'reading-notation': 'tools.category.readingNotation',
+  'play-practice': 'tools.category.playPractice',
+};
+
+// Only categories that actually have an enabled tool, in the canonical order.
+const categories = TOOL_CATEGORY_ORDER.filter((key) =>
+  toolItems.some((tool) => tool.category === key),
+).map((key) => ({ key, label: t(locale, CATEGORY_LABEL_KEY[key]) }));
+
+const strings = {
+  searchPlaceholder: t(locale, 'tools.searchPlaceholder'),
+  all: t(locale, 'tools.filterAll'),
+  noResults: t(locale, 'tools.noResults'),
+};
 ---
 
 <BaseLayout title={t(locale, 'tools.pageTitle')}>
@@ -166,28 +155,6 @@ if (tools.length === 0) {
     subtitle={t(locale, 'tools.subtitle')}
     back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
   >
-    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {
-        tools.map((tool) => (
-          <li>
-            <a href={localizedPath(locale, `/tools/${tool.slug}`)} class="group block h-full">
-              <Card className="flex h-full items-start gap-3 p-4 transition group-hover:-translate-y-0.5 group-hover:border-accent group-hover:shadow-md">
-                <span class="flex size-10 shrink-0 items-center justify-center rounded-md bg-accent/15 text-accent">
-                  <Icon name={toolIcons[tool.slug] ?? 'music'} class="size-5" />
-                </span>
-                <span class="flex min-w-0 flex-col gap-1">
-                  <span class="font-display font-semibold leading-tight">
-                    {t(locale, `tool.${tool.slug}.title` as MessageKey)}
-                  </span>
-                  <span class="text-sm text-muted-foreground">
-                    {t(locale, `tool.${tool.slug}.summary` as MessageKey)}
-                  </span>
-                </span>
-              </Card>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+    <ToolsBrowser client:load tools={toolItems} categories={categories} strings={strings} />
   </PageShell>
 </BaseLayout>
