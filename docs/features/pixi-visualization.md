@@ -58,12 +58,28 @@ operable DOM control set as the `PixiCanvas` `fallback` — real buttons/SVG wit
 `aria-label`s. It is shown when WebGL is off and kept in the DOM (visually hidden) when the canvas is
 up, so AT/keyboard users are never locked out.
 
-## Phase 1 tools
+## Surfaces
 
-`PianoKeyboard` (`piano-scene`), `GuitarFretboard` (`fretboard-scene`), `CircleOfFifths`
-(`circle-scene`) — token-themed GPU scenes with particle/needle animation and accessible fallbacks.
-Later phases (specified in ADR 0022, not yet built): audio visualizers + mic tuner, notation
-play-head overlay, ambient hero/cover-art polish.
+**Phase 1 — interactive instruments.** `PianoKeyboard` (`piano-scene`), `GuitarFretboard`
+(`fretboard-scene`), `CircleOfFifths` (`circle-scene`) — token-themed GPU scenes with
+particle/needle animation and accessible fallbacks.
+
+**Phase 2 — audio-reactive + tuner.** `AudioVisualizer` (`audio-visualizer-scene`) draws a
+spectrum + waveform from the master-bus `getAnalyser()`; embedded on the backing track (any player
+that routes through `@/lib/audio` reacts). `TuningReference` gained a real mic tuner: `getUserMedia`
+→ a dedicated `AnalyserNode` → autocorrelation pitch detection (`@/lib/pitch-detection`) → a Pixi
+needle gauge (`tuner-scene`) with a green in-tune band; DOM cents-readout fallback.
+
+**Phase 3 — notation play-head.** `useNotationPlayhead` (`use-notation-playhead.ts`) overlays a
+transparent Pixi canvas on the Verovio SVG in `ScoreViewer`/`ScoreRenderer`, drawing a glow around
+the sounding notes + a play-head bar. Driven by the existing rAF loop (`paint(ids)`), synced to real
+note positions via `getBoundingClientRect`. **Additive** — the SVG note highlight still works; the
+overlay is a decorative enhancement that no-ops without WebGL. Uses a raw (dynamically-imported)
+Pixi `Application`, the right fit for an imperative, externally-driven overlay canvas.
+
+**Phase 4 — ambient polish.** `AmbientBackground` (`ambient-scene`) drifts soft accent/muted "dust"
+motes behind the home hero; static under reduced motion. (Remaining Phase-4 polish — animated
+cover-art and a gamified drill-feedback effects layer — is a follow-up; see ADR 0022.)
 
 ## Gotchas
 
@@ -80,7 +96,8 @@ play-head overlay, ambient hero/cover-art polish.
 ## Testing
 
 - **Unit** (`pnpm --filter @TheY2T/tmr-web test`): `use-theme-colors.test.ts` (RGB parsing + shape),
-  `audio.test.ts` (master-bus routing / unity gain / analyser tap).
+  `audio.test.ts` (master-bus routing / unity gain / analyser tap), `pitch-detection.test.ts`
+  (autocorrelation recovers a sine's fundamental; Hz→note mapping).
 - **E2E** (`e2e/pixi-keyboard.spec.ts`): canvas mount + accessible keys + axe scan. Island
   hook-components can't be unit-tested under the current `getViteConfig` env (a pre-existing
   duplicate-React limitation), so island coverage lives in this Playwright smoke.

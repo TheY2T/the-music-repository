@@ -2,6 +2,7 @@ import { Button, Icon, Textarea } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { getAudioContext, scheduleTone } from '@/lib/audio';
 import { midiToFrequency } from '@/lib/music-theory';
+import { useNotationPlayhead } from '@/lib/pixi/use-notation-playhead';
 
 /** Minimal shape of the Verovio toolkit we use. */
 interface VerovioToolkitLike {
@@ -62,6 +63,8 @@ export default function ScoreRenderer() {
   const tempoRef = useRef(1);
   const highlightedRef = useRef<Set<string>>(new Set());
   tempoRef.current = tempo;
+  // WebGL play-head glow over the engraving (additive; no-ops without WebGL). See ADR 0022.
+  const { overlayRef, paint: paintPlayhead } = useNotationPlayhead(containerRef);
 
   function render(data: string) {
     const tk = toolkitRef.current;
@@ -165,6 +168,7 @@ export default function ScoreRenderer() {
       rafRef.current = null;
     }
     highlight([]);
+    paintPlayhead([]);
     setPlaying(false);
   }
 
@@ -193,8 +197,9 @@ export default function ScoreRenderer() {
     const tick = () => {
       const elapsed = performance.now() - startPerf;
       const scoreTime = elapsed * tempoRef.current;
-      const active = tk.getElementsAtTime(scoreTime);
-      highlight(active.notes ?? []);
+      const ids = tk.getElementsAtTime(scoreTime).notes ?? [];
+      highlight(ids);
+      paintPlayhead(ids);
       if (scoreTime >= total + 250) {
         stop();
         return;
@@ -294,12 +299,16 @@ export default function ScoreRenderer() {
       ) : null}
 
       {svg ? (
-        <div
-          ref={containerRef}
-          className="overflow-x-auto rounded-lg border border-border bg-white p-2"
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: Verovio renders trusted SVG markup from the score.
-          dangerouslySetInnerHTML={{ __html: svg }}
-        />
+        <div className="relative">
+          <div
+            ref={containerRef}
+            className="overflow-x-auto rounded-lg border border-border bg-white p-2"
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: Verovio renders trusted SVG markup from the score.
+            dangerouslySetInnerHTML={{ __html: svg }}
+          />
+          {/* WebGL play-head overlay mounts its canvas here (empty; React leaves it alone). */}
+          <div ref={overlayRef} className="pointer-events-none absolute inset-0" aria-hidden />
+        </div>
       ) : null}
 
       <details className="text-sm">

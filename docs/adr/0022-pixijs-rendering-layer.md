@@ -50,10 +50,15 @@
 
 ## Consequences
 
-- **Phase 1 rewrites:** `PianoKeyboard`, `GuitarFretboard`, `CircleOfFifths` — token-themed GPU
-  scenes with particle/needle animation, fixing the hardcoded-colour violations, each with an
-  accessible fallback. Later phases (specified, not yet built): audio visualizers + a real mic
-  tuner, a notation play-head WebGL overlay, and ambient hero/cover-art polish.
+- **Delivered:** Phase 1 — `PianoKeyboard`/`GuitarFretboard`/`CircleOfFifths` token-themed GPU
+  scenes (fixing the hardcoded-colour violations), each with an accessible fallback. Phase 2 — an
+  audio-reactive spectrum/waveform (`AudioVisualizer`, embedded on the backing track) + a real mic
+  tuner (`getUserMedia` → autocorrelation pitch detection → a Pixi needle gauge). Phase 3 — a
+  notation play-head glow overlay on the Verovio SVG (`useNotationPlayhead`, additive). Phase 4 — an
+  ambient dust-mote background behind the home hero (`AmbientBackground`).
+- **Follow-up (Phase 4 remainder):** animated cover-art (SVG SSR → Pixi enhance on `client:visible`)
+  and a gamified drill-feedback effects layer for the ear-training tools — deferred (each touches
+  the shared UI package or ~9 tools; lower priority than the pieces above).
 - **Bundle:** Pixi is large, so it is strictly lazy-loaded per island (never global). `pixi.js`/
   `@pixi/react` are intentionally **not** in `optimizeDeps.include` — including them made Astro's
   `getViteConfig` pull a duplicate React into the Vitest optimizer. Vite discovers + optimizes them

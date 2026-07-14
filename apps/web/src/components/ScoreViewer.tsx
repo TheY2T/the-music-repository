@@ -3,6 +3,7 @@ import { Button, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 import { getAudioContext, scheduleTone } from '@/lib/audio';
 import { midiToFrequency } from '@/lib/music-theory';
+import { useNotationPlayhead } from '@/lib/pixi/use-notation-playhead';
 
 /**
  * Read-only engraved-score viewer for catalogue detail pages. Fetches a MusicXML asset, engraves it
@@ -40,6 +41,8 @@ export default function ScoreViewer({ url, locale }: { url: string; locale: Loca
   const tempoRef = useRef(1);
   const highlightedRef = useRef<Set<string>>(new Set());
   tempoRef.current = tempo;
+  // WebGL play-head glow over the engraving (additive; no-ops without WebGL). See ADR 0022.
+  const { overlayRef, paint: paintPlayhead } = useNotationPlayhead(containerRef);
 
   useEffect(() => {
     let cancelled = false;
@@ -119,6 +122,7 @@ export default function ScoreViewer({ url, locale }: { url: string; locale: Loca
       rafRef.current = null;
     }
     highlight([]);
+    paintPlayhead([]);
     setPlaying(false);
   }
 
@@ -143,7 +147,9 @@ export default function ScoreViewer({ url, locale }: { url: string; locale: Loca
     const total = totalMsRef.current;
     const tick = () => {
       const scoreTime = (performance.now() - startPerf) * tempoRef.current;
-      highlight(tk.getElementsAtTime(scoreTime).notes ?? []);
+      const ids = tk.getElementsAtTime(scoreTime).notes ?? [];
+      highlight(ids);
+      paintPlayhead(ids);
       if (scoreTime >= total + 250) {
         stop();
         return;
@@ -203,15 +209,19 @@ export default function ScoreViewer({ url, locale }: { url: string; locale: Loca
       ) : null}
 
       {svg ? (
-        <div
-          ref={containerRef}
-          className="overflow-x-auto rounded-lg border border-border p-2"
-          // Notation must sit on a light "paper" surface so the black engraving stays legible in
-          // every theme (Verovio renders black glyphs). Warm off-white to fit the vintage look.
-          style={{ background: '#fbfaf5' }}
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: Verovio renders trusted SVG from the score.
-          dangerouslySetInnerHTML={{ __html: svg }}
-        />
+        <div className="relative">
+          <div
+            ref={containerRef}
+            className="overflow-x-auto rounded-lg border border-border p-2"
+            // Notation must sit on a light "paper" surface so the black engraving stays legible in
+            // every theme (Verovio renders black glyphs). Warm off-white to fit the vintage look.
+            style={{ background: '#fbfaf5' }}
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: Verovio renders trusted SVG from the score.
+            dangerouslySetInnerHTML={{ __html: svg }}
+          />
+          {/* WebGL play-head overlay mounts its canvas here (empty; React leaves it alone). */}
+          <div ref={overlayRef} className="pointer-events-none absolute inset-0" aria-hidden />
+        </div>
       ) : null}
     </div>
   );

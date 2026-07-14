@@ -1,5 +1,6 @@
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
+import AudioVisualizer from '@/components/AudioVisualizer';
 import { getAudioContext, scheduleDrum, scheduleTone } from '@/lib/audio';
 import { midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
 
@@ -203,6 +204,8 @@ export default function BackingTrack() {
 
   return (
     <div className="space-y-5">
+      {/* Decorative spectrum of the live mix (drums + bass + comping route through the audio bus). */}
+      <AudioVisualizer />
       <div className="flex flex-wrap items-end gap-4">
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Key</span>

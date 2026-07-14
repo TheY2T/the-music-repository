@@ -14,6 +14,7 @@ import {
   MediaCard,
   Skeleton,
 } from '@TheY2T/tmr-ui';
+import AmbientBackground from '@/components/AmbientBackground';
 
 /**
  * Homepage content (Phase D) — a single island root composing the Phase-B molecules (Hero,
@@ -137,58 +138,63 @@ function Home({
 }: HomePageProps) {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 md:py-16">
-      <Hero
-        eyebrow={t(locale, 'home.heroEyebrow')}
-        title={t(locale, 'home.heroTitle')}
-        subtitle={t(locale, 'home.heroSubtitle')}
-        actions={
-          <>
-            <a href={catalogueHref} className={cn(buttonVariants({ size: 'lg' }))}>
-              <Icon name="library" className="size-4" />
-              {t(locale, 'home.browseCta')}
-            </a>
-            {showTools && (
-              <a
-                href={toolsHref}
-                className={cn(buttonVariants({ size: 'lg', variant: 'outline' }))}
-              >
-                <Icon name="wrench" className="size-4" />
-                {t(locale, 'home.toolsCta')}
+      {/* Hero with an ambient WebGL drift behind it (decorative; degrades to nothing). */}
+      <div className="relative overflow-hidden rounded-lg">
+        <AmbientBackground className="pointer-events-none absolute inset-0" />
+        <Hero
+          className="relative"
+          eyebrow={t(locale, 'home.heroEyebrow')}
+          title={t(locale, 'home.heroTitle')}
+          subtitle={t(locale, 'home.heroSubtitle')}
+          actions={
+            <>
+              <a href={catalogueHref} className={cn(buttonVariants({ size: 'lg' }))}>
+                <Icon name="library" className="size-4" />
+                {t(locale, 'home.browseCta')}
               </a>
-            )}
-          </>
-        }
-        media={
-          <div className="grid grid-cols-2 gap-4">
-            <CoverArt
-              seed="bach-prelude"
-              title="Prelude in C"
-              subtitle="J. S. Bach"
-              motif="staff"
-            />
-            <CoverArt
-              seed="entertainer"
-              title="The Entertainer"
-              subtitle="S. Joplin"
-              motif="keys"
-              className="mt-6"
-            />
-            <CoverArt
-              seed="greensleeves"
-              title="Greensleeves"
-              subtitle="Traditional"
-              motif="strings"
-            />
-            <CoverArt
-              seed="blues"
-              title="12-Bar Blues"
-              subtitle="Study"
-              motif="record"
-              className="mt-6"
-            />
-          </div>
-        }
-      />
+              {showTools && (
+                <a
+                  href={toolsHref}
+                  className={cn(buttonVariants({ size: 'lg', variant: 'outline' }))}
+                >
+                  <Icon name="wrench" className="size-4" />
+                  {t(locale, 'home.toolsCta')}
+                </a>
+              )}
+            </>
+          }
+          media={
+            <div className="grid grid-cols-2 gap-4">
+              <CoverArt
+                seed="bach-prelude"
+                title="Prelude in C"
+                subtitle="J. S. Bach"
+                motif="staff"
+              />
+              <CoverArt
+                seed="entertainer"
+                title="The Entertainer"
+                subtitle="S. Joplin"
+                motif="keys"
+                className="mt-6"
+              />
+              <CoverArt
+                seed="greensleeves"
+                title="Greensleeves"
+                subtitle="Traditional"
+                motif="strings"
+              />
+              <CoverArt
+                seed="blues"
+                title="12-Bar Blues"
+                subtitle="Study"
+                motif="record"
+                className="mt-6"
+              />
+            </div>
+          }
+        />
+      </div>
 
       <section className="mt-16">
         <FeaturedRow locale={locale} />
