@@ -119,3 +119,10 @@ pnpm obs:up                                             # optional observability
   defaults and a single `[FeatureFlags] Could not reach flagd … run pnpm infra:up` hint is logged
   (the raw connection stack is suppressed by `apps/*/…/flagd-logger`). Don't add a disable-flag env
   toggle — the graceful hint is the intended behaviour.
+- **PixiJS is client-only + lazy (web).** The WebGL layer (ADR 0022) is added via
+  `apps/web/src/components/PixiCanvas.tsx` — it lazy-imports scenes and renders an accessible DOM
+  fallback during SSR, so tool pages keep `client:load`. `pixi.js`/`@pixi/react` are cataloged (one
+  copy) and deliberately **not** in `optimizeDeps.include` (including them pulls a duplicate React
+  into the Vitest optimizer → "invalid hook call"); Vite optimizes them on first dev use (a one-time
+  `504 Outdated Optimize Dep` that self-heals). Pixi canvases read theme colours via
+  `useThemeColors()` (never `var(--token)`). See `docs/features/pixi-visualization.md`.

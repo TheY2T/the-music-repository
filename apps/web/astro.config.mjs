@@ -22,6 +22,11 @@ export default defineConfig({
     ssr: { noExternal: ['@TheY2T/tmr-ui'] },
     // Pre-bundle lucide-react so the Vite dev server doesn't request every icon module individually
     // (barrel-import blowup — hundreds of requests / slow HMR). See docs/features/icons.md.
+    // NOTE: pixi.js/@pixi/react are intentionally NOT pre-bundled here. Including them made Astro's
+    // `getViteConfig` pull a second React copy into the Vitest optimizer → "invalid hook call" in
+    // island tests. They are lazy-imported per island at runtime, so Vite discovers + optimizes them
+    // on first use (a one-time dev `504 Outdated Optimize Dep` that self-heals on reload — same class
+    // of gotcha as verovio/smplr). See docs/features/pixi-visualization.md.
     optimizeDeps: { include: ['lucide-react'] },
   },
 });

@@ -24,6 +24,42 @@ export function getAudioContext(): AudioContext | null {
   return ctx;
 }
 
+// --- Master bus + analyser -------------------------------------------------------------------
+// Every voice below routes through a shared master bus (`masterGain → analyser → destination`)
+// instead of connecting straight to `ctx.destination`. `masterGain` is unity, so this is
+// behaviour-preserving; the inline `analyser` is a passive tap that lets Pixi visualizers read the
+// live waveform/spectrum of everything the app plays. See docs/features/pixi-visualization.md.
+
+let masterGain: GainNode | null = null;
+let analyserNode: AnalyserNode | null = null;
+
+/** Lazily build (once) and return the master bus input node. All voices connect here. */
+function getMasterBus(ctx: AudioContext): AudioNode {
+  if (!masterGain || masterGain.context !== ctx) {
+    masterGain = ctx.createGain();
+    masterGain.gain.value = 1;
+    analyserNode = ctx.createAnalyser();
+    analyserNode.fftSize = 2048;
+    analyserNode.smoothingTimeConstant = 0.8;
+    masterGain.connect(analyserNode).connect(ctx.destination);
+  }
+  return masterGain;
+}
+
+/**
+ * The analyser tapping the master bus, or null during SSR / if audio is unsupported. Constructs the
+ * bus on first call so a visualizer can attach before any note plays. `fftSize` is 2048 →
+ * `frequencyBinCount` 1024; callers may override `fftSize` on the returned node.
+ */
+export function getAnalyser(): AnalyserNode | null {
+  const ctx = getContext();
+  if (!ctx) {
+    return null;
+  }
+  getMasterBus(ctx);
+  return analyserNode;
+}
+
 let noiseBuffer: AudioBuffer | null = null;
 function getNoiseBuffer(ctx: AudioContext): AudioBuffer {
   if (!noiseBuffer) {
@@ -51,7 +87,7 @@ export function scheduleDrum(voice: DrumVoice, atTime: number): void {
     oscillator.frequency.exponentialRampToValueAtTime(50, atTime + 0.12);
     gain.gain.setValueAtTime(0.9, atTime);
     gain.gain.exponentialRampToValueAtTime(0.001, atTime + 0.16);
-    oscillator.connect(gain).connect(ctx.destination);
+    oscillator.connect(gain).connect(getMasterBus(ctx));
     oscillator.start(atTime);
     oscillator.stop(atTime + 0.16);
     return;
@@ -66,7 +102,7 @@ export function scheduleDrum(voice: DrumVoice, atTime: number): void {
   const duration = voice === 'hihat' ? 0.05 : 0.2;
   gain.gain.setValueAtTime(voice === 'hihat' ? 0.4 : 0.6, atTime);
   gain.gain.exponentialRampToValueAtTime(0.001, atTime + duration);
-  source.connect(filter).connect(gain).connect(ctx.destination);
+  source.connect(filter).connect(gain).connect(getMasterBus(ctx));
   source.start(atTime);
   source.stop(atTime + duration);
 }
@@ -82,7 +118,7 @@ export function scheduleClick(atTime: number, accent: boolean): void {
   oscillator.frequency.value = accent ? 1500 : 1000;
   gain.gain.setValueAtTime(accent ? 0.5 : 0.28, atTime);
   gain.gain.exponentialRampToValueAtTime(0.0001, atTime + 0.05);
-  oscillator.connect(gain).connect(ctx.destination);
+  oscillator.connect(gain).connect(getMasterBus(ctx));
   oscillator.start(atTime);
   oscillator.stop(atTime + 0.05);
 }
@@ -106,7 +142,7 @@ export function scheduleTone(
   gain.gain.setValueAtTime(0.0001, atTime);
   gain.gain.exponentialRampToValueAtTime(peak, atTime + 0.01);
   gain.gain.exponentialRampToValueAtTime(0.0001, atTime + duration);
-  oscillator.connect(gain).connect(ctx.destination);
+  oscillator.connect(gain).connect(getMasterBus(ctx));
   oscillator.start(atTime);
   oscillator.stop(atTime + duration);
 }
@@ -130,7 +166,7 @@ export function playGlide(fromFreq: number, toFreq: number, duration = 0.6): voi
   gain.gain.setValueAtTime(0.0001, now);
   gain.gain.exponentialRampToValueAtTime(0.25, now + 0.01);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-  oscillator.connect(gain).connect(ctx.destination);
+  oscillator.connect(gain).connect(getMasterBus(ctx));
   oscillator.start(now);
   oscillator.stop(now + duration);
 }
@@ -153,7 +189,7 @@ export function playTone(frequency: number, duration = 0.7): void {
   gain.gain.setValueAtTime(0.0001, now);
   gain.gain.exponentialRampToValueAtTime(0.25, now + 0.01);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-  oscillator.connect(gain).connect(ctx.destination);
+  oscillator.connect(gain).connect(getMasterBus(ctx));
   oscillator.start(now);
   oscillator.stop(now + duration);
 }

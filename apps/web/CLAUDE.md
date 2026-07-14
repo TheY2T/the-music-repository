@@ -282,6 +282,31 @@ Nav is derived per-request in `src/lib/nav.ts` (`buildPrimaryNav`/`buildAccountN
 flags+user) and passed in. Add a nav destination there, not inline per-page. The `.astro` `Icon` and the
 React `Icon` share kebab names; a few diverge in Iconify and are aliased in `packages/ui/src/astro/Icon.astro`.
 
+## PixiJS visualization layer (ADR 0022, `docs/features/pixi-visualization.md`)
+
+- **Client-only WebGL** for the *visual/animated* parts of interactive tools (PixiJS v8 +
+  `@pixi/react` v8, cataloged so one copy resolves). Reach for it only when SVG/Canvas2D/CSS would
+  drop frames (audio-reactive, particles, 60fps cursor); **static/few-shape stays SVG/DOM**.
+- **One boundary — `src/components/PixiCanvas.tsx`.** Every Pixi surface goes through it: it lazy-
+  imports the scene (`() => import('@/lib/pixi/<name>-scene')`), renders the accessible DOM
+  `fallback` during SSR + first client render (hydration-safe), then upgrades to a transparent
+  `role="img"` canvas after mount; the `fallback` stays in the DOM (visually hidden) as the real
+  control surface. WebGL absent → fallback stays.
+- **Accessible fallback is mandatory** — a parallel, operable DOM control set (buttons/SVG, keyboard
+  nav, `aria-label`s). The canvas is never the sole interaction surface.
+- **Theme with tokens, not colours.** Read colours via `useThemeColors()` (`src/lib/pixi/use-theme-
+  colors.ts`) → `0xRRGGBB` ints, re-read on `ThemeSwitcher` change; keep canvases transparent
+  (`backgroundAlpha={0}`) and draw surfaces with `Graphics` (Pixi's `background` doesn't re-tint).
+- **Scene rules:** `extend()` only the classes used (inside the lazy module); gate render on
+  `useApplication().isInitialised` (`app.screen` throws before init); `autoDensity` + capped
+  `resolution`; respect `prefers-reduced-motion`. Audio-reactive scenes read `getAnalyser()` from
+  `src/lib/audio.ts` (master bus). Phase 1: `PianoKeyboard`/`GuitarFretboard`/`CircleOfFifths`.
+- **Gotcha:** `pixi.js`/`@pixi/react` are NOT in `optimizeDeps.include` (including them pulls a
+  duplicate React into the Vitest optimizer). They're lazy-imported → Vite optimizes on first dev use
+  (a one-time `504 Outdated Optimize Dep` that self-heals on reload; restart dev / `rm -rf
+  node_modules/.vite` if it sticks). Island hook-components can't be unit-tested under `getViteConfig`
+  (pre-existing duplicate-React); cover islands with a Playwright E2E smoke instead.
+
 ## Testing (ADR 0020, `docs/features/testing.md`)
 
 - **Unit/component** (Vitest, `getViteConfig` + happy-dom): `src/**/*.test.ts(x)`. Test pure `lib/*`

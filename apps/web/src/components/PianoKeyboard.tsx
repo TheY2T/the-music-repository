@@ -1,5 +1,6 @@
-import { Icon, Select } from '@TheY2T/tmr-ui';
-import { useCallback, useMemo, useState } from 'react';
+import { cn, Icon, Select } from '@TheY2T/tmr-ui';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { PixiCanvas } from '@/components/PixiCanvas';
 import { playTone } from '@/lib/audio';
 import {
   midiToFrequency,
@@ -23,12 +24,17 @@ const blackMidis = midis.filter(isBlack).map((midi) => ({
 }));
 const whiteWidthPct = 100 / whiteMidis.length;
 
+const noteLabel = (midi: number, flats: boolean) =>
+  `${pitchName(midi % 12, flats)}${Math.floor(midi / 12) - 1}`;
+
 export default function PianoKeyboard() {
   const [showLabels, setShowLabels] = useState(true);
   const [root, setRoot] = useState<number | null>(null);
   const [scaleKey, setScaleKey] = useState('major');
   const [lastNote, setLastNote] = useState<string | null>(null);
   const [midiActive, setMidiActive] = useState<Set<number>>(new Set());
+  const [clicked, setClicked] = useState<Set<number>>(new Set());
+  const releaseTimers = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
 
   const scale = SCALES.find((s) => s.key === scaleKey) ?? SCALES[0];
   const highlighted = useMemo(
@@ -37,10 +43,34 @@ export default function PianoKeyboard() {
   );
   const flats = root !== null && [1, 3, 5, 8, 10].includes(root);
 
-  function play(midi: number) {
-    playTone(midiToFrequency(midi));
-    setLastNote(`${pitchName(midi % 12, flats)}${Math.floor(midi / 12) - 1}`);
-  }
+  // Notes currently sounding (glow + particles): held MIDI notes ∪ momentary clicks.
+  const active = useMemo(() => new Set([...midiActive, ...clicked]), [midiActive, clicked]);
+
+  const flash = useCallback((midi: number) => {
+    setClicked((prev) => new Set(prev).add(midi));
+    const timers = releaseTimers.current;
+    clearTimeout(timers.get(midi));
+    timers.set(
+      midi,
+      setTimeout(() => {
+        setClicked((prev) => {
+          const next = new Set(prev);
+          next.delete(midi);
+          return next;
+        });
+        timers.delete(midi);
+      }, 450),
+    );
+  }, []);
+
+  const play = useCallback(
+    (midi: number) => {
+      playTone(midiToFrequency(midi));
+      setLastNote(noteLabel(midi, flats));
+      flash(midi);
+    },
+    [flats, flash],
+  );
 
   // Live MIDI input: sound + highlight incoming notes.
   const onMidiNote = useCallback((midi: number, isOn: boolean) => {
@@ -60,7 +90,52 @@ export default function PianoKeyboard() {
   }, []);
   const midi = useMidiInput(onMidiNote);
 
-  const inScale = (midi: number) => highlighted.has(midi % 12);
+  const inScale = (m: number) => highlighted.has(m % 12);
+
+  // Accessible, token-themed DOM keyboard — the real control surface (visible when WebGL is
+  // unavailable; kept operable but visually hidden behind the Pixi canvas otherwise).
+  const fallbackKeyboard = (
+    <div className="relative flex h-44 select-none rounded-lg border border-border bg-muted p-1">
+      {whiteMidis.map((m) => (
+        <button
+          type="button"
+          key={m}
+          aria-label={noteLabel(m, flats)}
+          aria-pressed={active.has(m)}
+          onClick={() => play(m)}
+          style={{ width: `${whiteWidthPct}%` }}
+          className={cn(
+            'relative flex items-end justify-center rounded-b border border-border pb-1 text-xs',
+            inScale(m) ? 'bg-accent/30 text-foreground' : 'bg-card text-muted-foreground',
+            active.has(m) && 'ring-2 ring-inset ring-ring',
+          )}
+        >
+          {showLabels ? pitchName(m % 12, flats) : null}
+        </button>
+      ))}
+      {blackMidis.map(({ midi: m, afterWhiteIndex }) => (
+        <button
+          type="button"
+          key={m}
+          aria-label={noteLabel(m, flats)}
+          aria-pressed={active.has(m)}
+          onClick={() => play(m)}
+          style={{
+            left: `${(afterWhiteIndex + 1) * whiteWidthPct}%`,
+            width: `${whiteWidthPct * 0.62}%`,
+            transform: 'translateX(-50%)',
+          }}
+          className={cn(
+            'absolute top-1 z-10 flex h-[62%] items-end justify-center rounded-b pb-1 text-[10px]',
+            inScale(m) ? 'bg-primary text-primary-foreground' : 'bg-foreground text-background',
+            active.has(m) && 'ring-2 ring-inset ring-ring',
+          )}
+        >
+          {showLabels ? pitchName(m % 12, flats) : null}
+        </button>
+      ))}
+    </div>
+  );
 
   return (
     <div className="space-y-4">
@@ -114,7 +189,7 @@ export default function PianoKeyboard() {
             <Icon name="piano" className="size-4" /> Web MIDI not supported in this browser.
           </span>
         ) : midi.connected ? (
-          <span className="inline-flex items-center gap-1 text-green-600 dark:text-green-400">
+          <span className="inline-flex items-center gap-1 text-success">
             <Icon name="piano" className="size-4" /> MIDI connected: {midi.deviceName ?? 'device'} —
             play your keyboard.
           </span>
@@ -126,40 +201,22 @@ export default function PianoKeyboard() {
         )}
       </div>
 
-      <div className="relative flex h-44 select-none rounded-lg border border-border bg-neutral-100 p-1">
-        {whiteMidis.map((midi) => (
-          <button
-            type="button"
-            key={midi}
-            aria-label={`${pitchName(midi % 12, flats)}${Math.floor(midi / 12) - 1}`}
-            onClick={() => play(midi)}
-            style={{ width: `${whiteWidthPct}%` }}
-            className={`relative flex items-end justify-center rounded-b border border-neutral-300 pb-1 text-xs ${
-              inScale(midi) ? 'bg-blue-200 text-blue-900' : 'bg-white text-neutral-500'
-            } ${midiActive.has(midi) ? 'ring-2 ring-inset ring-green-500' : ''}`}
-          >
-            {showLabels ? pitchName(midi % 12, flats) : null}
-          </button>
-        ))}
-        {blackMidis.map(({ midi, afterWhiteIndex }) => (
-          <button
-            type="button"
-            key={midi}
-            aria-label={`${pitchName(midi % 12, flats)}${Math.floor(midi / 12) - 1}`}
-            onClick={() => play(midi)}
-            style={{
-              left: `${(afterWhiteIndex + 1) * whiteWidthPct}%`,
-              width: `${whiteWidthPct * 0.62}%`,
-              transform: 'translateX(-50%)',
-            }}
-            className={`absolute top-1 z-10 flex h-[62%] items-end justify-center rounded-b pb-1 text-[10px] ${
-              inScale(midi) ? 'bg-blue-500 text-white' : 'bg-neutral-800 text-neutral-300'
-            } ${midiActive.has(midi) ? 'ring-2 ring-inset ring-green-400' : ''}`}
-          >
-            {showLabels ? pitchName(midi % 12, flats) : null}
-          </button>
-        ))}
-      </div>
+      <PixiCanvas
+        ariaLabel="Piano keyboard — two octaves from middle C"
+        loader={() => import('@/lib/pixi/piano-scene')}
+        sceneProps={{
+          whiteMidis,
+          blackMidis,
+          highlighted,
+          active,
+          showLabels,
+          flats,
+          onPlay: play,
+        }}
+        containerClassName="h-44 rounded-lg border border-border bg-muted"
+        fallback={fallbackKeyboard}
+      />
+
       <p className="text-xs text-muted-foreground">
         Click a key to hear it. Pick a root + scale to highlight.
       </p>

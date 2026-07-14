@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { PixiCanvas } from '@/components/PixiCanvas';
 import { playTone } from '@/lib/audio';
 import {
   CIRCLE_OF_FIFTHS,
@@ -13,7 +14,12 @@ const INNER_R = 76;
 
 function position(index: number, radius: number): { x: number; y: number } {
   const angle = ((index * 30 - 90) * Math.PI) / 180;
-  return { x: CENTER + radius * Math.cos(angle), y: CENTER + radius * Math.sin(angle) };
+  // Round so the SSR and client float serialization match exactly (avoids a hydration mismatch).
+  const round = (n: number) => Math.round(n * 100) / 100;
+  return {
+    x: round(CENTER + radius * Math.cos(angle)),
+    y: round(CENTER + radius * Math.sin(angle)),
+  };
 }
 
 export default function CircleOfFifths() {
@@ -21,63 +27,80 @@ export default function CircleOfFifths() {
   const entry = CIRCLE_OF_FIFTHS[selected];
   const flats = entry.accidentals < 0;
   const chords = diatonicChords(entry.pitchClass, flats);
+  const entries = useMemo(
+    () => CIRCLE_OF_FIFTHS.map((e) => ({ major: e.major, relativeMinor: e.relativeMinor })),
+    [],
+  );
 
   function select(index: number) {
     setSelected(index);
     playTone(midiToFrequency(60 + CIRCLE_OF_FIFTHS[index].pitchClass));
   }
 
+  // Accessible, token-themed SVG wheel — the real control surface (visible when WebGL is
+  // unavailable; operable but visually hidden behind the Pixi canvas otherwise).
+  const fallbackWheel = (
+    <svg
+      viewBox="0 0 320 320"
+      className="mx-auto w-full max-w-[320px]"
+      role="img"
+      aria-label="Circle of fifths"
+    >
+      <circle cx={CENTER} cy={CENTER} r={OUTER_R + 18} className="fill-none stroke-border" />
+      <circle cx={CENTER} cy={CENTER} r={INNER_R - 18} className="fill-none stroke-border" />
+      {CIRCLE_OF_FIFTHS.map((item, index) => {
+        const outer = position(index, OUTER_R);
+        const inner = position(index, INNER_R);
+        const isSelected = index === selected;
+        return (
+          // biome-ignore lint/a11y/useSemanticElements: SVG group — a <button> is not valid inside <svg>.
+          <g
+            key={item.major}
+            onClick={() => select(index)}
+            className="cursor-pointer"
+            role="button"
+            aria-label={`${item.major} major`}
+          >
+            <circle
+              cx={outer.x}
+              cy={outer.y}
+              r={22}
+              className={isSelected ? 'fill-primary stroke-ring' : 'fill-card stroke-border'}
+            />
+            <text
+              x={outer.x}
+              y={outer.y + 4}
+              textAnchor="middle"
+              className={`text-sm font-semibold ${
+                isSelected ? 'fill-primary-foreground' : 'fill-foreground'
+              }`}
+            >
+              {item.major}
+            </text>
+            <text
+              x={inner.x}
+              y={inner.y + 3}
+              textAnchor="middle"
+              className="fill-muted-foreground text-[10px]"
+            >
+              {item.relativeMinor}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+
   return (
     <div className="grid gap-8 md:grid-cols-[320px_1fr]">
-      <svg
-        viewBox="0 0 320 320"
+      <PixiCanvas
+        ariaLabel="Circle of fifths"
+        loader={() => import('@/lib/pixi/circle-scene')}
+        sceneProps={{ entries, selected, onSelect: select }}
         className="mx-auto w-full max-w-[320px]"
-        role="img"
-        aria-label="Circle of fifths"
-      >
-        <circle cx={CENTER} cy={CENTER} r={OUTER_R + 18} className="fill-none stroke-border" />
-        <circle cx={CENTER} cy={CENTER} r={INNER_R - 18} className="fill-none stroke-border" />
-        {CIRCLE_OF_FIFTHS.map((item, index) => {
-          const outer = position(index, OUTER_R);
-          const inner = position(index, INNER_R);
-          const isSelected = index === selected;
-          return (
-            // biome-ignore lint/a11y/useSemanticElements: SVG group — a <button> is not valid inside <svg>.
-            <g
-              key={item.major}
-              onClick={() => select(index)}
-              className="cursor-pointer"
-              role="button"
-              aria-label={`${item.major} major`}
-            >
-              <circle
-                cx={outer.x}
-                cy={outer.y}
-                r={22}
-                className={
-                  isSelected ? 'fill-blue-500 stroke-blue-600' : 'fill-background stroke-border'
-                }
-              />
-              <text
-                x={outer.x}
-                y={outer.y + 4}
-                textAnchor="middle"
-                className={`text-sm font-semibold ${isSelected ? 'fill-white' : 'fill-foreground'}`}
-              >
-                {item.major}
-              </text>
-              <text
-                x={inner.x}
-                y={inner.y + 3}
-                textAnchor="middle"
-                className="fill-muted-foreground text-[10px]"
-              >
-                {item.relativeMinor}
-              </text>
-            </g>
-          );
-        })}
-      </svg>
+        containerClassName="aspect-square w-full"
+        fallback={fallbackWheel}
+      />
 
       <div className="space-y-4">
         <div>

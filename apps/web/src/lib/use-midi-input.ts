@@ -16,8 +16,13 @@ export interface MidiState {
 export function useMidiInput(
   onNote: (midi: number, isOn: boolean, velocity: number) => void,
 ): MidiState {
-  const supported = typeof navigator !== 'undefined' && 'requestMIDIAccess' in navigator;
-  const [state, setState] = useState<MidiState>({ supported, connected: false, deviceName: null });
+  // Start `false` so SSR and the first client render agree (no hydration mismatch); the effect
+  // promotes it to `true` on the client when the Web MIDI API is actually present.
+  const [state, setState] = useState<MidiState>({
+    supported: false,
+    connected: false,
+    deviceName: null,
+  });
   const onNoteRef = useRef(onNote);
   useEffect(() => {
     onNoteRef.current = onNote;
@@ -27,6 +32,7 @@ export function useMidiInput(
     if (!('requestMIDIAccess' in navigator)) {
       return;
     }
+    setState((prev) => ({ ...prev, supported: true }));
     let access: MIDIAccess | null = null;
 
     const handleMessage = (event: MIDIMessageEvent) => {

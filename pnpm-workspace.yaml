@@ -80,6 +80,13 @@ catalog:
   "class-variance-authority": ^0.7.1
   "lucide-react": ^0.545.0
 
+  # --- PixiJS rendering layer (ADR 0022): client-only WebGL canvas for interactive tools,
+  # audio-reactive visualizers, notation overlay + ambient polish. @pixi/react v8 peers pixi.js
+  # ^8.2.6 + react >=19. Cataloged so apps/web (and later @TheY2T/tmr-ui) resolve ONE copy —
+  # mismatched pixi.js copies break extend()/instanceof. Lazy-loaded per island (never global).
+  "pixi.js": ^8.19.0
+  "@pixi/react": ^8.0.5
+
   # --- Design tokens: self-hosted vintage typefaces (@fontsource, no external CDN) ---
   # One display + one body face per aesthetic (ADR 0021). Variable where available to keep the
   # footprint to a single file per family.
