@@ -42,6 +42,24 @@ const POPULAR_TOOLS: { slug: string; icon: IconName; titleKey: MessageKey }[] = 
   { slug: 'ear-trainer', icon: 'headphones', titleKey: 'tool.ear-trainer.title' },
 ];
 
+// The four covers in the hero collage link to their real catalogue items (slugs from the seed).
+const HERO_PICKS = [
+  {
+    slug: 'bach-prelude-c-major-bwv-846',
+    title: 'Prelude in C',
+    subtitle: 'J. S. Bach',
+    motif: 'staff',
+  },
+  {
+    slug: 'joplin-the-entertainer',
+    title: 'The Entertainer',
+    subtitle: 'S. Joplin',
+    motif: 'keys',
+  },
+  { slug: 'greensleeves-trad', title: 'Greensleeves', subtitle: 'Traditional', motif: 'strings' },
+  { slug: '12-bar-blues-in-a', title: '12-Bar Blues', subtitle: 'Study', motif: 'record' },
+] as const;
+
 function tierLabel(locale: Locale, tier?: string): string {
   const key: MessageKey =
     tier === 'pro' ? 'tier.pro' : tier === 'institution' ? 'tier.institution' : 'tier.premium';
@@ -165,32 +183,23 @@ function Home({
           }
           media={
             <div className="grid grid-cols-2 gap-4">
-              <CoverArt
-                seed="bach-prelude"
-                title="Prelude in C"
-                subtitle="J. S. Bach"
-                motif="staff"
-              />
-              <CoverArt
-                seed="entertainer"
-                title="The Entertainer"
-                subtitle="S. Joplin"
-                motif="keys"
-                className="mt-6"
-              />
-              <CoverArt
-                seed="greensleeves"
-                title="Greensleeves"
-                subtitle="Traditional"
-                motif="strings"
-              />
-              <CoverArt
-                seed="blues"
-                title="12-Bar Blues"
-                subtitle="Study"
-                motif="record"
-                className="mt-6"
-              />
+              {HERO_PICKS.map((pick, i) => (
+                <a
+                  key={pick.slug}
+                  href={localizedPath(locale, `/catalogue/${pick.slug}`)}
+                  className={cn(
+                    'block rounded-lg transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                    i % 2 === 1 && 'mt-6',
+                  )}
+                >
+                  <CoverArt
+                    seed={pick.slug}
+                    title={pick.title}
+                    subtitle={pick.subtitle}
+                    motif={pick.motif}
+                  />
+                </a>
+              ))}
             </div>
           }
         />
