@@ -1,5 +1,6 @@
 import { Button, Icon } from '@TheY2T/tmr-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import DrillFeedback from '@/components/DrillFeedback';
 import { playTone } from '@/lib/audio';
 import { INTERVAL_NAMES, midiToFrequency } from '@/lib/music-theory';
 import { useMidiInput } from '@/lib/use-midi-input';
@@ -95,6 +96,7 @@ export default function EarTrainer() {
 
   return (
     <div className="space-y-6">
+      <DrillFeedback result={answered === null ? null : isCorrect ? 'correct' : 'wrong'} />
       <div className="flex flex-wrap items-center gap-4">
         {!started ? (
           <Button type="button" onClick={start}>

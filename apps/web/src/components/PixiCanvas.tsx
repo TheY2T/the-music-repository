@@ -37,8 +37,8 @@ export interface PixiSceneBaseProps {
 }
 
 export interface PixiCanvasProps<P extends object> {
-  /** Accessible name for the canvas region (`role="img"` aria-label). */
-  ariaLabel: string;
+  /** Accessible name for the canvas region (`role="img"` aria-label). Ignored when `decorative`. */
+  ariaLabel?: string;
   /**
    * Stable loader for the scene module (e.g. `() => import('@/lib/pixi/piano-scene')`). Keep it a
    * module-level or inline arrow — it is captured once on first render.
@@ -51,6 +51,11 @@ export interface PixiCanvasProps<P extends object> {
    * kept visually hidden (but operable) when the canvas renders.
    */
   fallback: ReactNode;
+  /**
+   * Purely decorative canvas (ambient, feedback bursts, sparkle): the region is `aria-hidden`
+   * instead of a labelled `role="img"`, and no sr-only fallback is exposed to assistive tech.
+   */
+  decorative?: boolean;
   /** Class for the outer wrapper. */
   className?: string;
   /** Class for the canvas container (size it here, e.g. `h-48 w-full`). */
@@ -67,6 +72,7 @@ export function PixiCanvas<P extends object>({
   loader,
   sceneProps,
   fallback,
+  decorative,
   className,
   containerClassName,
 }: PixiCanvasProps<P>) {
@@ -90,8 +96,7 @@ export function PixiCanvas<P extends object>({
     <div className={className}>
       <div
         ref={containerRef}
-        role="img"
-        aria-label={ariaLabel}
+        {...(decorative ? { 'aria-hidden': true } : { role: 'img', 'aria-label': ariaLabel })}
         className={cn('relative overflow-hidden', containerClassName)}
       >
         <Suspense
@@ -105,8 +110,9 @@ export function PixiCanvas<P extends object>({
           />
         </Suspense>
       </div>
-      {/* Real, operable controls for keyboard / assistive tech while the canvas is the visual. */}
-      <div className="sr-only">{fallback}</div>
+      {/* Real, operable controls for keyboard / assistive tech while the canvas is the visual.
+          Omitted for decorative canvases (nothing to expose). */}
+      {decorative ? null : <div className="sr-only">{fallback}</div>}
     </div>
   );
 }

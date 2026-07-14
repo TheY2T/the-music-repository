@@ -55,10 +55,12 @@
   audio-reactive spectrum/waveform (`AudioVisualizer`, embedded on the backing track) + a real mic
   tuner (`getUserMedia` → autocorrelation pitch detection → a Pixi needle gauge). Phase 3 — a
   notation play-head glow overlay on the Verovio SVG (`useNotationPlayhead`, additive). Phase 4 — an
-  ambient dust-mote background behind the home hero (`AmbientBackground`).
-- **Follow-up (Phase 4 remainder):** animated cover-art (SVG SSR → Pixi enhance on `client:visible`)
-  and a gamified drill-feedback effects layer for the ear-training tools — deferred (each touches
-  the shared UI package or ~9 tools; lower priority than the pieces above).
+  ambient dust-mote background behind the home hero (`AmbientBackground`), a drop-in gamified
+  drill-feedback burst (`DrillFeedback`, wired into three ear-training tools + one-liner for the
+  rest), and an animated sparkle over the catalogue detail cover (`AnimatedCoverArt`, single-instance
+  only — the grid keeps the plain SVG `CoverArt` to stay under the WebGL context cap).
+- **Decorative option:** `PixiCanvas` gained a `decorative` prop (`aria-hidden` region, no sr-only
+  fallback) for the purely-visual canvases (ambient / feedback / visualizer / sparkle).
 - **Bundle:** Pixi is large, so it is strictly lazy-loaded per island (never global). `pixi.js`/
   `@pixi/react` are intentionally **not** in `optimizeDeps.include` — including them made Astro's
   `getViteConfig` pull a duplicate React into the Vitest optimizer. Vite discovers + optimizes them

@@ -9,7 +9,7 @@ import { PixiCanvas } from '@/components/PixiCanvas';
 export default function AudioVisualizer({ className }: { className?: string }) {
   return (
     <PixiCanvas
-      ariaLabel="Audio spectrum visualizer"
+      decorative
       loader={() => import('@/lib/pixi/audio-visualizer-scene')}
       sceneProps={{}}
       containerClassName={className ?? 'h-20 w-full rounded-lg border border-border bg-muted/40'}

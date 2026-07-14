@@ -1,5 +1,6 @@
 import { Button, Card, Icon } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
+import DrillFeedback from '@/components/DrillFeedback';
 import { playTone } from '@/lib/audio';
 import { INTERVAL_NAMES, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
 
@@ -43,6 +44,9 @@ export default function IntervalConstructionQuiz() {
 
   return (
     <div className="space-y-5">
+      <DrillFeedback
+        result={answered === null ? null : answered === targetPc ? 'correct' : 'wrong'}
+      />
       <span className="text-sm text-muted-foreground">
         Score: {score.correct}/{score.total}
       </span>

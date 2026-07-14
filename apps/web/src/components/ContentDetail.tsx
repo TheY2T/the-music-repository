@@ -18,7 +18,6 @@ import {
   Card,
   CardGrid,
   Chip,
-  CoverArt,
   cn,
   EmptyState,
   Icon,
@@ -26,6 +25,7 @@ import {
   Skeleton,
 } from '@TheY2T/tmr-ui';
 import { marked } from 'marked';
+import AnimatedCoverArt from '@/components/AnimatedCoverArt';
 import ScoreViewer from '@/components/ScoreViewer';
 
 /** Localized label for a premium tier (`premium`/`pro`/`institution`; unknown → premium). */
@@ -209,12 +209,12 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
           </div>
         </div>
         <div className="hidden md:block">
-          <CoverArt
+          <AnimatedCoverArt
             title={item.title}
             subtitle={item.attribution ?? undefined}
             seed={item.slug}
             showLabel={false}
-            className="rounded-lg border border-border"
+            className="border border-border"
           />
         </div>
       </header>

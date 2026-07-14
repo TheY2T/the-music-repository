@@ -78,8 +78,18 @@ overlay is a decorative enhancement that no-ops without WebGL. Uses a raw (dynam
 Pixi `Application`, the right fit for an imperative, externally-driven overlay canvas.
 
 **Phase 4 — ambient polish.** `AmbientBackground` (`ambient-scene`) drifts soft accent/muted "dust"
-motes behind the home hero; static under reduced motion. (Remaining Phase-4 polish — animated
-cover-art and a gamified drill-feedback effects layer — is a follow-up; see ADR 0022.)
+motes behind the home hero; static under reduced motion. `DrillFeedback` (`drill-feedback-scene`) is
+a drop-in for the ear-training tools — pass `result` (`'correct'|'wrong'|null`) and each answer fires
+a fixed, viewport-wide particle burst (celebration vs. muted scatter); wired into `EarTrainer`,
+`ChordQualityEar`, `IntervalConstructionQuiz` (add the one-liner to more the same way).
+`AnimatedCoverArt` (`cover-sparkle-scene`) lays a twinkling sparkle over the SVG `CoverArt` on the
+catalogue detail hero — **single-instance only** (each canvas is a WebGL context; the grid keeps the
+plain `CoverArt`).
+
+Decorative canvases (ambient, drill-feedback, audio-visualizer, cover-sparkle) pass
+`decorative` to `PixiCanvas` → the region is `aria-hidden` (not a labelled `role="img"`) with no
+sr-only fallback. Interactive surfaces (keyboard, fretboard, circle, tuner) stay labelled with a real
+accessible control set.
 
 ## Gotchas
 

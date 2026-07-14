@@ -8,7 +8,7 @@ import { PixiCanvas } from '@/components/PixiCanvas';
 export default function AmbientBackground({ className }: { className?: string }) {
   return (
     <PixiCanvas
-      ariaLabel="Ambient background animation"
+      decorative
       loader={() => import('@/lib/pixi/ambient-scene')}
       sceneProps={{}}
       className={className}

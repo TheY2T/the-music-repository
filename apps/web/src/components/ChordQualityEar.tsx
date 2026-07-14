@@ -1,5 +1,6 @@
 import { Button, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
+import DrillFeedback from '@/components/DrillFeedback';
 import { playTone } from '@/lib/audio';
 import { CHORDS, midiToFrequency } from '@/lib/music-theory';
 
@@ -54,6 +55,9 @@ export default function ChordQualityEar() {
 
   return (
     <div className="space-y-5">
+      <DrillFeedback
+        result={answered === null ? null : answered === current ? 'correct' : 'wrong'}
+      />
       <div className="flex items-center gap-4">
         <Button type="button" onClick={() => playChord(QUALITY_CHORDS[current].intervals, root)}>
           <Icon name="play" className="size-4" />
