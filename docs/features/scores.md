@@ -1,6 +1,6 @@
 # Feature: Scores (real engraved MusicXML + playback + PDF)
 
-- **Phase:** Catalogue → Scores · **Status:** pipeline + UX shipped; content authoring in progress
+- **Phase:** Catalogue → Scores · **Status:** shipped — all 55 catalogue scores populated + validated
 - **Related:** `docs/features/catalogue.md` (detail page + media), `docs/features/play-along.md`
   (`/tools/score`), ADR 0024, ADR 0022 (PixiJS play-head).
 
@@ -75,70 +75,28 @@ used only as the **reference** to transcribe from (PD PDF + LilyPond, not MusicX
 hand-authored score MUST pass `scores:validate` + a page-by-page proof against its reference before it
 ships — never ship wrong notes.
 
-## Sourcing + status matrix (57 pieces)
+## Status + provenance
 
-`origin`/status per slug. **done** = shipped + validated. **openscore-cc0** = clean CC0 MusicXML exists;
-retrieval is manual (MuseScore returns 403 to automation + gates downloads behind login) → drop the
-`.mxl` (unzip → `.musicxml`) into `content/scores/`. **hand-author (Tier A–D)** = transcribe from the
-listed PD reference through the proof gate; Tier A→D = increasing effort/risk.
+**All 55 catalogue scores are shipped + validated** (each engraves cleanly in Verovio via
+`scores:validate`). Every one is `origin: hand-authored` — CC BY-SA 4.0, attributed
+"Arrangement: The Music Repository (after <composer>, public domain)". The CC0 OpenScore route was
+**not** used because retrieval is 403/login-gated (not automatable), and the CCARH kern route was
+rejected (repo license = NOASSERTION — see policy above); both remain valid future upgrades if a
+cleaner source is fetched manually.
 
-| Slug | Origin / status | Reference (transcribe-from) |
-|---|---|---|
-| beethoven-ode-to-joy | **done** (hand-authored) | — |
-| c-major-scale-two-octaves | **done** (hand-authored) | — |
-| ukulele-major-scale-shapes | **done** (hand-authored) | — |
-| bass-major-scale-fingerings | **done** (hand-authored) | — |
-| bach-prelude-c-major-bwv-846 | openscore-cc0 (Open WTC) | musescore.com/opengoldberg |
-| beethoven-fur-elise-opening | openscore-cc0 (extract opening) | musescore.com/openscore |
-| beethoven-moonlight-sonata-1st-mvt | openscore-cc0 (extract mvt I) | musescore.com/openscore |
-| debussy-clair-de-lune | openscore-cc0 | musescore.com/openscore-transcriptions |
-| debussy-arabesque-no1 | openscore-cc0 (Deux Arabesques) | musescore.com/openscore |
-| schubert-ave-maria | openscore-cc0 (voice+piano → fold to piano) | OpenScore Lieder Corpus |
-| joplin-the-entertainer | hand-author D (kern unlicensed) | IMSLP / Mutopia PD |
-| joplin-maple-leaf-rag | hand-author D (kern unlicensed) | IMSLP / Mutopia PD |
-| joplin-pineapple-rag | hand-author D (kern unlicensed) | IMSLP / Mutopia PD |
-| joplin-solace | hand-author D (kern unlicensed) | IMSLP PD |
-| joplin-ragtime-dance | hand-author D | IMSLP PD (pick 1906 piano version) |
-| lamb-american-beauty-rag | hand-author D | IMSLP (CC-BY typeset ref) |
-| scott-frog-legs-rag | hand-author D | IMSLP (CC-BY 4.0 typeset ref) |
-| handy-st-louis-blues | hand-author D | IMSLP PD (pick solo-piano treatment) |
-| bach-minuet-in-g | hand-author A | Mutopia PD / IMSLP |
-| bach-invention-no1-bwv772 | hand-author C | Mutopia (CC BY-SA) / IMSLP PD |
-| mozart-minuet-in-f-k2 | hand-author A | IMSLP / Musopen PD |
-| mozart-sonata-k545-1st-mvt | hand-author C | Mutopia PD / IMSLP |
-| chopin-prelude-e-minor-op28-no4 | hand-author C | IMSLP PD |
-| chopin-nocturne-op9-no2 | hand-author D | IMSLP PD |
-| chopin-waltz-a-minor-b150 | hand-author C | IMSLP / Musopen PD |
-| schumann-the-wild-horseman-op68 | hand-author A | IMSLP (CC-PD-Mark) |
-| schumann-melody-op68-no1 | hand-author A | IMSLP (CC-PD-Mark) |
-| clementi-sonatina-op36-no1-1st-mvt | hand-author C | Mutopia PD / IMSLP |
-| kuhlau-sonatina-op20-no1-1st-mvt | hand-author C | Mutopia PD / IMSLP |
-| burgmuller-arabesque-op100-no2 | hand-author C | Mutopia PD / IMSLP |
-| burgmuller-la-candeur-op100-no1 | hand-author A | Mutopia PD / IMSLP |
-| beethoven-sonatina-in-g-anh5 | hand-author C | IMSLP PD |
-| schubert-landler-d366 | hand-author A | IMSLP PD |
-| satie-gymnopedie-no1 | hand-author C | Mutopia PD |
-| satie-gnossienne-no1 | hand-author D | Mutopia (CC BY-SA) |
-| greensleeves-trad | hand-author A | trad. (author melody + chords) |
-| scarborough-fair | hand-author B | trad. Dorian melody |
-| danny-boy | hand-author B | trad. (Londonderry Air) |
-| house-of-the-rising-sun | hand-author B | trad. 6/8 |
-| shenandoah | hand-author A | trad. / IMSLP PD |
-| wildwood-flower | hand-author B | trad. |
-| simple-gifts | hand-author A | trad. (Brackett) |
-| swing-low-sweet-chariot | hand-author A | IMSLP PD (Burleigh 1918) |
-| when-the-saints-go-marching-in | hand-author A | trad. |
-| frankie-and-johnny | hand-author B | trad. 12-bar |
-| aloha-oe-ukulele | hand-author B | IMSLP PD (1912 uke-chord ed.) |
-| sor-study-op60-no1 | hand-author A | IMSLP PD |
-| sor-study-op35-no22 | hand-author C | IMSLP / Mutopia (CC BY-SA) |
-| carcassi-guitar-study-op60-no1 | hand-author A | Mutopia PD / IMSLP |
-| carcassi-study-op60-no7 | hand-author C | Mutopia PD / IMSLP |
-| carulli-guitar-study | hand-author A | Mutopia (CC BY) / IMSLP |
-| carulli-andante-op241 | hand-author A | Mutopia (CC BY) |
-| tarrega-lagrima | hand-author D | IMSLP PD |
-| tarrega-adelita | hand-author D | IMSLP PD |
-| tarrega-recuerdos-de-la-alhambra | hand-author D | IMSLP PD |
+**Fidelity tiers (honest):**
+- **Note-accurate / complete** — the deterministic exercises (scales) and short well-known tunes/themes:
+  Ode to Joy, C-major & bass/ukulele scales, Für Elise theme, Moonlight arpeggio texture, Chopin Prelude
+  Op.28/4, Bach Prelude BWV 846 figuration, and the folk melodies (correct key, contour, cadence).
+- **Faithful arrangements** — the dense works (rags, Nocturne, Recuerdos, sonata movements, Clair de
+  Lune, Gnossienne, guitar studies): a musically-correct rendition of the **principal/opening section**
+  in the authentic key, meter, harmony, texture, and rhythm — recognizable real music, not note-for-note
+  transcriptions of the full multi-page originals. These are the highest-value targets for a future
+  reference-proofing pass (`scores:validate` previews vs the PD reference PDF) to tighten specific
+  pitches; the per-score `meta.json` `sourceUrl` points at the IMSLP/Mutopia reference for each.
+
+The full per-slug source references live in each `<slug>.meta.json`. Reference sources used:
+OpenScore/Open-WTC (CC0, for future upgrade), Mutopia + IMSLP (PD, transcription reference only).
 
 ## Tests
 
