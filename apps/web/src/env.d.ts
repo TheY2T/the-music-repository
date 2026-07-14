@@ -10,6 +10,10 @@ declare namespace App {
       favorites: boolean;
       savedProgressions: boolean;
       collections: boolean;
+      collectionDiscovery: boolean;
+      collectionBookmarks: boolean;
+      collectionRatings: boolean;
+      userCollections: boolean;
       progress: boolean;
       toolPractice: boolean;
       infoView: boolean;

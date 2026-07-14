@@ -94,13 +94,23 @@ src/
 - Hearts/pages are gated on `Astro.locals.flags.favorites && !!Astro.locals.user` (props passed from
   the page frontmatter). Anonymous users see no hearts.
 
-## Collections (Phase 2)
+## Collections Library (Phase 2 → Library)
 
-- Public: `/collections` + `/collections/[slug]` (islands `CollectionsBrowser`/`CollectionDetail` via
-  generated hooks), flag-gated on `learning.collections`.
+- Public: `/collections` (`CollectionsBrowser` — featured hero + facets + sort + search via
+  `useSearchCollections`, rich `CollectionCard`s) + `/collections/[slug]` (`CollectionDetail` —
+  cover/curator/stat-tiles/outcomes/`bodyMdx`/chaptered sections/per-item notes + resume). Gated on
+  `learning.collections`; pages pass flag-derived `showProgress/showSave/showRating` (flag && `!!user`).
+- Engagement islands: `SaveCollectionButton` (optimistic bookmark), `CollectionRating` (`StarRating`
+  widget). Reads via generated hooks; **mutations via `src/lib/collections-api.ts`** (credentialed, like
+  `favorites-api`). Per-item completion reuses `progress-api`. Flags: `learning.collections-discovery/
+  -bookmarks/-ratings`, `learning.user-collections`; progress reuses `learning.progress`.
+- Personal: `/me/collections` (`SavedCollections` — Saved + My collections tabs) + `/me/collections/new`
+  \| `/[slug]/edit` (`UserCollectionForm` — catalogue picker + reorder + per-item notes + public/private).
+  Auth-gated (redirect to `/signin`). Account nav item added in `nav.ts`.
 - Admin: `/admin/collections/*` (guard + `learning.collections`) — `AdminCollectionList` +
-  `CollectionForm` (ordered content slugs, one per line; save = update metadata + `setItems`). API via
-  `collectionsAdminApi` in `src/lib/admin-api.ts`.
+  `CollectionForm`; `collectionsAdminApi.setItems` now sends the **structured `{ items: [{contentSlug}] }`**
+  envelope (contract change). UI: `StarRating` molecule + `MediaCard` `metaSlot`/`footerSlot` in
+  `@TheY2T/tmr-ui`. Islands with hooks (e.g. `StarRating`) are covered by E2E, not unit tests (dup-React).
 
 ## Progress (Phase 2)
 

@@ -34,6 +34,7 @@ export {
   type SegmentedToggleOption,
   type SegmentedToggleProps,
 } from './components/molecules/segmented-toggle';
+export { StarRating, type StarRatingProps } from './components/molecules/star-rating';
 export { StatCard, type StatCardProps } from './components/molecules/stat-card';
 export { StatTile, type StatTileProps } from './components/molecules/stat-tile';
 // Atoms

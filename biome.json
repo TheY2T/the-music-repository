@@ -17,6 +17,7 @@
       "!**/.turbo",
       "!**/generated",
       "!**/seed-content.ts",
+      "!**/seed-collections.ts",
       "!**/openapi.json",
       "!**/*.astro",
       "!**/*.css"

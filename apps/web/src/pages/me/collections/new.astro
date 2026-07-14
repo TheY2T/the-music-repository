@@ -1,0 +1,24 @@
+---
+import UserCollectionForm from '@/components/UserCollectionForm.tsx';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+const { flags, user, locale } = Astro.locals;
+if (!flags.userCollections) {
+  return Astro.redirect('/');
+}
+if (!user) {
+  return Astro.redirect('/signin?redirect=/me/collections/new');
+}
+---
+
+<BaseLayout title={t(locale, 'ucoll.pageTitleNew')}>
+  <PageShell
+    title={t(locale, 'ucoll.titleNew')}
+    back={{ href: localizedPath(locale, '/me/collections'), label: t(locale, 'collections.savedTitle') }}
+    maxWidth="max-w-2xl"
+  >
+    <UserCollectionForm client:load locale={locale} />
+  </PageShell>
+</BaseLayout>

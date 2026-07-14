@@ -1326,50 +1326,6 @@ export const CONTENT: SeedContent[] = [
   },
 ];
 
-export interface SeedCollection {
-  slug: string;
-  title: string;
-  summary: string;
-  kind: string;
-  itemSlugs: string[];
-}
-
-/** Ordered learning collections (Phase 2), referencing seeded content slugs. */
-export const COLLECTIONS: SeedCollection[] = [
-  {
-    slug: 'piano-fundamentals',
-    title: 'Piano Fundamentals',
-    summary: 'A beginner path from your first scale to your first recital pieces.',
-    kind: 'course',
-    itemSlugs: [
-      'c-major-scale-two-octaves',
-      'czerny-op-599-no-1',
-      'hanon-virtuoso-pianist-no-1',
-      'bach-minuet-in-g',
-      'beethoven-fur-elise-opening',
-    ],
-  },
-  {
-    slug: 'blues-starter-path',
-    title: 'Blues Starter Path',
-    summary: 'Start playing the blues on piano and guitar.',
-    kind: 'path',
-    itemSlugs: ['12-bar-blues-in-a', 'blues-scale-piano', 'minor-pentatonic-scale-shapes'],
-  },
-  {
-    slug: 'music-theory-basics',
-    title: 'Music Theory Basics',
-    summary: 'The core concepts every musician should know.',
-    kind: 'syllabus',
-    itemSlugs: [
-      'omt-intervals',
-      'omt-diatonic-chords',
-      'omt-rhythm-and-meter',
-      'omt-modes-of-major',
-    ],
-  },
-];
-
 export interface SeedHelpTopic {
   slug: string;
   term: string;

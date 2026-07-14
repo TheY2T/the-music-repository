@@ -9,13 +9,24 @@ if (!Astro.locals.flags.collections) {
 }
 const { slug = '' } = Astro.params;
 const locale = Astro.locals.locale;
+const { flags, user } = Astro.locals;
+const showProgress = flags.progress && !!user;
+const showSave = flags.collectionBookmarks && !!user;
+const showRating = flags.collectionRatings && !!user;
 ---
 
 <BaseLayout title={t(locale, 'collections.detailPageTitle')}>
   <PageShell
     back={{ href: localizedPath(locale, '/collections'), label: t(locale, 'common.backCollections') }}
-    maxWidth="max-w-3xl"
+    maxWidth="max-w-4xl"
   >
-    <CollectionDetail client:load slug={slug} locale={locale} />
+    <CollectionDetail
+      client:load
+      slug={slug}
+      locale={locale}
+      showProgress={showProgress}
+      showSave={showSave}
+      showRating={showRating}
+    />
   </PageShell>
 </BaseLayout>

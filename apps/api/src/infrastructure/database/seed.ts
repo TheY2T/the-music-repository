@@ -1,15 +1,16 @@
 import 'reflect-metadata';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray, notInArray } from 'drizzle-orm';
 import { AppModule } from '../../app.module';
 import { MediaLibrary } from '../../catalogue/application/ports/media-library.port';
 import { CatalogueReindexService } from '../../catalogue/infrastructure/catalogue-reindex.service';
+import { CollectionReindexService } from '../../collections/infrastructure/collection-reindex.service';
 import { DATABASE, type Database } from './database.module';
 import * as schema from './schema';
+import { SEED_COLLECTIONS } from './seed-collections';
 import { SEED_CONTENT } from './seed-content';
 import {
-  COLLECTIONS,
   CONTENT,
   GENRES,
   HELP_TOPICS,
@@ -34,6 +35,7 @@ async function main(): Promise<void> {
   const db = app.get<Database>(DATABASE);
   const media = app.get(MediaLibrary);
   const reindex = app.get(CatalogueReindexService);
+  const collectionReindex = app.get(CollectionReindexService);
 
   await media.ensureBucket();
 
@@ -155,49 +157,99 @@ async function main(): Promise<void> {
   const indexed = await reindex.reindex();
   log.log(`Seeded ${CONTENT.length} content items; reindexed ${indexed} into Meilisearch.`);
 
-  for (const collection of COLLECTIONS) {
+  for (const collection of SEED_COLLECTIONS) {
+    const meta = {
+      title: collection.title,
+      summary: collection.summary,
+      bodyMdx: collection.bodyMdx,
+      kind: collection.kind,
+      visibility: 'public',
+      status: 'published',
+      curationType: 'editorial',
+      featured: collection.featured,
+      difficultyMin: collection.difficultyMin,
+      difficultyMax: collection.difficultyMax,
+      estMinutes: collection.estMinutes,
+      curatorName: collection.curatorName,
+      curatorBio: collection.curatorBio,
+      accent: collection.accent,
+      outcomes: collection.outcomes.length ? collection.outcomes : null,
+      facets: Object.keys(collection.facets).length ? collection.facets : null,
+      tags: collection.tags.length ? collection.tags : null,
+    } as const;
     const [row] = await db
       .insert(schema.collections)
-      .values({
-        slug: collection.slug,
-        title: collection.title,
-        summary: collection.summary,
-        kind: collection.kind,
-        visibility: 'public',
-        status: 'published',
-      })
+      .values({ slug: collection.slug, ...meta })
       .onConflictDoUpdate({
         target: schema.collections.slug,
-        set: {
-          title: collection.title,
-          summary: collection.summary,
-          kind: collection.kind,
-          status: 'published',
-          updatedAt: new Date(),
-        },
+        set: { ...meta, updatedAt: new Date() },
       })
       .returning({ id: schema.collections.id });
     if (!row) {
       continue;
     }
+
+    // Replace structure: items first (FK), then sections, then re-insert both.
     await db.delete(schema.collectionItems).where(eq(schema.collectionItems.collectionId, row.id));
-    const contentRows = await db
-      .select({ id: schema.contentItems.id, slug: schema.contentItems.slug })
-      .from(schema.contentItems)
-      .where(inArray(schema.contentItems.slug, collection.itemSlugs));
+    await db
+      .delete(schema.collectionSections)
+      .where(eq(schema.collectionSections.collectionId, row.id));
+
+    // Resolve every referenced content slug → id.
+    const allSlugs = collection.sections.flatMap((s) => s.items.map((i) => i.contentSlug));
+    const contentRows = allSlugs.length
+      ? await db
+          .select({ id: schema.contentItems.id, slug: schema.contentItems.slug })
+          .from(schema.contentItems)
+          .where(inArray(schema.contentItems.slug, allSlugs))
+      : [];
     const idBySlug = new Map(contentRows.map((r) => [r.slug, r.id]));
-    const values = collection.itemSlugs
-      .filter((slug) => idBySlug.has(slug))
-      .map((slug, position) => ({
-        collectionId: row.id,
-        contentId: idBySlug.get(slug) as string,
-        position,
-      }));
-    if (values.length) {
-      await db.insert(schema.collectionItems).values(values);
+
+    let position = 0;
+    for (const [sectionIndex, section] of collection.sections.entries()) {
+      const [sectionRow] = await db
+        .insert(schema.collectionSections)
+        .values({
+          collectionId: row.id,
+          title: section.title,
+          description: section.description,
+          position: sectionIndex,
+        })
+        .returning({ id: schema.collectionSections.id });
+      if (!sectionRow) {
+        continue;
+      }
+      const values = section.items
+        .filter((item) => idBySlug.has(item.contentSlug))
+        .map((item) => ({
+          collectionId: row.id,
+          sectionId: sectionRow.id,
+          contentId: idBySlug.get(item.contentSlug) as string,
+          position: position++,
+          curatorNote: item.curatorNote,
+          focusSkills: item.focusSkills.length ? item.focusSkills : null,
+        }));
+      if (values.length) {
+        await db.insert(schema.collectionItems).values(values);
+      }
     }
   }
-  log.log(`Seeded ${COLLECTIONS.length} collections.`);
+
+  // Remove superseded editorial collections (never touch user-created ones).
+  const seededSlugs = SEED_COLLECTIONS.map((c) => c.slug);
+  await db
+    .delete(schema.collections)
+    .where(
+      and(
+        eq(schema.collections.curationType, 'editorial'),
+        notInArray(schema.collections.slug, seededSlugs),
+      ),
+    );
+
+  const collectionsIndexed = await collectionReindex.reindex();
+  log.log(
+    `Seeded ${SEED_COLLECTIONS.length} collections; reindexed ${collectionsIndexed} into Meilisearch.`,
+  );
 
   for (const topic of HELP_TOPICS) {
     await db

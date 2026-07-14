@@ -337,6 +337,17 @@ op createTaxonomy(@path dimension: string, @body body: TaxonomyWriteInput): {
 // Ordered groupings of catalogue items: courses / learning paths / syllabi / song lists.
 
 alias CollectionKind = "course" | "path" | "syllabus" | "songlist";
+alias CollectionCuration = "editorial" | "user";
+alias CollectionVisibility = "public" | "authed" | "private";
+
+/** Discovery facets carried by a collection. */
+model CollectionFacets {
+  era?: string[];
+  genre?: string[];
+  technique?: string[];
+  mood?: string[];
+  instrument?: string[];
+}
 
 /** List/card view of a collection. */
 model CollectionSummary {
@@ -344,39 +355,128 @@ model CollectionSummary {
   title: string;
   summary?: string;
   kind: CollectionKind;
-  visibility: Visibility;
+  visibility: CollectionVisibility;
+  curationType: CollectionCuration;
   itemCount: int32;
+  featured: boolean;
+  difficultyMin?: int32;
+  difficultyMax?: int32;
+  estMinutes?: int32;
+  curatorName?: string;
+  heroImageKey?: string;
+  accent?: string;
+  tags?: string[];
+  facets?: CollectionFacets;
+  popularity: int32;
+  averageRating?: float32;
+  ratingCount: int32;
 }
 
-/** One ordered entry in a collection (a catalogue item at a position). */
+/** One ordered entry in a collection (a catalogue item at a position + curator annotations). */
 model CollectionEntry {
   position: int32;
   content: ContentSummary;
+  sectionId?: string;
+  curatorNote?: string;
+  focusSkills?: string[];
+  completed?: boolean;
 }
 
-/** Full collection with its ordered items. */
+/** A chapter within a collection: an ordered group of entries. */
+model CollectionSectionView {
+  id: string;
+  title: string;
+  description?: string;
+  position: int32;
+  items: CollectionEntry[];
+}
+
+/** Full collection with its ordered items grouped into sections. */
 model CollectionDetail {
   ...CollectionSummary;
   status: ContentStatus;
+  ownerId?: string;
+  bodyMdx?: string;
+  outcomes?: string[];
+  curatorBio?: string;
   items: CollectionEntry[];
+  sections: CollectionSectionView[];
+}
+
+/** Collection detail with per-item completion + overall progress (auth-aware). */
+model CollectionProgressDetail {
+  ...CollectionDetail;
+  percentComplete: int32;
+  completedCount: int32;
+  nextUpSlug: string | null;
 }
 
 model CollectionList {
   items: CollectionSummary[];
 }
 
-/** Create/replace payload for a collection (items set separately). */
+/** Create/replace payload for an editorial collection (items/sections set separately). */
 model CollectionWriteInput {
   slug: string;
   title: string;
   summary?: string;
+  bodyMdx?: string;
   kind: CollectionKind;
-  visibility?: Visibility;
+  visibility?: CollectionVisibility;
+  featured?: boolean;
+  difficultyMin?: int32;
+  difficultyMax?: int32;
+  estMinutes?: int32;
+  curatorName?: string;
+  curatorBio?: string;
+  accent?: string;
+  outcomes?: string[];
+  tags?: string[];
+  facets?: CollectionFacets;
 }
 
-/** Ordered list of content slugs that make up a collection. */
+/** One item in a structured items payload. */
+model CollectionItemInput {
+  contentSlug: string;
+  sectionIndex?: int32;
+  curatorNote?: string;
+  focusSkills?: string[];
+}
+
+/** Ordered items that make up a collection (with notes + section links). */
 model CollectionItemsInput {
-  contentSlugs: string[];
+  items: CollectionItemInput[];
+}
+
+/** One chapter in a sections payload (ordered by array position). */
+model CollectionSectionInput {
+  title: string;
+  description?: string;
+}
+
+/** Replace the collection's chapters (ordered by array position). */
+model CollectionSectionsInput {
+  sections: CollectionSectionInput[];
+}
+
+/** A user-created collection's editable fields. */
+model UserCollectionWriteInput {
+  title: string;
+  summary?: string;
+  bodyMdx?: string;
+  visibility?: CollectionVisibility;
+}
+
+/** A 1..5 rating submission. */
+model CollectionRatingInput {
+  rating: int32;
+}
+
+/** Aggregate rating + the viewer's own rating after submitting. */
+model CollectionRatingResult {
+  average?: float32;
+  count: int32;
+  yourRating: int32;
 }
 
 /** Browse published collections. */
@@ -442,6 +542,151 @@ op unpublishCollection(@path slug: string): CollectionDetail;
 @tag("collections")
 @delete
 op deleteCollection(@path slug: string): {
+  @statusCode statusCode: 204;
+};
+
+/** Replace the collection's chapters (admin). */
+@route("/admin/collections/{slug}/sections")
+@tag("collections")
+@put
+op setCollectionSections(@path slug: string, @body body: CollectionSectionsInput): CollectionDetail;
+
+// --- Discovery + progress (public; progress/open are auth-aware in NestJS) ---
+
+/** A published collection with per-item completion + overall progress for the current viewer. */
+@route("/collections/{slug}/progress")
+@tag("collections")
+@get
+op getCollectionWithProgress(@path slug: string): CollectionProgressDetail | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+/** Record that a collection was opened (best-effort popularity signal). */
+@route("/collections/{slug}/open")
+@tag("collections")
+@post
+op recordCollectionOpen(@path slug: string): {
+  @statusCode statusCode: 204;
+};
+
+/** One facet value + its result count. */
+model CollectionFacetValue {
+  value: string;
+  label: string;
+  count: int32;
+}
+
+/** Facet distributions for the current collection search. */
+model CollectionSearchFacets {
+  kinds: CollectionFacetValue[];
+  eras: CollectionFacetValue[];
+  instruments: CollectionFacetValue[];
+  techniques: CollectionFacetValue[];
+  moods: CollectionFacetValue[];
+  curators: CollectionFacetValue[];
+  difficulties: CollectionFacetValue[];
+}
+
+/** A page of collection search results + facets. */
+model CollectionSearchResult {
+  items: CollectionSummary[];
+  facets: CollectionSearchFacets;
+  total: int32;
+  page: int32;
+  pageSize: int32;
+}
+
+/** Faceted discovery over published collections. */
+@route("/collections/search")
+@tag("collections")
+@get
+op searchCollections(
+  @query q?: string,
+  @query kind?: string,
+  @query era?: string[],
+  @query instrument?: string[],
+  @query technique?: string[],
+  @query mood?: string[],
+  @query curator?: string[],
+  @query difficulty?: int32,
+  @query featured?: boolean,
+  @query sort?: string,
+  @query page?: int32,
+  @query pageSize?: int32,
+): CollectionSearchResult;
+
+// --- Personal engagement + user-created collections (auth-gated in NestJS) ---
+
+/** The current user's saved (bookmarked) collections. */
+@route("/me/saved-collections")
+@tag("collections")
+@get
+op listCollectionBookmarks(): CollectionList;
+
+/** Save a collection to the current user's library. */
+@route("/me/collections/{slug}/bookmark")
+@tag("collections")
+@post
+op addCollectionBookmark(@path slug: string): {
+  @statusCode statusCode: 204;
+};
+
+/** Remove a collection from the current user's library. */
+@route("/me/collections/{slug}/bookmark")
+@tag("collections")
+@delete
+op removeCollectionBookmark(@path slug: string): {
+  @statusCode statusCode: 204;
+};
+
+/** Rate a collection (1..5) as the current user. */
+@route("/me/collections/{slug}/rating")
+@tag("collections")
+@put
+op rateCollection(@path slug: string, @body body: CollectionRatingInput): CollectionRatingResult;
+
+/** The current user's own collections. */
+@route("/me/collections")
+@tag("collections")
+@get
+op listMyCollections(): CollectionList;
+
+/** Create a user-owned collection. */
+@route("/me/collections")
+@tag("collections")
+@post
+op createUserCollection(@body body: UserCollectionWriteInput): {
+  @statusCode statusCode: 201;
+  @body body: CollectionDetail;
+};
+
+/** One of the current user's collections (for editing). */
+@route("/me/collections/{slug}")
+@tag("collections")
+@get
+op getMyCollection(@path slug: string): CollectionDetail | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+/** Update a user-owned collection's metadata. */
+@route("/me/collections/{slug}")
+@tag("collections")
+@put
+op updateUserCollection(@path slug: string, @body body: UserCollectionWriteInput): CollectionDetail;
+
+/** Replace a user-owned collection's ordered items. */
+@route("/me/collections/{slug}/items")
+@tag("collections")
+@put
+op setUserCollectionItems(@path slug: string, @body body: CollectionItemsInput): CollectionDetail;
+
+/** Delete a user-owned collection. */
+@route("/me/collections/{slug}")
+@tag("collections")
+@delete
+op deleteUserCollection(@path slug: string): {
   @statusCode statusCode: 204;
 };
 

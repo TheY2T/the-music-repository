@@ -8,6 +8,9 @@ if (!Astro.locals.flags.collections) {
   return Astro.redirect('/');
 }
 const locale = Astro.locals.locale;
+const { flags, user } = Astro.locals;
+const showProgress = flags.progress && !!user;
+const showSave = flags.collectionBookmarks && !!user;
 ---
 
 <BaseLayout title={t(locale, 'collections.pageTitle')}>
@@ -15,8 +18,13 @@ const locale = Astro.locals.locale;
     title={t(locale, 'collections.title')}
     subtitle={t(locale, 'collections.subtitle')}
     back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
-    maxWidth="max-w-6xl"
+    maxWidth="max-w-7xl"
   >
-    <CollectionsBrowser client:load locale={locale} />
+    <CollectionsBrowser
+      client:load
+      locale={locale}
+      showProgress={showProgress}
+      showSave={showSave}
+    />
   </PageShell>
 </BaseLayout>

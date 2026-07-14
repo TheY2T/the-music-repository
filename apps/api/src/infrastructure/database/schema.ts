@@ -7,10 +7,11 @@ import {
   primaryKey,
   text,
   timestamp,
+  unique,
   uuid,
 } from 'drizzle-orm/pg-core';
 import { user } from '../../auth/auth-schema';
-import type { ContentDetails } from './content-details';
+import type { CollectionFacets, ContentDetails } from './content-details';
 
 /**
  * Catalogue schema (Phase 1). The repository core: content items + taxonomy + media assets.
@@ -164,31 +165,98 @@ export const savedProgressions = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.name] })],
 );
 
-// --- Collections (Phase 2): ordered groupings — courses / learning paths / syllabi / song lists. ---
+// --- Collections (Phase 2 → Collections Library): rich, chaptered groupings — courses / learning
+//     paths / syllabi / song lists. Editorial (curated) or user-created. ---
 export const collections = pgTable('collections', {
   id: uuid('id').primaryKey().defaultRandom(),
   slug: text('slug').notNull().unique(),
   title: text('title').notNull(),
   summary: text('summary'),
+  bodyMdx: text('body_mdx'), // rich description (rendered on the detail page)
   kind: text('kind').notNull().default('course'), // course | path | syllabus | songlist
-  visibility: text('visibility').notNull().default('public'),
+  visibility: text('visibility').notNull().default('public'), // public | authed | private
   status: text('status').notNull().default('draft'), // draft | published
+  curationType: text('curation_type').notNull().default('editorial'), // editorial | user
+  ownerId: text('owner_id').references(() => user.id, { onDelete: 'cascade' }), // null for editorial
+  heroImageKey: text('hero_image_key'), // optional cover/hero asset key
+  accent: text('accent'), // optional theme/accent hint
+  featured: boolean('featured').notNull().default(false),
+  difficultyMin: integer('difficulty_min'), // graded 1..10 (nullable)
+  difficultyMax: integer('difficulty_max'),
+  estMinutes: integer('est_minutes'), // estimated total duration
+  curatorName: text('curator_name'),
+  curatorBio: text('curator_bio'),
+  outcomes: jsonb('outcomes').$type<string[]>(), // "what you'll learn" bullets
+  /** Discovery facets (era/genre/technique/mood) — mirrored into the Meili collections index. */
+  facets: jsonb('facets').$type<CollectionFacets>(),
+  tags: jsonb('tags').$type<string[]>(), // denormalized tag slugs for search/facets
+  popularity: integer('popularity').notNull().default(0), // open/play counter
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+// A chapter within a collection: an ordered group of items. Items with a null section render ungrouped.
+export const collectionSections = pgTable('collection_sections', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  collectionId: uuid('collection_id')
+    .notNull()
+    .references(() => collections.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  description: text('description'),
+  position: integer('position').notNull(), // 0-based order within the collection
+});
+
+// One membership: a catalogue item at a position, optionally in a section, with curator annotations.
+// Own `id` PK (not composite) so a single membership is addressable; UNIQUE(collection, content)
+// preserves the no-duplicate-item invariant.
 export const collectionItems = pgTable(
   'collection_items',
   {
+    id: uuid('id').primaryKey().defaultRandom(),
     collectionId: uuid('collection_id')
       .notNull()
       .references(() => collections.id, { onDelete: 'cascade' }),
+    sectionId: uuid('section_id').references(() => collectionSections.id, { onDelete: 'set null' }),
     contentId: uuid('content_id')
       .notNull()
       .references(() => contentItems.id, { onDelete: 'cascade' }),
-    position: integer('position').notNull(), // 0-based order within the collection
+    position: integer('position').notNull(), // 0-based order (flattened across sections)
+    curatorNote: text('curator_note'), // per-item context ("why this piece / what to focus on")
+    focusSkills: jsonb('focus_skills').$type<string[]>(),
   },
-  (t) => [primaryKey({ columns: [t.collectionId, t.contentId] })],
+  (t) => [unique('collection_items_collection_content_uq').on(t.collectionId, t.contentId)],
+);
+
+// --- Collection engagement: a user ↔ collection bookmark (mirror of `favorites`). ---
+export const collectionBookmarks = pgTable(
+  'collection_bookmarks',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    collectionId: uuid('collection_id')
+      .notNull()
+      .references(() => collections.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.collectionId] })],
+);
+
+// A user's 1..5 rating of a collection. One row per (user, collection); aggregate avg/count via SQL.
+export const collectionRatings = pgTable(
+  'collection_ratings',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    collectionId: uuid('collection_id')
+      .notNull()
+      .references(() => collections.id, { onDelete: 'cascade' }),
+    rating: integer('rating').notNull(), // 1..5
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.collectionId] })],
 );
 
 // --- Progress (Phase 2): per-user completion + practice sessions (streaks / practice time). ---

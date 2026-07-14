@@ -42,6 +42,16 @@ the controller drops empties. MinIO presigned URLs use `S3_PUBLIC_ENDPOINT` so t
   `pnpm --filter @TheY2T/tmr-api content:build` to regenerate the build-safe `seed-content.ts` bundle
   the seed consumes. Era is a Meilisearch facet derived from `details.era` (no SQL taxonomy table). See
   `docs/features/catalogue.md`.
+- **Collections** (`src/collections/`, ADR 0023) are authored the same way:
+  `content/collections/<slug>.md` (frontmatter + `## Outcomes` + `## Section:` blocks with
+  `- slug (note: …; skills: […])` items) → `pnpm --filter @TheY2T/tmr-api collections:build` →
+  `seed-collections.ts`. A collection is rich metadata + `collection_sections` + `collection_items`
+  (own uuid PK, `section_id`, `curator_note`, `focus_skills`). The domain `Collection.itemSlugs` MUST stay
+  a **flattened, section-ordered** list — the progress module reads it. Ports: `CollectionRepository`,
+  `CollectionBookmarks`, `CollectionRatings`, `CollectionSearchIndex` (Meili `collections` index,
+  reindexed on seed + writes; private user collections never indexed), + a thin `LearnerProgress`
+  (reads `content_progress` — avoids a cycle with `ProgressModule`). User-collection ownership is enforced
+  in the use-cases (403), not the path. See `docs/features/collections.md`.
 
 ## Feature flags
 

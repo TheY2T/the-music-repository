@@ -78,6 +78,8 @@ export function buildAccountNav(ctx: NavContext): NavItem[] {
     items.push(makeItem(ctx, 'progress', '/me/progress', 'nav.myProgress', 'chart'));
   if (flags.favorites)
     items.push(makeItem(ctx, 'favorites', '/me/favorites', 'nav.myFavorites', 'heart'));
+  if (flags.collectionBookmarks || flags.userCollections)
+    items.push(makeItem(ctx, 'my-collections', '/me/collections', 'nav.myCollections', 'bookmark'));
   if (flags.premium) items.push(makeItem(ctx, 'upgrade', '/upgrade', 'nav.premium', 'crown'));
   if (flags.classrooms)
     items.push(makeItem(ctx, 'classrooms', '/classrooms', 'nav.classrooms', 'graduation-cap'));

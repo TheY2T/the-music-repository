@@ -16,8 +16,12 @@ export interface MediaCardProps {
   seed?: string;
   /** Rendered over the cover's top-right (e.g. a premium lock). Sits above the link overlay. */
   badgeSlot?: React.ReactNode;
-  /** Rendered at the body's top-right (e.g. a favorite toggle). Sits above the link overlay. */
+  /** Rendered at the body's top-right (e.g. a favorite/save toggle). Sits above the link overlay. */
   actionSlot?: React.ReactNode;
+  /** Small meta line under the badges (e.g. duration · item count). Presentational. */
+  metaSlot?: React.ReactNode;
+  /** Rendered at the card's foot (e.g. a progress bar + rating). Sits above the link overlay. */
+  footerSlot?: React.ReactNode;
   className?: string;
 }
 
@@ -36,6 +40,8 @@ export function MediaCard({
   seed,
   badgeSlot,
   actionSlot,
+  metaSlot,
+  footerSlot,
   className,
 }: MediaCardProps) {
   return (
@@ -74,6 +80,10 @@ export function MediaCard({
           {title}
         </h3>
 
+        {metaSlot ? (
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">{metaSlot}</div>
+        ) : null}
+
         {summary ? <p className="line-clamp-2 text-sm text-muted-foreground">{summary}</p> : null}
 
         {tags && tags.length > 0 ? (
@@ -85,6 +95,8 @@ export function MediaCard({
             ))}
           </div>
         ) : null}
+
+        {footerSlot ? <div className="relative z-20 mt-1">{footerSlot}</div> : null}
       </div>
     </Card>
   );

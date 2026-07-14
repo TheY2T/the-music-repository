@@ -264,6 +264,47 @@
         ]
       }
     },
+    "/admin/collections/{slug}/sections": {
+      "put": {
+        "operationId": "setCollectionSections",
+        "description": "Replace the collection's chapters (admin).",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionSectionsInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/admin/collections/{slug}/unpublish": {
       "post": {
         "operationId": "unpublishCollection",
@@ -1080,6 +1121,155 @@
         ]
       }
     },
+    "/collections/search": {
+      "get": {
+        "operationId": "searchCollections",
+        "description": "Faceted discovery over published collections.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "era",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "explode": false
+          },
+          {
+            "name": "instrument",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "explode": false
+          },
+          {
+            "name": "technique",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "explode": false
+          },
+          {
+            "name": "mood",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "explode": false
+          },
+          {
+            "name": "curator",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "explode": false
+          },
+          {
+            "name": "difficulty",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "explode": false
+          },
+          {
+            "name": "featured",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "explode": false
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "explode": false
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionSearchResult"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      }
+    },
     "/collections/{slug}": {
       "get": {
         "operationId": "getCollectionBySlug",
@@ -1101,6 +1291,71 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CollectionDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      }
+    },
+    "/collections/{slug}/open": {
+      "post": {
+        "operationId": "recordCollectionOpen",
+        "description": "Record that a collection was opened (best-effort popularity signal).",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      }
+    },
+    "/collections/{slug}/progress": {
+      "get": {
+        "operationId": "getCollectionWithProgress",
+        "description": "A published collection with per-item completion + overall progress for the current viewer.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionProgressDetail"
                 }
               }
             }
@@ -1586,6 +1841,288 @@
         }
       }
     },
+    "/me/collections": {
+      "get": {
+        "operationId": "listMyCollections",
+        "description": "The current user's own collections.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      },
+      "post": {
+        "operationId": "createUserCollection",
+        "description": "Create a user-owned collection.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCollectionWriteInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/collections/{slug}": {
+      "get": {
+        "operationId": "getMyCollection",
+        "description": "One of the current user's collections (for editing).",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      },
+      "put": {
+        "operationId": "updateUserCollection",
+        "description": "Update a user-owned collection's metadata.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCollectionWriteInput"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteUserCollection",
+        "description": "Delete a user-owned collection.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      }
+    },
+    "/me/collections/{slug}/bookmark": {
+      "post": {
+        "operationId": "addCollectionBookmark",
+        "description": "Save a collection to the current user's library.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      },
+      "delete": {
+        "operationId": "removeCollectionBookmark",
+        "description": "Remove a collection from the current user's library.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      }
+    },
+    "/me/collections/{slug}/items": {
+      "put": {
+        "operationId": "setUserCollectionItems",
+        "description": "Replace a user-owned collection's ordered items.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionItemsInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/collections/{slug}/rating": {
+      "put": {
+        "operationId": "rateCollection",
+        "description": "Rate a collection (1..5) as the current user.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionRatingResult"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionRatingInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/me/entitlements/history": {
       "get": {
         "operationId": "getEntitlementHistory",
@@ -1988,6 +2525,28 @@
         }
       }
     },
+    "/me/saved-collections": {
+      "get": {
+        "operationId": "listCollectionBookmarks",
+        "description": "The current user's saved (bookmarked) collections.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ]
+      }
+    },
     "/me/subscription": {
       "get": {
         "operationId": "getSubscription",
@@ -2361,9 +2920,14 @@
           "title",
           "kind",
           "visibility",
+          "curationType",
           "itemCount",
+          "featured",
+          "popularity",
+          "ratingCount",
           "status",
-          "items"
+          "items",
+          "sections"
         ],
         "properties": {
           "slug": {
@@ -2389,10 +2953,62 @@
             "enum": [
               "public",
               "authed",
-              "premium"
+              "private"
+            ]
+          },
+          "curationType": {
+            "type": "string",
+            "enum": [
+              "editorial",
+              "user"
             ]
           },
           "itemCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "difficultyMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "difficultyMax": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estMinutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "curatorName": {
+            "type": "string"
+          },
+          "heroImageKey": {
+            "type": "string"
+          },
+          "accent": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "facets": {
+            "$ref": "#/components/schemas/CollectionFacets"
+          },
+          "popularity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "averageRating": {
+            "type": "number",
+            "format": "float"
+          },
+          "ratingCount": {
             "type": "integer",
             "format": "int32"
           },
@@ -2404,14 +3020,35 @@
               "published"
             ]
           },
+          "ownerId": {
+            "type": "string"
+          },
+          "bodyMdx": {
+            "type": "string"
+          },
+          "outcomes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "curatorBio": {
+            "type": "string"
+          },
           "items": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/CollectionEntry"
             }
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionSectionView"
+            }
           }
         },
-        "description": "Full collection with its ordered items."
+        "description": "Full collection with its ordered items grouped into sections."
       },
       "CollectionEntry": {
         "type": "object",
@@ -2426,24 +3063,121 @@
           },
           "content": {
             "$ref": "#/components/schemas/ContentSummary"
+          },
+          "sectionId": {
+            "type": "string"
+          },
+          "curatorNote": {
+            "type": "string"
+          },
+          "focusSkills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "completed": {
+            "type": "boolean"
           }
         },
-        "description": "One ordered entry in a collection (a catalogue item at a position)."
+        "description": "One ordered entry in a collection (a catalogue item at a position + curator annotations)."
       },
-      "CollectionItemsInput": {
+      "CollectionFacetValue": {
         "type": "object",
         "required": [
-          "contentSlugs"
+          "value",
+          "label",
+          "count"
         ],
         "properties": {
-          "contentSlugs": {
+          "value": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "One facet value + its result count."
+      },
+      "CollectionFacets": {
+        "type": "object",
+        "properties": {
+          "era": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "genre": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "technique": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mood": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "instrument": {
             "type": "array",
             "items": {
               "type": "string"
             }
           }
         },
-        "description": "Ordered list of content slugs that make up a collection."
+        "description": "Discovery facets carried by a collection."
+      },
+      "CollectionItemInput": {
+        "type": "object",
+        "required": [
+          "contentSlug"
+        ],
+        "properties": {
+          "contentSlug": {
+            "type": "string"
+          },
+          "sectionIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "curatorNote": {
+            "type": "string"
+          },
+          "focusSkills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "One item in a structured items payload."
+      },
+      "CollectionItemsInput": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionItemInput"
+            }
+          }
+        },
+        "description": "Ordered items that make up a collection (with notes + section links)."
       },
       "CollectionList": {
         "type": "object",
@@ -2485,14 +3219,24 @@
         },
         "description": "Progress for a single collection."
       },
-      "CollectionSummary": {
+      "CollectionProgressDetail": {
         "type": "object",
         "required": [
           "slug",
           "title",
           "kind",
           "visibility",
-          "itemCount"
+          "curationType",
+          "itemCount",
+          "featured",
+          "popularity",
+          "ratingCount",
+          "status",
+          "items",
+          "sections",
+          "percentComplete",
+          "completedCount",
+          "nextUpSlug"
         ],
         "properties": {
           "slug": {
@@ -2518,10 +3262,401 @@
             "enum": [
               "public",
               "authed",
-              "premium"
+              "private"
+            ]
+          },
+          "curationType": {
+            "type": "string",
+            "enum": [
+              "editorial",
+              "user"
             ]
           },
           "itemCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "difficultyMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "difficultyMax": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estMinutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "curatorName": {
+            "type": "string"
+          },
+          "heroImageKey": {
+            "type": "string"
+          },
+          "accent": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "facets": {
+            "$ref": "#/components/schemas/CollectionFacets"
+          },
+          "popularity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "averageRating": {
+            "type": "number",
+            "format": "float"
+          },
+          "ratingCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "review",
+              "published"
+            ]
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "bodyMdx": {
+            "type": "string"
+          },
+          "outcomes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "curatorBio": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionEntry"
+            }
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionSectionView"
+            }
+          },
+          "percentComplete": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nextUpSlug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "description": "Collection detail with per-item completion + overall progress (auth-aware)."
+      },
+      "CollectionRatingInput": {
+        "type": "object",
+        "required": [
+          "rating"
+        ],
+        "properties": {
+          "rating": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "A 1..5 rating submission."
+      },
+      "CollectionRatingResult": {
+        "type": "object",
+        "required": [
+          "count",
+          "yourRating"
+        ],
+        "properties": {
+          "average": {
+            "type": "number",
+            "format": "float"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "yourRating": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "Aggregate rating + the viewer's own rating after submitting."
+      },
+      "CollectionSearchFacets": {
+        "type": "object",
+        "required": [
+          "kinds",
+          "eras",
+          "instruments",
+          "techniques",
+          "moods",
+          "curators",
+          "difficulties"
+        ],
+        "properties": {
+          "kinds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionFacetValue"
+            }
+          },
+          "eras": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionFacetValue"
+            }
+          },
+          "instruments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionFacetValue"
+            }
+          },
+          "techniques": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionFacetValue"
+            }
+          },
+          "moods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionFacetValue"
+            }
+          },
+          "curators": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionFacetValue"
+            }
+          },
+          "difficulties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionFacetValue"
+            }
+          }
+        },
+        "description": "Facet distributions for the current collection search."
+      },
+      "CollectionSearchResult": {
+        "type": "object",
+        "required": [
+          "items",
+          "facets",
+          "total",
+          "page",
+          "pageSize"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionSummary"
+            }
+          },
+          "facets": {
+            "$ref": "#/components/schemas/CollectionSearchFacets"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "A page of collection search results + facets."
+      },
+      "CollectionSectionInput": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "description": "One chapter in a sections payload (ordered by array position)."
+      },
+      "CollectionSectionView": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "position",
+          "items"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionEntry"
+            }
+          }
+        },
+        "description": "A chapter within a collection: an ordered group of entries."
+      },
+      "CollectionSectionsInput": {
+        "type": "object",
+        "required": [
+          "sections"
+        ],
+        "properties": {
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionSectionInput"
+            }
+          }
+        },
+        "description": "Replace the collection's chapters (ordered by array position)."
+      },
+      "CollectionSummary": {
+        "type": "object",
+        "required": [
+          "slug",
+          "title",
+          "kind",
+          "visibility",
+          "curationType",
+          "itemCount",
+          "featured",
+          "popularity",
+          "ratingCount"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "course",
+              "path",
+              "syllabus",
+              "songlist"
+            ]
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "public",
+              "authed",
+              "private"
+            ]
+          },
+          "curationType": {
+            "type": "string",
+            "enum": [
+              "editorial",
+              "user"
+            ]
+          },
+          "itemCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "difficultyMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "difficultyMax": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estMinutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "curatorName": {
+            "type": "string"
+          },
+          "heroImageKey": {
+            "type": "string"
+          },
+          "accent": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "facets": {
+            "$ref": "#/components/schemas/CollectionFacets"
+          },
+          "popularity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "averageRating": {
+            "type": "number",
+            "format": "float"
+          },
+          "ratingCount": {
             "type": "integer",
             "format": "int32"
           }
@@ -2545,6 +3680,9 @@
           "summary": {
             "type": "string"
           },
+          "bodyMdx": {
+            "type": "string"
+          },
           "kind": {
             "type": "string",
             "enum": [
@@ -2559,11 +3697,50 @@
             "enum": [
               "public",
               "authed",
-              "premium"
+              "private"
             ]
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "difficultyMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "difficultyMax": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estMinutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "curatorName": {
+            "type": "string"
+          },
+          "curatorBio": {
+            "type": "string"
+          },
+          "accent": {
+            "type": "string"
+          },
+          "outcomes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "facets": {
+            "$ref": "#/components/schemas/CollectionFacets"
           }
         },
-        "description": "Create/replace payload for a collection (items set separately)."
+        "description": "Create/replace payload for an editorial collection (items/sections set separately)."
       },
       "ContentAdminList": {
         "type": "object",
@@ -3806,6 +4983,32 @@
           }
         },
         "description": "Transfer ownership to a current member (owner only)."
+      },
+      "UserCollectionWriteInput": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "bodyMdx": {
+            "type": "string"
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "public",
+              "authed",
+              "private"
+            ]
+          }
+        },
+        "description": "A user-created collection's editable fields."
       }
     }
   }

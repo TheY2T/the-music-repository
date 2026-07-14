@@ -15,8 +15,27 @@ export const ListCollectionsAdminResponse = zod.object({
   "title": zod.string(),
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
-  "visibility": zod.enum(['public', 'authed', 'premium']),
-  "itemCount": zod.number()
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
+  "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number()
 }).describe('List\/card view of a collection.'))
 })
 
@@ -25,18 +44,58 @@ export const CreateCollectionBody = zod.object({
   "slug": zod.string(),
   "title": zod.string(),
   "summary": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
-  "visibility": zod.enum(['public', 'authed', 'premium']).optional()
-}).describe('Create\/replace payload for a collection (items set separately).')
+  "visibility": zod.enum(['public', 'authed', 'private']).optional(),
+  "featured": zod.boolean().optional(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "curatorBio": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "outcomes": zod.array(zod.string()).optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.')
+}).describe('Create\/replace payload for an editorial collection (items\/sections set separately).')
 
 export const CreateCollectionResponse = zod.object({
   "slug": zod.string(),
   "title": zod.string(),
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
-  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number(),
   "status": zod.enum(['draft', 'review', 'published']),
+  "ownerId": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "outcomes": zod.array(zod.string()).optional(),
+  "curatorBio": zod.string().optional(),
   "items": zod.array(zod.object({
   "position": zod.number(),
   "content": zod.object({
@@ -60,9 +119,48 @@ export const CreateCollectionResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
-}).describe('List\/card view of a catalogue item.')
-}).describe('One ordered entry in a collection (a catalogue item at a position).'))
-}).describe('Full collection with its ordered items.')
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).')),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "position": zod.number(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).'))
+}).describe('A chapter within a collection: an ordered group of entries.'))
+}).describe('Full collection with its ordered items grouped into sections.')
 
 
 export const GetCollectionForEditParams = zod.object({
@@ -74,9 +172,32 @@ export const GetCollectionForEditResponse = zod.object({
   "title": zod.string(),
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
-  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number(),
   "status": zod.enum(['draft', 'review', 'published']),
+  "ownerId": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "outcomes": zod.array(zod.string()).optional(),
+  "curatorBio": zod.string().optional(),
   "items": zod.array(zod.object({
   "position": zod.number(),
   "content": zod.object({
@@ -100,9 +221,48 @@ export const GetCollectionForEditResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
-}).describe('List\/card view of a catalogue item.')
-}).describe('One ordered entry in a collection (a catalogue item at a position).'))
-}).describe('Full collection with its ordered items.')
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).')),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "position": zod.number(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).'))
+}).describe('A chapter within a collection: an ordered group of entries.'))
+}).describe('Full collection with its ordered items grouped into sections.')
 
 
 export const UpdateCollectionParams = zod.object({
@@ -113,18 +273,58 @@ export const UpdateCollectionBody = zod.object({
   "slug": zod.string(),
   "title": zod.string(),
   "summary": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
-  "visibility": zod.enum(['public', 'authed', 'premium']).optional()
-}).describe('Create\/replace payload for a collection (items set separately).')
+  "visibility": zod.enum(['public', 'authed', 'private']).optional(),
+  "featured": zod.boolean().optional(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "curatorBio": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "outcomes": zod.array(zod.string()).optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.')
+}).describe('Create\/replace payload for an editorial collection (items\/sections set separately).')
 
 export const UpdateCollectionResponse = zod.object({
   "slug": zod.string(),
   "title": zod.string(),
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
-  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number(),
   "status": zod.enum(['draft', 'review', 'published']),
+  "ownerId": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "outcomes": zod.array(zod.string()).optional(),
+  "curatorBio": zod.string().optional(),
   "items": zod.array(zod.object({
   "position": zod.number(),
   "content": zod.object({
@@ -148,9 +348,48 @@ export const UpdateCollectionResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
-}).describe('List\/card view of a catalogue item.')
-}).describe('One ordered entry in a collection (a catalogue item at a position).'))
-}).describe('Full collection with its ordered items.')
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).')),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "position": zod.number(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).'))
+}).describe('A chapter within a collection: an ordered group of entries.'))
+}).describe('Full collection with its ordered items grouped into sections.')
 
 
 export const DeleteCollectionParams = zod.object({
@@ -168,17 +407,45 @@ export const SetCollectionItemsParams = zod.object({
 })
 
 export const SetCollectionItemsBody = zod.object({
-  "contentSlugs": zod.array(zod.string())
-}).describe('Ordered list of content slugs that make up a collection.')
+  "items": zod.array(zod.object({
+  "contentSlug": zod.string(),
+  "sectionIndex": zod.number().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional()
+}).describe('One item in a structured items payload.'))
+}).describe('Ordered items that make up a collection (with notes + section links).')
 
 export const SetCollectionItemsResponse = zod.object({
   "slug": zod.string(),
   "title": zod.string(),
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
-  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number(),
   "status": zod.enum(['draft', 'review', 'published']),
+  "ownerId": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "outcomes": zod.array(zod.string()).optional(),
+  "curatorBio": zod.string().optional(),
   "items": zod.array(zod.object({
   "position": zod.number(),
   "content": zod.object({
@@ -202,9 +469,48 @@ export const SetCollectionItemsResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
-}).describe('List\/card view of a catalogue item.')
-}).describe('One ordered entry in a collection (a catalogue item at a position).'))
-}).describe('Full collection with its ordered items.')
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).')),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "position": zod.number(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).'))
+}).describe('A chapter within a collection: an ordered group of entries.'))
+}).describe('Full collection with its ordered items grouped into sections.')
 
 
 export const PublishCollectionParams = zod.object({
@@ -216,9 +522,32 @@ export const PublishCollectionResponse = zod.object({
   "title": zod.string(),
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
-  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number(),
   "status": zod.enum(['draft', 'review', 'published']),
+  "ownerId": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "outcomes": zod.array(zod.string()).optional(),
+  "curatorBio": zod.string().optional(),
   "items": zod.array(zod.object({
   "position": zod.number(),
   "content": zod.object({
@@ -242,9 +571,160 @@ export const PublishCollectionResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
-}).describe('List\/card view of a catalogue item.')
-}).describe('One ordered entry in a collection (a catalogue item at a position).'))
-}).describe('Full collection with its ordered items.')
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).')),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "position": zod.number(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).'))
+}).describe('A chapter within a collection: an ordered group of entries.'))
+}).describe('Full collection with its ordered items grouped into sections.')
+
+
+/**
+ * Replace the collection's chapters (admin).
+ */
+export const SetCollectionSectionsParams = zod.object({
+  "slug": zod.string()
+})
+
+export const SetCollectionSectionsBody = zod.object({
+  "sections": zod.array(zod.object({
+  "title": zod.string(),
+  "description": zod.string().optional()
+}).describe('One chapter in a sections payload (ordered by array position).'))
+}).describe('Replace the collection\'s chapters (ordered by array position).')
+
+export const SetCollectionSectionsResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
+  "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number(),
+  "status": zod.enum(['draft', 'review', 'published']),
+  "ownerId": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "outcomes": zod.array(zod.string()).optional(),
+  "curatorBio": zod.string().optional(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).')),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "position": zod.number(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).'))
+}).describe('A chapter within a collection: an ordered group of entries.'))
+}).describe('Full collection with its ordered items grouped into sections.')
 
 
 export const UnpublishCollectionParams = zod.object({
@@ -256,9 +736,32 @@ export const UnpublishCollectionResponse = zod.object({
   "title": zod.string(),
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
-  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number(),
   "status": zod.enum(['draft', 'review', 'published']),
+  "ownerId": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "outcomes": zod.array(zod.string()).optional(),
+  "curatorBio": zod.string().optional(),
   "items": zod.array(zod.object({
   "position": zod.number(),
   "content": zod.object({
@@ -282,9 +785,48 @@ export const UnpublishCollectionResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
-}).describe('List\/card view of a catalogue item.')
-}).describe('One ordered entry in a collection (a catalogue item at a position).'))
-}).describe('Full collection with its ordered items.')
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).')),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "position": zod.number(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).'))
+}).describe('A chapter within a collection: an ordered group of entries.'))
+}).describe('Full collection with its ordered items grouped into sections.')
 
 
 export const CreateHelpTopicBody = zod.object({
@@ -735,10 +1277,118 @@ export const ListCollectionsResponse = zod.object({
   "title": zod.string(),
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
-  "visibility": zod.enum(['public', 'authed', 'premium']),
-  "itemCount": zod.number()
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
+  "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number()
 }).describe('List\/card view of a collection.'))
 })
+
+
+/**
+ * Faceted discovery over published collections.
+ */
+export const SearchCollectionsQueryParams = zod.object({
+  "q": zod.string().optional(),
+  "kind": zod.string().optional(),
+  "era": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "curator": zod.array(zod.string()).optional(),
+  "difficulty": zod.number().optional(),
+  "featured": zod.boolean().optional(),
+  "sort": zod.string().optional(),
+  "page": zod.number().optional(),
+  "pageSize": zod.number().optional()
+})
+
+export const SearchCollectionsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
+  "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number()
+}).describe('List\/card view of a collection.')),
+  "facets": zod.object({
+  "kinds": zod.array(zod.object({
+  "value": zod.string(),
+  "label": zod.string(),
+  "count": zod.number()
+}).describe('One facet value + its result count.')),
+  "eras": zod.array(zod.object({
+  "value": zod.string(),
+  "label": zod.string(),
+  "count": zod.number()
+}).describe('One facet value + its result count.')),
+  "instruments": zod.array(zod.object({
+  "value": zod.string(),
+  "label": zod.string(),
+  "count": zod.number()
+}).describe('One facet value + its result count.')),
+  "techniques": zod.array(zod.object({
+  "value": zod.string(),
+  "label": zod.string(),
+  "count": zod.number()
+}).describe('One facet value + its result count.')),
+  "moods": zod.array(zod.object({
+  "value": zod.string(),
+  "label": zod.string(),
+  "count": zod.number()
+}).describe('One facet value + its result count.')),
+  "curators": zod.array(zod.object({
+  "value": zod.string(),
+  "label": zod.string(),
+  "count": zod.number()
+}).describe('One facet value + its result count.')),
+  "difficulties": zod.array(zod.object({
+  "value": zod.string(),
+  "label": zod.string(),
+  "count": zod.number()
+}).describe('One facet value + its result count.'))
+}).describe('Facet distributions for the current collection search.'),
+  "total": zod.number(),
+  "page": zod.number(),
+  "pageSize": zod.number()
+}).describe('A page of collection search results + facets.')
 
 
 /**
@@ -753,9 +1403,32 @@ export const GetCollectionBySlugResponse = zod.object({
   "title": zod.string(),
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
-  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number(),
   "status": zod.enum(['draft', 'review', 'published']),
+  "ownerId": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "outcomes": zod.array(zod.string()).optional(),
+  "curatorBio": zod.string().optional(),
   "items": zod.array(zod.object({
   "position": zod.number(),
   "content": zod.object({
@@ -779,9 +1452,166 @@ export const GetCollectionBySlugResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
-}).describe('List\/card view of a catalogue item.')
-}).describe('One ordered entry in a collection (a catalogue item at a position).'))
-}).describe('Full collection with its ordered items.')
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).')),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "position": zod.number(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).'))
+}).describe('A chapter within a collection: an ordered group of entries.'))
+}).describe('Full collection with its ordered items grouped into sections.')
+
+
+/**
+ * Record that a collection was opened (best-effort popularity signal).
+ */
+export const RecordCollectionOpenParams = zod.object({
+  "slug": zod.string()
+})
+
+export const RecordCollectionOpenResponse = zod.void()
+
+
+/**
+ * A published collection with per-item completion + overall progress for the current viewer.
+ */
+export const GetCollectionWithProgressParams = zod.object({
+  "slug": zod.string()
+})
+
+export const GetCollectionWithProgressResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
+  "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number(),
+  "status": zod.enum(['draft', 'review', 'published']),
+  "ownerId": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "outcomes": zod.array(zod.string()).optional(),
+  "curatorBio": zod.string().optional(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).')),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "position": zod.number(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).'))
+}).describe('A chapter within a collection: an ordered group of entries.')),
+  "percentComplete": zod.number(),
+  "completedCount": zod.number(),
+  "nextUpSlug": zod.union([zod.string(),zod.null()])
+}).describe('Collection detail with per-item completion + overall progress (auth-aware).')
 
 
 /**
@@ -1244,6 +2074,527 @@ export const CreateClassroomResponse = zod.object({
 
 
 /**
+ * The current user's own collections.
+ */
+export const ListMyCollectionsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
+  "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number()
+}).describe('List\/card view of a collection.'))
+})
+
+
+/**
+ * Create a user-owned collection.
+ */
+export const CreateUserCollectionBody = zod.object({
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "visibility": zod.enum(['public', 'authed', 'private']).optional()
+}).describe('A user-created collection\'s editable fields.')
+
+export const CreateUserCollectionResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
+  "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number(),
+  "status": zod.enum(['draft', 'review', 'published']),
+  "ownerId": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "outcomes": zod.array(zod.string()).optional(),
+  "curatorBio": zod.string().optional(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).')),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "position": zod.number(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).'))
+}).describe('A chapter within a collection: an ordered group of entries.'))
+}).describe('Full collection with its ordered items grouped into sections.')
+
+
+/**
+ * One of the current user's collections (for editing).
+ */
+export const GetMyCollectionParams = zod.object({
+  "slug": zod.string()
+})
+
+export const GetMyCollectionResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
+  "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number(),
+  "status": zod.enum(['draft', 'review', 'published']),
+  "ownerId": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "outcomes": zod.array(zod.string()).optional(),
+  "curatorBio": zod.string().optional(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).')),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "position": zod.number(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).'))
+}).describe('A chapter within a collection: an ordered group of entries.'))
+}).describe('Full collection with its ordered items grouped into sections.')
+
+
+/**
+ * Update a user-owned collection's metadata.
+ */
+export const UpdateUserCollectionParams = zod.object({
+  "slug": zod.string()
+})
+
+export const UpdateUserCollectionBody = zod.object({
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "visibility": zod.enum(['public', 'authed', 'private']).optional()
+}).describe('A user-created collection\'s editable fields.')
+
+export const UpdateUserCollectionResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
+  "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number(),
+  "status": zod.enum(['draft', 'review', 'published']),
+  "ownerId": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "outcomes": zod.array(zod.string()).optional(),
+  "curatorBio": zod.string().optional(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).')),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "position": zod.number(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).'))
+}).describe('A chapter within a collection: an ordered group of entries.'))
+}).describe('Full collection with its ordered items grouped into sections.')
+
+
+/**
+ * Delete a user-owned collection.
+ */
+export const DeleteUserCollectionParams = zod.object({
+  "slug": zod.string()
+})
+
+export const DeleteUserCollectionResponse = zod.void()
+
+
+/**
+ * Save a collection to the current user's library.
+ */
+export const AddCollectionBookmarkParams = zod.object({
+  "slug": zod.string()
+})
+
+export const AddCollectionBookmarkResponse = zod.void()
+
+
+/**
+ * Remove a collection from the current user's library.
+ */
+export const RemoveCollectionBookmarkParams = zod.object({
+  "slug": zod.string()
+})
+
+export const RemoveCollectionBookmarkResponse = zod.void()
+
+
+/**
+ * Replace a user-owned collection's ordered items.
+ */
+export const SetUserCollectionItemsParams = zod.object({
+  "slug": zod.string()
+})
+
+export const SetUserCollectionItemsBody = zod.object({
+  "items": zod.array(zod.object({
+  "contentSlug": zod.string(),
+  "sectionIndex": zod.number().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional()
+}).describe('One item in a structured items payload.'))
+}).describe('Ordered items that make up a collection (with notes + section links).')
+
+export const SetUserCollectionItemsResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
+  "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number(),
+  "status": zod.enum(['draft', 'review', 'published']),
+  "ownerId": zod.string().optional(),
+  "bodyMdx": zod.string().optional(),
+  "outcomes": zod.array(zod.string()).optional(),
+  "curatorBio": zod.string().optional(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).')),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "position": zod.number(),
+  "items": zod.array(zod.object({
+  "position": zod.number(),
+  "content": zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).'))
+}).describe('List\/card view of a catalogue item.'),
+  "sectionId": zod.string().optional(),
+  "curatorNote": zod.string().optional(),
+  "focusSkills": zod.array(zod.string()).optional(),
+  "completed": zod.boolean().optional()
+}).describe('One ordered entry in a collection (a catalogue item at a position + curator annotations).'))
+}).describe('A chapter within a collection: an ordered group of entries.'))
+}).describe('Full collection with its ordered items grouped into sections.')
+
+
+/**
+ * Rate a collection (1..5) as the current user.
+ */
+export const RateCollectionParams = zod.object({
+  "slug": zod.string()
+})
+
+export const RateCollectionBody = zod.object({
+  "rating": zod.number()
+}).describe('A 1..5 rating submission.')
+
+export const RateCollectionResponse = zod.object({
+  "average": zod.number().optional(),
+  "count": zod.number(),
+  "yourRating": zod.number()
+}).describe('Aggregate rating + the viewer\'s own rating after submitting.')
+
+
+/**
  * The acting user's entitlement grant/revoke history (most-recent first).
  */
 export const GetEntitlementHistoryResponse = zod.object({
@@ -1473,6 +2824,40 @@ export const GradeCardResponse = zod.object({
   "repetitions": zod.number(),
   "dueAt": zod.string()
 }).describe('SM-2 scheduling state for a single card.')
+
+
+/**
+ * The current user's saved (bookmarked) collections.
+ */
+export const ListCollectionBookmarksResponse = zod.object({
+  "items": zod.array(zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
+  "visibility": zod.enum(['public', 'authed', 'private']),
+  "curationType": zod.enum(['editorial', 'user']),
+  "itemCount": zod.number(),
+  "featured": zod.boolean(),
+  "difficultyMin": zod.number().optional(),
+  "difficultyMax": zod.number().optional(),
+  "estMinutes": zod.number().optional(),
+  "curatorName": zod.string().optional(),
+  "heroImageKey": zod.string().optional(),
+  "accent": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional(),
+  "facets": zod.object({
+  "era": zod.array(zod.string()).optional(),
+  "genre": zod.array(zod.string()).optional(),
+  "technique": zod.array(zod.string()).optional(),
+  "mood": zod.array(zod.string()).optional(),
+  "instrument": zod.array(zod.string()).optional()
+}).optional().describe('Discovery facets carried by a collection.'),
+  "popularity": zod.number(),
+  "averageRating": zod.number().optional(),
+  "ratingCount": zod.number()
+}).describe('List\/card view of a collection.'))
+})
 
 
 /**

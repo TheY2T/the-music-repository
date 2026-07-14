@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import type { CollectionDetailView, CollectionWriteData } from '../../domain/collection';
+import type {
+  CollectionDetailView,
+  CollectionItemWriteData,
+  CollectionSectionWriteData,
+  CollectionWriteData,
+} from '../../domain/collection';
 import { CollectionNotFoundError } from '../../domain/errors/collection-not-found.error';
 import { CollectionSlugConflictError } from '../../domain/errors/collection-slug-conflict.error';
 import { CollectionDetailAssembler } from '../collection-detail.assembler';
 import { CollectionRepository } from '../ports/collection-repository.port';
 
-/** Shared helper: re-read a collection and assemble the admin detail view. */
+/** Shared helper: re-read a collection and assemble the admin detail view (all items, any status). */
 async function adminDetail(
   repository: CollectionRepository,
   assembler: CollectionDetailAssembler,
@@ -67,17 +72,36 @@ export class SetCollectionStatusUseCase {
 }
 
 @Injectable()
+export class SetCollectionSectionsUseCase {
+  constructor(
+    private readonly repository: CollectionRepository,
+    private readonly assembler: CollectionDetailAssembler,
+  ) {}
+
+  async execute(
+    slug: string,
+    sections: CollectionSectionWriteData[],
+  ): Promise<CollectionDetailView> {
+    if (!(await this.repository.exists(slug))) {
+      throw new CollectionNotFoundError(slug);
+    }
+    await this.repository.setSections(slug, sections);
+    return adminDetail(this.repository, this.assembler, slug);
+  }
+}
+
+@Injectable()
 export class SetCollectionItemsUseCase {
   constructor(
     private readonly repository: CollectionRepository,
     private readonly assembler: CollectionDetailAssembler,
   ) {}
 
-  async execute(slug: string, contentSlugs: string[]): Promise<CollectionDetailView> {
+  async execute(slug: string, items: CollectionItemWriteData[]): Promise<CollectionDetailView> {
     if (!(await this.repository.exists(slug))) {
       throw new CollectionNotFoundError(slug);
     }
-    await this.repository.setItems(slug, contentSlugs);
+    await this.repository.setItems(slug, items);
     return adminDetail(this.repository, this.assembler, slug);
   }
 }

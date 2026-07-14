@@ -71,7 +71,7 @@ export const collectionsAdminApi = {
   setItems: (slug: string, contentSlugs: string[]) =>
     request<CollectionDetail>(`/admin/collections/${encodeURIComponent(slug)}/items`, {
       method: 'PUT',
-      body: JSON.stringify({ contentSlugs }),
+      body: JSON.stringify({ items: contentSlugs.map((contentSlug) => ({ contentSlug })) }),
     }),
   publish: (slug: string) =>
     request<CollectionDetail>(`/admin/collections/${encodeURIComponent(slug)}/publish`, {

@@ -1,0 +1,26 @@
+---
+import SavedCollections from '@/components/SavedCollections.tsx';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+const { flags, user, locale } = Astro.locals;
+// Requires an engagement flag on + an authenticated user.
+if (!flags.collectionBookmarks && !flags.userCollections) {
+  return Astro.redirect('/');
+}
+if (!user) {
+  return Astro.redirect('/signin?redirect=/me/collections');
+}
+---
+
+<BaseLayout title={t(locale, 'collections.savedPageTitle')}>
+  <PageShell
+    title={t(locale, 'collections.savedTitle')}
+    subtitle={t(locale, 'collections.savedSubtitle')}
+    back={{ href: localizedPath(locale, '/collections'), label: t(locale, 'common.backCollections') }}
+    maxWidth="max-w-6xl"
+  >
+    <SavedCollections client:load locale={locale} canCreate={flags.userCollections} />
+  </PageShell>
+</BaseLayout>

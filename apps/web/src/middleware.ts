@@ -117,6 +117,22 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.Collections,
     FlagDefaults[FlagKeys.Collections],
   );
+  const collectionDiscovery = await client.getBooleanValue(
+    FlagKeys.CollectionDiscovery,
+    FlagDefaults[FlagKeys.CollectionDiscovery],
+  );
+  const collectionBookmarks = await client.getBooleanValue(
+    FlagKeys.CollectionBookmarks,
+    FlagDefaults[FlagKeys.CollectionBookmarks],
+  );
+  const collectionRatings = await client.getBooleanValue(
+    FlagKeys.CollectionRatings,
+    FlagDefaults[FlagKeys.CollectionRatings],
+  );
+  const userCollections = await client.getBooleanValue(
+    FlagKeys.UserCollections,
+    FlagDefaults[FlagKeys.UserCollections],
+  );
   const progress = await client.getBooleanValue(FlagKeys.Progress, FlagDefaults[FlagKeys.Progress]);
   const infoView = await client.getBooleanValue(FlagKeys.InfoView, FlagDefaults[FlagKeys.InfoView]);
   const toolKeyboard = await client.getBooleanValue(
@@ -316,6 +332,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
     savedProgressions,
     toolPractice,
     collections,
+    collectionDiscovery,
+    collectionBookmarks,
+    collectionRatings,
+    userCollections,
     progress,
     infoView,
     toolKeyboard,

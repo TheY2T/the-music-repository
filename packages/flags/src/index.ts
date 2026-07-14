@@ -29,6 +29,14 @@ export const FlagKeys = {
   SavedProgressions: 'personalization.saved-progressions',
   /** Phase 2 — gates collections (courses / learning paths) browse + admin. */
   Collections: 'learning.collections',
+  /** Collections Library — faceted discovery (search/facets/sort/shelves) on the collections index. */
+  CollectionDiscovery: 'learning.collections-discovery',
+  /** Collections Library — save/bookmark collections to a personal library (auth). */
+  CollectionBookmarks: 'learning.collections-bookmarks',
+  /** Collections Library — 1..5 collection ratings + popularity shelves (auth to rate). */
+  CollectionRatings: 'learning.collections-ratings',
+  /** Collections Library — user-created collections (build your own, public/private). */
+  UserCollections: 'learning.user-collections',
   /** Phase 2 — gates progress tracking (completion, streaks, dashboard). */
   Progress: 'learning.progress',
   /** Phase 5 backlog — logs active tool usage as practice time (feeds the progress dashboard). */
@@ -147,6 +155,10 @@ export const FlagDefaults = {
   [FlagKeys.Favorites]: true,
   [FlagKeys.SavedProgressions]: true,
   [FlagKeys.Collections]: true,
+  [FlagKeys.CollectionDiscovery]: true,
+  [FlagKeys.CollectionBookmarks]: true,
+  [FlagKeys.CollectionRatings]: true,
+  [FlagKeys.UserCollections]: true,
   [FlagKeys.Progress]: true,
   [FlagKeys.ToolPractice]: true,
   [FlagKeys.InfoView]: true,
