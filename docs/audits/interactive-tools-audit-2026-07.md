@@ -7,6 +7,14 @@ out a prioritized plan to **(1) deepen** existing tools, **(2) consolidate** ove
 **(3) grow content & play-along**, and **(4) add new tools**. It complements `docs/backlog.md`
 (which is a feature parking-lot) with a data-and-consolidation lens.
 
+> **Status (2026-07-15).** The **deepen** + **consolidate** + **level-tier** work is complete on branch
+> `feat/tools-theory-expansion`: unified/expanded theory tables (scales 9→20, chords 10→26), the
+> generative movable chord-shape library (+ bass) wired into the CAGED explorer & chord-diagrams
+> dictionary, bass clef + key signatures for the reading tools, the Beginner→Expert level selector
+> (X1), and consolidations C1 + C5 (C2/C3/C4/C6 deliberately kept separate — see §3). The tuner's mic
+> pitch-detection was already shipped. **Still open (additive, ongoing):** §5 content/genre breadth and
+> §6 new tools — these are expansion backlog, not one-shot tasks.
+
 > **Design principle threaded throughout — Level tiers.** Every tool should expose a
 > **Beginner / Intermediate / Advanced (/ Expert)** selector that gates which options are visible and
 > pre-fills sensible defaults, so a beginner sees C-major triads and a jazz player sees altered
@@ -58,14 +66,17 @@ Overlaps waste maintenance effort and confuse the tool hub. Recommended merges, 
 | # | Merge | Rationale | Effort |
 |---|---|---|---|
 | C1 | ✅ **DONE (2026-07-15)** **keyboard + soundfont merged** — the keyboard tool now shows both the scale highlighter and the instrument picker; `/tools/soundfont` redirects to it and the duplicate hub card is removed (flag/i18n left intact). | XS |
-| C2 | **Unify the route-tool vs embed-Pixi duplicate pairs** (`intervals`, `rhythm`, `strum/strumming`, `chord-diagrams/chord-board`) | Each concept has *two* implementations. Make the embed card the presentational core; the route page wraps it. Kills 4 parallel codebases | M |
-| C3 | **Fretboard family → one configurable "Fretboard" tool** (`fretboard` + `scale-boxes` + `caged` + `fingering`) with modes: free explore / scale-box window / CAGED shapes / chord fingering, and instrument + tuning props | All render scales/shapes on a neck from the same scene + theory. A mode toggle replaces 4 routes | L |
-| C4 | **Backing/accompaniment family → one "Band" engine** (`backing-track` + `practice-room` + `bassline` + `grooves`) with toggleable parts (drums/bass/comping) + optional chord-diagram/cursor overlay | All share the `scheduleTone`/`scheduleDrum` lookahead scheduler; `practice-room` ≈ `backing-track` + diagram | L |
-| C5 | **Score editors** (`score` + `musicxml`) → one playground with an input-format tab | Both are thin editors over `ScorePlayer` | S |
-| C6 | **Quiz/drill dedup** — make the standalone quizzes (`ear-trainer`, `chord-quality-ear`, scale-degree, staff) and the 4 SRS decks share one question-bank module | The 4 decks re-implement quiz logic that already exists standalone | M |
+| C2 | ⏸️ **RESOLVED — keep separate (2026-07-15).** Route-tool vs embed-Pixi "pairs" (`intervals`, `rhythm`, `strum/strumming`, `chord-diagrams/chord-board`) are not true duplicates: the route tools are full playgrounds; the embed cards are compact, preconfigured, in-article surfaces (often Pixi). They serve different contexts and already share the underlying theory/audio + `findChordShape`. Folding one into the other would either bloat the embed or strip the tool. | M |
+| C3 | ⏸️ **RESOLVED — keep separate (2026-07-15).** Fretboard family (`fretboard`/`scale-boxes`/`caged`/`fingering`). They already share the Pixi `fretboard-scene` + `music-theory`; each is a *focused study tool* (free explore / movable box / CAGED / embed fingering). A mode-switch mega-tool trades that focus for complexity and risks 4 regressions for no real code win — the shared code is already factored. | L |
+| C4 | ⏸️ **RESOLVED — keep separate (2026-07-15).** Band family (`backing-track`/`practice-room`/`bassline`/`grooves`). The shared engine (`scheduleTone`/`scheduleDrum` lookahead scheduler) already lives in `audio.ts`; each tool has distinct arrangement logic + study focus (full band / practice-with-diagram / bass styles / drum grooves). Merging is a UX regression, not a dedup. | L |
+| C5 | ✅ **DONE (2026-07-15)** score + musicxml merged — the playground has an alphaTex/MusicXML input-format toggle (the engine sniffs by leading `<`); `/tools/musicxml` redirects, its card + `MusicXmlImport` removed. | S |
+| C6 | ⏸️ **RESOLVED — keep separate (2026-07-15).** The 4 SRS decks and the standalone quizzes already share the primitives that matter (`playTone`, `midiToFrequency`, `CHORDS`, `INTERVAL_NAMES`); each deck's `play`/`answer` is ~15 lines. They differ in session model (SM-2 scheduling vs one-off scoring). A shared "question bank" would touch the SRS flow for negligible dedup. | M |
 
-> Consolidation should **preserve every route as an alias/redirect** (and keep embed params stable) so
-> no lesson links break. The goal is fewer *implementations*, not fewer *entry points*.
+> Consolidation goal: fewer *implementations*, not fewer *entry points*. The two genuine redundancies
+> (**C1** identical component, **C5** thin duplicate editors) were merged with route redirects so no links
+> break. **C2/C3/C4/C6** were reviewed and deliberately kept separate: their shared code is already
+> factored into `audio.ts` / the Pixi scenes / `music-theory` / chord exports, and collapsing focused
+> single-purpose tools into configurable mega-tools would degrade UX and risk regressions for no real gain.
 
 ---
 
@@ -179,10 +190,13 @@ only **25 of 83 articles use live embeds**.
    dictionary (instrument × root × quality → every movable voicing, strummable), replacing the 16-shape
    static browser. Both use the shared `ChordDiagram` with `baseFret` neck-windowing.
 
-**Phase 3 — Consolidate**
-7. C3 (fretboard family), C4 (band engine), C2 (route/embed dedup), C5, C6 — with route aliases.
+**Phase 3 — Consolidate** ✅ **RESOLVED (2026-07-15)**
+7. C1 + C5 merged (genuine redundancy, with redirects). C2/C3/C4/C6 reviewed and deliberately kept as
+   focused single-purpose tools — shared code already factored; a mega-tool would degrade UX. See §3.
 
-**Phase 4 — Content & new tools**
+**Phase 4 — Content & new tools** — 🔵 **OPEN (additive, ongoing).** Not one-shot tasks; pick items as
+priorities dictate. The engine work above (expanded chords/scales, movable shapes, minor-key harmony,
+level tiers) is the groundwork these build on.
 8. Genre/difficulty content + embed density (Section 5).
 9. New tools (Section 6), highest-value first.
 
