@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  bassStaffNotes,
   CHORDS,
   chordsByLevel,
   diatonicChordsMinor,
@@ -10,6 +11,7 @@ import {
   SCALES,
   scalePitchClasses,
   scalesByLevel,
+  trebleStaffNotes,
 } from './music-theory';
 
 describe('pitchName', () => {
@@ -54,7 +56,13 @@ describe('scalePitchClasses', () => {
 describe('SCALES / CHORDS tables', () => {
   it('includes the expanded scale vocabulary', () => {
     const keys = SCALES.map((s) => s.key);
-    for (const key of ['melodic-minor', 'lydian', 'whole-tone', 'diminished-hw', 'bebop-dominant']) {
+    for (const key of [
+      'melodic-minor',
+      'lydian',
+      'whole-tone',
+      'diminished-hw',
+      'bebop-dominant',
+    ]) {
       expect(keys).toContain(key);
     }
     const wholeTone = SCALES.find((s) => s.key === 'whole-tone');
@@ -106,6 +114,22 @@ describe('intervalLabel', () => {
     expect(intervalLabel(17)).toBe('11');
     expect(intervalLabel(21)).toBe('13');
     expect(intervalLabel(13)).toBe('♭9');
+  });
+});
+
+describe('staff notes', () => {
+  it('places the treble bottom line at E4 (step 0) and middle C below', () => {
+    const notes = trebleStaffNotes();
+    expect(notes.find((n) => n.name === 'E4')?.step).toBe(0);
+    expect(notes.find((n) => n.name === 'C4')?.step).toBe(-2); // one ledger below
+    expect(notes.at(-1)).toMatchObject({ name: 'C6', midi: 84 });
+  });
+
+  it('places the bass bottom line at G2 (step 0) and middle C above', () => {
+    const notes = bassStaffNotes();
+    expect(notes.find((n) => n.name === 'G2')?.step).toBe(0);
+    expect(notes.find((n) => n.name === 'A3')?.step).toBe(8); // top line
+    expect(notes.find((n) => n.name === 'C4')).toMatchObject({ midi: 60, step: 10 });
   });
 });
 

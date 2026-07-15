@@ -46,8 +46,18 @@ export const SCALES: ScaleDefinition[] = [
     intervals: [0, 2, 3, 5, 7, 8, 10],
     level: 'beginner',
   },
-  { key: 'major-pentatonic', name: 'Major pentatonic', intervals: [0, 2, 4, 7, 9], level: 'beginner' },
-  { key: 'minor-pentatonic', name: 'Minor pentatonic', intervals: [0, 3, 5, 7, 10], level: 'beginner' },
+  {
+    key: 'major-pentatonic',
+    name: 'Major pentatonic',
+    intervals: [0, 2, 4, 7, 9],
+    level: 'beginner',
+  },
+  {
+    key: 'minor-pentatonic',
+    name: 'Minor pentatonic',
+    intervals: [0, 3, 5, 7, 10],
+    level: 'beginner',
+  },
   { key: 'blues', name: 'Blues', intervals: [0, 3, 5, 6, 7, 10], level: 'beginner' },
   {
     key: 'chromatic',
@@ -70,7 +80,12 @@ export const SCALES: ScaleDefinition[] = [
   { key: 'dorian', name: 'Dorian', intervals: [0, 2, 3, 5, 7, 9, 10], level: 'intermediate' },
   { key: 'phrygian', name: 'Phrygian', intervals: [0, 1, 3, 5, 7, 8, 10], level: 'intermediate' },
   { key: 'lydian', name: 'Lydian', intervals: [0, 2, 4, 6, 7, 9, 11], level: 'intermediate' },
-  { key: 'mixolydian', name: 'Mixolydian', intervals: [0, 2, 4, 5, 7, 9, 10], level: 'intermediate' },
+  {
+    key: 'mixolydian',
+    name: 'Mixolydian',
+    intervals: [0, 2, 4, 5, 7, 9, 10],
+    level: 'intermediate',
+  },
   { key: 'locrian', name: 'Locrian', intervals: [0, 1, 3, 5, 6, 8, 10], level: 'advanced' },
   {
     key: 'whole-tone',
@@ -235,32 +250,188 @@ export interface ChordDefinition {
 }
 
 export const CHORDS: ChordDefinition[] = [
-  { key: 'major', name: 'Major', intervals: [0, 4, 7], symbol: '', aliases: ['maj'], level: 'beginner' },
-  { key: 'minor', name: 'Minor', intervals: [0, 3, 7], symbol: 'm', aliases: ['min'], level: 'beginner' },
-  { key: 'diminished', name: 'Diminished', intervals: [0, 3, 6], symbol: 'dim', aliases: ['°'], level: 'intermediate' },
-  { key: 'augmented', name: 'Augmented', intervals: [0, 4, 8], symbol: 'aug', aliases: ['+'], level: 'intermediate' },
-  { key: 'sus2', name: 'Suspended 2nd', intervals: [0, 2, 7], symbol: 'sus2', level: 'intermediate' },
-  { key: 'sus4', name: 'Suspended 4th', intervals: [0, 5, 7], symbol: 'sus4', level: 'intermediate' },
+  {
+    key: 'major',
+    name: 'Major',
+    intervals: [0, 4, 7],
+    symbol: '',
+    aliases: ['maj'],
+    level: 'beginner',
+  },
+  {
+    key: 'minor',
+    name: 'Minor',
+    intervals: [0, 3, 7],
+    symbol: 'm',
+    aliases: ['min'],
+    level: 'beginner',
+  },
+  {
+    key: 'diminished',
+    name: 'Diminished',
+    intervals: [0, 3, 6],
+    symbol: 'dim',
+    aliases: ['°'],
+    level: 'intermediate',
+  },
+  {
+    key: 'augmented',
+    name: 'Augmented',
+    intervals: [0, 4, 8],
+    symbol: 'aug',
+    aliases: ['+'],
+    level: 'intermediate',
+  },
+  {
+    key: 'sus2',
+    name: 'Suspended 2nd',
+    intervals: [0, 2, 7],
+    symbol: 'sus2',
+    level: 'intermediate',
+  },
+  {
+    key: 'sus4',
+    name: 'Suspended 4th',
+    intervals: [0, 5, 7],
+    symbol: 'sus4',
+    level: 'intermediate',
+  },
   { key: 'sixth', name: 'Major 6th', intervals: [0, 4, 7, 9], symbol: '6', level: 'intermediate' },
-  { key: 'minor-6', name: 'Minor 6th', intervals: [0, 3, 7, 9], symbol: 'm6', level: 'intermediate' },
-  { key: 'major-7', name: 'Major 7th', intervals: [0, 4, 7, 11], symbol: 'maj7', aliases: ['M7', 'Δ7', 'Δ'], level: 'intermediate' },
-  { key: 'minor-7', name: 'Minor 7th', intervals: [0, 3, 7, 10], symbol: 'm7', aliases: ['min7'], level: 'intermediate' },
-  { key: 'dominant-7', name: 'Dominant 7th', intervals: [0, 4, 7, 10], symbol: '7', level: 'intermediate' },
-  { key: 'dominant-7-sus4', name: 'Dominant 7th sus4', intervals: [0, 5, 7, 10], symbol: '7sus4', level: 'intermediate' },
-  { key: 'diminished-7', name: 'Diminished 7th', intervals: [0, 3, 6, 9], symbol: 'dim7', aliases: ['°7'], level: 'intermediate' },
+  {
+    key: 'minor-6',
+    name: 'Minor 6th',
+    intervals: [0, 3, 7, 9],
+    symbol: 'm6',
+    level: 'intermediate',
+  },
+  {
+    key: 'major-7',
+    name: 'Major 7th',
+    intervals: [0, 4, 7, 11],
+    symbol: 'maj7',
+    aliases: ['M7', 'Δ7', 'Δ'],
+    level: 'intermediate',
+  },
+  {
+    key: 'minor-7',
+    name: 'Minor 7th',
+    intervals: [0, 3, 7, 10],
+    symbol: 'm7',
+    aliases: ['min7'],
+    level: 'intermediate',
+  },
+  {
+    key: 'dominant-7',
+    name: 'Dominant 7th',
+    intervals: [0, 4, 7, 10],
+    symbol: '7',
+    level: 'intermediate',
+  },
+  {
+    key: 'dominant-7-sus4',
+    name: 'Dominant 7th sus4',
+    intervals: [0, 5, 7, 10],
+    symbol: '7sus4',
+    level: 'intermediate',
+  },
+  {
+    key: 'diminished-7',
+    name: 'Diminished 7th',
+    intervals: [0, 3, 6, 9],
+    symbol: 'dim7',
+    aliases: ['°7'],
+    level: 'intermediate',
+  },
   { key: 'add9', name: 'Add 9', intervals: [0, 4, 7, 14], symbol: 'add9', level: 'intermediate' },
-  { key: 'half-diminished', name: 'Half-diminished (m7♭5)', intervals: [0, 3, 6, 10], symbol: 'm7b5', aliases: ['ø7', 'ø'], level: 'advanced' },
-  { key: 'minor-major-7', name: 'Minor-major 7th', intervals: [0, 3, 7, 11], symbol: 'mMaj7', aliases: ['mM7'], level: 'advanced' },
-  { key: 'augmented-7', name: 'Augmented 7th', intervals: [0, 4, 8, 10], symbol: '7#5', aliases: ['+7', 'aug7'], level: 'advanced' },
-  { key: 'dominant-9', name: 'Dominant 9th', intervals: [0, 4, 7, 10, 14], symbol: '9', level: 'advanced' },
-  { key: 'major-9', name: 'Major 9th', intervals: [0, 4, 7, 11, 14], symbol: 'maj9', aliases: ['M9'], level: 'advanced' },
-  { key: 'minor-9', name: 'Minor 9th', intervals: [0, 3, 7, 10, 14], symbol: 'm9', aliases: ['min9'], level: 'advanced' },
-  { key: 'dominant-11', name: 'Dominant 11th', intervals: [0, 7, 10, 14, 17], symbol: '11', level: 'expert' },
-  { key: 'dominant-13', name: 'Dominant 13th', intervals: [0, 4, 10, 14, 21], symbol: '13', level: 'expert' },
-  { key: 'dominant-7-b9', name: 'Dominant 7♭9', intervals: [0, 4, 7, 10, 13], symbol: '7b9', level: 'expert' },
-  { key: 'dominant-7-sharp9', name: 'Dominant 7♯9', intervals: [0, 4, 7, 10, 15], symbol: '7#9', level: 'expert' },
-  { key: 'dominant-7-sharp11', name: 'Dominant 7♯11', intervals: [0, 4, 7, 10, 18], symbol: '7#11', level: 'expert' },
-  { key: 'dominant-7-b13', name: 'Dominant 7♭13', intervals: [0, 4, 7, 10, 20], symbol: '7b13', level: 'expert' },
+  {
+    key: 'half-diminished',
+    name: 'Half-diminished (m7♭5)',
+    intervals: [0, 3, 6, 10],
+    symbol: 'm7b5',
+    aliases: ['ø7', 'ø'],
+    level: 'advanced',
+  },
+  {
+    key: 'minor-major-7',
+    name: 'Minor-major 7th',
+    intervals: [0, 3, 7, 11],
+    symbol: 'mMaj7',
+    aliases: ['mM7'],
+    level: 'advanced',
+  },
+  {
+    key: 'augmented-7',
+    name: 'Augmented 7th',
+    intervals: [0, 4, 8, 10],
+    symbol: '7#5',
+    aliases: ['+7', 'aug7'],
+    level: 'advanced',
+  },
+  {
+    key: 'dominant-9',
+    name: 'Dominant 9th',
+    intervals: [0, 4, 7, 10, 14],
+    symbol: '9',
+    level: 'advanced',
+  },
+  {
+    key: 'major-9',
+    name: 'Major 9th',
+    intervals: [0, 4, 7, 11, 14],
+    symbol: 'maj9',
+    aliases: ['M9'],
+    level: 'advanced',
+  },
+  {
+    key: 'minor-9',
+    name: 'Minor 9th',
+    intervals: [0, 3, 7, 10, 14],
+    symbol: 'm9',
+    aliases: ['min9'],
+    level: 'advanced',
+  },
+  {
+    key: 'dominant-11',
+    name: 'Dominant 11th',
+    intervals: [0, 7, 10, 14, 17],
+    symbol: '11',
+    level: 'expert',
+  },
+  {
+    key: 'dominant-13',
+    name: 'Dominant 13th',
+    intervals: [0, 4, 10, 14, 21],
+    symbol: '13',
+    level: 'expert',
+  },
+  {
+    key: 'dominant-7-b9',
+    name: 'Dominant 7♭9',
+    intervals: [0, 4, 7, 10, 13],
+    symbol: '7b9',
+    level: 'expert',
+  },
+  {
+    key: 'dominant-7-sharp9',
+    name: 'Dominant 7♯9',
+    intervals: [0, 4, 7, 10, 15],
+    symbol: '7#9',
+    level: 'expert',
+  },
+  {
+    key: 'dominant-7-sharp11',
+    name: 'Dominant 7♯11',
+    intervals: [0, 4, 7, 10, 18],
+    symbol: '7#11',
+    level: 'expert',
+  },
+  {
+    key: 'dominant-7-b13',
+    name: 'Dominant 7♭13',
+    intervals: [0, 4, 7, 10, 20],
+    symbol: '7b13',
+    level: 'expert',
+  },
 ];
 
 /** Chords available at or below `maxLevel` (see `Level`). */
@@ -525,6 +696,25 @@ export function trebleStaffNotes(): StaffNote[] {
     }
   }
   notes.push({ name: 'C6', midi: 84, step: LETTER_INDEX.C + 6 * 7 - E4_DIATONIC });
+  return notes;
+}
+
+// Bass staff: the bottom line is G2 (step 0); lines run G2 B2 D3 F3 A3.
+const G2_DIATONIC = LETTER_INDEX.G + 2 * 7;
+
+/** Natural notes C2…C4 for a bass staff, with their vertical staff step (bottom line G2 = step 0). */
+export function bassStaffNotes(): StaffNote[] {
+  const notes: StaffNote[] = [];
+  for (let octave = 2; octave <= 3; octave += 1) {
+    for (const natural of NATURALS) {
+      notes.push({
+        name: `${natural.letter}${octave}`,
+        midi: 12 * (octave + 1) + natural.semitone,
+        step: LETTER_INDEX[natural.letter] + octave * 7 - G2_DIATONIC,
+      });
+    }
+  }
+  notes.push({ name: 'C4', midi: 60, step: LETTER_INDEX.C + 4 * 7 - G2_DIATONIC });
   return notes;
 }
 
