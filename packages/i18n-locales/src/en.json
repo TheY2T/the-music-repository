@@ -425,6 +425,8 @@
   "tool.score.summary": "Write alphaTex or import MusicXML, then render + play with alphaTab.",
   "tool.soundfont.title": "Sampled instruments",
   "tool.soundfont.summary": "Play a keyboard with real General-MIDI instrument samples.",
+  "tool.improvise.title": "Improvise guide",
+  "tool.improvise.summary": "Pick a chord and see which scales fit — safe choices for a solo.",
   "myfav.loading": "Loading…",
   "myfav.emptyBefore": "No favorites yet. Browse the",
   "myfav.catalogue": "catalogue",

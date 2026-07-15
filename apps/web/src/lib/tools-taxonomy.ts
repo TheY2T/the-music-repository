@@ -34,6 +34,7 @@ const CATEGORY_BY_SLUG: Record<string, ToolCategory> = {
   intervals: 'theory-harmony',
   analyzer: 'theory-harmony',
   transposer: 'theory-harmony',
+  improvise: 'theory-harmony',
   // Ear Training & Quizzes
   'ear-trainer': 'ear-quizzes',
   'progression-ear': 'ear-quizzes',
@@ -116,6 +117,7 @@ export const TOOL_ICON: Record<string, string> = {
   'practice-player': 'play',
   analyzer: 'chart',
   transposer: 'sliders',
+  improvise: 'sparkles',
   bassline: 'music',
   'melodic-dictation': 'headphones',
   'rhythm-dictation': 'headphones',

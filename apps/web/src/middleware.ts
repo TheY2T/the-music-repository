@@ -321,6 +321,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.ToolSoundfont,
     FlagDefaults[FlagKeys.ToolSoundfont],
   );
+  const toolImprovise = await client.getBooleanValue(
+    FlagKeys.ToolImprovise,
+    FlagDefaults[FlagKeys.ToolImprovise],
+  );
   const premium = await client.getBooleanValue(FlagKeys.Premium, FlagDefaults[FlagKeys.Premium]);
   const classrooms = await client.getBooleanValue(
     FlagKeys.Classrooms,
@@ -390,6 +394,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     toolPracticeRoom,
     toolScore,
     toolSoundfont,
+    toolImprovise,
     premium,
     classrooms,
     i18nEnabled,

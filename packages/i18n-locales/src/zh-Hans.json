@@ -425,6 +425,8 @@
   "tool.score.summary": "编写 alphaTex 或导入 MusicXML，用 alphaTab 渲染并回放。",
   "tool.soundfont.title": "采样乐器",
   "tool.soundfont.summary": "用真实的 General-MIDI 乐器采样演奏键盘。",
+  "tool.improvise.title": "即兴指南",
+  "tool.improvise.summary": "选择一个和弦，查看适合的音阶——独奏的安全之选。",
   "myfav.loading": "加载中…",
   "myfav.emptyBefore": "还没有收藏。浏览",
   "myfav.catalogue": "曲库",

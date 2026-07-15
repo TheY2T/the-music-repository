@@ -139,6 +139,8 @@ export const FlagKeys = {
   ToolScore: 'tools.score',
   /** Phase 5 — sampled General-MIDI instrument playback (smplr soundfonts). */
   ToolSoundfont: 'tools.soundfont',
+  /** Expansion — improvisation guide: which scales fit a chord. */
+  ToolImprovise: 'tools.improvise',
   /** Phase 6 — premium entitlements gate `visibility=premium` content + the subscription flow. */
   Premium: 'monetization.premium',
   /** Phase 6 — teacher/classroom mode (create/join classrooms, grant premium to a class). */
@@ -212,6 +214,7 @@ export const FlagDefaults = {
   [FlagKeys.ToolPracticeRoom]: true,
   [FlagKeys.ToolScore]: true,
   [FlagKeys.ToolSoundfont]: true,
+  [FlagKeys.ToolImprovise]: true,
   [FlagKeys.Premium]: true,
   [FlagKeys.Classrooms]: true,
   [FlagKeys.I18n]: true,

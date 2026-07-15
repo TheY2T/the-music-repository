@@ -136,6 +136,20 @@ export function scalesByLevel(maxLevel: Level): ScaleDefinition[] {
   return SCALES.filter((s) => isWithinLevel(s.level, maxLevel));
 }
 
+/**
+ * Scales (built on `rootPc`) that contain every tone of a chord — i.e. safe scales to improvise with
+ * over that chord. Chromatic is excluded (it trivially contains everything). Used by the improvisation
+ * guide; pair with `scalesByLevel` to disclose progressively.
+ */
+export function scalesForChord(rootPc: number, chordIntervals: number[]): ScaleDefinition[] {
+  const chordPcs = chordIntervals.map((i) => (((rootPc + i) % 12) + 12) % 12);
+  return SCALES.filter((scale) => {
+    if (scale.key === 'chromatic') return false;
+    const scalePcs = scalePitchClasses(rootPc, scale.intervals);
+    return chordPcs.every((pc) => scalePcs.has(pc));
+  });
+}
+
 /** The pitch classes (0–11) of a scale built on `rootPitchClass`. */
 export function scalePitchClasses(rootPitchClass: number, intervals: number[]): Set<number> {
   return new Set(intervals.map((interval) => (rootPitchClass + interval) % 12));

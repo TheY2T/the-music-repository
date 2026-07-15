@@ -505,6 +505,14 @@
       },
       "defaultVariant": "on"
     },
+    "tools.improvise": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "personalization.saved-progressions": {
       "state": "ENABLED",
       "variants": {

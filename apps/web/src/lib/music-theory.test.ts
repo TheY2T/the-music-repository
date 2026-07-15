@@ -11,6 +11,7 @@ import {
   SCALES,
   scalePitchClasses,
   scalesByLevel,
+  scalesForChord,
   trebleStaffNotes,
 } from './music-theory';
 
@@ -130,6 +131,32 @@ describe('staff notes', () => {
     expect(notes.find((n) => n.name === 'G2')?.step).toBe(0);
     expect(notes.find((n) => n.name === 'A3')?.step).toBe(8); // top line
     expect(notes.find((n) => n.name === 'C4')).toMatchObject({ midi: 60, step: 10 });
+  });
+});
+
+describe('scalesForChord', () => {
+  it('finds scales that contain a C major triad, excluding chromatic', () => {
+    const keys = scalesForChord(0, [0, 4, 7]).map((s) => s.key);
+    expect(keys).toContain('major');
+    expect(keys).toContain('lydian');
+    expect(keys).toContain('mixolydian');
+    expect(keys).not.toContain('chromatic'); // trivially contains everything
+    expect(keys).not.toContain('minor-pentatonic'); // no major 3rd
+  });
+
+  it('matches a dominant 7th to mixolydian + bebop dominant, not major', () => {
+    const keys = scalesForChord(0, [0, 4, 7, 10]).map((s) => s.key); // C7
+    expect(keys).toContain('mixolydian');
+    expect(keys).toContain('bebop-dominant');
+    expect(keys).not.toContain('major'); // major has a natural 7, not ♭7
+  });
+
+  it('every returned scale actually contains all chord tones', () => {
+    for (const scale of scalesForChord(2, [0, 3, 7, 10])) {
+      // D minor 7
+      const pcs = scalePitchClasses(2, scale.intervals);
+      for (const i of [0, 3, 7, 10]) expect(pcs.has((2 + i) % 12)).toBe(true);
+    }
   });
 });
 
