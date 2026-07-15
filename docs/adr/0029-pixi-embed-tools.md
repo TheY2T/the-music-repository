@@ -1,7 +1,8 @@
 # ADR 0029 — Fit-for-purpose Pixi tools for catalogue embeds
 
-- **Status:** accepted — `strum`, `chord-board`, `rhythm`, `intervals` shipped & browser-verified and
-  their ASCII converted; `fingering` (fretboard charts) is the last tool, being built to the same pattern.
+- **Status:** accepted & complete — all five tools (`strum`, `chord-board`, `rhythm`, `intervals`,
+  `fingering`) shipped & browser-verified; every ASCII example in the catalogue is now a tool or a themed
+  Markdown table.
 - **Date:** 2026-07-15
 - **Builds on:** ADR 0028 (content embeds), ADR 0022 (PixiJS layer), ADR 0021 (themes).
 
@@ -32,7 +33,7 @@ The tool set (maps the 42 ASCII blocks):
 | `chord-board` ✅ | `chord-board-scene` | chord / degree / quality / cadence tables (tap to hear) |
 | `rhythm` ✅ | `rhythm-scene` | note-value grids (blocks sized by duration) |
 | `intervals` ✅ | *(reuses `chord-board-scene`)* | interval ↔ semitone tables (tap to hear) |
-| `fingering` | *(planned)* | bass/uke fingering charts |
+| `fingering` ✅ | *(reuses `fretboard-scene`)* | bass/uke/guitar scale-fingering charts |
 
 Genuinely tabular reference (chord-symbol glossaries, figured bass, mode-character, order-of-sharps,
 cadence-comparison, fingering charts pending the tool) was converted from ASCII fences to **themed

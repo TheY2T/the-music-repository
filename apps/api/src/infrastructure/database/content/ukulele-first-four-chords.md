@@ -45,9 +45,9 @@ Then tackle the harder move, **anything ↔ G**, since G uses three fingers. Pra
 
 Put them in this order and strum each chord four times (one bar of 4/4 each):
 
-```
-| C  | G  | Am | F  |
-```
+| Bar 1 | Bar 2 | Bar 3 | Bar 4 |
+| --- | --- | --- | --- |
+| C | G | Am | F |
 
 That `C – G – Am – F` loop is the "four-chord song" — try singing along to any pop tune over it. Reverse or reorder them (`Am – F – C – G`, `C – Am – F – G`) for different moods; the same four shapes cover them all.
 

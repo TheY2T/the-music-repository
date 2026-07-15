@@ -33,10 +33,10 @@ A **dot** after a note adds half its value again: a dotted half note = 2 + 1 = 3
 
 Music is divided into **measures** (bars) by barlines. A **time signature** at the start tells you how each measure is counted:
 
-```
- 4  ← top: how many beats per measure
- 4  ← bottom: which note value gets one beat (4 = quarter note)
-```
+| Time signature | Meaning |
+| --- | --- |
+| Top number | how many beats per measure |
+| Bottom number | which note value gets one beat (4 = quarter note) |
 
 - **4/4** ("common time"): four quarter-note beats per bar — the default for pop, rock, and most songs.
 - **3/4**: three quarter-note beats — the waltz.

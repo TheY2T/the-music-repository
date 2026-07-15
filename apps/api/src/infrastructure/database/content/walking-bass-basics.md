@@ -17,11 +17,9 @@ A **walking bass line** is a smooth, mostly stepwise line of steady quarter note
 
 Whatever else you do, **play the chord's root on beat 1** of each new chord. That single note tells the listener the harmony has changed. Everything between downbeats is your freedom to connect smoothly to the *next* root.
 
-```
-Beat:  1     2     3     4    | 1 (next chord)
-Note:  Root  ...   ...   ...  | Root
-        ↑ chord tone            ↑ approach the next root
-```
+| Beat | 1 | 2–3 | 4 | → next bar's beat 1 |
+| --- | --- | --- | --- | --- |
+| Note | **Root** (chord tone) | connecting tones | approach note | **Root** |
 
 ## The four beats of a bar
 

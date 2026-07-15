@@ -29,7 +29,11 @@ Start with the **open-position C major scale** — the clearest one to hear and 
 | E string (2) | E (open), F (fr 1), G (fr 3) |
 | A string (1) | A (open), B (fr 2), C (fr 3) |
 
-So the scale runs `C D E F G A B C` across the bottom three strings.
+So the scale runs `C D E F G A B C` across the bottom three strings. See it on the neck — tap a note to hear it:
+
+```embeds
+[{ "tool": "fingering", "title": "C major on the ukulele", "caption": "The C major scale across the ukulele neck (g C E A), root C highlighted. Tap a note to hear it.", "instrument": "ukulele", "root": "C", "scale": "major" }]
+```
 
 Steps:
 

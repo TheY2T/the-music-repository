@@ -36,6 +36,12 @@ Worked in **G major** with the root `G` at the E-string 3rd fret:
 - `A` string: `B`(fr 2, finger 1), `C`(fr 3, finger 2), `D`(fr 5, finger 4)
 - `D` string: `E`(fr 2, finger 1), `F♯`(fr 4, finger 3), `G`(fr 5, finger 4)
 
+See the whole shape on the neck — roots highlighted; tap any note to hear it, then imagine sliding the box to a new root:
+
+```embeds
+[{ "tool": "fingering", "title": "The G major box on the bass", "caption": "G major across a 4-string bass (E A D G), roots in dark. Tap a note to hear it; the shape slides to any key.", "instrument": "bass", "root": "G", "scale": "major" }]
+```
+
 Steps:
 
 1. **Play it ascending and descending, slowly,** naming each note aloud.

@@ -58,7 +58,7 @@ The build **fails** on malformed JSON or an unknown `tool`, so a typo is caught 
 | `chord-board` | `ChordBoard` (Pixi): tappable chord cards that sound the chord's tones | `chords` (`["C","Dm","Em",…]`), `labels` (parallel Roman numerals, optional) | chord/degree/quality/cadence/mode tables |
 | `rhythm` | `Rhythm` (Pixi): note-value blocks sized by duration, clicked out at tempo | `pattern` (note values `["whole","half","quarter","eighth","sixteenth"]`, dotted-* ok), `tempo` | note-value / beat grids |
 | `intervals` | `Intervals` (Pixi): the 12 intervals above a root as tappable cards (hear each) | `root` (default `C`) | interval ↔ semitone tables |
-| `fingering` | *(Pixi, ADR 0029 — being built)* | `instrument`, `tuning`, `root`, `scale` | fretboard fingering charts |
+| `fingering` | `Fingering` (Pixi, reuses `fretboard-scene`): scale on the neck, roots highlighted, tap to hear | `instrument` (`guitar`/`bass`/`ukulele`), `root`, `scale`, `tuning` (override) | fretboard fingering charts |
 
 **Pixi tools (ADR 0029):** the ASCII-replacement visualisations render with PixiJS (WebGL). Each is a
 fit-for-purpose `lib/pixi/<name>-scene.tsx` (presentational, `useThemeColors`) behind `PixiCanvas`

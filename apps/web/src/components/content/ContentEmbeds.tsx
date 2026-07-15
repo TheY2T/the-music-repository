@@ -23,6 +23,7 @@ const StrumPattern = lazy(() => import('@/components/StrumPattern'));
 const ChordBoard = lazy(() => import('@/components/ChordBoard'));
 const Rhythm = lazy(() => import('@/components/Rhythm'));
 const Intervals = lazy(() => import('@/components/Intervals'));
+const Fingering = lazy(() => import('@/components/Fingering'));
 
 /** Fallback heading per tool when an embed doesn't author its own `title`. */
 const DEFAULT_TITLE: Record<Embed['tool'], MessageKey> = {
@@ -141,6 +142,16 @@ function EmbedBody({
       return <Rhythm values={embed.pattern ?? []} tempo={embed.tempo} locale={locale} />;
     case 'intervals':
       return <Intervals root={embed.root} locale={locale} />;
+    case 'fingering':
+      return (
+        <Fingering
+          instrument={embed.instrument}
+          tuning={embed.tuning}
+          root={embed.root}
+          scale={embed.scale}
+          locale={locale}
+        />
+      );
     default:
       return null;
   }
