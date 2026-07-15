@@ -7,11 +7,7 @@
 // Frets are ABSOLUTE (0 = open, -1 = muted, N = fret N) so the app's audio strum can sound them directly
 // (tuning[i] + frets[i]); `baseFret` only affects how the diagram windows the neck.
 
-import {
-  type ChordShape,
-  TUNING_LOW_FIRST,
-  UKULELE_TUNING_LOW_FIRST,
-} from './chord-diagram';
+import { type ChordShape, TUNING_LOW_FIRST, UKULELE_TUNING_LOW_FIRST } from './chord-diagram';
 
 export type Instrument = 'guitar' | 'bass' | 'ukulele';
 
@@ -68,28 +64,41 @@ function shapeQuality(quality: string): ChordShape['quality'] {
   return 'barre';
 }
 
-// Guitar movable shapes — E-shape (root on low E, refRootPc 4) + A-shape (root on A, refRootPc 9).
-// Offsets verified so every sounded string is a chord tone across all 12 roots (see chord-library.test).
+// Guitar movable shapes. The five CAGED families (C/A/G/E/D) are provided for the qualities they voice
+// cleanly (all five for major and the dominant/major-7 chords; the practical subset for minor and
+// minor-7 — the C/G-shape minor grips are awkward and omitted). Every offset table is verified so all
+// sounded strings are chord tones and the root stays in the bass across all 12 roots (chord-library.test).
 const GUITAR_TEMPLATES: Record<string, MovableTemplate[]> = {
   major: [
-    { family: 'E-shape', refRootPc: 4, offsets: [0, 2, 2, 1, 0, 0] },
+    { family: 'C-shape', refRootPc: 0, offsets: [null, 3, 2, 0, 1, 0] },
     { family: 'A-shape', refRootPc: 9, offsets: [null, 0, 2, 2, 2, 0] },
+    { family: 'G-shape', refRootPc: 7, offsets: [3, 2, 0, 0, 0, 3] },
+    { family: 'E-shape', refRootPc: 4, offsets: [0, 2, 2, 1, 0, 0] },
+    { family: 'D-shape', refRootPc: 2, offsets: [null, null, 0, 2, 3, 2] },
   ],
   minor: [
-    { family: 'E-shape', refRootPc: 4, offsets: [0, 2, 2, 0, 0, 0] },
     { family: 'A-shape', refRootPc: 9, offsets: [null, 0, 2, 2, 1, 0] },
+    { family: 'E-shape', refRootPc: 4, offsets: [0, 2, 2, 0, 0, 0] },
+    { family: 'D-shape', refRootPc: 2, offsets: [null, null, 0, 2, 3, 1] },
   ],
   'dominant-7': [
-    { family: 'E-shape', refRootPc: 4, offsets: [0, 2, 0, 1, 0, 0] },
+    { family: 'C-shape', refRootPc: 0, offsets: [null, 3, 2, 3, 1, 0] },
     { family: 'A-shape', refRootPc: 9, offsets: [null, 0, 2, 0, 2, 0] },
+    { family: 'G-shape', refRootPc: 7, offsets: [3, 2, 0, 0, 0, 1] },
+    { family: 'E-shape', refRootPc: 4, offsets: [0, 2, 0, 1, 0, 0] },
+    { family: 'D-shape', refRootPc: 2, offsets: [null, null, 0, 2, 1, 2] },
   ],
   'major-7': [
-    { family: 'E-shape', refRootPc: 4, offsets: [0, 2, 1, 1, 0, 0] },
+    { family: 'C-shape', refRootPc: 0, offsets: [null, 3, 2, 0, 0, 0] },
     { family: 'A-shape', refRootPc: 9, offsets: [null, 0, 2, 1, 2, 0] },
+    { family: 'G-shape', refRootPc: 7, offsets: [3, 2, 0, 0, 0, 2] },
+    { family: 'E-shape', refRootPc: 4, offsets: [0, 2, 1, 1, 0, 0] },
+    { family: 'D-shape', refRootPc: 2, offsets: [null, null, 0, 2, 2, 2] },
   ],
   'minor-7': [
-    { family: 'E-shape', refRootPc: 4, offsets: [0, 2, 0, 0, 0, 0] },
     { family: 'A-shape', refRootPc: 9, offsets: [null, 0, 2, 0, 1, 0] },
+    { family: 'E-shape', refRootPc: 4, offsets: [0, 2, 0, 0, 0, 0] },
+    { family: 'D-shape', refRootPc: 2, offsets: [null, null, 0, 2, 1, 1] },
   ],
   'half-diminished': [
     { family: 'E-shape', refRootPc: 4, offsets: [0, 1, 0, 0, null, null] },
@@ -196,4 +205,21 @@ export function supportedQualities(instrument: Instrument = 'guitar'): string[] 
   if (instrument === 'bass') return Object.keys(QUALITY_SUFFIX);
   if (instrument === 'ukulele') return Object.keys(UKULELE_TEMPLATES);
   return Object.keys(GUITAR_TEMPLATES);
+}
+
+/** The CAGED shape families, in the order they are taught (C → A → G → E → D). */
+export const CAGED_FAMILIES = ['C-shape', 'A-shape', 'G-shape', 'E-shape', 'D-shape'];
+
+/**
+ * Guitar chord voicings ordered by the CAGED sequence (C-A-G-E-D) for the CAGED explorer. Qualities
+ * that only voice cleanly in some families (minor, minor-7) simply return fewer shapes.
+ */
+export function generateCagedShapes(
+  rootPc: number,
+  quality: string,
+  opts: GenerateOptions = {},
+): (ChordShape & { baseFret: number; family: string })[] {
+  return generateChordShapes(rootPc, quality, 'guitar', opts).sort(
+    (a, b) => CAGED_FAMILIES.indexOf(a.family) - CAGED_FAMILIES.indexOf(b.family),
+  );
 }

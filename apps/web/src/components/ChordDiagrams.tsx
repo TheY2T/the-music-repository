@@ -1,9 +1,16 @@
 import { Icon } from '@TheY2T/tmr-ui';
 import { Select } from '@TheY2T/tmr-ui/components/ui/select';
-import { ChordDiagram, GUITAR_CHORDS, TUNING_LOW_FIRST } from '@TheY2T/tmr-ui/music';
+import {
+  ChordDiagram,
+  generateChordShapes,
+  type Instrument,
+  supportedQualities,
+  TUNING_LOW_FIRST,
+} from '@TheY2T/tmr-ui/music';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
-import { midiToFrequency } from '@/lib/music-theory';
+import { tuningFor } from '@/lib/embeds';
+import { CHORDS, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
 
 // Chord-diagram DATA + rendering now live in @TheY2T/tmr-ui/music. Re-exported here so the ~6
 // tools importing from `@/components/ChordDiagrams` keep working. Audio (`strumChord`) stays in
@@ -38,56 +45,123 @@ export function strumChord(
   }
 }
 
-const CATEGORIES = [
-  { key: 'all', label: 'All' },
-  { key: 'major', label: 'Major' },
-  { key: 'minor', label: 'Minor' },
-  { key: 'barre', label: 'Barre' },
+const INSTRUMENTS: { key: Instrument; label: string }[] = [
+  { key: 'guitar', label: 'Guitar' },
+  { key: 'ukulele', label: 'Ukulele' },
+  { key: 'bass', label: 'Bass' },
 ];
 
+// Bass grips are root-position (root · 5th · octave) and quality-neutral, so a short chord-aware list
+// is clearer there than the full quality menu.
+const BASS_QUALITIES = ['major', 'minor', 'dominant-7'];
+
+function qualityKeysFor(instrument: Instrument): string[] {
+  return instrument === 'bass' ? BASS_QUALITIES : supportedQualities(instrument);
+}
+
+/** Strum a chord shape low→high on the given tuning (absolute frets). */
+function strumShape(frets: number[], tuning: number[]): void {
+  let delay = 0;
+  frets.forEach((fret, i) => {
+    if (fret < 0) return;
+    window.setTimeout(() => playTone(midiToFrequency(tuning[i] + fret), 1.1), delay);
+    delay += 22;
+  });
+}
+
 export default function ChordDiagrams() {
-  const [category, setCategory] = useState('all');
-  const chords = GUITAR_CHORDS.filter((c) => category === 'all' || c.quality === category);
+  const [instrument, setInstrument] = useState<Instrument>('guitar');
+  const [root, setRoot] = useState(0);
+  const [quality, setQuality] = useState('major');
+
+  const tuning = tuningFor(instrument);
+  const shapes = generateChordShapes(root, quality, instrument);
+  const qualityName = CHORDS.find((c) => c.key === quality)?.name ?? quality;
+
+  function changeInstrument(next: Instrument) {
+    setInstrument(next);
+    // Every instrument voices major, so it is always a safe fallback when the quality isn't supported.
+    if (!qualityKeysFor(next).includes(quality)) setQuality('major');
+  }
 
   return (
     <div className="space-y-5">
-      <label className="space-y-1 text-sm">
-        <span className="block font-medium" data-help="chords">
-          Category
-        </span>
-        <Select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="h-auto w-auto px-2 py-1"
-        >
-          {CATEGORIES.map((c) => (
-            <option key={c.key} value={c.key}>
-              {c.label}
-            </option>
-          ))}
-        </Select>
-      </label>
-
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-        {chords.map((chord) => (
-          <button
-            key={chord.name}
-            type="button"
-            onClick={() => strumChord(chord.frets)}
-            className="flex flex-col items-center gap-1 rounded-lg border border-border p-3 transition-colors hover:bg-muted"
+      <div className="flex flex-wrap items-end gap-3">
+        <label className="space-y-1 text-sm">
+          <span className="block font-medium">Instrument</span>
+          <Select
+            value={instrument}
+            onChange={(e) => changeInstrument(e.target.value as Instrument)}
+            className="h-auto w-auto px-2 py-1"
           >
-            <span className="font-semibold">{chord.name}</span>
-            <ChordDiagram chord={chord} />
-            <span className="text-xs text-muted-foreground">
-              <Icon name="play" className="size-4" />
-              Strum
-            </span>
-          </button>
-        ))}
+            {INSTRUMENTS.map((i) => (
+              <option key={i.key} value={i.key}>
+                {i.label}
+              </option>
+            ))}
+          </Select>
+        </label>
+        <label className="space-y-1 text-sm">
+          <span className="block font-medium">Root</span>
+          <Select
+            value={root}
+            onChange={(e) => setRoot(Number(e.target.value))}
+            className="h-auto w-auto px-2 py-1"
+          >
+            {ROOT_CHOICES.map((pc) => (
+              <option key={pc} value={pc}>
+                {pitchName(pc)}
+              </option>
+            ))}
+          </Select>
+        </label>
+        <label className="space-y-1 text-sm">
+          <span className="block font-medium" data-help="chords">
+            Chord type
+          </span>
+          <Select
+            value={quality}
+            onChange={(e) => setQuality(e.target.value)}
+            className="h-auto w-auto px-2 py-1"
+          >
+            {qualityKeysFor(instrument).map((key) => (
+              <option key={key} value={key}>
+                {CHORDS.find((c) => c.key === key)?.name ?? key}
+              </option>
+            ))}
+          </Select>
+        </label>
       </div>
+
+      {shapes.length > 0 ? (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+          {shapes.map((shape) => (
+            <button
+              key={shape.family}
+              type="button"
+              onClick={() => strumShape(shape.frets, tuning)}
+              className="flex flex-col items-center gap-1 rounded-lg border border-border p-3 transition-colors hover:bg-muted"
+            >
+              <span className="font-semibold">
+                {shape.name} · {shape.family}
+              </span>
+              <ChordDiagram chord={shape} />
+              <span className="text-xs text-muted-foreground">
+                <Icon name="play" className="size-4" />
+                Strum
+              </span>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          No shape available for {pitchName(root)} {qualityName} on this instrument.
+        </p>
+      )}
       <p className="text-xs text-muted-foreground">
-        Standard open and barre shapes (low E on the left). × = don’t play that string, ○ = play it
-        open, dots = fretted notes. Click a chord to strum it.
+        Movable voicings across the neck (low string on the left). × = don’t play that string, ○ =
+        play it open, dots = fretted notes; a “fr” label marks a shape’s starting fret higher up.
+        Click a shape to strum it.
       </p>
     </div>
   );

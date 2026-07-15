@@ -13,6 +13,8 @@ export {
 } from './chord-diagram';
 export {
   BASS_TUNING_LOW_FIRST,
+  CAGED_FAMILIES,
+  generateCagedShapes,
   generateChordShapes,
   type GenerateOptions,
   type Instrument,

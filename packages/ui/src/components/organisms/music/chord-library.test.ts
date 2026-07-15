@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest';
+import { TUNING_LOW_FIRST, UKULELE_TUNING_LOW_FIRST } from './chord-diagram';
 import {
   BASS_TUNING_LOW_FIRST,
+  CAGED_FAMILIES,
+  generateCagedShapes,
   generateChordShapes,
   type Instrument,
   supportedQualities,
 } from './chord-library';
-import { TUNING_LOW_FIRST, UKULELE_TUNING_LOW_FIRST } from './chord-diagram';
 
 // Chord-tone intervals per quality — mirrors apps/web `CHORDS` (kept local so the UI package stays
 // free of app deps). Used to assert generated shapes contain only real chord tones.
@@ -116,14 +118,29 @@ describe('generateChordShapes — concrete known shapes', () => {
     expect(first.baseFret).toBe(1);
   });
 
-  it('gives the A-shape C major barre (3rd fret) as C major’s lowest voicing', () => {
-    const first = generateChordShapes(0, 'major', 'guitar')[0]!;
-    expect(first.frets).toEqual([-1, 3, 5, 5, 5, 3]);
-    expect(first.baseFret).toBe(3);
+  it('gives the open C-shape as C major’s lowest voicing, A-shape barre next', () => {
+    const shapes = generateChordShapes(0, 'major', 'guitar');
+    expect(shapes[0]!.frets).toEqual([-1, 3, 2, 0, 1, 0]); // open C (C-shape)
+    expect(shapes[0]!.baseFret).toBe(1);
+    const aShape = shapes.find((s) => s.family === 'A-shape')!;
+    expect(aShape.frets).toEqual([-1, 3, 5, 5, 5, 3]); // A-shape barre at fret 3
   });
 
   it('names shapes from the root + quality suffix', () => {
     expect(generateChordShapes(6, 'minor-7', 'guitar')[0]!.name).toBe('F♯m7');
+  });
+});
+
+describe('generateCagedShapes', () => {
+  it('returns all five CAGED shapes for a major chord, in C-A-G-E-D order', () => {
+    const shapes = generateCagedShapes(0, 'major'); // C major
+    expect(shapes.map((s) => s.family)).toEqual(CAGED_FAMILIES);
+  });
+
+  it('returns the practical subset for a minor chord (no awkward C/G-shape minor)', () => {
+    const families = generateCagedShapes(9, 'minor').map((s) => s.family); // A minor
+    expect(families).toEqual(['A-shape', 'E-shape', 'D-shape']);
+    expect(families).not.toContain('C-shape');
   });
 });
 

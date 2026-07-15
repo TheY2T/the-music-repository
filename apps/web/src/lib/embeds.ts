@@ -7,14 +7,14 @@
 import {
   BASS_TUNING_LOW_FIRST,
   type ChordShape,
-  generateChordShapes,
   GUITAR_CHORDS,
+  generateChordShapes,
   type Instrument,
   TUNING_LOW_FIRST,
   UKULELE_CHORDS,
   UKULELE_TUNING_LOW_FIRST,
 } from '@TheY2T/tmr-ui/music';
-import { type ChordDefinition, CHORDS } from './music-theory';
+import { CHORDS, type ChordDefinition } from './music-theory';
 
 /** Note name → pitch class (0–11). Accepts sharps or flats (`C#`/`Db`). Null for an unknown name. */
 const NOTE_PC: Record<string, number> = {
