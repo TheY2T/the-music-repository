@@ -1,28 +1,8 @@
 ---
-import InfoView from '@/components/InfoView.tsx';
-import ToolPracticeLogger from '@/components/ToolPracticeLogger.tsx';
-import MusicXmlImport from '@/components/MusicXmlImport.tsx';
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import { localizedPath, t } from '@TheY2T/tmr-i18n';
-import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+import { localizedPath } from '@TheY2T/tmr-i18n';
 
-if (!Astro.locals.flags.toolMusicXml) {
-  return Astro.redirect('/tools');
-}
-const showInfoView = Astro.locals.flags.infoView;
-const logPracticeEnabled =
-  Astro.locals.flags.toolPractice && Astro.locals.flags.progress && !!Astro.locals.user;
-const locale = Astro.locals.locale;
+// The score playground now accepts MusicXML directly (alphaTab sniffs the format), so the standalone
+// MusicXML import tool folds into it. This route redirects so existing links keep working.
+// See the interactive-tools audit (consolidation C5).
+return Astro.redirect(localizedPath(Astro.locals.locale, '/tools/score'));
 ---
-
-<BaseLayout title={`${t(locale, 'tool.musicxml.title')} — ${t(locale, 'site.name')}`}>
-    <PageShell
-      title={t(locale, 'tool.musicxml.title')}
-      subtitle={t(locale, 'tool.musicxml.summary')}
-      back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}
-    >
-      <MusicXmlImport client:load locale={locale} />
-    </PageShell>
-    {showInfoView && <InfoView client:idle />}
-    {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}
-  </BaseLayout>
