@@ -61,8 +61,9 @@ export class AlphaTabScoreEngine implements ScoreEngine {
         enablePlayer: true,
         enableCursor: true,
         enableAnimatedBeatCursor: true,
-        // Guitar uses alphaTab's own click-to-seek + selection UI; piano lets the shell own interaction.
-        enableUserInteraction: isTab,
+        // The shell owns interaction (click-to-hear/seek, drag-select, loop) uniformly for BOTH modes,
+        // so piano and guitar behave identically — alphaTab's native selection UI stays off.
+        enableUserInteraction: false,
         soundFont: '/soundfont/sonivox.sf2',
         scrollElement: container,
         scrollMode: at.ScrollMode.Continuous,

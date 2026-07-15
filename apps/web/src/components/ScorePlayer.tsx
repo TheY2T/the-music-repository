@@ -1,5 +1,13 @@
 import { type Locale, t } from '@TheY2T/tmr-i18n';
-import { Button, cn, Icon } from '@TheY2T/tmr-ui';
+import {
+  Button,
+  cn,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  Icon,
+} from '@TheY2T/tmr-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AlphaTabScoreEngine } from '@/lib/score/alphatab-engine';
 import { orderTicks } from '@/lib/score/loop-selection';
@@ -8,10 +16,12 @@ import { useAlphaTabTheme } from '@/lib/score/use-alphatab-theme';
 
 /**
  * Interactive score player shell (ADR 0027). alphaTab is the single engine — it renders + plays both
- * modes; this shell owns the transport chrome. Piano (`mode: 'standard'`) gets a purpose-built
- * transport with click-to-hear / click-to-seek / A–B loop; guitar (`mode: 'tab'`) uses alphaTab's own
- * cursor + click-to-seek + drag-select UI with a minimal transport. Basic play/tempo when `interactive`
- * is off (the `learning.interactive-scores` flag). Notation strings match the other score tools (en).
+ * modes; this shell owns ALL interaction (click-to-hear / click-to-seek, drag-select passage, A–B loop,
+ * right-click loop menu) uniformly for piano (`mode: 'standard'`, standard notation) AND guitar
+ * (`mode: 'tab'`, notation + tab), so their transport + controls stay in sync — only the engraving
+ * differs. alphaTab's own selection UI is disabled (`enableUserInteraction: false`). Basic play/tempo
+ * when `interactive` is off (the `learning.interactive-scores` flag). Notation strings match the other
+ * score tools (en).
  */
 export interface ScoreCredit {
   license?: string;
@@ -86,7 +96,11 @@ export default function ScorePlayer({
   const resourcesRef = useRef(resources);
   resourcesRef.current = resources;
 
-  const pianoInteractive = interactive && mode === 'standard';
+  // The shell owns interaction (click-to-hear/seek, drag-select, loop, right-click menu) for BOTH piano
+  // and guitar so their controls stay in sync — the flag is the only gate.
+  const interactiveUI = interactive;
+  // Right-click context-menu anchor (viewport coords), or null when closed.
+  const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null);
 
   // 1) Resolve the score source into state. For a URL this fetches; for inline `tex` it's a passthrough.
   // Keeping the fetch OUT of the engine-load effect means that effect stays SYNCHRONOUS — with an async
@@ -148,7 +162,6 @@ export default function ScorePlayer({
     engine
       .load(container, source, {
         mode,
-        interactive: pianoInteractive,
         resources: resourcesRef.current,
         tuning,
       })
@@ -170,7 +183,7 @@ export default function ScorePlayer({
       engine.destroy();
       engineRef.current = null;
     };
-  }, [source, mode, pianoInteractive]);
+  }, [source, mode]);
 
   // Push control changes into the engine.
   useEffect(() => engineRef.current?.setTempoFactor(tempoFactor), [tempoFactor]);
@@ -225,12 +238,30 @@ export default function ScorePlayer({
     setLooping(next);
   }, [looping, selection, playerReady]);
 
-  // Piano-only interaction: press on a note to hear it; drag across the score to select a beat range
+  // Play the selected passage from its start (used by the context menu).
+  const playSelection = useCallback(() => {
+    const engine = engineRef.current;
+    if (!engine || !playerReady || !selection) return;
+    engine.seekTick(selection.startTick);
+    engine.play();
+  }, [playerReady, selection]);
+
+  // Right-click anywhere on the score → contextual loop menu (works in both modes).
+  const onContextMenu = useCallback(
+    (ev: React.MouseEvent) => {
+      if (!interactiveUI || status !== 'ready') return;
+      ev.preventDefault();
+      setMenuPos({ x: ev.clientX, y: ev.clientY });
+    },
+    [interactiveUI, status],
+  );
+
+  // Interaction (both modes): press on a note to hear it; drag across the score to select a beat range
   // (live-highlighted, beat-precise — can start/end mid-bar); a press with no drag is a click → seek.
   const onPointerDown = useCallback(
     (ev: React.MouseEvent) => {
       const engine = engineRef.current;
-      if (!engine || status !== 'ready' || !pianoInteractive || ev.button !== 0) return;
+      if (!engine || status !== 'ready' || !interactiveUI || ev.button !== 0) return;
       const hit = engine.hitTest(ev.clientX, ev.clientY);
       if (!hit || hit.tick == null) return;
       // A fresh interaction drops any prior selection/loop before building the next one.
@@ -242,7 +273,7 @@ export default function ScorePlayer({
       setDragging(true);
       if (hit.midi != null) engine.playNote(hit.midi);
     },
-    [status, pianoInteractive],
+    [status, interactiveUI],
   );
 
   const onPointerMove = useCallback((ev: React.MouseEvent) => {
@@ -394,33 +425,6 @@ export default function ScorePlayer({
             <span className="w-16 tabular-nums text-xs text-muted-foreground">{bpm} BPM</span>
           </label>
 
-          {pianoInteractive ? (
-            <div className="flex items-center gap-1.5">
-              <Button
-                type="button"
-                size="sm"
-                variant={looping ? 'default' : 'outline'}
-                onClick={toggleLoop}
-                disabled={!playerReady}
-                title={t(locale, 'score.loop')}
-              >
-                <Icon name="repeat" className="size-4" />
-                {t(locale, 'score.loop')}
-              </Button>
-              {selection ? (
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="ghost"
-                  onClick={clearSelection}
-                  disabled={!playerReady}
-                >
-                  {t(locale, 'score.loopClear')}
-                </Button>
-              ) : null}
-            </div>
-          ) : null}
-
           {showTransport ? (
             <>
               <label className="flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -461,7 +465,7 @@ export default function ScorePlayer({
             <Icon name="repeat" className="size-3.5" />
             {loopReadout}
           </p>
-        ) : pianoInteractive ? (
+        ) : interactiveUI ? (
           <p className="text-xs text-muted-foreground">{t(locale, 'score.loopHint')}</p>
         ) : null}
       </div>
@@ -471,7 +475,8 @@ export default function ScorePlayer({
       ) : null}
 
       {/* Score surface (whole piece, scrollable). alphaTab renders + scrolls the cursor here. Press +
-          drag across bars to select a loop section (live-highlighted); a plain click seeks/hears. */}
+          drag across bars to select a loop section (live-highlighted); a plain click seeks/hears;
+          right-click opens the contextual loop menu. */}
       <div className="max-h-[70vh] overflow-auto rounded-lg border border-border bg-card">
         {/* biome-ignore lint/a11y/noStaticElementInteractions: graphical score surface; keyboard users use the transport controls + scrub. */}
         <div
@@ -480,14 +485,57 @@ export default function ScorePlayer({
           onMouseMove={onPointerMove}
           onMouseUp={onPointerUp}
           onMouseLeave={onPointerUp}
+          onContextMenu={onContextMenu}
           data-mode={mode}
           className={cn(
             'tmr-score select-none p-2',
-            pianoInteractive && status === 'ready' && 'cursor-crosshair',
+            interactiveUI && status === 'ready' && 'cursor-crosshair',
             dragging && 'ring-2 ring-inset ring-primary/50',
           )}
         />
       </div>
+
+      {/* Right-click contextual loop menu (both modes). A fixed 0×0 anchor is positioned at the
+          click point; the design-system DropdownMenu pops from it. */}
+      {interactiveUI ? (
+        <DropdownMenu
+          open={menuPos != null}
+          onOpenChange={(open) => {
+            if (!open) setMenuPos(null);
+          }}
+          style={
+            // z-index must clear alphaTab's own cursor/selection overlay (`.at-cursors`, z-index 1000),
+            // which otherwise paints over the menu and makes its opaque background look translucent.
+            menuPos
+              ? { position: 'fixed', left: menuPos.x, top: menuPos.y, zIndex: 2000 }
+              : undefined
+          }
+        >
+          <DropdownMenuContent align="start" className="z-[2000] min-w-44">
+            {selection ? (
+              <>
+                <DropdownMenuItem onSelect={playSelection} disabled={!playerReady}>
+                  <Icon name="play" className="size-4" />
+                  {t(locale, 'score.playSelection')}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={toggleLoop} disabled={!playerReady}>
+                  <Icon name="repeat" className="size-4" />
+                  {t(locale, looping ? 'score.stopLooping' : 'score.loopSelection')}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={clearSelection} disabled={!playerReady}>
+                  {t(locale, 'score.loopClear')}
+                </DropdownMenuItem>
+              </>
+            ) : (
+              <DropdownMenuItem onSelect={toggleLoop} disabled={!playerReady}>
+                <Icon name="repeat" className="size-4" />
+                {t(locale, looping ? 'score.stopLooping' : 'score.loopWholePiece')}
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : null}
 
       {credit && (credit.attribution || credit.license) ? (
         <p className="text-xs text-muted-foreground">

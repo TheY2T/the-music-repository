@@ -52,7 +52,6 @@ export default function AlphaTexScore({
     engine
       .load(container, initialTexRef.current, {
         mode,
-        interactive: false,
         resources: resourcesRef.current,
         tuning,
       })

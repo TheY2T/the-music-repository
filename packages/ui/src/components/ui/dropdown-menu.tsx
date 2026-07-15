@@ -18,15 +18,34 @@ function useDropdownMenuContext(): DropdownMenuContextValue {
 export interface DropdownMenuProps {
   children?: React.ReactNode;
   className?: string;
+  /** Inline styles for the root — e.g. `position: fixed` at a cursor point for a context menu. */
+  style?: React.CSSProperties;
+  /** Controlled open state. Omit for the default uncontrolled (trigger-toggled) behaviour. */
+  open?: boolean;
+  /** Fires whenever the menu wants to open/close (trigger click, outside-click, Escape, item select). */
+  onOpenChange?: (open: boolean) => void;
 }
 
-/** Lightweight dropdown menu — manages open state, click-outside and Escape. No floating-ui. */
-export function DropdownMenu({ children, className }: DropdownMenuProps) {
-  const [open, setOpen] = useState(false);
+/** Lightweight dropdown menu — manages open state, click-outside and Escape. No floating-ui. Pass
+ * `open`/`onOpenChange` to control it (e.g. a right-click context menu anchored via `style`). */
+export function DropdownMenu({
+  children,
+  className,
+  style,
+  open,
+  onOpenChange,
+}: DropdownMenuProps) {
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const controlled = open !== undefined;
+  const isOpen = controlled ? open : uncontrolledOpen;
+  const setOpen = (next: boolean) => {
+    if (!controlled) setUncontrolledOpen(next);
+    onOpenChange?.(next);
+  };
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!open) return;
+    if (!isOpen) return;
     const onPointerDown = (event: PointerEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) setOpen(false);
     };
@@ -39,11 +58,12 @@ export function DropdownMenu({ children, className }: DropdownMenuProps) {
       document.removeEventListener('pointerdown', onPointerDown);
       document.removeEventListener('keydown', onKeyDown);
     };
-  }, [open]);
+    // setOpen is stable enough; re-subscribing only on open changes is intended.
+  }, [isOpen]);
 
   return (
-    <DropdownMenuContext.Provider value={{ open, setOpen }}>
-      <div ref={ref} className={cn('relative inline-block text-left', className)}>
+    <DropdownMenuContext.Provider value={{ open: isOpen, setOpen }}>
+      <div ref={ref} className={cn('relative inline-block text-left', className)} style={style}>
         {children}
       </div>
     </DropdownMenuContext.Provider>

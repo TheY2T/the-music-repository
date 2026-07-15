@@ -230,9 +230,11 @@ src/
     `@coderline/alphatab`, cataloged + pinned EXACT, lazy dynamic-import, types namespaced as
     `model.Score`). `resolveDisplayMode(instruments)` (`loop.ts`) picks **`standard`** (piano — standard
     notation + an integrated media-player bar: play/pause, tempo, scrub, click-to-hear, click-to-seek,
-    **drag-to-select a beat-precise passage** (Play plays it once & stops; Loop repeats it), metronome, count-in, print) or **`tab`** (guitar — alphaTab's default
-    cursor + click-seek + drag-select). `ScoreMeta.displayMode` overrides. `ScorePlayer` takes `url`
-    (catalogue) OR `tex` (inline, for the tool playgrounds). Flag off = basic play/tempo.
+    **drag-to-select a beat-precise passage** (Play plays it once & stops; Loop repeats it), a **right-click
+    loop menu**, metronome, count-in, print) or **`tab`** (guitar — notation + tablature). **Both modes use
+    the SAME shell-owned interaction** (`enableUserInteraction:false` for both; alphaTab's native selection
+    is off) so piano + guitar controls stay in sync — only the engraving differs. `ScoreMeta.displayMode`
+    overrides. `ScorePlayer` takes `url` (catalogue) OR `tex` (inline, for the tool playgrounds). Flag off = basic play/tempo.
   - **alphaTab owns playback** (its AlphaSynth + SONiVOX soundfont): cursor, section loop
     (`highlightPlaybackRange`+`applyPlaybackRangeFromHighlight`+`isLooping`), `playbackSpeed`,
     metronome/count-in volumes, `hitTest`→`tickPosition` seek. Selections are **beat-precise** — drag
@@ -246,7 +248,9 @@ src/
     engine-load effect (split fetch→state / load-sync) or the container can detach mid-load; and the first
     `applyResources`-on-ready is skipped (already applied at load) so its `render()` can't blank the paint.
     PDF = `api.print()`. **PlayerState comparison uses the numeric literal `1`** (`at.synth.PlayerState`
-    is undefined in the browser build).
+    is undefined in the browser build). The right-click loop menu (design-system `DropdownMenu`, extended
+    with controlled `open` + a `style` anchor) needs **`z-index > 1000`** — alphaTab's `.at-cursors`
+    overlay is `z-index:1000` and otherwise paints over the opaque menu, making it look translucent.
   - **Assets self-hosted, no CDN.** The `@coderline/alphatab-vite` plugin (in `astro.config.mjs`; the
     main package's `/vite` subpath is broken in 1.8.4) copies Bravura → `/font` + soundfont →
     `/soundfont/sonivox.sf2`; the engine points `core.fontDirectory`/`player.soundFont` there. alphaTab

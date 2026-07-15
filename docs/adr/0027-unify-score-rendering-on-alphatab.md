@@ -22,16 +22,18 @@ the whole split and delete most of the custom playback code.
 1. **alphaTab is the single engine.** `AlphaTabScoreEngine` (`apps/web/src/lib/score/alphatab-engine.ts`)
    implements a slimmed `ScoreEngine` (`score-engine.ts`); Verovio (`verovio-engine.ts`, `verovio.d.ts`,
    the Pixi notation-playhead, the `verovio` dependency in both apps + the catalog) is **deleted**.
-2. **Two display modes, one component.** `resolveDisplayMode(instruments)` (`loop.ts`) picks
-   `standard` (piano — `StaveProfile.Score`, `enableUserInteraction: false`, an integrated media-player
-   bar: to-start / play-pause / stop / scrub, tempo, **A–B selection + loop** (click-and-drag across
-   the score to select a **beat-precise** passage — can start/end mid-bar, live-highlighted with a
-   "Selected bar(s) X–Y" readout; **Play then plays just that passage and stops at its end**, re-cued to
-   its start, while **Loop** is a separate toggle that makes it repeat — Loop with no selection loops the
-   whole piece; Clear selection restores whole-piece playback), metronome,
-   count-in, print, click-to-hear, click-to-seek) or
-   `tab` (guitar — `StaveProfile.Default`, `enableUserInteraction: true`, alphaTab's own cursor +
-   click-seek + drag-select). A per-score `ScoreMeta.displayMode` overrides it. **Auto-tab:** the
+2. **Two display modes, one component, one interaction model.** `resolveDisplayMode(instruments)`
+   (`loop.ts`) picks `standard` (piano — `StaveProfile.Score`) or `tab` (guitar — `StaveProfile.Default`,
+   notation + tablature). Both modes share the **same** integrated media-player bar and interaction: the
+   shell owns everything (`enableUserInteraction: false` for both — alphaTab's native selection UI is
+   off) so piano and guitar behave identically. Bar: to-start / play-pause / stop / scrub, tempo,
+   **A–B selection** (click-and-drag across the score to select a **beat-precise** passage — can
+   start/end mid-bar, live-highlighted with a "Selected bar(s) X–Y" readout; **Play then plays just that
+   passage and stops at its end**, re-cued to its start), metronome, count-in, print, click-to-hear,
+   click-to-seek. The loop actions live in a **right-click contextual menu** (Play selection / Loop
+   selection / Clear selection, or Loop whole piece when nothing is selected) — there is no inline Loop
+   button; the drag-to-select hint points users to right-click. A per-score `ScoreMeta.displayMode`
+   overrides the mode. **Auto-tab:** the
    scores are *pitched* (not fretted), so for `tab` mode the engine makes each staff stringed at load —
    `tabTuningFor(instruments)` (`loop.ts`) supplies the standard guitar/bass/ukulele tuning, and the
    engine assigns every note a string/fret (lowest-playable-fret heuristic), accounting for the
@@ -64,6 +66,10 @@ the whole split and delete most of the custom playback code.
    reads the semantic tokens (per aesthetic × light/dark, ADR 0021) as hex and applies them via
    `display.resources` + re-render on theme change (mirrors the Pixi `useThemeColors` bridge). The
    cursor + A–B selection overlays are plain DOM, themed via `.at-cursor-*` / `.at-selection` CSS.
+   The right-click menu reuses the design-system `DropdownMenu` (extended with controlled
+   `open`/`onOpenChange` + a `style` passthrough so it can anchor `position: fixed` at the pointer);
+   its `z-index` must exceed alphaTab's own cursor/selection layer (`.at-cursors`, `z-index: 1000`),
+   which otherwise paints over the opaque menu and makes it look translucent — the menu uses `z-index: 2000`.
 7. **"rendered by alphaTab" footer removed.** alphaTab draws an ungated footer annotation; a
    `MutationObserver` hides that SVG text as partials are appended. MPL-2.0 doesn't require it and we
    keep source attribution in the score credit line.

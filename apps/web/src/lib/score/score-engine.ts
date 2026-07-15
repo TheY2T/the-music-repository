@@ -40,8 +40,6 @@ export interface ScoreLoadResult {
 /** Per-mount engine options. */
 export interface ScoreEngineOptions {
   mode: ScoreDisplayMode;
-  /** Piano interactive mode: false lets us own click-to-hear/seek/loop; guitar uses alphaTab's own UI. */
-  interactive: boolean;
   /** Theme-derived notation colors (see {@link AlphaTabResources}). */
   resources: AlphaTabResources;
   /** For `tab` mode: open-string MIDI pitches to render the (pitched) staff as tablature. Null → the
