@@ -11,7 +11,7 @@ import * as schema from './schema';
 import { SEED_COLLECTIONS } from './seed-collections';
 import { SEED_CONTENT } from './seed-content';
 import { CONTENT, GENRES, HELP_TOPICS, INSTRUMENTS, SKILL_TOPICS, TAGS } from './seed-data';
-import { SCORE_META, SCORE_XML } from './seed-scores';
+import { SCORE_ALPHATEX, SCORE_META } from './seed-scores';
 
 /** Fold the near-synonym era "Folk" into "Traditional" so the Era facet isn't split. */
 function normalizeEra(era: string): string {
@@ -110,22 +110,21 @@ async function main(): Promise<void> {
 
     await db.delete(schema.mediaAssets).where(eq(schema.mediaAssets.contentId, contentId));
 
-    // Real engraved score (MusicXML) when we have one for this slug — the web ScoreViewer engraves
-    // it with Verovio (notation-synced playback + client-side PDF export). Provenance/licensing come
-    // from the score's own meta (the engraving's license, not the piece's), falling back to the
-    // item's attribution for the two legacy hand-authored scores.
-    const xml = SCORE_XML[item.slug];
-    if (xml) {
+    // Real score (alphaTex) when we have one for this slug — the web player renders + plays it with
+    // alphaTab (notation-synced playback + client-side PDF export). Provenance/licensing come from the
+    // score's own meta (the engraving's license, not the piece's), falling back to the item's.
+    const tex = SCORE_ALPHATEX[item.slug];
+    if (tex) {
       const scoreMeta = SCORE_META[item.slug];
-      const key = `scores/${item.slug}.musicxml`;
-      const bytes = new TextEncoder().encode(xml);
-      await media.putObject(key, bytes, 'application/vnd.recordare.musicxml+xml');
+      const key = `scores/${item.slug}.alphatex`;
+      const bytes = new TextEncoder().encode(tex);
+      await media.putObject(key, bytes, 'text/plain; charset=utf-8');
       await db.insert(schema.mediaAssets).values({
         contentId,
-        kind: 'musicxml',
+        kind: 'alphatex',
         storageKey: key,
-        filename: `${item.slug}.musicxml`,
-        mime: 'application/vnd.recordare.musicxml+xml',
+        filename: `${item.slug}.alphatex`,
+        mime: 'text/plain; charset=utf-8',
         bytes: bytes.byteLength,
         license: scoreMeta?.license ?? item.license,
         attribution: scoreMeta?.attribution ?? item.attribution,

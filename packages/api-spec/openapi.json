@@ -4520,8 +4520,7 @@
               "score_pdf",
               "audio",
               "image",
-              "midi",
-              "musicxml"
+              "alphatex"
             ]
           },
           "url": {
@@ -4566,8 +4565,7 @@
               "score_pdf",
               "audio",
               "image",
-              "midi",
-              "musicxml"
+              "alphatex"
             ]
           },
           "license": {

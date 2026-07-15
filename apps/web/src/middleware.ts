@@ -135,6 +135,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
   );
   const progress = await client.getBooleanValue(FlagKeys.Progress, FlagDefaults[FlagKeys.Progress]);
   const infoView = await client.getBooleanValue(FlagKeys.InfoView, FlagDefaults[FlagKeys.InfoView]);
+  const interactiveScores = await client.getBooleanValue(
+    FlagKeys.InteractiveScores,
+    FlagDefaults[FlagKeys.InteractiveScores],
+  );
   const toolKeyboard = await client.getBooleanValue(
     FlagKeys.ToolKeyboard,
     FlagDefaults[FlagKeys.ToolKeyboard],
@@ -338,6 +342,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     userCollections,
     progress,
     infoView,
+    interactiveScores,
     toolKeyboard,
     toolCircleOfFifths,
     toolFretboard,

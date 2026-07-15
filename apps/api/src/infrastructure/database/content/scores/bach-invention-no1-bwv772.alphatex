@@ -1,0 +1,145 @@
+\title "Invention No. 1 in C major, BWV 772"
+\hideDynamics
+\track ("Piano" "Piano") {
+  volume 15
+  balance 8
+  instrument acousticgrandpiano
+}
+  \staff {
+    score
+  }
+    \ts (4 4)
+    \tempo (120 hide)
+    \accidentals auto
+    \clef g2
+    \ottava regular
+    \simile none
+    \ks c
+      r.16{dy f instrument acousticgrandpiano}
+      C5.16
+      D5.16
+      E5.16
+      F5.16
+      D5.16
+      E5.16
+      C5.16
+      r.16
+      G5.16
+      A5.16
+      B5.16
+      C6.16
+      A5.16
+      B5.16
+      G5.16
+    |
+      G5.8
+      E5.8
+      C5.8
+      E5.8
+      B5.8
+      G5.8
+      D5.8
+      G5.8
+    |
+      r.16
+      C5.16
+      D5.16
+      E5.16
+      F5.16
+      D5.16
+      E5.16
+      C5.16
+      r.16
+      G5.16
+      A5.16
+      B5.16
+      C6.16
+      A5.16
+      B5.16
+      G5.16
+    |
+      G5.8
+      E5.8
+      C5.8
+      E5.8
+      B5.8
+      G5.8
+      D5.8
+      G5.8
+    |
+      D6.8
+      C6.8
+      B5.8
+      A5.8
+      G5.8
+      Gb5.8
+      E5.8
+      D5.8
+    |
+      (G4 B4 D5 G5).1
+  \staff {
+    score
+  }
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks c
+      |
+      |
+      |
+      |
+      |
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks c
+        r.1{dy f}
+      |
+        r.16
+        C4.16
+        D4.16
+        E4.16
+        F4.16
+        D4.16
+        E4.16
+        C4.16
+        r.16
+        G4.16
+        A4.16
+        B4.16
+        C5.16
+        A4.16
+        B4.16
+        G4.16
+      |
+        C4.8
+        E4.8
+        G4.8
+        E4.8
+        G3.8
+        B3.8
+        D4.8
+        B3.8
+      |
+        r.16
+        C4.16
+        D4.16
+        E4.16
+        F4.16
+        D4.16
+        E4.16
+        C4.16
+        r.16
+        G4.16
+        A4.16
+        B4.16
+        C5.16
+        A4.16
+        B4.16
+        G4.16
+      |
+        D3.1
+      |
+        (G2 D3 B3).1

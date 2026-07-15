@@ -17,6 +17,7 @@ declare namespace App {
       progress: boolean;
       toolPractice: boolean;
       infoView: boolean;
+      interactiveScores: boolean;
       toolKeyboard: boolean;
       toolCircleOfFifths: boolean;
       toolFretboard: boolean;

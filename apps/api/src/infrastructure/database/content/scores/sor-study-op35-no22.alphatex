@@ -1,0 +1,120 @@
+\hideDynamics
+\track ("Study Op.35 No.22" "Study Op.3") {
+  volume 15
+  balance 8
+  instrument acousticgrandpiano
+}
+  \staff {
+    score
+  }
+    \ts (3 4)
+    \tempo (120 hide)
+    \accidentals auto
+    \clef g2
+    \ottava regular
+    \simile none
+    \ks d
+      B2.8{dy f instrument acousticgrandpiano}
+      D3.8
+      Gb3.8
+      B3.8
+      Gb3.8
+      D3.8
+    |
+      B2.8
+      D3.8
+      Gb3.8
+      B3.8
+      D4.8
+      B3.8
+    |
+      Db3.8
+      Gb3.8
+      Bb3.8
+      Db4.8
+      Bb3.8
+      Gb3.8
+    |
+      B2.8
+      D3.8
+      Gb3.8
+      B3.8
+      Gb3.8
+      D3.8
+    |
+      E3.8
+      G3.8
+      B3.8
+      E4.8
+      B3.8
+      G3.8
+    |
+      B2.8
+      D3.8
+      Gb3.8
+      B3.8
+      Gb3.8
+      D3.8
+    |
+      Db3.8
+      Gb3.8
+      Bb3.8
+      Db4.8
+      Bb3.8
+      Gb3.8
+    |
+      B2.8
+      D3.8
+      Gb3.8
+      B3.4{d}
+    |
+      Gb3.8
+      B3.8
+      D4.8
+      Gb4.8
+      D4.8
+      B3.8
+    |
+      B3.8
+      D4.8
+      Gb4.8
+      D4.8
+      B3.8
+      Gb3.8
+    |
+      G3.8
+      B3.8
+      E4.8
+      G4.8
+      E4.8
+      B3.8
+    |
+      Gb3.8
+      B3.8
+      D4.8
+      B3.8
+      Gb3.8
+      D3.8
+    |
+      E3.8
+      G3.8
+      B3.8
+      E4.8
+      B3.8
+      G3.8
+    |
+      Db3.8
+      Gb3.8
+      Bb3.8
+      Db4.8
+      Bb3.8
+      Gb3.8
+    |
+      Bb3.8
+      Db4.8
+      Gb4.8
+      E4.8
+      Db4.8
+      Bb3.8
+    |
+      (B2 D3 Gb3 B3).2{d}

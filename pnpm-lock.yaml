@@ -27,6 +27,12 @@ catalogs:
     '@biomejs/biome':
       specifier: ^2.5.3
       version: 2.5.3
+    '@coderline/alphatab':
+      specifier: 1.8.4
+      version: 1.8.4
+    '@coderline/alphatab-vite':
+      specifier: 1.8.4
+      version: 1.8.4
     '@fontsource-variable/fraunces':
       specifier: ^5.2.5
       version: 5.2.9
@@ -291,9 +297,6 @@ catalogs:
     unplugin-swc:
       specifier: ^1.5.1
       version: 1.5.9
-    verovio:
-      specifier: ^6.2.0
-      version: 6.2.0
     vite-tsconfig-paths:
       specifier: ^5.1.4
       version: 5.1.4
@@ -408,6 +411,9 @@ importers:
       '@TheY2T/tmr-config-vitest':
         specifier: workspace:*
         version: link:../../packages/config-vitest
+      '@coderline/alphatab':
+        specifier: 'catalog:'
+        version: 1.8.4
       '@nestjs/cli':
         specifier: ^11.0.24
         version: 11.0.24(@swc/core@1.15.43)(@types/node@22.20.1)(esbuild@0.28.1)(lightningcss@1.32.0)(prettier@3.9.5)
@@ -450,9 +456,6 @@ importers:
       unplugin-swc:
         specifier: 'catalog:'
         version: 1.5.9(@swc/core@1.15.43)(rollup@4.62.2)
-      verovio:
-        specifier: 'catalog:'
-        version: 6.2.0
       vite-tsconfig-paths:
         specifier: 'catalog:'
         version: 5.1.4(typescript@5.9.3)(vite@8.1.4(@types/node@22.20.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)(tsx@4.23.0)(yaml@2.9.0))
@@ -483,6 +486,9 @@ importers:
       '@astrojs/react':
         specifier: 'catalog:'
         version: 6.0.1(@types/node@26.1.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(esbuild@0.28.1)(jiti@2.7.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(terser@5.49.0)(tsx@4.23.0)(yaml@2.9.0)
+      '@coderline/alphatab':
+        specifier: 'catalog:'
+        version: 1.8.4
       '@iconify-json/lucide':
         specifier: 'catalog:'
         version: 1.2.116
@@ -552,9 +558,6 @@ importers:
       tw-animate-css:
         specifier: 'catalog:'
         version: 1.4.0
-      verovio:
-        specifier: 'catalog:'
-        version: 6.2.0
     devDependencies:
       '@TheY2T/tmr-config-eslint':
         specifier: workspace:*
@@ -568,6 +571,9 @@ importers:
       '@axe-core/playwright':
         specifier: 'catalog:'
         version: 4.12.1(playwright-core@1.61.1)
+      '@coderline/alphatab-vite':
+        specifier: 'catalog:'
+        version: 1.8.4(vite@8.1.4(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)(tsx@4.23.0)(yaml@2.9.0))
       '@playwright/test':
         specifier: 'catalog:'
         version: 1.61.1
@@ -1550,6 +1556,16 @@ packages:
   '@clack/prompts@1.7.0':
     resolution: {integrity: sha512-y7/yvZ2TPAnR9+jnc00klvNNLkJiXFFrQA/hlLCcxA9a2A4zQIOimyFQ9XfwYKiGD1fb5GY8vbKIIgO8d5Tb2A==}
     engines: {node: '>= 20.12.0'}
+
+  '@coderline/alphatab-vite@1.8.4':
+    resolution: {integrity: sha512-kUABf0FNMXZrr7TvHLUBTqpQQLrHXs9bIrsQMHHZXE0uIlH70yNSgbiuvm0SK0L5D07On5RD5InteJZIX9dacg==}
+    engines: {node: '>=20.19.0'}
+    peerDependencies:
+      vite: ^7 || ^8
+
+  '@coderline/alphatab@1.8.4':
+    resolution: {integrity: sha512-VN5rfTZZWgA63Ny1aDKCp02k3Qm9CHhg4Q9AnK0kHm7G+fNDNZo36TeToPDFoJ6VpB9+AHcCrHwHFUP1tKqdsw==}
+    engines: {node: '>=6.0.0'}
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -8374,10 +8390,6 @@ packages:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
 
-  verovio@6.2.0:
-    resolution: {integrity: sha512-yYU4CAik+ln4tdDOSLJPypQ24fiRsJtNgmgobsPnrSQYxesjwLrrPvth4mumeBRh3S20VERw9+GPXpRyhT1R4A==}
-    engines: {node: '>= 14.18.0'}
-
   vfile-message@4.0.3:
     resolution: {integrity: sha512-QTHzsGd1EhbZs4AsQ20JX1rC3cOlt/IWJruk893DfLRr57lcnOeMaWG4K0JrRta4mIJZKth2Au3mM3u03/JWKw==}
 
@@ -9479,6 +9491,13 @@ snapshots:
       fast-string-width: 3.0.2
       fast-wrap-ansi: 0.2.2
       sisteransi: 1.0.5
+
+  '@coderline/alphatab-vite@1.8.4(vite@8.1.4(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)(tsx@4.23.0)(yaml@2.9.0))':
+    dependencies:
+      magic-string: 0.30.21
+      vite: 8.1.4(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)(tsx@4.23.0)(yaml@2.9.0)
+
+  '@coderline/alphatab@1.8.4': {}
 
   '@colors/colors@1.5.0':
     optional: true
@@ -16557,8 +16576,6 @@ snapshots:
   uuid@10.0.0: {}
 
   vary@1.1.2: {}
-
-  verovio@6.2.0: {}
 
   vfile-message@4.0.3:
     dependencies:

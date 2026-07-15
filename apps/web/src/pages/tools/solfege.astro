@@ -21,7 +21,7 @@ const locale = Astro.locals.locale;
       subtitle={t(locale, 'tool.solfege.summary')}
       back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}
     >
-      <Solfege client:load />
+      <Solfege client:load locale={locale} />
     </PageShell>
     {showInfoView && <InfoView client:idle />}
     {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}

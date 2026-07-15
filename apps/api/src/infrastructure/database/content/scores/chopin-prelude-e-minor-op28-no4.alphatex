@@ -1,0 +1,182 @@
+\hideDynamics
+\track ("Prelude Op.28 No.4 (opening)" "Prelude Op") {
+  volume 15
+  balance 8
+  instrument acousticgrandpiano
+}
+  \staff {
+    score
+  }
+    \ts (4 4)
+    \tempo (120 hide)
+    \accidentals auto
+    \clef g2
+    \ottava regular
+    \simile none
+    \ks g
+      B4.4{dy f instrument acousticgrandpiano}
+      B4.4
+      B4.4
+      B4.4
+    |
+      B4.4
+      B4.4
+      B4.4
+      B4.4
+    |
+      B4.4
+      B4.4
+      C5.4
+      C5.4
+    |
+      B4.4
+      B4.4
+      B4.4
+      B4.4
+    |
+      B4.4
+      B4.4
+      Bb4.4
+      Bb4.4
+    |
+      B4.4
+      B4.4
+      B4.4
+      B4.4
+    |
+      A4.4
+      A4.4
+      A4.4
+      A4.4
+    |
+      G4.4
+      G4.4
+      G4.4
+      Gb4.4
+  \staff {
+    score
+  }
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks g
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks g
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks g
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks g
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks g
+        (E3 G3 B3).8{dy f}
+        (E3 G3 B3).8
+        (E3 G3 B3).8
+        (E3 G3 B3).8
+        (E3 G3 B3).8
+        (E3 G3 B3).8
+        (E3 G3 B3).8
+        (E3 G3 B3).8
+      |
+        (E3 G3 B3).8
+        (E3 G3 B3).8
+        (E3 G3 B3).8
+        (E3 G3 B3).8
+        (E3 G3 B3).8
+        (E3 G3 B3).8
+        (E3 G3 B3).8
+        (E3 G3 B3).8
+      |
+        (E3 A3 C4).8
+        (E3 A3 C4).8
+        (E3 A3 C4).8
+        (E3 A3 C4).8
+        (E3 A3 C4).8
+        (E3 A3 C4).8
+        (E3 A3 C4).8
+        (E3 A3 C4).8
+      |
+        (E3 Ab3 B3).8
+        (E3 Ab3 B3).8
+        (E3 Ab3 B3).8
+        (E3 Ab3 B3).8
+        (E3 Ab3 B3).8
+        (E3 Ab3 B3).8
+        (E3 Ab3 B3).8
+        (E3 Ab3 B3).8
+      |
+        (E3 G3 Bb3).8
+        (E3 G3 Bb3).8
+        (E3 G3 Bb3).8
+        (E3 G3 Bb3).8
+        (E3 G3 Bb3).8
+        (E3 G3 Bb3).8
+        (E3 G3 Bb3).8
+        (E3 G3 Bb3).8
+      |
+        (E3 Gb3 B3).8
+        (E3 Gb3 B3).8
+        (E3 Gb3 B3).8
+        (E3 Gb3 B3).8
+        (E3 Gb3 B3).8
+        (E3 Gb3 B3).8
+        (E3 Gb3 B3).8
+        (E3 Gb3 B3).8
+      |
+        (C3 Gb3 A3).8
+        (C3 Gb3 A3).8
+        (C3 Gb3 A3).8
+        (C3 Gb3 A3).8
+        (C3 Gb3 A3).8
+        (C3 Gb3 A3).8
+        (C3 Gb3 A3).8
+        (C3 Gb3 A3).8
+      |
+        (B2 Eb3 Gb3).8
+        (B2 Eb3 Gb3).8
+        (B2 Eb3 Gb3).8
+        (B2 Eb3 Gb3).8
+        (B2 Eb3 Gb3).8
+        (B2 Eb3 Gb3).8
+        (B2 Eb3 Gb3).8
+        (B2 Eb3 Gb3).8

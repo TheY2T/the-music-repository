@@ -1,0 +1,189 @@
+\hideDynamics
+\track ("Solace (A Mexican Serenade)" "Solace (A ") {
+  volume 15
+  balance 8
+  instrument acousticgrandpiano
+}
+  \staff {
+    score
+  }
+    \ts (2 4)
+    \tempo (120 hide)
+    \accidentals auto
+    \clef g2
+    \ottava regular
+    \simile none
+    \ks c
+      r.4{dy f instrument acousticgrandpiano}
+      r.8
+      G4.8
+    |
+      C5.8{d}
+      D5.16
+      E5.8
+      G5.8
+    |
+      A5.4
+      G5.8
+      E5.8
+    |
+      D5.8{d}
+      E5.16
+      F5.8
+      D5.8
+    |
+      C5.4
+      E5.8
+      G5.8
+    |
+      C6.8{d}
+      B5.16
+      A5.8
+      G5.8
+    |
+      A5.8{d}
+      G5.16
+      F5.8
+      E5.8
+    |
+      D5.4
+      G4.8
+      B4.8
+    |
+      C5.8{d}
+      D5.16
+      E5.8
+      G5.8
+    |
+      A5.4
+      G5.8
+      E5.8
+    |
+      D5.8{d}
+      E5.16
+      F5.8
+      A5.8
+    |
+      G5.4
+      E5.8
+      C5.8
+    |
+      E5.8{d}
+      F5.16
+      G5.8
+      E5.8
+    |
+      D5.8{d}
+      C5.16
+      B4.8
+      D5.8
+    |
+      C5.4
+      E5.8
+      G5.8
+    |
+      C5.2
+  \staff {
+    score
+  }
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks c
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks c
+        r.2{dy f}
+      |
+        C3.8{d}
+        C3.16
+        (E3 G3 C4).8
+        (E3 G3 C4).8
+      |
+        F2.8{d}
+        F2.16
+        (A2 C3 F3).8
+        (A2 C3 F3).8
+      |
+        G2.8{d}
+        G2.16
+        (D3 F3 B3).8
+        (D3 F3 B3).8
+      |
+        C3.8{d}
+        C3.16
+        (E3 G3 C4).8
+        (E3 G3 C4).8
+      |
+        C3.8{d}
+        C3.16
+        (E3 G3 C4).8
+        (E3 G3 C4).8
+      |
+        G2.8{d}
+        G2.16
+        (D3 F3 B3).8
+        (D3 F3 B3).8
+      |
+        G2.8{d}
+        G2.16
+        (D3 F3 B3).8
+        (D3 F3 B3).8
+      |
+        C3.8{d}
+        C3.16
+        (E3 G3 C4).8
+        (E3 G3 C4).8
+      |
+        F2.8{d}
+        F2.16
+        (A2 C3 F3).8
+        (A2 C3 F3).8
+      |
+        G2.8{d}
+        G2.16
+        (D3 F3 B3).8
+        (D3 F3 B3).8
+      |
+        C3.8{d}
+        C3.16
+        (E3 G3 C4).8
+        (E3 G3 C4).8
+      |
+        C3.8{d}
+        C3.16
+        (E3 G3 C4).8
+        (E3 G3 C4).8
+      |
+        G2.8{d}
+        G2.16
+        (D3 F3 B3).8
+        (D3 F3 B3).8
+      |
+        C3.8{d}
+        C3.16
+        (E3 G3 C4).8
+        (E3 G3 C4).8
+      |
+        C3.8{d}
+        C3.16
+        (E3 G3 C4).8
+        (E3 G3 C4).8

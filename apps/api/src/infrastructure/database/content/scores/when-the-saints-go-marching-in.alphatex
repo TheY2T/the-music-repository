@@ -1,0 +1,60 @@
+\title "When the Saints Go Marching In"
+\hideDynamics
+\track ("Melody" "Melody") {
+  volume 15
+  balance 8
+  instrument acousticgrandpiano
+}
+  \staff {
+    score
+  }
+    \ts (4 4)
+    \ac
+    \tempo (120 hide)
+    \accidentals auto
+    \clef g2
+    \ottava regular
+    \simile none
+    \ks c
+    \barNumberDisplay Hide
+      C5.4{dy f instrument acousticgrandpiano}
+      E5.4
+      F5.4
+    |
+      G5.2
+      E5.4
+      C5.4
+    |
+      E5.4
+      D5.4
+      r.2
+    |
+      C5.4
+      E5.4
+      F5.4
+      G5.4
+    |
+      G5.2
+      E5.4
+      C5.4
+    |
+      E5.4
+      D5.4
+      C5.2
+    |
+      E5.4
+      E5.4
+      E5.4
+      D5.4
+    |
+      C5.4
+      E5.4
+      G5.4
+      G5.4
+    |
+      E5.4
+      E5.4
+      D5.4
+      D5.4
+    |
+      C5.1

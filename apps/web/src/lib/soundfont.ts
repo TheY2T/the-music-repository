@@ -10,7 +10,14 @@
  *   back-compatible one-shot used by the many tools that just trigger a note.
  * - smplr is imported lazily (dynamic import) so it never weighs down tools that don't need samples.
  */
-import { getAudioContext, getDestination, oscNoteOff, oscNoteOn, playTone } from './audio';
+import {
+  getAudioContext,
+  getDestination,
+  oscNoteOff,
+  oscNoteOn,
+  playTone,
+  scheduleTone,
+} from './audio';
 import { midiToFrequency } from './music-theory';
 
 /** A short, friendly menu of General-MIDI instruments (smplr accepts the full GM set). */
@@ -36,7 +43,9 @@ interface SmplrInstrument {
     note: number;
     velocity?: number;
     duration?: number;
-  }): ((time?: number) => void) | void;
+    /** Absolute AudioContext time to start at (for scheduled/arranged playback). */
+    time?: number;
+  }): ((time?: number) => void) | undefined;
   stop(options?: { note?: number }): void;
 }
 
@@ -200,4 +209,51 @@ export function playNote(
     return;
   }
   playTone(midiToFrequency(midi), Math.min(duration, 0.7));
+}
+
+// Stop handles for sampled notes scheduled ahead on the timeline (for score playback / loops).
+const scheduledStoppers: Array<(time?: number) => void> = [];
+
+/**
+ * Schedule a note to sound at absolute AudioContext time `atTime` for `durationSec` — for arranged /
+ * score playback. Sampled when a soundfont is loaded (tracked so `stopScheduled` can cancel it), else
+ * the oscillator (`scheduleTone`, routed through `opts.output` so a caller-owned bus can silence it).
+ */
+export function scheduleNote(
+  midi: number,
+  atTime: number,
+  durationSec: number,
+  opts?: { velocity?: number; instrument?: string; output?: AudioNode },
+): void {
+  const name = opts?.instrument ?? defaultName;
+  const entry = ensureLoaded(name);
+  if (entry.instrument) {
+    const stop = entry.instrument.start({
+      note: midi,
+      time: atTime,
+      duration: durationSec,
+      velocity: toMidiVelocity(opts?.velocity),
+    });
+    if (typeof stop === 'function') scheduledStoppers.push(stop);
+    return;
+  }
+  const gain = opts?.velocity != null ? 0.12 + (toMidiVelocity(opts.velocity) / 127) * 0.16 : 0.22;
+  scheduleTone(midiToFrequency(midi), atTime, durationSec, {
+    type: 'triangle',
+    gain,
+    output: opts?.output,
+  });
+}
+
+/** Cancel all sampled notes scheduled via `scheduleNote` (call on stop / loop-restart). The oscillator
+ * fallback is cancelled by the caller's playback bus. */
+export function stopScheduled(): void {
+  for (const stop of scheduledStoppers) {
+    try {
+      stop();
+    } catch {
+      // already stopped
+    }
+  }
+  scheduledStoppers.length = 0;
 }

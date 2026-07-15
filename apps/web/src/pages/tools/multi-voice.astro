@@ -21,7 +21,7 @@ const locale = Astro.locals.locale;
       subtitle={t(locale, 'tool.multi-voice.summary')}
       back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}
     >
-      <MultiVoiceStaff client:load />
+      <MultiVoiceStaff client:load locale={locale} />
     </PageShell>
     {showInfoView && <InfoView client:idle />}
     {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}

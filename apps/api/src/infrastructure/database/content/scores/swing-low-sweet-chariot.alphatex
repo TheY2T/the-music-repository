@@ -1,0 +1,68 @@
+\title "Swing Low, Sweet Chariot"
+\hideDynamics
+\track ("Melody" "Melody") {
+  volume 15
+  balance 8
+  instrument acousticgrandpiano
+}
+  \staff {
+    score
+  }
+    \ts (4 4)
+    \tempo (120 hide)
+    \accidentals auto
+    \clef g2
+    \ottava regular
+    \simile none
+    \ks g
+      D5.4{dy f instrument acousticgrandpiano}
+      B4.4
+      D5.4
+      D5.4
+    |
+      B4.4
+      G4.2
+      D5.4
+    |
+      D5.4
+      B4.4
+      A4.4
+      B4.4
+    |
+      G4.4
+      E4.4
+      G4.2
+    |
+      D5.4
+      B4.4
+      D5.4
+      D5.4
+    |
+      B4.4
+      G4.2
+      D5.4
+    |
+      D5.4
+      B4.4
+      A4.4
+      B4.4
+    |
+      G4.4
+      E4.4
+      G4.2
+    |
+      D5.4
+      B4.4
+      D5.4
+      D5.4
+    |
+      B4.4
+      G4.2
+      D5.4
+    |
+      D5.4
+      B4.4
+      A4.4
+      B4.4
+    |
+      G4.1

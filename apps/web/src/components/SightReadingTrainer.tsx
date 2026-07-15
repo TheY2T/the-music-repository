@@ -1,13 +1,17 @@
+import type { Locale } from '@TheY2T/tmr-i18n';
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
-import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
+import AlphaTexScore from '@/components/score/AlphaTexScore';
 import { playTone } from '@/lib/audio';
 import { midiToFrequency, trebleStaffNotes } from '@/lib/music-theory';
+import { melodyToAlphaTex } from '@/lib/score/alphatex';
 
 // C-major naturals C4–C6, low to high — the note pool (renders without accidentals).
 const NATURALS = trebleStaffNotes();
 
-interface MelodyNote extends StaffNoteDatum {
+interface MelodyNote {
+  step: number;
+  label: string;
   midi: number;
 }
 
@@ -32,7 +36,7 @@ const MOTIONS = [
   { key: 'leaps', label: 'Small leaps', maxLeap: 3 },
 ];
 
-export default function SightReadingTrainer() {
+export default function SightReadingTrainer({ locale }: { locale: Locale }) {
   const [length, setLength] = useState(8);
   const [motion, setMotion] = useState('steps');
   const [showLabels, setShowLabels] = useState(false);
@@ -94,7 +98,17 @@ export default function SightReadingTrainer() {
         </label>
       </div>
 
-      <StaffSequence notes={melody} showLabels={showLabels} />
+      {melody.length ? (
+        <AlphaTexScore
+          tex={melodyToAlphaTex(
+            melody.map((n) => ({ name: n.label, beats: 1 })),
+            { title: 'Sight-reading', lyrics: showLabels ? melody.map((n) => n.label) : undefined },
+          )}
+          mode="standard"
+          locale={locale}
+          showPlay={false}
+        />
+      ) : null}
 
       <div className="flex gap-3">
         <Button type="button" onClick={play}>

@@ -1007,7 +1007,7 @@ export const GetContentBySlugResponse = zod.object({
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
   "media": zod.array(zod.object({
   "id": zod.string(),
-  "kind": zod.enum(['score_pdf', 'audio', 'image', 'midi', 'musicxml']),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'alphatex']),
   "url": zod.string(),
   "filename": zod.string(),
   "mime": zod.string(),
@@ -1729,7 +1729,7 @@ export const CreateContentResponse = zod.object({
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
   "media": zod.array(zod.object({
   "id": zod.string(),
-  "kind": zod.enum(['score_pdf', 'audio', 'image', 'midi', 'musicxml']),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'alphatex']),
   "url": zod.string(),
   "filename": zod.string(),
   "mime": zod.string(),
@@ -1789,7 +1789,7 @@ export const GetContentForEditResponse = zod.object({
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
   "media": zod.array(zod.object({
   "id": zod.string(),
-  "kind": zod.enum(['score_pdf', 'audio', 'image', 'midi', 'musicxml']),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'alphatex']),
   "url": zod.string(),
   "filename": zod.string(),
   "mime": zod.string(),
@@ -1866,7 +1866,7 @@ export const UpdateContentResponse = zod.object({
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
   "media": zod.array(zod.object({
   "id": zod.string(),
-  "kind": zod.enum(['score_pdf', 'audio', 'image', 'midi', 'musicxml']),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'alphatex']),
   "url": zod.string(),
   "filename": zod.string(),
   "mime": zod.string(),
@@ -1896,7 +1896,7 @@ export const RequestMediaUploadParams = zod.object({
 export const RequestMediaUploadBody = zod.object({
   "filename": zod.string(),
   "mime": zod.string(),
-  "kind": zod.enum(['score_pdf', 'audio', 'image', 'midi', 'musicxml']),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'alphatex']),
   "license": zod.string().optional(),
   "attribution": zod.string().optional()
 }).describe('Request a direct-to-storage upload slot for a media file.')
@@ -1952,7 +1952,7 @@ export const PublishContentResponse = zod.object({
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
   "media": zod.array(zod.object({
   "id": zod.string(),
-  "kind": zod.enum(['score_pdf', 'audio', 'image', 'midi', 'musicxml']),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'alphatex']),
   "url": zod.string(),
   "filename": zod.string(),
   "mime": zod.string(),
@@ -2009,7 +2009,7 @@ export const UnpublishContentResponse = zod.object({
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
   "media": zod.array(zod.object({
   "id": zod.string(),
-  "kind": zod.enum(['score_pdf', 'audio', 'image', 'midi', 'musicxml']),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'alphatex']),
   "url": zod.string(),
   "filename": zod.string(),
   "mime": zod.string(),

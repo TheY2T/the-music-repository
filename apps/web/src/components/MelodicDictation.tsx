@@ -1,13 +1,17 @@
+import type { Locale } from '@TheY2T/tmr-i18n';
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
-import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
+import AlphaTexScore from '@/components/score/AlphaTexScore';
 import { trebleStaffNotes } from '@/lib/music-theory';
+import { melodyToAlphaTex } from '@/lib/score/alphatex';
 import { playNote } from '@/lib/soundfont';
 
 // One-octave pool C4–C5 so the answer palette covers every note the generator can pick.
 const POOL = trebleStaffNotes().filter((n) => n.midi >= 60 && n.midi <= 72);
 
-interface DictNote extends StaffNoteDatum {
+interface DictNote {
+  step: number;
+  label: string;
   midi: number;
 }
 
@@ -28,7 +32,7 @@ function generate(length: number): DictNote[] {
 
 const LENGTHS = [3, 4, 5];
 
-export default function MelodicDictation() {
+export default function MelodicDictation({ locale }: { locale: Locale }) {
   const [length, setLength] = useState(4);
   const [melody, setMelody] = useState<DictNote[]>(() => generate(4));
   const [answer, setAnswer] = useState<string[]>([]);
@@ -179,7 +183,17 @@ export default function MelodicDictation() {
         </p>
       ) : null}
 
-      {revealed ? <StaffSequence notes={melody} showLabels /> : null}
+      {revealed ? (
+        <AlphaTexScore
+          tex={melodyToAlphaTex(
+            melody.map((n) => ({ name: n.label, beats: 1 })),
+            { title: 'Melody', lyrics: melody.map((n) => n.label) },
+          )}
+          mode="standard"
+          locale={locale}
+          showPlay={false}
+        />
+      ) : null}
 
       <p className="text-xs text-muted-foreground">
         Listen, then rebuild the melody (C major) note by note from the palette and Check yourself.

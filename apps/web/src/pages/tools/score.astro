@@ -22,7 +22,7 @@ const locale = Astro.locals.locale;
       back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}
       maxWidth="max-w-5xl"
     >
-      <ScoreRenderer client:load />
+      <ScoreRenderer client:load locale={Astro.locals.locale} />
     </PageShell>
     {showInfoView && <InfoView client:idle />}
     {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}

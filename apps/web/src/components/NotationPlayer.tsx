@@ -1,47 +1,14 @@
-import { Button, Icon, Select } from '@TheY2T/tmr-ui';
-import { useEffect, useRef, useState } from 'react';
-import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
-import { getAudioContext, playTone, scheduleClick } from '@/lib/audio';
+import type { Locale } from '@TheY2T/tmr-i18n';
+import { Select } from '@TheY2T/tmr-ui';
+import { useState } from 'react';
+import ScorePlayer from '@/components/ScorePlayer';
+import { pitchName, ROOT_CHOICES } from '@/lib/music-theory';
 import {
-  midiToFrequency,
-  pitchName,
-  ROOT_CHOICES,
-  staffPlacement,
-  trebleStaffNotes,
-} from '@/lib/music-theory';
-
-// Name → staff position lookup for the treble naturals (C4–C6).
-const BY_NAME = new Map(trebleStaffNotes().map((n) => [n.name, n]));
-
-interface PlayerNote extends StaffNoteDatum {
-  midi: number;
-}
-
-/** Build the (optionally transposed) melody, spelling accidentals with flats when transposing down. */
-function toNotes(names: string[], beats: number[], transpose: number): PlayerNote[] {
-  const flats = transpose < 0;
-  return names.flatMap((name, i): PlayerNote[] => {
-    const noteBeats = beats[i] ?? 1;
-    if (name === 'R') {
-      return [{ step: 4, label: 'rest', beats: noteBeats, rest: true, midi: -1 }];
-    }
-    const base = BY_NAME.get(name);
-    if (!base) {
-      return [];
-    }
-    const midi = base.midi + transpose;
-    const placement = staffPlacement(midi, flats);
-    return [
-      {
-        step: placement.step,
-        label: placement.label,
-        accidental: placement.accidental,
-        beats: noteBeats,
-        midi,
-      },
-    ];
-  });
-}
+  type MelodyNote,
+  melodyToAlphaTex,
+  midiToAlphaTexPitch,
+  noteNameToMidi,
+} from '@/lib/score/alphatex';
 
 // The pieces are all in C major; transpose from C, staying within ±6 semitones for readability.
 const transposeForRoot = (root: number) => (root <= 6 ? root : root - 12);
@@ -96,109 +63,28 @@ const PIECES = [
   },
 ];
 
-export default function NotationPlayer() {
+/**
+ * `/tools/player` — a public-domain melody player (ADR 0027; was a StaffSequence + setTimeout cursor).
+ * The selected piece (optionally transposed) is generated as alphaTex and rendered/played by the shared
+ * {@link ScorePlayer}, which brings staff notation, playback cursor, tempo, A–B loop, and metronome.
+ */
+export default function NotationPlayer({ locale }: { locale: Locale }) {
   const [pieceKey, setPieceKey] = useState('ode');
   const [root, setRoot] = useState(0);
-  const [bpm, setBpm] = useState(100);
-  const [loop, setLoop] = useState(true);
-  const [click, setClick] = useState(false);
-  const [playing, setPlaying] = useState(false);
-  const [active, setActive] = useState(-1);
 
   const piece = PIECES.find((p) => p.key === pieceKey) ?? PIECES[0];
-  const notes = toNotes(piece.names, piece.beats, transposeForRoot(root));
-  const lastIndex = notes.length - 1;
+  const transpose = transposeForRoot(root);
+  const flats = transpose < 0;
 
-  const [loopStart, setLoopStart] = useState(0);
-  const [loopEnd, setLoopEnd] = useState(lastIndex);
-
-  const bpmRef = useRef(bpm);
-  const loopRef = useRef(loop);
-  const startRef = useRef(loopStart);
-  const endRef = useRef(loopEnd);
-  const idxRef = useRef(0);
-
-  useEffect(() => {
-    bpmRef.current = bpm;
-  }, [bpm]);
-  useEffect(() => {
-    loopRef.current = loop;
-  }, [loop]);
-  useEffect(() => {
-    startRef.current = loopStart;
-  }, [loopStart]);
-  useEffect(() => {
-    endRef.current = loopEnd;
-  }, [loopEnd]);
-
-  // Reset the loop region to the whole piece when the selection changes.
-  useEffect(() => {
-    setPlaying(false);
-    setLoopStart(0);
-    setLoopEnd(lastIndex);
-  }, [lastIndex]);
-
-  useEffect(() => {
-    if (!playing) {
-      return;
-    }
-    idxRef.current = startRef.current;
-    let timer = 0;
-
-    function step() {
-      const i = idxRef.current;
-      setActive(i);
-      const secondsPerBeat = 60 / bpmRef.current;
-      const beats = notes[i].beats ?? 1;
-      if (!notes[i].rest) {
-        playTone(midiToFrequency(notes[i].midi), beats * secondsPerBeat * 0.9);
-      }
-      timer = window.setTimeout(
-        () => {
-          let next = i + 1;
-          if (next > endRef.current) {
-            if (!loopRef.current) {
-              setPlaying(false);
-              return;
-            }
-            next = startRef.current;
-          }
-          idxRef.current = next;
-          step();
-        },
-        beats * secondsPerBeat * 1000,
-      );
-    }
-
-    step();
-    return () => {
-      window.clearTimeout(timer);
-      setActive(-1);
-    };
-    // notes is derived from pieceKey + root; restart playback when either changes.
-  }, [playing, pieceKey, root]);
-
-  // Optional metronome click: an independent beat timer that runs alongside playback.
-  useEffect(() => {
-    if (!playing || !click) {
-      return;
-    }
-    let beat = 0;
-    let timer = 0;
-    const tick = () => {
-      const ctx = getAudioContext();
-      if (ctx) {
-        scheduleClick(ctx.currentTime + 0.02, beat % 4 === 0);
-      }
-      beat += 1;
-      timer = window.setTimeout(tick, 60000 / bpmRef.current);
-    };
-    tick();
-    return () => window.clearTimeout(timer);
-  }, [playing, click]);
+  const melody: MelodyNote[] = piece.names.map((name, i) => {
+    if (name === 'R') return { name: null, beats: piece.beats[i] };
+    const midi = (noteNameToMidi(name) ?? 60) + transpose;
+    return { name: midiToAlphaTexPitch(midi, flats), beats: piece.beats[i] };
+  });
+  const tex = melodyToAlphaTex(melody, { title: piece.title, tempo: 100 });
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <div className="flex flex-wrap items-end gap-4">
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Piece</span>
@@ -215,8 +101,8 @@ export default function NotationPlayer() {
           </Select>
         </label>
         <label className="space-y-1 text-sm">
-          <span className="block font-medium" data-help="scales">
-            Key (transpose)
+          <span className="block font-medium" data-help="transpose">
+            Key
           </span>
           <Select
             value={root}
@@ -225,92 +111,21 @@ export default function NotationPlayer() {
           >
             {ROOT_CHOICES.map((pc) => (
               <option key={pc} value={pc}>
-                {pitchName(pc, transposeForRoot(pc) < 0)}
+                {pitchName(pc)} major
               </option>
             ))}
           </Select>
         </label>
-        <label className="space-y-1 text-sm">
-          <span className="block font-medium" data-help="rhythm">
-            Tempo
-          </span>
-          <span className="flex items-center gap-2">
-            <input
-              type="range"
-              min={40}
-              max={200}
-              value={bpm}
-              onChange={(e) => setBpm(Number(e.target.value))}
-              className="w-40"
-              aria-label="Tempo (BPM)"
-            />
-            <span className="w-16 tabular-nums text-sm text-muted-foreground">{bpm} BPM</span>
-          </span>
-        </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} />
-          Loop
-        </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={click} onChange={(e) => setClick(e.target.checked)} />
-          Click
-        </label>
       </div>
 
-      <StaffSequence notes={notes} showLabels activeIndex={active} />
-
-      <div className="flex flex-wrap items-end gap-4">
-        <label className="space-y-1 text-sm">
-          <span className="block font-medium">Section from note</span>
-          <input
-            type="range"
-            min={0}
-            max={lastIndex}
-            value={loopStart}
-            onChange={(e) => setLoopStart(Math.min(Number(e.target.value), loopEnd))}
-            className="w-40"
-            aria-label="Section start"
-          />
-        </label>
-        <label className="space-y-1 text-sm">
-          <span className="block font-medium">to note</span>
-          <input
-            type="range"
-            min={0}
-            max={lastIndex}
-            value={loopEnd}
-            onChange={(e) => setLoopEnd(Math.max(Number(e.target.value), loopStart))}
-            className="w-40"
-            aria-label="Section end"
-          />
-        </label>
-        <span className="text-sm text-muted-foreground">
-          Notes {loopStart + 1}–{loopEnd + 1} of {notes.length}
-        </span>
-      </div>
-
-      <Button
-        type="button"
-        variant={playing ? 'outline' : 'default'}
-        className="px-6"
-        onClick={() => setPlaying((p) => !p)}
-      >
-        {playing ? (
-          <>
-            <Icon name="square" className="size-3 fill-current" />
-            Stop
-          </>
-        ) : (
-          <>
-            <Icon name="play" className="size-4" />
-            Play
-          </>
-        )}
-      </Button>
-      <p className="text-xs text-muted-foreground">
-        Follow the moving cursor as each note sounds. Slow the tempo to learn a tricky passage, set
-        a section to drill just those bars, and loop it until it’s under your fingers.
-      </p>
+      {/* Re-key on piece + transpose so the score reloads. ScorePlayer owns play/tempo/loop/metronome. */}
+      <ScorePlayer
+        key={`${pieceKey}:${root}`}
+        tex={tex}
+        mode="standard"
+        locale={locale}
+        interactive
+      />
     </div>
   );
 }

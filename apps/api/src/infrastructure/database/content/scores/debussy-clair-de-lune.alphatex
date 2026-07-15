@@ -1,0 +1,102 @@
+\hideDynamics
+\track ("Clair de Lune" "Clair de L") {
+  volume 15
+  balance 8
+  instrument acousticgrandpiano
+}
+  \staff {
+    score
+  }
+    \ts (9 8)
+    \tempo (120 hide)
+    \accidentals auto
+    \clef g2
+    \ottava regular
+    \simile none
+    \ks db
+      (Ab4 F4).4{d dy f instrument acousticgrandpiano}
+      (F4 Db4).8
+      (Ab4 F4).8
+      (Bb4 Gb4).8
+      (Db5 Bb4).4{d}
+    |
+      (Db5 Bb4).4{d}
+      (Bb4 Gb4).8
+      (Ab4 F4).8
+      (F4 Db4).8
+      (Eb4 C4).4{d}
+    |
+      (F4 Db4).4{d}
+      (Ab4 F4).8
+      (Bb4 Gb4).8
+      (C5 Ab4).8
+      (Db5 Bb4).4{d}
+    |
+      (Eb5 C5).4{d}
+      (Db5 Bb4).8
+      (Bb4 Gb4).8
+      (Ab4 F4).8
+      (F4 Db4).4{d}
+    |
+      (Gb4 Eb4).4{d}
+      (F4 Db4).8
+      (Ab4 F4).8
+      (Gb4 Eb4).8
+      (F4 Db4).4{d}
+    |
+      (Eb4 C4).4{d}
+      (F4 Db4).8
+      (Gb4 Eb4).8
+      (Ab4 F4).8
+      (Bb4 Gb4).4{d}
+    |
+      (C5 Ab4).4{d}
+      (Bb4 Gb4).8
+      (Ab4 F4).8
+      (F4 Db4).8
+      (Ab4 F4).4{d}
+    |
+      (F4 Db4).4{d}
+      (Eb4 C4).4{d}
+      (Db4 Bb3).4{d}
+  \staff {
+    score
+  }
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks db
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks db
+        r.1{dy f}
+      |
+        r.1
+      |
+        Ab2.2{d}
+        r.4{d}
+      |
+        Db3.2{d}
+        r.4{d}
+      |
+        Gb2.2{d}
+        r.4{d}
+      |
+        Bb2.2{d}
+        r.4{d}
+      |
+        Ab2.2{d}
+        r.4{d}
+      |
+        Db3.2{d}
+        r.4{d}

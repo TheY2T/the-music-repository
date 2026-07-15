@@ -1,15 +1,13 @@
+import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { Button, Icon, Textarea } from '@TheY2T/tmr-ui';
-import { useEffect, useRef, useState } from 'react';
-import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
-import { playTone } from '@/lib/audio';
-import { midiToFrequency, staffPlacement } from '@/lib/music-theory';
+import { useRef, useState } from 'react';
+import ScorePlayer from '@/components/ScorePlayer';
 
-const LETTER_PC: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-
-interface ImportedNote extends StaffNoteDatum {
-  midi: number;
-}
-
+/**
+ * `/tools/musicxml` — import + render MusicXML with alphaTab (ADR 0027; replaces the hand-rolled
+ * DOMParser + StaffSequence path). Paste MusicXML or upload a `.musicxml`/`.xml` file; alphaTab imports
+ * it natively and the shared {@link ScorePlayer} renders + plays it.
+ */
 const SAMPLE = `<?xml version="1.0" encoding="UTF-8"?>
 <score-partwise version="3.1">
   <part-list><score-part id="P1"><part-name>Music</part-name></score-part></part-list>
@@ -30,189 +28,50 @@ const SAMPLE = `<?xml version="1.0" encoding="UTF-8"?>
   </part>
 </score-partwise>`;
 
-interface ParseResult {
-  notes: ImportedNote[];
-  error?: string;
-}
-
-/** Parse a single-voice MusicXML score into staff notes using the browser's DOMParser. */
-function parseMusicXml(xml: string): ParseResult {
-  const doc = new DOMParser().parseFromString(xml, 'application/xml');
-  if (doc.querySelector('parsererror')) {
-    return { notes: [], error: 'Could not parse the file as XML.' };
-  }
-  const part = doc.querySelector('part');
-  if (!part) {
-    return { notes: [], error: 'No <part> found — is this a MusicXML score?' };
-  }
-  const notes: ImportedNote[] = [];
-  let divisions = 1;
-  for (const measure of Array.from(part.querySelectorAll('measure'))) {
-    const div = measure.querySelector('attributes > divisions');
-    if (div?.textContent) {
-      divisions = Number(div.textContent) || divisions;
-    }
-    for (const note of Array.from(measure.querySelectorAll('note'))) {
-      // Skip secondary chord notes — this importer reads a single voice.
-      if (note.querySelector('chord')) {
-        continue;
-      }
-      const beats = Number(note.querySelector('duration')?.textContent ?? divisions) / divisions;
-      if (note.querySelector('rest')) {
-        notes.push({ step: 4, label: 'rest', beats, rest: true, midi: -1 });
-        continue;
-      }
-      const pitch = note.querySelector('pitch');
-      if (!pitch) {
-        continue;
-      }
-      const step = pitch.querySelector('step')?.textContent ?? 'C';
-      const octave = Number(pitch.querySelector('octave')?.textContent ?? 4);
-      const alter = Number(pitch.querySelector('alter')?.textContent ?? 0);
-      const midi = 12 * (octave + 1) + (LETTER_PC[step] ?? 0) + alter;
-      const placement = staffPlacement(midi, alter < 0);
-      notes.push({
-        step: placement.step,
-        label: placement.label,
-        accidental: placement.accidental,
-        beats,
-        midi,
-      });
-    }
-  }
-  if (notes.length === 0) {
-    return { notes: [], error: 'No notes found in the score.' };
-  }
-  return { notes };
-}
-
-export default function MusicXmlImport() {
-  const [xml, setXml] = useState(SAMPLE);
-  const [result, setResult] = useState<ParseResult>({ notes: [] });
-  const [bpm, setBpm] = useState(100);
-  const [active, setActive] = useState(-1);
-  const [running, setRunning] = useState(false);
-
-  const notesRef = useRef<ImportedNote[]>([]);
-  const bpmRef = useRef(bpm);
-  const timerRef = useRef(0);
-  useEffect(() => {
-    bpmRef.current = bpm;
-  }, [bpm]);
-
-  // Parse on mount and whenever the text changes.
-  useEffect(() => {
-    const parsed = parseMusicXml(xml);
-    setResult(parsed);
-    notesRef.current = parsed.notes;
-  }, [xml]);
-
-  useEffect(() => {
-    if (!running || notesRef.current.length === 0) {
-      return;
-    }
-    let i = 0;
-    const step = () => {
-      const seq = notesRef.current;
-      const note = seq[i % seq.length];
-      const beats = note.beats ?? 1;
-      if (!note.rest) {
-        playTone(midiToFrequency(note.midi), beats * (60 / bpmRef.current) * 0.9);
-      }
-      setActive(i % seq.length);
-      i += 1;
-      if (i >= seq.length) {
-        setRunning(false);
-        return;
-      }
-      timerRef.current = window.setTimeout(step, beats * (60 / bpmRef.current) * 1000);
-    };
-    step();
-    return () => {
-      window.clearTimeout(timerRef.current);
-      setActive(-1);
-    };
-  }, [running]);
-
-  function onFile(file: File) {
-    file.text().then(setXml);
-  }
+export default function MusicXmlImport({ locale }: { locale: Locale }) {
+  const [text, setText] = useState(SAMPLE);
+  const [applied, setApplied] = useState(SAMPLE);
+  const fileRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-4">
-        <label className="cursor-pointer rounded-md border border-border px-3 py-2 text-sm font-medium">
-          Upload .musicxml / .xml
-          <input
-            type="file"
-            accept=".xml,.musicxml,text/xml,application/xml"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                onFile(file);
-              }
-            }}
-          />
-        </label>
-        <Button type="button" variant="outline" onClick={() => setXml(SAMPLE)}>
-          Load sample
+      <p className="text-sm text-muted-foreground">{t(locale, 'score.importPasteHint')}</p>
+
+      <Textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        rows={10}
+        spellCheck={false}
+        className="font-mono text-xs"
+        aria-label="MusicXML"
+      />
+
+      <div className="flex flex-wrap items-center gap-3">
+        <Button type="button" onClick={() => setApplied(text)}>
+          <Icon name="play" className="size-4" />
+          {t(locale, 'score.render')}
         </Button>
-        <label className="flex items-center gap-2 text-sm" data-help="rhythm">
-          Tempo
-          <input
-            type="range"
-            min={40}
-            max={200}
-            value={bpm}
-            onChange={(e) => setBpm(Number(e.target.value))}
-            className="w-32"
-            aria-label="Tempo (BPM)"
-          />
-          <span className="w-14 tabular-nums text-muted-foreground">{bpm} BPM</span>
-        </label>
+        <Button type="button" variant="outline" onClick={() => fileRef.current?.click()}>
+          <Icon name="upload" className="size-4" />
+          {t(locale, 'score.upload')}
+        </Button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept=".musicxml,.xml,.txt"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            void file.text().then((content) => {
+              setText(content);
+              setApplied(content);
+            });
+          }}
+        />
       </div>
 
-      {result.error ? (
-        <p className="text-sm text-red-600">{result.error}</p>
-      ) : (
-        <>
-          <StaffSequence notes={result.notes} showLabels activeIndex={active} />
-          <Button
-            type="button"
-            variant={running ? 'outline' : 'default'}
-            className="px-6"
-            onClick={() => setRunning((r) => !r)}
-          >
-            {running ? (
-              <>
-                <Icon name="square" className="size-3 fill-current" />
-                Stop
-              </>
-            ) : (
-              <>
-                <Icon name="play" className="size-4" />
-                Play
-              </>
-            )}
-          </Button>
-        </>
-      )}
-
-      <details className="text-sm">
-        <summary className="cursor-pointer text-muted-foreground">Edit MusicXML source</summary>
-        <Textarea
-          value={xml}
-          onChange={(e) => setXml(e.target.value)}
-          spellCheck={false}
-          className="mt-2 h-48 p-2 font-mono text-xs"
-        />
-      </details>
-      <p className="text-xs text-muted-foreground">
-        Renders a single-voice MusicXML score on the staff (pitch, accidentals, note values, rests)
-        and plays it — parsed entirely in the browser, no plugins. Upload a `.musicxml`/`.xml` file
-        or paste one above.
-      </p>
+      <ScorePlayer key={applied} tex={applied} mode="standard" locale={locale} interactive />
     </div>
   );
 }

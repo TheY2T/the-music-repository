@@ -81,6 +81,14 @@
       },
       "defaultVariant": "on"
     },
+    "learning.interactive-scores": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "tools.keyboard": {
       "state": "ENABLED",
       "variants": {

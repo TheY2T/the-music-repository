@@ -53,17 +53,18 @@ the controller drops empties. MinIO presigned URLs use `S3_PUBLIC_ENDPOINT` so t
   (reads `content_progress` — avoids a cycle with `ProgressModule`). User-collection ownership is enforced
   in the use-cases (403), not the path. See `docs/features/collections.md`.
 
-## Scores (real MusicXML, ADR 0024)
+## Scores (alphaTex, ADR 0027; was MusicXML/Verovio, ADR 0024)
 
-Sheet music is authored file-based like the catalogue: `content/scores/<slug>.musicxml` +
-`<slug>.meta.json` (provenance/licensing — `ScoreMeta`: `origin` `openscore|kern|hand-authored`,
-`source`, `sourceUrl`, `license`, `attribution`) → `pnpm --filter @TheY2T/tmr-api scores:build` →
-committed `seed-scores.ts` (`SCORE_XML` + `SCORE_META`). The seed uploads each as a `musicxml` media
-asset and records the **engraving's** license/attribution/`source_url` (not the piece's). **MusicXML is
-the single source of truth** — the web `ScoreViewer` engraves it (Verovio), plays it back, and exports
-the downloadable PDF client-side; there is **no stored PDF** (the old `makeMinimalPdf`/`withPdf`
-placeholder path is gone). `scores:validate` (Verovio) is the fidelity gate — it engraves each score +
-writes a preview SVG to `.score-previews/` (git-ignored) for proofing against the PD reference.
+Sheet music is authored file-based like the catalogue: `content/scores/<slug>.alphatex` (alphaTab's
+native notation format, the single source of truth) + `<slug>.meta.json` (provenance/licensing —
+`ScoreMeta`: `origin` `openscore|kern|hand-authored`, `source`, `sourceUrl`, `license`, `attribution`,
+optional `displayMode` `standard|tab`) → `pnpm --filter @TheY2T/tmr-api scores:build` → committed
+`seed-scores.ts` (`SCORE_ALPHATEX` + `SCORE_META`). The seed uploads each as an **`alphatex`** media
+asset and records the engraving's license/attribution/`source_url` (not the piece's). The web
+`ScorePlayer` renders + plays it with **alphaTab** and exports the PDF client-side (`api.print()`); no
+stored PDF. `scores:validate` re-parses each alphaTex via alphaTab (structure gate; visual proofing is
+in the browser). **Legacy MusicXML** converts losslessly via `scores:migrate` (`musicxml-to-alphatex.mjs`,
+alphaTab's own importer→AlphaTexExporter). Author new scores with the **`add-score`** skill.
 **Licensing:** ship only CC0 (OpenScore) or hand-authored (ours); never MuseScore/musetrainer uploads,
 the unlicensed CCARH kern, or ODbL/anti-LLM ABC. Full sourcing matrix + status in
 `docs/features/scores.md`.

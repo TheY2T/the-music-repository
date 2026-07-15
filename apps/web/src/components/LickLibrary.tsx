@@ -1,13 +1,11 @@
-import { Button, Card, Icon, Select } from '@TheY2T/tmr-ui';
-import { useEffect, useRef, useState } from 'react';
-import { playGlide, playTone } from '@/lib/audio';
-import { midiToFrequency, STANDARD_TUNING } from '@/lib/music-theory';
-
-// String index 0 = high E … 5 = low E (matches STANDARD_TUNING order).
-const STRING_LABELS = ['e', 'B', 'G', 'D', 'A', 'E'];
+import type { Locale } from '@TheY2T/tmr-i18n';
+import { Select } from '@TheY2T/tmr-ui';
+import { useState } from 'react';
+import ScorePlayer from '@/components/ScorePlayer';
+import { type TabStep, tabToAlphaTex } from '@/lib/score/alphatex';
 
 interface TabNote {
-  string: number;
+  string: number; // 0 = high e … 5 = low E
   fret: number;
   /** Bend up this many semitones (whole-step = 2). */
   bend?: number;
@@ -17,19 +15,6 @@ interface TabNote {
   legatoTo?: number;
 }
 
-/** Tab cell text: "7" plain, "7b" bend, "5/7" slide, "5h7"/"7p5" hammer-on/pull-off. */
-function cellText(note: TabNote): string {
-  if (note.bend) {
-    return `${note.fret}b`;
-  }
-  if (note.slideTo !== undefined) {
-    return `${note.fret}/${note.slideTo}`;
-  }
-  if (note.legatoTo !== undefined) {
-    return `${note.fret}${note.legatoTo > note.fret ? 'h' : 'p'}${note.legatoTo}`;
-  }
-  return String(note.fret);
-}
 /** Each step is one rhythmic position; usually one note, sometimes a double-stop. */
 type Step = TabNote[];
 
@@ -227,113 +212,32 @@ const CATEGORIES = [
   { key: 'turnaround', label: 'Turnarounds' },
 ];
 
-function Tab({ steps, activeStep }: { steps: Step[]; activeStep: number }) {
-  return (
-    <div className="flex overflow-x-auto font-mono text-xs">
-      <div className="flex flex-col pr-1 text-muted-foreground">
-        {STRING_LABELS.map((label) => (
-          <span key={label} className="flex h-5 items-center">
-            {label}
-          </span>
-        ))}
-      </div>
-      {steps.map((step, columnIndex) => (
-        <div
-          key={`col-${columnIndex}`}
-          className={`flex w-10 flex-col rounded ${
-            columnIndex === activeStep ? 'bg-blue-500/20' : ''
-          }`}
-        >
-          {STRING_LABELS.map((label, stringIndex) => {
-            const note = step.find((n) => n.string === stringIndex);
-            return (
-              <span key={label} className="flex h-5 items-center justify-center text-foreground">
-                {note ? cellText(note) : '–'}
-              </span>
-            );
-          })}
-        </div>
-      ))}
-    </div>
-  );
+// Guitar tab tuning, alphaTab string order (string 1 = high e). Matches STANDARD_TUNING high-e-first.
+const LICK_TUNING = [64, 59, 55, 50, 45, 40];
+
+/** Convert a lick's steps to a guitar-tab alphaTex line (bends/slides/hammers → alphaTab tab effects).
+ * Steps are eighth notes; double-stops keep their first note (the melodic voice). String index 0 =
+ * high e maps to alphaTab string 1. */
+function lickToAlphaTex(lick: Lick): string {
+  const steps: TabStep[] = lick.steps.map((step) => {
+    const note = step[0];
+    return {
+      string: note.string + 1,
+      fret: note.fret,
+      beats: 0.5,
+      bend: !!note.bend,
+      slideTo: note.slideTo,
+      hammerTo: note.legatoTo,
+    };
+  });
+  return tabToAlphaTex(steps, LICK_TUNING, { title: lick.title, tempo: 110, beatsPerBar: 4 });
 }
 
-const SPEED_STEP = 15; // BPM added per pass in the speed trainer
-const SPEED_PASSES = 4; // number of accelerating passes
-
-export default function LickLibrary() {
+export default function LickLibrary({ locale }: { locale: Locale }) {
   const [category, setCategory] = useState('all');
-  const [bpm, setBpm] = useState(110);
-  const [speedTrainer, setSpeedTrainer] = useState(false);
-  const [playing, setPlaying] = useState<{ lick: string; step: number } | null>(null);
-
-  const bpmRef = useRef(bpm);
-  const trainerRef = useRef(speedTrainer);
-  const startBpmRef = useRef(bpm);
-  const timerRef = useRef(0);
-  useEffect(() => {
-    bpmRef.current = bpm;
-  }, [bpm]);
-  useEffect(() => {
-    trainerRef.current = speedTrainer;
-  }, [speedTrainer]);
-  useEffect(() => () => window.clearTimeout(timerRef.current), []);
-
   const licks = LICKS.filter((lick) => category === 'all' || lick.category === category);
-
-  function playLick(lick: Lick) {
-    window.clearTimeout(timerRef.current);
-    startBpmRef.current = bpmRef.current;
-    let i = 0;
-    const run = () => {
-      if (i >= lick.steps.length) {
-        // Speed trainer: replay faster each pass until the target tempo.
-        if (trainerRef.current) {
-          const next = Math.min(
-            bpmRef.current + SPEED_STEP,
-            startBpmRef.current + SPEED_STEP * SPEED_PASSES,
-          );
-          if (next > bpmRef.current) {
-            bpmRef.current = next;
-            setBpm(next);
-            i = 0;
-            timerRef.current = window.setTimeout(run, 60000 / next);
-            return;
-          }
-        }
-        setPlaying(null);
-        return;
-      }
-      const step = lick.steps[i];
-      const noteSeconds = (60 / bpmRef.current) * 0.9;
-      for (const note of step) {
-        const from = STANDARD_TUNING[note.string] + note.fret;
-        if (note.bend) {
-          playGlide(midiToFrequency(from), midiToFrequency(from + note.bend), noteSeconds);
-        } else if (note.slideTo !== undefined) {
-          playGlide(
-            midiToFrequency(from),
-            midiToFrequency(STANDARD_TUNING[note.string] + note.slideTo),
-            noteSeconds,
-          );
-        } else if (note.legatoTo !== undefined) {
-          // Hammer-on / pull-off: sound the first note, then the second legato and softer.
-          playTone(midiToFrequency(from), noteSeconds);
-          const target = STANDARD_TUNING[note.string] + note.legatoTo;
-          window.setTimeout(
-            () => playTone(midiToFrequency(target), noteSeconds * 0.6),
-            noteSeconds * 350,
-          );
-        } else {
-          playTone(midiToFrequency(from), noteSeconds);
-        }
-      }
-      setPlaying({ lick: lick.key, step: i });
-      i += 1;
-      timerRef.current = window.setTimeout(run, 60000 / bpmRef.current);
-    };
-    run();
-  }
+  const [lickKey, setLickKey] = useState(licks[0]?.key ?? '');
+  const lick = licks.find((l) => l.key === lickKey) ?? licks[0];
 
   return (
     <div className="space-y-5">
@@ -342,7 +246,13 @@ export default function LickLibrary() {
           <span className="block font-medium">Category</span>
           <Select
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => {
+              setCategory(e.target.value);
+              const next = LICKS.filter(
+                (l) => e.target.value === 'all' || l.category === e.target.value,
+              );
+              setLickKey(next[0]?.key ?? '');
+            }}
             className="h-auto w-auto px-2 py-1"
           >
             {CATEGORIES.map((c) => (
@@ -353,55 +263,43 @@ export default function LickLibrary() {
           </Select>
         </label>
         <label className="space-y-1 text-sm">
-          <span className="block font-medium" data-help="rhythm">
-            Tempo
+          <span className="block font-medium" data-help="improvisation">
+            Lick
           </span>
-          <span className="flex items-center gap-2">
-            <input
-              type="range"
-              min={50}
-              max={200}
-              value={bpm}
-              onChange={(e) => setBpm(Number(e.target.value))}
-              className="w-40"
-              aria-label="Tempo (BPM)"
-            />
-            <span className="w-16 tabular-nums text-sm text-muted-foreground">{bpm} BPM</span>
-          </span>
-        </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={speedTrainer}
-            onChange={(e) => setSpeedTrainer(e.target.checked)}
-          />
-          Speed trainer (+{SPEED_STEP} BPM/pass)
+          <Select
+            value={lick?.key ?? ''}
+            onChange={(e) => setLickKey(e.target.value)}
+            className="h-auto w-auto px-2 py-1"
+          >
+            {licks.map((l) => (
+              <option key={l.key} value={l.key}>
+                {l.title}
+              </option>
+            ))}
+          </Select>
         </label>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {licks.map((lick) => (
-          <Card key={lick.key} className="space-y-2 p-3">
-            <div>
-              <span className="font-semibold" data-help="improvisation">
-                {lick.title}
-              </span>
-              <p className="text-xs text-muted-foreground">{lick.context}</p>
-            </div>
-            <Tab steps={lick.steps} activeStep={playing?.lick === lick.key ? playing.step : -1} />
-            <Button type="button" size="sm" onClick={() => playLick(lick)}>
-              <Icon name="play" className="size-4" />
-              Play
-            </Button>
-          </Card>
-        ))}
-      </div>
+      {lick ? (
+        <>
+          <p className="text-sm text-muted-foreground">{lick.context}</p>
+          {/* Rendered as real tab by alphaTab — bends/slides/hammer-ons play with its synth. Re-key on
+              the lick so the score reloads; the tempo slider (in ScorePlayer) is the practice control. */}
+          <ScorePlayer
+            key={lick.key}
+            tex={lickToAlphaTex(lick)}
+            mode="tab"
+            tuning={LICK_TUNING}
+            locale={locale}
+            interactive
+          />
+        </>
+      ) : null}
+
       <p className="text-xs text-muted-foreground">
-        Read the tab (string names on the left, fret numbers in sequence), press Play to hear it,
-        then work it up to speed with the tempo slider. Numbers stacked in a column are played
-        together; <span className="font-mono">7b</span> = bend up,{' '}
-        <span className="font-mono">5/7</span> = slide, and <span className="font-mono">5h7</span> /{' '}
-        <span className="font-mono">7p5</span> = hammer-on / pull-off.
+        Pick a lick to see it in tab and standard notation. Press Play to hear it, and use the tempo
+        slider to work it up to speed. Bends, slides, and hammer-ons/pull-offs are rendered + played
+        by alphaTab.
       </p>
     </div>
   );

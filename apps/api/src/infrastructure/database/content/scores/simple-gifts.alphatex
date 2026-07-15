@@ -1,0 +1,54 @@
+\title "Simple Gifts"
+\hideDynamics
+\track ("Melody" "Melody") {
+  volume 15
+  balance 8
+  instrument acousticgrandpiano
+}
+  \staff {
+    score
+  }
+    \ts (4 4)
+    \ac
+    \tempo (120 hide)
+    \accidentals auto
+    \clef g2
+    \ottava regular
+    \simile none
+    \ks f
+    \barNumberDisplay Hide
+      C5.4{dy f instrument acousticgrandpiano}
+    |
+      F5.4
+      F5.4
+      G5.4
+      A5.4
+    |
+      A5.4
+      G5.4
+      F5.2
+    |
+      F5.4
+      G5.4
+      A5.4
+      C6.4
+    |
+      A5.4
+      G5.4
+      A5.2
+    |
+      C6.4
+      A5.4
+      A5.4
+      G5.4
+    |
+      A5.4
+      G5.4
+      F5.2
+    |
+      F5.4
+      G5.4
+      A5.4
+      G5.4
+    |
+      F5.1

@@ -35,10 +35,10 @@ export interface SeedCollectionSection {
 }
 
 /**
- * Provenance + licensing for one engraved score (the `<slug>.meta.json` sidecar next to its
- * `<slug>.musicxml`). Recorded on the `musicxml` media asset by the seed so the UI can show an
- * engraving credit and we keep an auditable licensing trail. `origin` says how we obtained it:
- * `openscore` (CC0 MusicXML), `kern` (CCARH/KernScores encoding), or `hand-authored` (by us).
+ * Provenance + licensing for one score (the `<slug>.meta.json` sidecar next to its `<slug>.alphatex`).
+ * Recorded on the `alphatex` media asset by the seed so the UI can show an engraving credit and we keep
+ * an auditable licensing trail. `origin` says how we obtained it: `openscore` (CC0 MusicXML converted to
+ * alphaTex), `kern` (CCARH/KernScores encoding), or `hand-authored` (by us). See ADR 0027.
  */
 export interface ScoreMeta {
   origin: 'openscore' | 'kern' | 'hand-authored';
@@ -50,6 +50,9 @@ export interface ScoreMeta {
   license: string;
   /** Attribution line, e.g. "OpenScore (musescore.com/openscore)". */
   attribution: string;
+  /** Optional per-score override of the display mode the web player picks from the item's instruments
+   * (`standard` = piano-style notation + custom transport; `tab` = alphaTab's default guitar UI). */
+  displayMode?: 'standard' | 'tab';
 }
 
 /** A fully-authored collection, built from Markdown and applied by the seed. */

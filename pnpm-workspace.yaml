@@ -87,9 +87,16 @@ catalog:
   "pixi.js": ^8.19.0
   "@pixi/react": ^8.0.5
 
-  # --- Music notation (Verovio WASM): engraves MusicXML → SVG + timemap for notation-synced
-  # playback (apps/web ScoreViewer) and score validation/proofing (apps/api scores:validate). ---
-  verovio: ^6.2.0
+  # --- Music notation (alphaTab): the SINGLE score engine (ADR 0027) — renders standard notation
+  # (piano grand staff) + tablature (guitar) and owns its own synth, cursor, and A–B loop. Also the
+  # authoring toolchain: apps/api converts MusicXML → alphaTex + validates via its importer/exporter.
+  # Pinned to an EXACT version: the Vite plugin copies version-matched Bravura font + soundfont assets
+  # to /font + /soundfont, and the engine self-hosts them from those paths (no CDN). Lazy-loaded, NOT
+  # in optimizeDeps (dup-React caveat, like pixi/smplr). ---
+  "@coderline/alphatab": 1.8.4
+  # The Vite build plugin ships as its own package now (the `@coderline/alphatab/vite` subpath in the
+  # main package is a broken re-export in 1.8.4). Keep it version-locked to the engine.
+  "@coderline/alphatab-vite": 1.8.4
 
   # --- Design tokens: self-hosted vintage typefaces (@fontsource, no external CDN) ---
   # One display + one body face per aesthetic (ADR 0021). Variable where available to keep the

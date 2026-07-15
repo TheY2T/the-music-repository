@@ -1,0 +1,151 @@
+\title "Sonatina in C major, Op. 20 No. 1 - I. Allegro"
+\hideDynamics
+\track ("Piano" "Piano") {
+  volume 15
+  balance 8
+  instrument acousticgrandpiano
+}
+  \staff {
+    score
+  }
+    \ts (4 4)
+    \tempo (120 hide)
+    \accidentals auto
+    \clef g2
+    \ottava regular
+    \simile none
+    \ks c
+      C5.8{dy f instrument acousticgrandpiano}
+      E5.8
+      G5.8
+      C6.8
+      B5.4
+      G5.4
+    |
+      A5.8
+      F5.8
+      A5.8
+      C6.8
+      B5.4
+      G5.4
+    |
+      C6.4
+      G5.4
+      E5.8
+      D5.8
+      C5.8
+      B4.8
+    |
+      D5.4
+      F5.4
+      E5.8
+      D5.8
+      C5.8
+      B4.8
+    |
+      C5.4
+      E5.4
+      G5.8
+      C6.8
+      B5.8
+      A5.8
+    |
+      G5.4
+      F5.8
+      E5.8
+      D5.8
+      C5.8
+      B4.4
+    |
+      C5.8
+      D5.8
+      E5.8
+      F5.8
+      G5.4
+      D5.4
+    |
+      C5.1
+  \staff {
+    score
+  }
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks c
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks c
+        C3.8{dy f}
+        G3.8
+        E3.8
+        G3.8
+        C3.8
+        G3.8
+        E3.8
+        G3.8
+      |
+        F2.8
+        C3.8
+        A2.8
+        C3.8
+        F2.8
+        C3.8
+        A2.8
+        C3.8
+      |
+        C3.8
+        G3.8
+        E3.8
+        G3.8
+        C3.8
+        G3.8
+        E3.8
+        G3.8
+      |
+        G2.8
+        D3.8
+        B2.8
+        D3.8
+        G2.8
+        D3.8
+        B2.8
+        D3.8
+      |
+        C3.8
+        G3.8
+        E3.8
+        G3.8
+        C3.8
+        G3.8
+        E3.8
+        G3.8
+      |
+        C3.8
+        G3.8
+        E3.8
+        G3.8
+        C3.8
+        G3.8
+        E3.8
+        G3.8
+      |
+        G2.8
+        D3.8
+        B2.8
+        D3.8
+        G2.8
+        D3.8
+        B2.8
+        D3.8
+      |
+        (C3 E3 G3 C4).1

@@ -1,0 +1,82 @@
+\title "Greensleeves"
+\hideDynamics
+\track ("Melody" "Melody") {
+  volume 15
+  balance 8
+  instrument acousticgrandpiano
+}
+  \staff {
+    score
+  }
+    \ts (6 8)
+    \ac
+    \tempo (120 hide)
+    \accidentals auto
+    \clef g2
+    \ottava regular
+    \simile none
+    \ks c
+    \barNumberDisplay Hide
+      A4.8{dy f instrument acousticgrandpiano}
+    |
+      C5.4
+      D5.8
+      E5.4{d}
+    |
+      F5.4
+      E5.8
+      D5.4{d}
+    |
+      B4.4
+      G4.8
+      A4.4{d}
+    |
+      A4.4
+      Ab4.8
+      A4.4{d}
+    |
+      C5.4
+      D5.8
+      E5.4{d}
+    |
+      F5.4
+      E5.8
+      D5.4{d}
+    |
+      B4.4
+      Ab4.8
+      A4.4{d}
+    |
+      E4.4
+      Ab4.8
+      A4.4{d}
+    |
+      G5.4
+      F5.8
+      E5.4{d}
+    |
+      F5.4
+      E5.8
+      D5.4{d}
+    |
+      B4.4
+      G4.8
+      A4.4{d}
+    |
+      A4.4
+      Ab4.8
+      A4.4{d}
+    |
+      G5.4
+      F5.8
+      E5.4{d}
+    |
+      F5.4
+      E5.8
+      D5.4{d}
+    |
+      B4.4
+      Ab4.8
+      A4.4{d}
+    |
+      A4.2{d}

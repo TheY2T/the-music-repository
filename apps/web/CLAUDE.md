@@ -224,20 +224,57 @@ src/
   reusing `scheduleDrum`/`scheduleTone` + the chord-diagram exports. The metronome gained **tap-tempo**;
   the chord analyzer saves/loads named progressions to `localStorage` via `src/lib/saved-progressions.ts`
   (`tmr.savedProgressions`).
-- **The two library tools (first runtime deps in web):**
-  - Score rendering `/tools/score` (`tools.score`) — `ScoreRenderer.tsx` **dynamic-imports `verovio/esm`
-    + `verovio/wasm`** (`new VerovioToolkit(await createModule())`) to engrave MusicXML/MEI → SVG
-    (rendered via `dangerouslySetInnerHTML`; the markup is Verovio's own trusted output). Verovio ships
-    no types for its subpath exports → `src/verovio.d.ts` declares them. **Notation-synced playback:**
-    a Play button + speed slider — `renderToTimemap` + `getMIDIValuesForElement` schedule the audio
-    (`scheduleTone`), and an rAF loop calls `getElementsAtTime(scoreMs)` to paint the sounding note ids
-    red on the engraved SVG (scoped to the container ref — Verovio emits a defs `<svg>` too). Note ids
-    from the toolkit match the SVG `g.note` ids. **Catalogue scores** (ADR 0024) use the leaner
-    `ScoreViewer.tsx` (a `musicxml` media asset on the detail page): same engrave+playback, plus a
-    **Download PDF** button (re-lays the score into portrait pages via the loaded toolkit → print
-    window → browser "Save as PDF"; no stored binary) and an **engraving-credit** line from the
-    `MediaAsset` `attribution`/`license`/`sourceUrl` fields. Scores are authored in `apps/api`
-    (`content/scores/*`) — see `docs/features/scores.md`.
+- **Scores — alphaTab is the SINGLE engine (ADR 0027; replaced Verovio):**
+  - **`ScorePlayer.tsx`** (flag `learning.interactive-scores`) is the one score component, over a slim
+    `ScoreEngine` interface (`src/lib/score/`) with just `AlphaTabScoreEngine` (`alphatab-engine.ts`,
+    `@coderline/alphatab`, cataloged + pinned EXACT, lazy dynamic-import, types namespaced as
+    `model.Score`). `resolveDisplayMode(instruments)` (`loop.ts`) picks **`standard`** (piano — standard
+    notation + an integrated media-player bar: play/pause, tempo, scrub, click-to-hear, click-to-seek,
+    **drag-to-select a beat-precise passage** (Play plays it once & stops; Loop repeats it), metronome, count-in, print) or **`tab`** (guitar — alphaTab's default
+    cursor + click-seek + drag-select). `ScoreMeta.displayMode` overrides. `ScorePlayer` takes `url`
+    (catalogue) OR `tex` (inline, for the tool playgrounds). Flag off = basic play/tempo.
+  - **alphaTab owns playback** (its AlphaSynth + SONiVOX soundfont): cursor, section loop
+    (`highlightPlaybackRange`+`applyPlaybackRangeFromHighlight`+`isLooping`), `playbackSpeed`,
+    metronome/count-in volumes, `hitTest`→`tickPosition` seek. Selections are **beat-precise** — drag
+    across the score → `hitTest` beat ticks → `orderTicks`/`highlightRange`; on release `applyRange`
+    resolves them via a `beatsByTick` index → `highlightPlaybackRange`+`applyPlaybackRangeFromHighlight`,
+    **bounding playback + cueing the start** (so Play plays the passage once & stops; `onEnded` re-cues).
+    `setLooping` toggles repeat; `clearRange`/`loopWhole` restore/loop the whole piece. Passages can
+    start/end mid-bar. smplr is kept only for click-to-hear + the keyboard tool.
+  - **GOTCHA — "blank score" is usually not a bug:** alphaTab lazy-renders (`ScrollMode.Continuous`), so
+    an off-screen score has **0 `<svg>`** until scrolled into view. Also: keep the `await fetch` OUT of the
+    engine-load effect (split fetch→state / load-sync) or the container can detach mid-load; and the first
+    `applyResources`-on-ready is skipped (already applied at load) so its `render()` can't blank the paint.
+    PDF = `api.print()`. **PlayerState comparison uses the numeric literal `1`** (`at.synth.PlayerState`
+    is undefined in the browser build).
+  - **Assets self-hosted, no CDN.** The `@coderline/alphatab-vite` plugin (in `astro.config.mjs`; the
+    main package's `/vite` subpath is broken in 1.8.4) copies Bravura → `/font` + soundfont →
+    `/soundfont/sonivox.sf2`; the engine points `core.fontDirectory`/`player.soundFont` there. alphaTab
+    is **client-only** (Worker+AudioWorklet), always `api.destroy()` on unmount, and NOT in optimizeDeps.
+  - **Theme:** notation glyph colors aren't CSS-reactive — `use-alphatab-theme.ts` reads tokens as hex →
+    `display.resources` + re-render on theme change. Cursor/selection overlays are DOM, themed via
+    `.at-cursor-*`/`.at-selection` CSS (scoped under `.tmr-score`).
+  - **"rendered by alphaTab" footer** is hidden by a `MutationObserver` in the engine (alphaTab has no
+    setting to disable it). MPL-2.0 doesn't require it; source attribution stays in the credit line.
+  - **`/tools/score`** (`ScoreRenderer.tsx`) = alphaTex playground (edit/upload → `ScorePlayer tex=`,
+    standard/tab toggle); **`/tools/musicxml`** (`MusicXmlImport.tsx`) = paste MusicXML → alphaTab imports
+    it. Both are thin editors over `ScorePlayer` now (no Verovio, no hand-rolled parser).
+  - Scores authored in `apps/api` as alphaTex (`content/scores/*.alphatex`) — see `docs/features/scores.md`
+    + the **`add-score`** skill. **Guitar/bass/ukulele render as standard notation + tab:** the sources
+    are pitched, so for `tab` mode the engine makes the staff stringed (`tabTuningFor(instruments)` +
+    per-note fret assignment, octave-aware for guitar/bass). Auto-tab is playable, not the composer's
+    exact fingering — author `.alphatex` with `fret.string` to pin fingerings.
+  - **Notation tools on alphaTab (ADR 0027).** The tools that used to hand-author notation as
+    note-name/beat arrays or fret data via `StaffSequence` now generate alphaTex (helpers in
+    `lib/score/alphatex.ts`: `melodyToAlphaTex`/`tabToAlphaTex`/`rhythmToAlphaTex`/`midiToAlphaTexPitch`)
+    and render it: **NotationPlayer/SongPlayer/RhythmTrainer** via `ScorePlayer` (they need tempo/loop/
+    metronome); **MultiVoiceStaff/LickLibrary** + the reveal surfaces of **Solfege/MelodicDictation/
+    SightReading/RhythmDictation** via the lighter **`AlphaTexScore`** island (`components/score/`,
+    persistent engine — swaps score via `engine.reload` for cheap regeneration). Per-note labels
+    (do-re-mi / scale degrees / note names) use alphaTex `\lyrics`. `StaffSequence` is **retired** from
+    `apps/web` (still in `@TheY2T/tmr-ui` for Storybook). **ScaleBoxes + ScaleExplorer are NOT on
+    alphaTab** — a fretboard-box grid and degree chips aren't staff notation (alphaTab has no
+    fretboard-diagram view); they keep their bespoke SVG/DOM.
   - **Keyboard + note service (ADR 0025).** `/tools/keyboard` and `/tools/soundfont` are ONE island —
     `PianoKeyboard.tsx` — with selectable sizes (`lib/keyboard.ts`: `KEYBOARD_SIZES` 25–88, default 61),
     octave-shift + horizontal scroll, sustain (note-on/off), MIDI velocity, and QWERTY play
@@ -247,9 +284,9 @@ src/
     oscillator (`audio.ts` `oscNoteOn/oscNoteOff`, or `playTone`) so it always sounds offline. The
     play-a-note theory tools (chord/scale/ear) call `playNote`; scheduled/arranged tools keep
     `scheduleTone`/`scheduleDrum`. Always release notes on blur/unmount (`releaseAll`) so none hang.
-  - **Vite gotcha:** after `pnpm add`-ing a browser library (verovio/smplr), the running Astro dev
-    server must be restarted (or `rm -rf apps/web/node_modules/.vite`) so Vite re-optimizes deps —
-    otherwise islands fail to hydrate with `504 Outdated Optimize Dep` / `_jsxDEV is not a function`.
+  - **Vite gotcha:** after `pnpm add`-ing a browser library (`@coderline/alphatab`/smplr), the running
+    Astro dev server must be restarted (or `rm -rf apps/web/node_modules/.vite`) so Vite re-optimizes
+    deps — otherwise islands fail to hydrate with `504 Outdated Optimize Dep` / `_jsxDEV is not a function`.
 
 ## Trainers / drills (Phase 4)
 

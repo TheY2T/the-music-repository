@@ -87,7 +87,7 @@ model TaxonomyRef {
 /** A media file attached to a content item, with a ready-to-use (presigned) URL. */
 model MediaAsset {
   id: string;
-  kind: "score_pdf" | "audio" | "image" | "midi" | "musicxml";
+  kind: "score_pdf" | "audio" | "image" | "alphatex";
   url: string;
   filename: string;
   mime: string;
@@ -204,7 +204,7 @@ op getRelatedContent(@path slug: string): RelatedContent;
 // RBAC-gated authoring surface. Enforcement lives in NestJS guards; the contract documents shapes.
 
 alias ContentStatus = "draft" | "review" | "published";
-alias MediaKind = "score_pdf" | "audio" | "image" | "midi" | "musicxml";
+alias MediaKind = "score_pdf" | "audio" | "image" | "alphatex";
 
 /** Create/replace payload for a content item. Taxonomy is given as slug arrays. */
 model ContentWriteInput {

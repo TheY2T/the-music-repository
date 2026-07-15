@@ -1,18 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import * as seedData from './seed-data';
-import { SCORE_META, SCORE_XML } from './seed-scores';
+import { SCORE_ALPHATEX, SCORE_META } from './seed-scores';
 
 const VALID_ORIGINS = new Set(['openscore', 'kern', 'hand-authored']);
 
 describe('seed-scores', () => {
-  const slugs = Object.keys(SCORE_XML);
+  const slugs = Object.keys(SCORE_ALPHATEX);
 
   it('ships at least the migrated + deterministic scores', () => {
     expect(slugs.length).toBeGreaterThanOrEqual(4);
   });
 
-  it.each(slugs)('%s is a MusicXML score-partwise document', (slug) => {
-    expect(SCORE_XML[slug]).toContain('<score-partwise');
+  it.each(slugs)('%s is a non-empty alphaTex document with a track', (slug) => {
+    const tex = SCORE_ALPHATEX[slug];
+    expect(tex).toBeTruthy();
+    expect(tex).toContain('\\track');
   });
 
   it.each(slugs)('%s has valid, license-clean provenance meta', (slug) => {
@@ -26,7 +28,7 @@ describe('seed-scores', () => {
 
   it('has no orphan meta entries', () => {
     for (const slug of Object.keys(SCORE_META)) {
-      expect(SCORE_XML[slug], `meta without score: ${slug}`).toBeDefined();
+      expect(SCORE_ALPHATEX[slug], `meta without score: ${slug}`).toBeDefined();
     }
   });
 

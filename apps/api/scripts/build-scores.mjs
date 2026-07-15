@@ -1,17 +1,17 @@
 // Build a bundled seed-scores module from the authored score files in
 // `src/infrastructure/database/content/scores/`.
 //
-// Each score is a pair of files keyed by content slug:
-//   <slug>.musicxml   — the engraving (MusicXML 3.1 partwise), the single source of truth. The web
-//                       ScoreViewer engraves it with Verovio + notation-synced playback, and exports
-//                       a downloadable PDF from it client-side.
+// Each score is a pair of files keyed by content slug (ADR 0027):
+//   <slug>.alphatex   — the score in alphaTex, alphaTab's native text format and our single source of
+//                       truth. The web player renders + plays it with alphaTab; the downloadable PDF is
+//                       produced client-side from the same render.
 //   <slug>.meta.json  — provenance/licensing (see ScoreMeta): { origin, source, sourceUrl, license,
-//                       attribution }. Recorded on the `musicxml` media asset by the seed.
+//                       attribution, displayMode? }. Recorded on the `alphatex` media asset by the seed.
 //
 // Why bundle: the seed runs from `dist/` (incl. in the container), where loose files aren't present.
-// Emitting a committed TS module with JSON-stringified data avoids the runtime file-read problem and
-// the backtick-escaping hazard of embedding MusicXML directly. Regenerate with
-// `pnpm --filter @TheY2T/tmr-api scores:build`.
+// Emitting a committed TS module with JSON-stringified data avoids the runtime file-read problem.
+// Regenerate with `pnpm --filter @TheY2T/tmr-api scores:build`. Author new scores with the `add-score`
+// skill; convert legacy MusicXML with `scores:migrate`.
 
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -22,25 +22,26 @@ const scoresDir = join(here, '..', 'src', 'infrastructure', 'database', 'content
 const outFile = join(here, '..', 'src', 'infrastructure', 'database', 'seed-scores.ts');
 
 const ORIGINS = new Set(['openscore', 'kern', 'hand-authored']);
+const DISPLAY_MODES = new Set(['standard', 'tab']);
 
 const slugs = readdirSync(scoresDir)
-  .filter((f) => f.endsWith('.musicxml'))
-  .map((f) => f.replace(/\.musicxml$/, ''))
+  .filter((f) => f.endsWith('.alphatex'))
+  .map((f) => f.replace(/\.alphatex$/, ''))
   .sort();
 
-const xml = {};
+const tex = {};
 const meta = {};
 
 for (const slug of slugs) {
-  const musicxml = readFileSync(join(scoresDir, `${slug}.musicxml`), 'utf8').trim();
-  if (!musicxml.includes('<score-partwise')) {
-    throw new Error(`${slug}.musicxml is not a score-partwise MusicXML document`);
+  const alphatex = readFileSync(join(scoresDir, `${slug}.alphatex`), 'utf8').trim();
+  if (!alphatex) {
+    throw new Error(`${slug}.alphatex is empty`);
   }
-  xml[slug] = musicxml;
+  tex[slug] = alphatex;
 
   const metaPath = join(scoresDir, `${slug}.meta.json`);
   if (!existsSync(metaPath)) {
-    throw new Error(`${slug}.musicxml has no companion ${slug}.meta.json`);
+    throw new Error(`${slug}.alphatex has no companion ${slug}.meta.json`);
   }
   const m = JSON.parse(readFileSync(metaPath, 'utf8'));
   if (!ORIGINS.has(m.origin)) {
@@ -49,27 +50,31 @@ for (const slug of slugs) {
   if (!m.source || !m.license || !m.attribution) {
     throw new Error(`${slug}.meta.json is missing source/license/attribution`);
   }
+  if (m.displayMode != null && !DISPLAY_MODES.has(m.displayMode)) {
+    throw new Error(`${slug}.meta.json has invalid displayMode "${m.displayMode}"`);
+  }
   meta[slug] = {
     origin: m.origin,
     source: m.source,
     sourceUrl: m.sourceUrl ?? null,
     license: m.license,
     attribution: m.attribution,
+    ...(m.displayMode ? { displayMode: m.displayMode } : {}),
   };
 }
 
 const header = `/**
  * GENERATED FILE — do not edit by hand.
- * Source: src/infrastructure/database/content/scores/<slug>.{musicxml,meta.json}
+ * Source: src/infrastructure/database/content/scores/<slug>.{alphatex,meta.json}
  * Regenerate: pnpm --filter @TheY2T/tmr-api scores:build
  *
- * Real engraved scores (${slugs.length}) keyed by content slug. The seed (seed.ts) uploads each
- * SCORE_XML entry as a \`musicxml\` media asset and records its SCORE_META provenance/licensing on
- * the asset. The web ScoreViewer engraves it with Verovio + notation-synced playback.
+ * Real scores (${slugs.length}) in alphaTex keyed by content slug (ADR 0027). The seed (seed.ts) uploads
+ * each SCORE_ALPHATEX entry as an \`alphatex\` media asset and records its SCORE_META provenance/licensing
+ * on the asset. The web score player renders + plays it with alphaTab.
  */
 import type { ScoreMeta } from './content-details';
 
-export const SCORE_XML: Record<string, string> = ${JSON.stringify(xml, null, 2)};
+export const SCORE_ALPHATEX: Record<string, string> = ${JSON.stringify(tex, null, 2)};
 
 export const SCORE_META: Record<string, ScoreMeta> = ${JSON.stringify(meta, null, 2)};
 `;

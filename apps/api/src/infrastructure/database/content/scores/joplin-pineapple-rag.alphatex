@@ -1,0 +1,182 @@
+\hideDynamics
+\track ("Pine Apple Rag" "Pine Apple") {
+  volume 15
+  balance 8
+  instrument acousticgrandpiano
+}
+  \staff {
+    score
+  }
+    \ts (2 4)
+    \tempo (120 hide)
+    \accidentals auto
+    \clef g2
+    \ottava regular
+    \simile none
+    \ks eb
+      r.4{dy f instrument acousticgrandpiano}
+      r.16
+      Bb4.16
+      C5.16
+      D5.16
+    |
+      Eb5.8
+      G5.16
+      Eb5.16
+      Bb5.8
+      G5.8
+    |
+      F5.8
+      Ab5.16
+      F5.16
+      D5.8
+      F5.8
+    |
+      Eb5.8
+      G5.16
+      Bb5.16
+      C6.8
+      Bb5.8
+    |
+      Ab5.8
+      C6.16
+      Ab5.16
+      F5.8
+      Ab5.8
+    |
+      G5.8
+      Bb5.16
+      G5.16
+      Eb5.8
+      G5.8
+    |
+      F5.8
+      Ab5.16
+      F5.16
+      Bb5.8
+      D5.8
+    |
+      Eb5.4
+      Bb4.8
+      Eb5.8
+    |
+      Eb5.16
+      G5.16
+      Bb5.16
+      Eb6.16
+      Bb5.8
+      G5.8
+    |
+      F5.16
+      Ab5.16
+      C6.16
+      Ab5.16
+      F5.8
+      D5.8
+    |
+      Eb5.16
+      G5.16
+      Bb5.16
+      G5.16
+      Eb5.8
+      Bb4.8
+    |
+      Ab5.8
+      F5.16
+      Ab5.16
+      C6.8
+      Ab5.8
+    |
+      G5.8
+      Bb5.16
+      G5.16
+      Eb5.8
+      G5.8
+    |
+      F5.8
+      D5.16
+      F5.16
+      Bb5.8
+      Ab5.8
+    |
+      G5.8
+      F5.16
+      Eb5.16
+      D5.8
+      F5.8
+    |
+      Eb5.2
+  \staff {
+    score
+  }
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks eb
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks eb
+        r.2{dy f}
+      |
+        Eb3.4
+        (G3 Bb3 Eb4).4
+      |
+        Bb2.4
+        (D3 F3 Bb3).4
+      |
+        Eb3.4
+        (G3 Bb3 Eb4).4
+      |
+        Ab2.4
+        (C3 Eb3 Ab3).4
+      |
+        Eb3.4
+        (G3 Bb3 Eb4).4
+      |
+        Bb2.4
+        (D3 F3 Bb3).4
+      |
+        Eb3.4
+        (G3 Bb3 Eb4).4
+      |
+        Eb3.4
+        (G3 Bb3 Eb4).4
+      |
+        Bb2.4
+        (D3 F3 Bb3).4
+      |
+        Eb3.4
+        (G3 Bb3 Eb4).4
+      |
+        Ab2.4
+        (C3 Eb3 Ab3).4
+      |
+        Eb3.4
+        (G3 Bb3 Eb4).4
+      |
+        Bb2.4
+        (D3 F3 Bb3).4
+      |
+        Bb2.4
+        (D3 F3 Bb3).4
+      |
+        Eb3.4
+        (G3 Bb3 Eb4).4

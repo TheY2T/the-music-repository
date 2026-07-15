@@ -184,12 +184,16 @@ export function scheduleClick(atTime: number, accent: boolean): void {
   oscillator.stop(atTime + 0.05);
 }
 
-/** Schedule a tone at an absolute AudioContext time (for arranged/looped playback). */
+/**
+ * Schedule a tone at an absolute AudioContext time (for arranged/looped playback). Pass `options.output`
+ * to route the voice through a caller-owned node (e.g. a {@link createPlaybackBus} bus) so the whole
+ * playback can be silenced on stop — notes scheduled ahead on the timeline can't otherwise be recalled.
+ */
 export function scheduleTone(
   frequency: number,
   atTime: number,
   duration: number,
-  options?: { type?: OscillatorType; gain?: number },
+  options?: { type?: OscillatorType; gain?: number; output?: AudioNode },
 ): void {
   const ctx = getContext();
   if (!ctx) {
@@ -203,9 +207,48 @@ export function scheduleTone(
   gain.gain.setValueAtTime(0.0001, atTime);
   gain.gain.exponentialRampToValueAtTime(peak, atTime + 0.01);
   gain.gain.exponentialRampToValueAtTime(0.0001, atTime + duration);
-  oscillator.connect(gain).connect(getMasterBus(ctx));
+  oscillator.connect(gain).connect(options?.output ?? getMasterBus(ctx));
   oscillator.start(atTime);
   oscillator.stop(atTime + duration);
+}
+
+/**
+ * A cancelable output bus for a single playback run. Schedule every voice of the run into `output`
+ * (via `scheduleTone(..., { output })`); calling `stop()` fades the bus to silence and disconnects it,
+ * immediately muting notes that were already scheduled ahead on the timeline. Returns null during SSR.
+ */
+export function createPlaybackBus(): { output: GainNode; stop: () => void } | null {
+  const ctx = getContext();
+  if (!ctx) {
+    return null;
+  }
+  const output = ctx.createGain();
+  output.gain.value = 1;
+  output.connect(getMasterBus(ctx));
+  let stopped = false;
+  return {
+    output,
+    stop() {
+      if (stopped) return;
+      stopped = true;
+      const now = ctx.currentTime;
+      try {
+        output.gain.cancelScheduledValues?.(now);
+        output.gain.setValueAtTime(Math.max(output.gain.value, 0.0001), now);
+        output.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
+      } catch {
+        // Param already settled — ignore.
+      }
+      // Disconnect after the brief fade so all scheduled voices are fully detached.
+      globalThis.setTimeout(() => {
+        try {
+          output.disconnect();
+        } catch {
+          // Already disconnected — ignore.
+        }
+      }, 80);
+    },
+  };
 }
 
 /** Play a tone that glides from `fromFreq` to `toFreq` — for guitar bends and slides. */

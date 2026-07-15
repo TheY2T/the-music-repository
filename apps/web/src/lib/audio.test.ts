@@ -114,4 +114,19 @@ describe('audio master bus', () => {
     const after = EDGES.filter((e) => e.to === masterGain).length;
     expect(after).toBeGreaterThan(before);
   });
+
+  it('createPlaybackBus routes voices through a cancelable bus (so stop() can silence them)', () => {
+    const analyser = audio.getAnalyser() as unknown as FakeNode;
+    const masterGain = EDGES.find((e) => e.to === analyser)?.from as FakeGain;
+    const bus = audio.createPlaybackBus();
+    expect(bus).not.toBeNull();
+    const output = bus?.output as unknown as FakeNode;
+    // The bus feeds the master gain…
+    expect(EDGES.some((e) => e.from === output && e.to === masterGain)).toBe(true);
+    // …and a tone scheduled with `output` routes into the bus, not straight to the master gain.
+    const before = EDGES.filter((e) => e.to === output).length;
+    audio.scheduleTone(440, 0, 0.5, { output: bus?.output });
+    expect(EDGES.filter((e) => e.to === output).length).toBeGreaterThan(before);
+    expect(() => bus?.stop()).not.toThrow();
+  });
 });

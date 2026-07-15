@@ -1,69 +1,52 @@
-// Fidelity + validity gate for authored scores. Loads every
-// `src/infrastructure/database/content/scores/<slug>.musicxml` into Verovio and asserts it parses and
-// engraves without error, reports page/measure/note counts, and writes a preview SVG per score into
-// the scratchpad for page-by-page proofing against the public-domain reference. Not shipped — a dev QA
-// tool. Run with `pnpm --filter @TheY2T/tmr-api scores:validate`.
+// Validity gate for authored scores (ADR 0027). Parses every
+// `src/infrastructure/database/content/scores/<slug>.alphatex` with alphaTab's AlphaTexImporter and
+// asserts it produces a non-empty score model, reporting track/staff/bar/beat counts so a regression
+// (an empty or truncated score) is caught before it reaches the seed. Visual proofing against the
+// public-domain reference is done in the browser (alphaTab renders in a real DOM). Not shipped — a dev
+// QA tool. Run with `pnpm --filter @TheY2T/tmr-api scores:validate`.
 //
-// Requires the `verovio` devDependency (cataloged). If it isn't installed yet, run `pnpm install`.
+// Requires the `@coderline/alphatab` devDependency (cataloged). If missing, run `pnpm install`.
 
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const here = dirname(fileURLToPath(import.meta.url));
-const scoresDir = join(here, '..', 'src', 'infrastructure', 'database', 'content', 'scores');
-const previewDir = process.env.SCORE_PREVIEW_DIR ?? join(here, '..', '.score-previews');
-
-let createVerovioModule;
-let VerovioToolkit;
+let at;
 try {
-  ({ default: createVerovioModule } = await import('verovio/wasm'));
-  ({ VerovioToolkit } = await import('verovio/esm'));
+  at = await import('@coderline/alphatab');
 } catch (err) {
-  console.error(
-    'Could not load verovio. Install deps first: `pnpm install` (verovio is a cataloged devDependency).',
-  );
+  console.error('Could not load @coderline/alphatab. Run `pnpm install` first.');
   console.error(String(err));
   process.exit(1);
 }
 
-const VerovioModule = await createVerovioModule();
-const tk = new VerovioToolkit(VerovioModule);
-// Compact, fixed layout so previews are deterministic and comparable to a reference PDF.
-tk.setOptions({
-  scale: 40,
-  adjustPageHeight: true,
-  breaks: 'auto',
-  footer: 'none',
-  header: 'none',
-});
-
-mkdirSync(previewDir, { recursive: true });
+const here = dirname(fileURLToPath(import.meta.url));
+const scoresDir = join(here, '..', 'src', 'infrastructure', 'database', 'content', 'scores');
 
 const slugs = readdirSync(scoresDir)
-  .filter((f) => f.endsWith('.musicxml'))
-  .map((f) => f.replace(/\.musicxml$/, ''))
+  .filter((f) => f.endsWith('.alphatex'))
+  .map((f) => f.replace(/\.alphatex$/, ''))
   .sort();
 
 let failures = 0;
 for (const slug of slugs) {
-  const xml = readFileSync(join(scoresDir, `${slug}.musicxml`), 'utf8');
-  const ok = tk.loadData(xml);
-  if (!ok) {
-    console.error(`✗ ${slug}: Verovio failed to load the MusicXML`);
+  try {
+    const tex = readFileSync(join(scoresDir, `${slug}.alphatex`), 'utf8');
+    const importer = new at.importer.AlphaTexImporter();
+    importer.initFromString(tex, new at.Settings());
+    const score = importer.readScore();
+    const staff = score.tracks[0]?.staves[0];
+    const bars = staff?.bars.length ?? 0;
+    const beats = staff?.bars.reduce((n, b) => n + b.voices[0].beats.length, 0) ?? 0;
+    if (!score.tracks.length || bars === 0 || beats === 0) {
+      throw new Error('parsed to an empty score (no tracks/bars/beats)');
+    }
+    console.log(`✓ ${slug}: ${score.tracks.length} track(s), ${bars} bars, ${beats} beats`);
+  } catch (err) {
+    console.error(`✗ ${slug}: ${err instanceof Error ? err.message : String(err)}`);
     failures += 1;
-    continue;
   }
-  const pages = tk.getPageCount();
-  let svg = '';
-  for (let p = 1; p <= pages; p += 1) svg += tk.renderToSVG(p);
-  writeFileSync(join(previewDir, `${slug}.svg`), svg);
-  const noteCount = (xml.match(/<note>/g) ?? []).length;
-  const measureCount = (xml.match(/<measure /g) ?? []).length;
-  console.log(`✓ ${slug}: ${pages} page(s), ${measureCount} measures, ${noteCount} notes`);
 }
 
-console.log(
-  `\n${slugs.length - failures}/${slugs.length} scores engraved. Previews: ${previewDir}`,
-);
+console.log(`\n${slugs.length - failures}/${slugs.length} scores parsed.`);
 if (failures > 0) process.exit(1);

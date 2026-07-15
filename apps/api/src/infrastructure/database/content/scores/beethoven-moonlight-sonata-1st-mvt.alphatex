@@ -1,0 +1,213 @@
+\hideDynamics
+\track ("Moonlight Sonata, mvt I (opening)" "Moonlight ") {
+  volume 15
+  balance 8
+  instrument acousticgrandpiano
+}
+  \staff {
+    score
+  }
+    \voice 
+      \ts (4 4)
+      \tempo (120 hide)
+      \accidentals auto
+      \clef g2
+      \ottava regular
+      \simile none
+      \ks e
+        Ab3.8{tu (3 2) dy f instrument acousticgrandpiano}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+      |
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+      |
+        A3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        A3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        A3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        A3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+      |
+        Ab3.8{tu (3 2)}
+        C4.8{tu (3 2)}
+        Eb4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        C4.8{tu (3 2)}
+        Eb4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        C4.8{tu (3 2)}
+        Eb4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        C4.8{tu (3 2)}
+        Eb4.8{tu (3 2)}
+      |
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+      |
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+      |
+        A3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        A3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        A3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        A3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+      |
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+        Ab3.8{tu (3 2)}
+        Db4.8{tu (3 2)}
+        E4.8{tu (3 2)}
+    \voice 
+      \clef g2
+      \ottava regular
+      \simile none
+      \ks e
+      |
+      |
+      |
+      |
+        Ab4.2
+        Ab4.4
+        Ab4.4
+      |
+        Ab4.2
+        Gb4.4
+        Ab4.4
+      |
+        A4.2
+        A4.4
+        Ab4.4
+      |
+        Ab4.1
+    \staff {
+      score
+    }
+      \voice 
+        \clef f4
+        \ottava regular
+        \simile none
+        \ks e
+        |
+        |
+        |
+        |
+        |
+        |
+        |
+      \voice 
+        \clef f4
+        \ottava regular
+        \simile none
+        \ks e
+        |
+        |
+        |
+        |
+        |
+        |
+        |
+      \voice 
+        \clef f4
+        \ottava regular
+        \simile none
+        \ks e
+        |
+        |
+        |
+        |
+        |
+        |
+        |
+      \voice 
+        \clef f4
+        \ottava regular
+        \simile none
+        \ks e
+        |
+        |
+        |
+        |
+        |
+        |
+        |
+      \voice 
+        \clef f4
+        \ottava regular
+        \simile none
+        \ks e
+          (Db2 Db3).1{dy f}
+        |
+          (Db2 Db3).1
+        |
+          (A1 A2).1
+        |
+          (Ab1 Ab2).1
+        |
+          (Db2 Db3).1
+        |
+          (Db2 Db3).1
+        |
+          (A1 A2).1
+        |
+          (Db2 Db3).1

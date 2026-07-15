@@ -20,6 +20,7 @@
     "@TheY2T/tmr-flags": "workspace:*",
     "@TheY2T/tmr-i18n": "workspace:*",
     "@TheY2T/tmr-ui": "workspace:*",
+    "@coderline/alphatab": "catalog:",
     "@astrojs/node": "catalog:",
     "@pixi/react": "catalog:",
     "@astrojs/react": "catalog:",
@@ -44,13 +45,13 @@
     "smplr": "^1.0.0",
     "tailwind-merge": "catalog:",
     "tailwindcss": "catalog:",
-    "tw-animate-css": "catalog:",
-    "verovio": "catalog:"
+    "tw-animate-css": "catalog:"
   },
   "devDependencies": {
     "@TheY2T/tmr-config-eslint": "workspace:*",
     "@TheY2T/tmr-config-vitest": "workspace:*",
     "@astrojs/check": "catalog:",
+    "@coderline/alphatab-vite": "catalog:",
     "@axe-core/playwright": "catalog:",
     "@playwright/test": "catalog:",
     "@testing-library/jest-dom": "catalog:",

@@ -1,0 +1,283 @@
+\hideDynamics
+\track ("St. Louis Blues" "St. Louis ") {
+  volume 15
+  balance 8
+  instrument acousticgrandpiano
+}
+  \staff {
+    score
+  }
+    \ts (4 4)
+    \tempo (120 hide)
+    \accidentals auto
+    \clef g2
+    \ottava regular
+    \simile none
+    \ks g
+      D5.4{dy f instrument acousticgrandpiano}
+      D5.8
+      D5.8
+      Bb4{acc b}.4
+      B4.4
+    |
+      D5.4{d}
+      B4.8
+      G4.4
+      r.4
+    |
+      G4.4
+      B4.4
+      D5.4
+      Bb4{acc b}.4
+    |
+      B4.4
+      G4.4
+      D5.8
+      B4.8
+      G4.4
+    |
+      E5.4
+      E5.8
+      E5.8
+      D5.4
+      C5.4
+    |
+      E5.4
+      C5.4
+      E5.8
+      G5.8
+      E5.4
+    |
+      D5.4
+      B4.4
+      G4.4
+      D5.4
+    |
+      B4.4{d}
+      G4.8
+      D5.4
+      r.4
+    |
+      A5.4
+      Gb5.4
+      E5.4
+      C5.4
+    |
+      E5.4
+      C5.4
+      Bb4{acc b}.4
+      G4.4
+    |
+      G4.4
+      B4.8
+      D5.8
+      G5.4
+      D5.4
+    |
+      D5.4
+      Gb5.4
+      A4.4
+      D5.4
+    |
+      D5.4
+      D5.8
+      Eb5{acc b}.8
+      D5.4
+      Bb4{acc b}.4
+    |
+      G4.4
+      Bb4{acc b}.4
+      D5.4
+      Bb4{acc b}.4
+    |
+      A4.4
+      C5.4
+      Eb5{acc b}.4
+      D5.4
+    |
+      D5.2
+      Bb4{acc b}.4
+      G4.4
+    |
+      D5.4
+      D5.8
+      Eb5{acc b}.8
+      D5.4
+      Bb4{acc b}.4
+    |
+      Eb5{acc b}.4
+      G5.4
+      Eb5{acc b}.4
+      C5.4
+    |
+      A4.4
+      C5.4
+      Eb5{acc b}.4
+      D5.4
+    |
+      G4.2
+      D5.4
+      G4.4
+  \staff {
+    score
+  }
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks g
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks g
+        G2.4{dy f}
+        (B3 D4 F4{acc forcenatural}).4
+        G2.4
+        (B3 D4 F4{acc forcenatural}).4
+      |
+        G2.4
+        (B3 D4 F4{acc forcenatural}).4
+        G2.4
+        (B3 D4 F4{acc forcenatural}).4
+      |
+        G2.4
+        (B3 D4 F4{acc forcenatural}).4
+        G2.4
+        (B3 D4 F4{acc forcenatural}).4
+      |
+        G2.4
+        (B3 D4 F4{acc forcenatural}).4
+        G2.4
+        (B3 D4 F4{acc forcenatural}).4
+      |
+        C3.4
+        (E3 G3 Bb3{acc b}).4
+        C3.4
+        (E3 G3 Bb3{acc b}).4
+      |
+        C3.4
+        (E3 G3 Bb3{acc b}).4
+        C3.4
+        (E3 G3 Bb3{acc b}).4
+      |
+        G2.4
+        (B3 D4 F4{acc forcenatural}).4
+        G2.4
+        (B3 D4 F4{acc forcenatural}).4
+      |
+        G2.4
+        (B3 D4 F4{acc forcenatural}).4
+        G2.4
+        (B3 D4 F4{acc forcenatural}).4
+      |
+        D3.4
+        (Gb3 A3 C4).4
+        D3.4
+        (Gb3 A3 C4).4
+      |
+        C3.4
+        (E3 G3 Bb3{acc b}).4
+        C3.4
+        (E3 G3 Bb3{acc b}).4
+      |
+        G2.4
+        (B3 D4 F4{acc forcenatural}).4
+        G2.4
+        (B3 D4 F4{acc forcenatural}).4
+      |
+        D3.4
+        (Gb3 A3 C4).4
+        D3.4
+        (Gb3 A3 C4).4
+      |
+        G2.8{d}
+        G2.16
+        (D3 G3 Bb3{acc b}).8
+        (D3 G3 Bb3{acc b}).8
+        G2.8{d}
+        G2.16
+        (D3 G3 Bb3{acc b}).8
+        (D3 G3 Bb3{acc b}).8
+      |
+        G2.8{d}
+        G2.16
+        (D3 G3 Bb3{acc b}).8
+        (D3 G3 Bb3{acc b}).8
+        G2.8{d}
+        G2.16
+        (D3 G3 Bb3{acc b}).8
+        (D3 G3 Bb3{acc b}).8
+      |
+        D3.8{d}
+        D3.16
+        (Gb3 A3 C4).8
+        (Gb3 A3 C4).8
+        D3.8{d}
+        D3.16
+        (Gb3 A3 C4).8
+        (Gb3 A3 C4).8
+      |
+        G2.8{d}
+        G2.16
+        (D3 G3 Bb3{acc b}).8
+        (D3 G3 Bb3{acc b}).8
+        G2.8{d}
+        G2.16
+        (D3 G3 Bb3{acc b}).8
+        (D3 G3 Bb3{acc b}).8
+      |
+        G2.8{d}
+        G2.16
+        (D3 G3 Bb3{acc b}).8
+        (D3 G3 Bb3{acc b}).8
+        G2.8{d}
+        G2.16
+        (D3 G3 Bb3{acc b}).8
+        (D3 G3 Bb3{acc b}).8
+      |
+        C3.8{d}
+        C3.16
+        (Eb3{acc b} G3 C4).8
+        (Eb3{acc b} G3 C4).8
+        C3.8{d}
+        C3.16
+        (Eb3{acc b} G3 C4).8
+        (Eb3{acc b} G3 C4).8
+      |
+        D3.8{d}
+        D3.16
+        (Gb3 A3 C4).8
+        (Gb3 A3 C4).8
+        D3.8{d}
+        D3.16
+        (Gb3 A3 C4).8
+        (Gb3 A3 C4).8
+      |
+        G2.8{d}
+        G2.16
+        (D3 G3 Bb3{acc b}).8
+        (D3 G3 Bb3{acc b}).8
+        G2.8{d}
+        G2.16
+        (D3 G3 Bb3{acc b}).8
+        (D3 G3 Bb3{acc b}).8

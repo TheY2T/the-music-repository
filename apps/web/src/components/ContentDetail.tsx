@@ -28,7 +28,8 @@ import {
 } from '@TheY2T/tmr-ui';
 import { marked } from 'marked';
 import AnimatedCoverArt from '@/components/AnimatedCoverArt';
-import ScoreViewer from '@/components/ScoreViewer';
+import ScorePlayer from '@/components/ScorePlayer';
+import { resolveDisplayMode, tabTuningFor } from '@/lib/score/loop';
 
 /** Localized label for a premium tier (`premium`/`pro`/`institution`; unknown → premium). */
 function tierLabel(locale: Locale, tier?: string | null): string {
@@ -150,7 +151,15 @@ function RelatedSection({ slug, locale }: { slug: string; locale: Locale }) {
   );
 }
 
-function Detail({ slug, locale }: { slug: string; locale: Locale }) {
+function Detail({
+  slug,
+  locale,
+  interactiveScores,
+}: {
+  slug: string;
+  locale: Locale;
+  interactiveScores: boolean;
+}) {
   const { data, isLoading } = useGetContentBySlug(slug);
   // customFetch returns non-2xx as data (not a throw), so narrow on the 200 status.
   const item = data?.status === 200 ? (data.data as ContentDetailDto) : undefined;
@@ -181,7 +190,7 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
     );
   }
 
-  const score = item.media.find((asset) => asset.kind === 'musicxml');
+  const score = item.media.find((asset) => asset.kind === 'alphatex');
   const pdf = item.media.find((asset) => asset.kind === 'score_pdf');
   const audio = item.media.find((asset) => asset.kind === 'audio');
   const bodyHtml = item.bodyMdx ? (marked.parse(item.bodyMdx) as string) : '';
@@ -284,9 +293,12 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
           {score ? (
             <section className="space-y-2">
               <h2 className="font-display text-lg font-semibold">{t(locale, 'content.score')}</h2>
-              <ScoreViewer
+              <ScorePlayer
                 url={score.url}
                 locale={locale}
+                mode={resolveDisplayMode(item.instruments.map((i) => i.slug))}
+                tuning={tabTuningFor(item.instruments.map((i) => i.slug))}
+                interactive={interactiveScores}
                 credit={{
                   license: score.license ?? undefined,
                   attribution: score.attribution ?? undefined,
@@ -359,10 +371,18 @@ function Detail({ slug, locale }: { slug: string; locale: Locale }) {
   );
 }
 
-export default function ContentDetail({ slug, locale }: { slug: string; locale: Locale }) {
+export default function ContentDetail({
+  slug,
+  locale,
+  interactiveScores = true,
+}: {
+  slug: string;
+  locale: Locale;
+  interactiveScores?: boolean;
+}) {
   return (
     <ApiProvider>
-      <Detail slug={slug} locale={locale} />
+      <Detail slug={slug} locale={locale} interactiveScores={interactiveScores} />
     </ApiProvider>
   );
 }

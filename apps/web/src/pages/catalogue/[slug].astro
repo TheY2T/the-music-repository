@@ -12,6 +12,7 @@ const loggedIn = !!Astro.locals.user;
 const showFavorite = Astro.locals.flags.favorites && loggedIn;
 const showComplete = Astro.locals.flags.progress && loggedIn;
 const showInfoView = Astro.locals.flags.infoView;
+const interactiveScores = Astro.locals.flags.interactiveScores;
 const locale = Astro.locals.locale;
 ---
 
@@ -25,7 +26,12 @@ const locale = Astro.locals.locale;
         </div>
       )
     }
-    <ContentDetail client:load slug={slug} locale={locale} />
+    <ContentDetail
+      client:load
+      slug={slug}
+      locale={locale}
+      interactiveScores={interactiveScores}
+    />
   </PageShell>
   {showInfoView && <InfoView client:idle />}
 </BaseLayout>

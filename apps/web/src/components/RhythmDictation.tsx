@@ -1,8 +1,10 @@
+import type { Locale } from '@TheY2T/tmr-i18n';
 import { Button, Card, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
-import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
+import AlphaTexScore from '@/components/score/AlphaTexScore';
 import { getAudioContext, playTone, scheduleClick } from '@/lib/audio';
 import { midiToFrequency } from '@/lib/music-theory';
+import { rhythmToAlphaTex } from '@/lib/score/alphatex';
 
 const DURATIONS = [
   { beats: 0.5, glyph: '♪', label: 'eighth' },
@@ -23,10 +25,7 @@ function generateBar(): number[] {
   return beats;
 }
 
-const toNotes = (beats: number[]): StaffNoteDatum[] =>
-  beats.map((b) => ({ step: 4, label: '', beats: b }));
-
-export default function RhythmDictation() {
+export default function RhythmDictation({ locale }: { locale: Locale }) {
   const [target, setTarget] = useState<number[]>(() => generateBar());
   const [answer, setAnswer] = useState<number[]>([]);
   const [checked, setChecked] = useState<boolean | null>(null);
@@ -171,7 +170,14 @@ export default function RhythmDictation() {
         </p>
       ) : null}
 
-      {revealed ? <StaffSequence notes={toNotes(target)} /> : null}
+      {revealed ? (
+        <AlphaTexScore
+          tex={rhythmToAlphaTex(target)}
+          mode="standard"
+          locale={locale}
+          showPlay={false}
+        />
+      ) : null}
 
       <p className="text-xs text-muted-foreground">
         Listen to the one-bar rhythm, then rebuild it from the note values (♪ eighth · ♩ quarter ·

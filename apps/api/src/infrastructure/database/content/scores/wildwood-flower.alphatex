@@ -1,0 +1,50 @@
+\title "Wildwood Flower"
+\hideDynamics
+\track ("Melody" "Melody") {
+  volume 15
+  balance 8
+  instrument acousticgrandpiano
+}
+  \staff {
+    score
+  }
+    \ts (4 4)
+    \tempo (120 hide)
+    \accidentals auto
+    \clef g2
+    \ottava regular
+    \simile none
+    \ks c
+      G4.4{dy f instrument acousticgrandpiano}
+      G4.4
+      C5.4
+      C5.4
+    |
+      C5.4
+      E5.4
+      G5.2
+    |
+      G5.4
+      G5.4
+      E5.4
+      C5.4
+    |
+      E5.4
+      D5.4
+      C5.2
+    |
+      C5.4
+      C5.4
+      E5.4
+      G5.4
+    |
+      G5.4
+      E5.4
+      C5.2
+    |
+      C5.4
+      D5.4
+      E5.4
+      G5.4
+    |
+      C5.1

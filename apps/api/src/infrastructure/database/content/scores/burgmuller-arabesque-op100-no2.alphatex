@@ -1,0 +1,347 @@
+\hideDynamics
+\track ("L'Arabesque, Op.100 No.2" "L'Arabesqu") {
+  volume 15
+  balance 8
+  instrument acousticgrandpiano
+}
+  \staff {
+    score
+  }
+    \ts (2 4)
+    \tempo (120 hide)
+    \accidentals auto
+    \clef g2
+    \ottava regular
+    \simile none
+    \ks c
+      A4.16{dy f instrument acousticgrandpiano}
+      C5.16
+      B4.16
+      A4.16
+      B4.16
+      C5.16
+      D5.16
+      C5.16
+    |
+      B4.16
+      D5.16
+      C5.16
+      B4.16
+      C5.16
+      D5.16
+      E5.16
+      D5.16
+    |
+      C5.16
+      E5.16
+      D5.16
+      C5.16
+      D5.16
+      E5.16
+      F5.16
+      E5.16
+    |
+      E5.2
+    |
+      E5.16
+      D5.16
+      C5.16
+      B4.16
+      A4.16
+      B4.16
+      C5.16
+      D5.16
+    |
+      Ab4{acc #}.16
+      B4.16
+      D5.16
+      F5.16
+      E5.16
+      D5.16
+      C5.16
+      B4.16
+    |
+      A4.16
+      C5.16
+      E5.16
+      A5.16
+      Ab5{acc #}.16
+      E5.16
+      C5.16
+      A4.16
+    |
+      A4.4
+      r.4
+    |
+      E5.16
+      G5.16
+      F5.16
+      E5.16
+      F5.16
+      G5.16
+      A5.16
+      G5.16
+    |
+      F5.16
+      A5.16
+      G5.16
+      F5.16
+      G5.16
+      A5.16
+      B5.16
+      A5.16
+    |
+      G5.16
+      B5.16
+      A5.16
+      G5.16
+      A5.16
+      B5.16
+      C6.16
+      B5.16
+    |
+      C6.2
+    |
+      G5.16
+      F5.16
+      E5.16
+      D5.16
+      C5.16
+      D5.16
+      E5.16
+      F5.16
+    |
+      E5.16
+      D5.16
+      C5.16
+      B4.16
+      A4.16
+      B4.16
+      C5.16
+      D5.16
+    |
+      Ab4{acc #}.16
+      B4.16
+      D5.16
+      F5.16
+      E5.16
+      D5.16
+      C5.16
+      B4.16
+    |
+      E5.4
+      r.4
+    |
+      A4.16
+      C5.16
+      B4.16
+      A4.16
+      B4.16
+      C5.16
+      D5.16
+      C5.16
+    |
+      B4.16
+      D5.16
+      C5.16
+      B4.16
+      C5.16
+      D5.16
+      E5.16
+      D5.16
+    |
+      C5.16
+      E5.16
+      D5.16
+      C5.16
+      D5.16
+      E5.16
+      F5.16
+      E5.16
+    |
+      E5.2
+    |
+      E5.16
+      D5.16
+      C5.16
+      B4.16
+      A4.16
+      B4.16
+      C5.16
+      D5.16
+    |
+      Ab4{acc #}.16
+      B4.16
+      D5.16
+      F5.16
+      E5.16
+      D5.16
+      C5.16
+      B4.16
+    |
+      A4.16
+      C5.16
+      E5.16
+      A5.16
+      Ab5{acc #}.16
+      E5.16
+      C5.16
+      A4.16
+    |
+      A4.4
+      r.4
+  \staff {
+    score
+  }
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks c
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+      |
+    \voice 
+      \clef f4
+      \ottava regular
+      \simile none
+      \ks c
+        (A2 C3 E3).8{dy f}
+        r.8
+        (A2 C3 E3).8
+        r.8
+      |
+        (A2 C3 E3).8
+        r.8
+        (A2 C3 E3).8
+        r.8
+      |
+        (C3 E3 G3).8
+        r.8
+        (C3 E3 G3).8
+        r.8
+      |
+        (E2 Ab2{acc #} B2).8
+        r.8
+        (E2 Ab2{acc #} B2).8
+        r.8
+      |
+        (A2 C3 E3).8
+        r.8
+        (A2 C3 E3).8
+        r.8
+      |
+        (E2 Ab2{acc #} D3).8
+        r.8
+        (E2 Ab2{acc #} D3).8
+        r.8
+      |
+        (A2 C3 E3).8
+        r.8
+        (A2 C3 E3).8
+        r.8
+      |
+        (A2 C3 E3).8
+        r.8
+        (A2 C3 E3).8
+        r.8
+      |
+        (C3 E3 G3).8
+        r.8
+        (C3 E3 G3).8
+        r.8
+      |
+        (F2 A2 C3).8
+        r.8
+        (F2 A2 C3).8
+        r.8
+      |
+        (G2 B2 D3).8
+        r.8
+        (G2 B2 D3).8
+        r.8
+      |
+        (C3 E3 G3).8
+        r.8
+        (C3 E3 G3).8
+        r.8
+      |
+        (C3 E3 G3).8
+        r.8
+        (C3 E3 G3).8
+        r.8
+      |
+        (A2 C3 E3).8
+        r.8
+        (A2 C3 E3).8
+        r.8
+      |
+        (E2 Ab2{acc #} D3).8
+        r.8
+        (E2 Ab2{acc #} D3).8
+        r.8
+      |
+        (E2 Ab2{acc #} B2).8
+        r.8
+        (E2 Ab2{acc #} B2).8
+        r.8
+      |
+        (A2 C3 E3).8
+        r.8
+        (A2 C3 E3).8
+        r.8
+      |
+        (A2 C3 E3).8
+        r.8
+        (A2 C3 E3).8
+        r.8
+      |
+        (C3 E3 G3).8
+        r.8
+        (C3 E3 G3).8
+        r.8
+      |
+        (E2 Ab2{acc #} B2).8
+        r.8
+        (E2 Ab2{acc #} B2).8
+        r.8
+      |
+        (A2 C3 E3).8
+        r.8
+        (A2 C3 E3).8
+        r.8
+      |
+        (E2 Ab2{acc #} D3).8
+        r.8
+        (E2 Ab2{acc #} D3).8
+        r.8
+      |
+        (A2 C3 E3).8
+        r.8
+        (A2 C3 E3).8
+        r.8
+      |
+        (A2 C3 E3).8
+        r.8
+        (A2 C3 E3).8
+        r.8

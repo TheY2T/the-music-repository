@@ -1,13 +1,8 @@
-import { Button, Icon, Select } from '@TheY2T/tmr-ui';
-import { useEffect, useRef, useState } from 'react';
-import { GUITAR_CHORDS, strumChord } from '@/components/ChordDiagrams';
-import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
-import { playTone } from '@/lib/audio';
-import { midiToFrequency, trebleStaffNotes } from '@/lib/music-theory';
-
-const BY_NAME = new Map(trebleStaffNotes().map((n) => [n.name, n]));
-const chordByName = (name: string) =>
-  GUITAR_CHORDS.find((c) => c.name === name) ?? GUITAR_CHORDS[0];
+import type { Locale } from '@TheY2T/tmr-i18n';
+import { Select } from '@TheY2T/tmr-ui';
+import { useState } from 'react';
+import ScorePlayer from '@/components/ScorePlayer';
+import { beatsToDuration, midiToAlphaTexPitch, noteNameToMidi } from '@/lib/score/alphatex';
 
 interface Song {
   key: string;
@@ -51,87 +46,63 @@ const SONGS: Song[] = [
   },
 ];
 
-interface SongNote extends StaffNoteDatum {
-  midi: number;
-  /** Bar index this note falls in (for the chord accompaniment). */
-  bar: number;
-  /** True when this note lands on the downbeat of its bar. */
-  barStart: boolean;
+const ROOT_PC: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+
+/** Voice a chord name (`C`, `Am`, `G`, `F#dim`) as a root-position triad around C3. */
+function chordToMidis(name: string): number[] {
+  const m = name.match(/^([A-G])([#b]?)(.*)$/);
+  if (!m) return [48, 52, 55];
+  const [, letter, accidental, quality] = m;
+  let pc = ROOT_PC[letter] + (accidental === '#' ? 1 : accidental === 'b' ? -1 : 0);
+  pc = ((pc % 12) + 12) % 12;
+  const intervals = quality.includes('dim')
+    ? [0, 3, 6]
+    : quality.startsWith('m') && !quality.startsWith('maj')
+      ? [0, 3, 7]
+      : [0, 4, 7];
+  return intervals.map((i) => 48 + pc + i);
 }
 
-function buildNotes(song: Song): SongNote[] {
-  const notes: SongNote[] = [];
-  let cumulative = 0;
-  for (let i = 0; i < song.names.length; i += 1) {
-    const base = BY_NAME.get(song.names[i]);
-    const beats = song.beats[i] ?? 1;
-    if (base) {
-      notes.push({
-        step: base.step,
-        label: base.name,
-        beats,
-        midi: base.midi,
-        bar: Math.floor(cumulative / 4) % song.chords.length,
-        barStart: cumulative % 4 === 0,
-      });
-    }
-    cumulative += beats;
-  }
-  return notes;
+/** Melody track + (optionally) a chord track voiced from the per-bar chord names. */
+function songToAlphaTex(song: Song, withChords: boolean): string {
+  const melody = song.names
+    .map((name, i) => {
+      const { duration, dotted } = beatsToDuration(song.beats[i]);
+      return `${midiToAlphaTexPitch(noteNameToMidi(name) ?? 60)}.${duration}${dotted ? '{d}' : ''}`;
+    })
+    .join(' ');
+  const chordTrack = withChords
+    ? `
+\\track "Chords"
+  \\staff{score} \\tuning piano \\instrument acousticguitarsteel
+  \\ts (4 4)
+  ${song.chords
+    .map(
+      (c) =>
+        `:1 (${chordToMidis(c)
+          .map((n) => midiToAlphaTexPitch(n))
+          .join(' ')}){ch "${c}"}`,
+    )
+    .join(' | ')} |`
+    : '';
+  return `\\title "${song.title}" \\tempo 96
+.
+\\track "Melody"
+  \\staff{score} \\tuning piano \\instrument acousticgrandpiano
+  \\ts (4 4)
+  ${melody} |${chordTrack}`;
 }
 
-export default function SongPlayer() {
+/**
+ * `/tools/song` — melody + chord accompaniment (ADR 0027; was StaffSequence + per-bar `strumChord`).
+ * The melody and the per-bar chords are generated as a two-track alphaTex, so alphaTab renders + plays
+ * both in sync. The chord-name row stays as a quick reference; toggle the chord track on/off.
+ */
+export default function SongPlayer({ locale }: { locale: Locale }) {
   const [songKey, setSongKey] = useState('ode');
-  const [bpm, setBpm] = useState(96);
   const [chordsOn, setChordsOn] = useState(true);
-  const [running, setRunning] = useState(false);
-  const [active, setActive] = useState(-1);
-  const [currentBar, setCurrentBar] = useState(0);
-
   const song = SONGS.find((s) => s.key === songKey) ?? SONGS[0];
-  const notes = buildNotes(song);
-
-  const notesRef = useRef(notes);
-  const songRef = useRef(song);
-  const bpmRef = useRef(bpm);
-  const chordsRef = useRef(chordsOn);
-  const timerRef = useRef(0);
-  useEffect(() => {
-    notesRef.current = notes;
-    songRef.current = song;
-  });
-  useEffect(() => {
-    bpmRef.current = bpm;
-  }, [bpm]);
-  useEffect(() => {
-    chordsRef.current = chordsOn;
-  }, [chordsOn]);
-
-  useEffect(() => {
-    if (!running) {
-      return;
-    }
-    let i = 0;
-    const step = () => {
-      const seq = notesRef.current;
-      const note = seq[i % seq.length];
-      const secondsPerBeat = 60 / bpmRef.current;
-      const beats = note.beats ?? 1;
-      playTone(midiToFrequency(note.midi), beats * secondsPerBeat * 0.9);
-      if (chordsRef.current && note.barStart) {
-        strumChord(chordByName(songRef.current.chords[note.bar]).frets, 'down', secondsPerBeat * 3);
-      }
-      setActive(i % seq.length);
-      setCurrentBar(note.bar);
-      i += 1;
-      timerRef.current = window.setTimeout(step, beats * secondsPerBeat * 1000);
-    };
-    step();
-    return () => {
-      window.clearTimeout(timerRef.current);
-      setActive(-1);
-    };
-  }, [running, songKey]);
+  const tex = songToAlphaTex(song, chordsOn);
 
   return (
     <div className="space-y-5">
@@ -150,23 +121,6 @@ export default function SongPlayer() {
             ))}
           </Select>
         </label>
-        <label className="space-y-1 text-sm">
-          <span className="block font-medium" data-help="rhythm">
-            Tempo
-          </span>
-          <span className="flex items-center gap-2">
-            <input
-              type="range"
-              min={50}
-              max={180}
-              value={bpm}
-              onChange={(e) => setBpm(Number(e.target.value))}
-              className="w-40"
-              aria-label="Tempo (BPM)"
-            />
-            <span className="w-16 tabular-nums text-sm text-muted-foreground">{bpm} BPM</span>
-          </span>
-        </label>
         <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
@@ -181,38 +135,24 @@ export default function SongPlayer() {
         {song.chords.map((name, i) => (
           <div
             key={`${name}-${i}`}
-            className={`flex-1 rounded-md border px-2 py-1 text-center text-sm font-semibold ${
-              running && currentBar === i ? 'border-blue-500 bg-blue-500/15' : 'border-border'
-            }`}
+            className="flex-1 rounded-md border border-border px-2 py-1 text-center text-sm font-semibold"
           >
             {name}
           </div>
         ))}
       </div>
 
-      <StaffSequence notes={notes} showLabels activeIndex={active} />
+      <ScorePlayer
+        key={`${songKey}:${chordsOn}`}
+        tex={tex}
+        mode="standard"
+        locale={locale}
+        interactive
+      />
 
-      <Button
-        type="button"
-        variant={running ? 'outline' : 'default'}
-        className="px-6"
-        onClick={() => setRunning((r) => !r)}
-      >
-        {running ? (
-          <>
-            <Icon name="square" className="size-3 fill-current" />
-            Stop
-          </>
-        ) : (
-          <>
-            <Icon name="play" className="size-4" />
-            Play
-          </>
-        )}
-      </Button>
       <p className="text-xs text-muted-foreground">
-        Plays the melody on the staff with a strummed chord under each bar — the current chord is
-        highlighted. Turn chords off to practise the melody alone, or slow the tempo to learn it.
+        The melody is engraved on the staff; with chords on, alphaTab plays a chord under each bar.
+        Turn chords off to practise the melody alone, or slow the tempo to learn it.
       </p>
     </div>
   );

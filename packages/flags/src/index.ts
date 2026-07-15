@@ -43,6 +43,8 @@ export const FlagKeys = {
   ToolPractice: 'learning.tool-practice',
   /** Phase 2 — gates the Info View contextual helper (help topics on hover/focus). */
   InfoView: 'learning.info-view',
+  /** Interactive score player — click/seek/A–B loop/scrub/metronome (ADR 0026); off = basic play/stop. */
+  InteractiveScores: 'learning.interactive-scores',
   /** Phase 3 — interactive piano keyboard tool. */
   ToolKeyboard: 'tools.keyboard',
   /** Phase 3 — circle of fifths explorer tool. */
@@ -133,7 +135,7 @@ export const FlagKeys = {
   ToolIntervalQuiz: 'tools.interval-quiz',
   /** Phase 5 — combined practice room (jam station). */
   ToolPracticeRoom: 'tools.practice-room',
-  /** Phase 5 — full score rendering via Verovio (WASM). */
+  /** Phase 5 — score playground: write alphaTex / import MusicXML, render + play via alphaTab (ADR 0027). */
   ToolScore: 'tools.score',
   /** Phase 5 — sampled General-MIDI instrument playback (smplr soundfonts). */
   ToolSoundfont: 'tools.soundfont',
@@ -160,6 +162,7 @@ export const FlagDefaults = {
   [FlagKeys.CollectionRatings]: true,
   [FlagKeys.UserCollections]: true,
   [FlagKeys.Progress]: true,
+  [FlagKeys.InteractiveScores]: true,
   [FlagKeys.ToolPractice]: true,
   [FlagKeys.InfoView]: true,
   [FlagKeys.ToolKeyboard]: true,

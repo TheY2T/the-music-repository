@@ -16,6 +16,7 @@
     "collections:build": "node scripts/build-collections.mjs",
     "scores:build": "node scripts/build-scores.mjs",
     "scores:validate": "node scripts/validate-scores.mjs",
+    "scores:migrate": "node scripts/musicxml-to-alphatex.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "node dist/infrastructure/database/seed.js",
@@ -53,6 +54,7 @@
     "@TheY2T/tmr-config-eslint": "workspace:*",
     "@TheY2T/tmr-config-typescript": "workspace:*",
     "@TheY2T/tmr-config-vitest": "workspace:*",
+    "@coderline/alphatab": "catalog:",
     "@nestjs/cli": "^11.0.24",
     "@nestjs/schematics": "^11.1.0",
     "@nestjs/testing": "catalog:",
@@ -67,7 +69,6 @@
     "testcontainers": "catalog:",
     "typescript": "catalog:",
     "unplugin-swc": "catalog:",
-    "verovio": "catalog:",
     "vite-tsconfig-paths": "catalog:",
     "vitest": "catalog:"
   }

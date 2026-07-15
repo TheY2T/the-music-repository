@@ -1,19 +1,22 @@
-# Feature: Scores (real engraved MusicXML + playback + PDF)
+# Feature: Scores (alphaTex + alphaTab playback + PDF)
 
 - **Phase:** Catalogue → Scores · **Status:** shipped — all 55 catalogue scores populated + validated
 - **Related:** `docs/features/catalogue.md` (detail page + media), `docs/features/play-along.md`
-  (`/tools/score`), ADR 0024, ADR 0022 (PixiJS play-head).
+  (`/tools/score`), **ADR 0027** (single alphaTab engine; supersedes ADR 0024 MusicXML + ADR 0026 dual
+  engine), ADR 0025 (note service).
 
 ## Purpose
 
-Give catalogue pieces **real sheet music** instead of the old placeholder PDFs. Every score is a single
-**MusicXML** source of truth; from it the web `ScoreViewer` derives (a) an engraving (Verovio → SVG),
-(b) **notation-synced Web-Audio playback** (moving highlight + play-head + speed), and (c) a
-**downloadable PDF** exported client-side from the same engraving. There is no stored PDF binary.
+Give catalogue pieces **real sheet music**. Every score is a single **alphaTex** source of truth
+(alphaTab's native notation format); from it the web `ScorePlayer` derives (a) an engraving (alphaTab →
+SVG), (b) **notation-synced playback** (alphaTab's synth + cursor + A–B loop + metronome/count-in +
+speed), and (c) a **downloadable PDF** via `api.print()`. There is no stored PDF binary. alphaTab is the
+single engine for piano (standard notation) and guitar (tab) — see ADR 0027.
 
-> **History:** before this feature, 56 items carried `withPdf: true` and were seeded with a synthetic
-> one-page placeholder (`makeMinimalPdf`) that printed only the title + "sample score". That helper and
-> the `withPdf` flag are **gone**; a piece now shows a score iff it has a `musicxml` media asset.
+> **History:** scores were originally hand-authored MusicXML rendered by Verovio (ADR 0024) with a second
+> alphaTab engine for guitar (ADR 0026). ADR 0027 unified everything on alphaTab and converted the corpus
+> to alphaTex (losslessly, via alphaTab's own importer→exporter). Verovio is gone. Earlier still, 56 items
+> carried a `withPdf` placeholder PDF — that path was removed in ADR 0024.
 
 ## Authoring pipeline (file-based)
 
@@ -22,7 +25,7 @@ Scores are authored like catalogue content + collections — files on disk, bund
 
 ```
 apps/api/src/infrastructure/database/content/scores/
-  <slug>.musicxml     # MusicXML 3.1 partwise — the single source of truth
+  <slug>.alphatex     # alphaTab's native notation format — the single source of truth
   <slug>.meta.json    # provenance/licensing (ScoreMeta), recorded on the media asset
 ```
 
@@ -31,35 +34,39 @@ apps/api/src/infrastructure/database/content/scores/
 ```json
 {
   "origin": "openscore | kern | hand-authored",
-  "source": "OpenScore",
+  "source": "The Music Repository",
   "sourceUrl": "https://…",
   "license": "CC0 | CC BY-SA 4.0 | Public Domain | …",
-  "attribution": "OpenScore (musescore.com/openscore)"
+  "attribution": "Engraving: The Music Repository (after <composer>, public domain)",
+  "displayMode": "standard | tab (optional — overrides the instrument-derived mode)"
 }
 ```
 
 - `pnpm --filter @TheY2T/tmr-api scores:build` → bundles the pair for every slug into the committed
-  `seed-scores.ts` (`SCORE_XML: Record<slug,string>` + `SCORE_META: Record<slug, ScoreMeta>`).
-- `pnpm --filter @TheY2T/tmr-api scores:validate` → **fidelity gate**: loads each MusicXML into Verovio,
-  asserts it parses + engraves, and writes a preview SVG per score to `apps/api/.score-previews/`
-  (git-ignored) for **page-by-page proofing against the public-domain reference**. Requires the
-  `verovio` devDependency (cataloged).
+  `seed-scores.ts` (`SCORE_ALPHATEX: Record<slug,string>` + `SCORE_META: Record<slug, ScoreMeta>`).
+- `pnpm --filter @TheY2T/tmr-api scores:validate` → **validity gate**: re-parses each alphaTex via
+  alphaTab (`AlphaTexImporter`) and asserts a non-empty score (track/bar/beat counts). Visual proofing
+  against the public-domain reference is done in the browser (alphaTab renders in a real DOM).
+- `pnpm --filter @TheY2T/tmr-api scores:migrate` → one-time MusicXML→alphaTex converter
+  (`musicxml-to-alphatex.mjs`): loads each `<slug>.musicxml` into alphaTab's model and serializes it out
+  with `AlphaTexExporter` — lossless (re-parse-validated). Pass `--delete` to remove the `.musicxml`.
 
-The seed (`seed.ts`) uploads each `SCORE_XML` entry as a `musicxml` media asset and records the
-`SCORE_META` **engraving** license/attribution/`source_url` on the asset (not the piece's own
-attribution). `media_assets.source_url` (migration `drizzle/0019_*`) stores the provenance URL.
+Author new scores with the **`add-score`** skill. The seed (`seed.ts`) uploads each `SCORE_ALPHATEX`
+entry as an **`alphatex`** media asset and records the `SCORE_META` engraving license/attribution/
+`source_url` on the asset.
 
-## Frontend (`ScoreViewer.tsx`)
+## Frontend (`ScorePlayer.tsx`, ADR 0027)
 
-- Engraves the MusicXML with Verovio; **Play** schedules Web-Audio tones from the Verovio timemap and
-  animates the sounding notes + a PixiJS play-head glow (ADR 0022); a 0.5×–1.5× speed slider.
-- **Download PDF** re-lays the score into portrait pages via the loaded toolkit and opens a print
-  window (browser "Save as PDF") — same source, always matches the screen, no stored binary.
-- An **engraving-credit line** (`score.creditLabel`) shows source + license (from the `MediaAsset`
-  `attribution`/`license`/`sourceUrl` contract fields), so provenance is visible + auditable.
+- Renders + plays the alphaTex with **alphaTab** (its synth + animated cursor). `resolveDisplayMode`
+  picks the piano transport (standard notation: play/pause, tempo, scrub, click-to-hear, click-to-seek,
+  A–B loop, metronome, count-in) or the guitar default UI (tab: alphaTab's own cursor + selection).
+- **Download PDF** = `api.print()` (browser "Save as PDF") — same render, no stored binary.
+- An **engraving-credit line** (`score.creditLabel`) shows source + license from the `MediaAsset`
+  contract fields, so provenance is visible + auditable.
 
-`ContentDetail.tsx` prefers the `musicxml` branch; the legacy PDF `<iframe>` branch remains only as a
-fallback for CMS-uploaded PDFs (no seeded placeholders reach it anymore).
+`ContentDetail.tsx` renders the `alphatex` media asset via `ScorePlayer`; a legacy PDF `<iframe>` branch
+remains only as a fallback for CMS-uploaded PDFs. Font + soundfont are self-hosted at `/font` +
+`/soundfont` by the `@coderline/alphatab-vite` plugin (no CDN).
 
 ## Licensing policy (important)
 
@@ -77,8 +84,9 @@ ships — never ship wrong notes.
 
 ## Status + provenance
 
-**All 55 catalogue scores are shipped + validated** (each engraves cleanly in Verovio via
-`scores:validate`). Every one is `origin: hand-authored` — CC BY-SA 4.0, attributed
+**All 55 catalogue scores are shipped + validated** (each parses cleanly in alphaTab via
+`scores:validate`, converted losslessly from the original MusicXML). Every one is
+`origin: hand-authored` — CC BY-SA 4.0, attributed
 "Arrangement: The Music Repository (after <composer>, public domain)". The CC0 OpenScore route was
 **not** used because retrieval is 403/login-gated (not automatable), and the CCARH kern route was
 rejected (repo license = NOASSERTION — see policy above); both remain valid future upgrades if a
@@ -98,10 +106,18 @@ cleaner source is fetched manually.
 The full per-slug source references live in each `<slug>.meta.json`. Reference sources used:
 OpenScore/Open-WTC (CC0, for future upgrade), Mutopia + IMSLP (PD, transcription reference only).
 
+> **Guitar/bass/ukulele tab (ADR 0027):** the fretted scores are *pitched* (not fretted), so for `tab`
+> mode the engine makes each staff stringed at load — `tabTuningFor(instruments)` supplies the standard
+> tuning and frets are auto-assigned from pitch (lowest playable position, octave-aware for guitar/bass).
+> This renders correct, playable tab; to pin exact fingerings, author the `.alphatex` with `fret.string`
+> notation (see the `add-score` skill).
+
 ## Tests
 
-- `apps/api/src/infrastructure/database/seed-scores.test.ts` — every `SCORE_XML` entry is
-  `<score-partwise` MusicXML with a matching `SCORE_META` (valid origin + license + attribution); and a
-  **regression guard** that `makeMinimalPdf`/`withPdf` are gone (no placeholder PDFs).
-- `scores:validate` is the manual fidelity gate (Verovio engrave + preview).
-- E2E (Playwright): a score page renders the Verovio SVG, plays back, and exposes Download PDF.
+- `apps/api/src/infrastructure/database/seed-scores.test.ts` — every `SCORE_ALPHATEX` entry is a
+  non-empty alphaTex document with a `\track`, with a matching `SCORE_META` (valid origin + license +
+  attribution); a regression guard that `makeMinimalPdf`/`withPdf` are gone.
+- `scores:validate` is the parse/structure gate (alphaTab `AlphaTexImporter`).
+- Pure helpers unit-tested in `apps/web/src/lib/score/{loop,loop-selection}.test.ts` (display-mode
+  routing + tick-based A–B loop reducer). Engine runtime is E2E-only (Worker/AudioWorklet).
+- E2E (Playwright): a score page renders via alphaTab, plays back, and exposes Download PDF.

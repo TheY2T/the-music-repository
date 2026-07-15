@@ -21,7 +21,7 @@ const locale = Astro.locals.locale;
       subtitle={t(locale, 'tool.player.summary')}
       back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}
     >
-      <NotationPlayer client:load />
+      <NotationPlayer client:load locale={locale} />
     </PageShell>
     {showInfoView && <InfoView client:idle />}
     {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}

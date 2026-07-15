@@ -42,7 +42,7 @@ export const mediaAssets = pgTable('media_assets', {
   contentId: uuid('content_id')
     .notNull()
     .references(() => contentItems.id, { onDelete: 'cascade' }),
-  kind: text('kind').notNull(), // score_pdf | audio | image | midi | musicxml
+  kind: text('kind').notNull(), // alphatex | audio | image (see ADR 0027; alphatex replaced musicxml)
   storageKey: text('storage_key').notNull(), // object key in the S3/MinIO bucket
   filename: text('filename').notNull(),
   mime: text('mime').notNull(),
