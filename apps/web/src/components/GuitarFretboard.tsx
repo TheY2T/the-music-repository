@@ -1,5 +1,6 @@
 import { cn, Select } from '@TheY2T/tmr-ui';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import LevelToggle from '@/components/LevelToggle';
 import { PixiCanvas } from '@/components/PixiCanvas';
 import { playTone } from '@/lib/audio';
 import {
@@ -11,7 +12,9 @@ import {
   STANDARD_TUNING,
   STANDARD_TUNING_NAMES,
   scalePitchClasses,
+  scalesByLevel,
 } from '@/lib/music-theory';
+import { useLevel } from '@/lib/use-level';
 
 const FRET_COUNT = 15;
 const frets = Array.from({ length: FRET_COUNT + 1 }, (_, f) => f);
@@ -20,12 +23,20 @@ const noteLabel = (midi: number, flats: boolean) =>
   `${pitchName(midi % 12, flats)}${Math.floor(midi / 12) - 1}`;
 
 export default function GuitarFretboard() {
+  const { level, setLevel } = useLevel();
   const [showLabels, setShowLabels] = useState(true);
   const [root, setRoot] = useState<number | null>(null);
   const [scaleKey, setScaleKey] = useState('minor-pentatonic');
   const [lastNote, setLastNote] = useState<string | null>(null);
   const [active, setActive] = useState<Set<number>>(new Set());
   const releaseTimers = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
+
+  const scaleChoices = scalesByLevel(level);
+  useEffect(() => {
+    if (!scaleChoices.some((s) => s.key === scaleKey)) {
+      setScaleKey(scaleChoices[0]?.key ?? 'major');
+    }
+  }, [scaleChoices, scaleKey]);
 
   const scale = SCALES.find((s) => s.key === scaleKey) ?? SCALES[0];
   const highlighted = useMemo(
@@ -151,7 +162,7 @@ export default function GuitarFretboard() {
               onChange={(e) => setScaleKey(e.target.value)}
               className="h-auto w-auto px-2 py-1"
             >
-              {SCALES.map((s) => (
+              {scaleChoices.map((s) => (
                 <option key={s.key} value={s.key}>
                   {s.name}
                 </option>
@@ -159,6 +170,7 @@ export default function GuitarFretboard() {
             </Select>
           </div>
         </label>
+        <LevelToggle level={level} onChange={setLevel} />
         <div className="ml-auto text-sm text-muted-foreground">
           Last note: <span className="font-mono text-foreground">{lastNote ?? '—'}</span>
         </div>

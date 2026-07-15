@@ -56,7 +56,6 @@ const {
   toolIntervalQuiz,
   toolPracticeRoom,
   toolScore,
-  toolSoundfont,
 } = Astro.locals.flags;
 const locale = Astro.locals.locale;
 
@@ -108,7 +107,6 @@ const enabledSlugs: string[] = (
     { slug: 'interval-quiz', enabled: toolIntervalQuiz },
     { slug: 'practice-room', enabled: toolPracticeRoom },
     { slug: 'score', enabled: toolScore },
-    { slug: 'soundfont', enabled: toolSoundfont },
   ] satisfies { slug: string; enabled: boolean }[]
 )
   .filter((tool) => tool.enabled)

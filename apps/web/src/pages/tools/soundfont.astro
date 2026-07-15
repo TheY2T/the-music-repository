@@ -1,33 +1,8 @@
 ---
-import InfoView from '@/components/InfoView.tsx';
-import ToolPracticeLogger from '@/components/ToolPracticeLogger.tsx';
-import PianoKeyboard from '@/components/PianoKeyboard.tsx';
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import { localizedPath, t } from '@TheY2T/tmr-i18n';
-import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+import { localizedPath } from '@TheY2T/tmr-i18n';
 
-if (!Astro.locals.flags.toolSoundfont) {
-  return Astro.redirect('/tools');
-}
-const showInfoView = Astro.locals.flags.infoView;
-const logPracticeEnabled =
-  Astro.locals.flags.toolPractice && Astro.locals.flags.progress && !!Astro.locals.user;
-const locale = Astro.locals.locale;
+// The keyboard tool now exposes both the scale highlighter and the instrument picker, so the sampled-
+// instruments tool is folded into it. This route redirects so existing links keep working. See the
+// interactive-tools audit (consolidation C1).
+return Astro.redirect(localizedPath(Astro.locals.locale, '/tools/keyboard'));
 ---
-
-<BaseLayout title={`${t(locale, 'tool.soundfont.title')} — ${t(locale, 'site.name')}`}>
-    <PageShell
-      title={t(locale, 'tool.soundfont.title')}
-      subtitle={t(locale, 'tool.soundfont.summary')}
-      back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}
-      maxWidth="max-w-3xl"
-    >
-      <PianoKeyboard
-        client:load
-        instruments={true}
-        defaultInstrument="acoustic_grand_piano"
-      />
-    </PageShell>
-    {showInfoView && <InfoView client:idle />}
-    {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}
-  </BaseLayout>
