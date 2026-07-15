@@ -12,8 +12,10 @@ out a prioritized plan to **(1) deepen** existing tools, **(2) consolidate** ove
 > generative movable chord-shape library (+ bass) wired into the CAGED explorer & chord-diagrams
 > dictionary, bass clef + key signatures for the reading tools, the Beginner→Expert level selector
 > (X1), and consolidations C1 + C5 (C2/C3/C4/C6 deliberately kept separate — see §3). The tuner's mic
-> pitch-detection was already shipped. **Still open (additive, ongoing):** §5 content/genre breadth and
-> §6 new tools — these are expansion backlog, not one-shot tasks.
+> pitch-detection was already shipped. **Expansion started:** the **improvise guide** (§6,
+> `/tools/improvise` — which scales fit a chord) and a widened instrument menu (§5, 10→36 GM voices)
+> are shipped; the rest of §5/§6 remains open backlog. The whole workspace `pnpm lint` is now green too
+> (pre-existing api + icon.tsx errors fixed).
 
 > **Design principle threaded throughout — Level tiers.** Every tool should expose a
 > **Beginner / Intermediate / Advanced (/ Expert)** selector that gates which options are visible and
@@ -125,7 +127,7 @@ only **25 of 83 articles use live embeds**.
   material — pairs naturally with the **level-tier** work (X1).
 - **Play-along depth:** more licks (jazz/country/funk categories already noted in backlog), grooves,
   fingerpicking/strumming patterns per genre; song player + backing-track presets per collection.
-- **Instruments:** `SOUNDFONT_INSTRUMENTS` exposes 10 of 128 GM — trivially widen the menu; add a
+- ✅ **DONE (2026-07-15)** **Instruments:** `SOUNDFONT_INSTRUMENTS` widened 10 → 36 GM voices across families. Still open: add a
   drum-kit sampled instrument.
 
 ---
@@ -136,7 +138,7 @@ only **25 of 83 articles use live embeds**.
 |---|---|---|---|
 | **Fretboard/keyboard note-trainer game** | Timed "find the note / interval / triad" game with scoring & streaks | M | Reuses fret-quiz + scoring |
 | **Chord-progression generator** | Genre/mood → suggested progression (pop/jazz/blues templates) → open in analyzer/band | M | Uses expanded harmony tables |
-| **Improvisation / scale-over-chord guide** | Given a chord/progression, highlight which scales/modes fit, playable over the Band engine | M–L | Depends on 4.1 |
+| ✅ **DONE (2026-07-15) Improvisation / scale-over-chord guide** (`/tools/improvise`) | Pick a chord → every scale that contains its tones (`scalesForChord`), level-tiered, chord+scale playable together | M–L | Shipped |
 | **Song/lead-sheet builder** | Compose a lead sheet (chords + melody) from tools, save/share (reuse saved-progressions backend) | L | Extends analyzer's save feature |
 | **Rhythm reading game** | Tap/clap along to generated rhythms with timing scoring (mic or key input) | M | Extends rhythm + dictation |
 | **Practice planner / routine builder** | Assemble tools + scores into a timed practice session; ties into progress dashboard & streaks | M | Backend already tracks practice minutes |
