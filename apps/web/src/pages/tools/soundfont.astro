@@ -1,7 +1,7 @@
 ---
 import InfoView from '@/components/InfoView.tsx';
 import ToolPracticeLogger from '@/components/ToolPracticeLogger.tsx';
-import SoundfontPlayer from '@/components/SoundfontPlayer.tsx';
+import PianoKeyboard from '@/components/PianoKeyboard.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
@@ -22,7 +22,11 @@ const locale = Astro.locals.locale;
       back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}
       maxWidth="max-w-3xl"
     >
-      <SoundfontPlayer client:load />
+      <PianoKeyboard
+        client:load
+        instruments={true}
+        defaultInstrument="acoustic_grand_piano"
+      />
     </PageShell>
     {showInfoView && <InfoView client:idle />}
     {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}

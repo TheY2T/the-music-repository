@@ -1,15 +1,14 @@
 import { Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
-import { playTone } from '@/lib/audio';
 import {
   FRET_MARKERS,
-  midiToFrequency,
   pitchName,
   ROOT_CHOICES,
   SCALES,
   STANDARD_TUNING,
   scalePitchClasses,
 } from '@/lib/music-theory';
+import { playNote } from '@/lib/soundfont';
 
 const FRET_COUNT = 15;
 const BOX_WIDTH = 4; // frets spanned by a position box
@@ -107,7 +106,7 @@ export default function ScaleBoxes() {
                   <button
                     type="button"
                     key={`f${fret}`}
-                    onClick={() => playTone(midiToFrequency(midi))}
+                    onClick={() => playNote(midi)}
                     className={`m-[1px] flex h-6 w-8 items-center justify-center rounded-sm border text-[10px] ${
                       fret === 0 ? 'border-r-2 border-r-neutral-400' : 'border-transparent'
                     } ${

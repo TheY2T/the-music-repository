@@ -14,9 +14,13 @@ staff notation) drop into the same `/tools` hub behind their own flags.
 ## UX behaviour
 
 - `/tools` — hub listing the tools whose flag is on.
-- `/tools/keyboard` — a two-octave **interactive piano**: click any key to hear it (Web Audio) and see
-  the note name; a **Show note names** toggle; a **root + scale** picker that highlights the scale's
-  keys (e.g. C major lights every white key).
+- `/tools/keyboard` — the shared **interactive piano** (ADR 0025): a **selectable size** (standard
+  controller sizes 25/37/49/61/76/88, default 61 — big ranges scroll horizontally with **octave-shift**
+  buttons), **sampled** audio (smplr, oscillator fallback), **sustain** (hold a key/MIDI note), MIDI
+  **velocity → dynamics**, and **computer-keyboard (QWERTY) play** (the `z`/`q` rows). A **Show note
+  names** toggle and a **root + scale** picker that highlights the scale's keys. `/tools/soundfont` is
+  the same component with the **instrument picker** shown. Both are `PianoKeyboard.tsx` over
+  `lib/keyboard.ts` (geometry) + `lib/soundfont.ts` (the shared note service).
 - `/tools/fretboard` — an **interactive guitar fretboard** (standard tuning, frets 0–15): click a fret
   to hear it; a root + scale picker shows the scale's **shapes** with root notes emphasised; fret-marker
   inlays and a **Show note names** toggle.

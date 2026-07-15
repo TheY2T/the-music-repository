@@ -1,20 +1,16 @@
 import { Button, Card, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import { playTone } from '@/lib/audio';
+import { keyLayout } from '@/lib/keyboard';
 import { CHORDS, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
 
-// Fixed 3-octave diagram (C3–B5) so voicings stay comparable across selections.
-const KB_START = 48;
-const KB_COUNT = 36;
-const BLACK_PCS = new Set([1, 3, 6, 8, 10]);
-const KB_MIDIS = Array.from({ length: KB_COUNT }, (_, i) => KB_START + i);
-const isBlack = (midi: number) => BLACK_PCS.has(midi % 12);
-const WHITE_MIDIS = KB_MIDIS.filter((m) => !isBlack(m));
-const BLACK_MIDIS = KB_MIDIS.filter(isBlack).map((midi) => ({
-  midi,
-  afterWhiteIndex: KB_MIDIS.filter((m) => !isBlack(m) && m < midi).length - 1,
-}));
-const WHITE_WIDTH_PCT = 100 / WHITE_MIDIS.length;
+// Fixed 3-octave diagram (C3–B5) so voicings stay comparable across selections. Geometry from the
+// shared keyboard helper (ADR 0025).
+const {
+  whiteMidis: WHITE_MIDIS,
+  blackMidis: BLACK_MIDIS,
+  whiteWidthPct: WHITE_WIDTH_PCT,
+} = keyLayout(48, 36);
 
 interface Voicing {
   key: string;

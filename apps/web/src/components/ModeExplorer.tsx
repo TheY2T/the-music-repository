@@ -1,7 +1,7 @@
 import { Chip, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
-import { playTone } from '@/lib/audio';
-import { intervalLabel, MODES, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
+import { intervalLabel, MODES, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
+import { playNote } from '@/lib/soundfont';
 
 const ROOT_MIDI = 60;
 
@@ -12,10 +12,7 @@ export default function ModeExplorer() {
   function playMode(intervals: number[]) {
     const notes = [...intervals, 12];
     notes.forEach((interval, index) => {
-      window.setTimeout(
-        () => playTone(midiToFrequency(ROOT_MIDI + root + interval), 0.45),
-        index * 200,
-      );
+      window.setTimeout(() => playNote(ROOT_MIDI + root + interval, 0.45), index * 200);
     });
   }
 

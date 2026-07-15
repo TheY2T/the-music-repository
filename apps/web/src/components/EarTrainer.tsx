@@ -1,8 +1,8 @@
 import { Button, Icon } from '@TheY2T/tmr-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import DrillFeedback from '@/components/DrillFeedback';
-import { playTone } from '@/lib/audio';
-import { INTERVAL_NAMES, midiToFrequency } from '@/lib/music-theory';
+import { INTERVAL_NAMES } from '@/lib/music-theory';
+import { playNote } from '@/lib/soundfont';
 import { useMidiInput } from '@/lib/use-midi-input';
 
 interface Question {
@@ -15,8 +15,8 @@ function makeQuestion(): Question {
 }
 
 function playInterval(question: Question) {
-  playTone(midiToFrequency(question.root), 0.7);
-  window.setTimeout(() => playTone(midiToFrequency(question.root + question.semitones), 0.7), 550);
+  playNote(question.root, 0.7);
+  window.setTimeout(() => playNote(question.root + question.semitones, 0.7), 550);
 }
 
 /** Reduce a raw MIDI note distance to an interval within an octave (0–12). */

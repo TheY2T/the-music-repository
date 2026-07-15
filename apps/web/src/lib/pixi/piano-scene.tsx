@@ -25,7 +25,10 @@ export interface PianoSceneProps {
   active: Set<number>;
   showLabels: boolean;
   flats: boolean;
+  /** Note-on: pointer pressed a key. */
   onPlay: (midi: number) => void;
+  /** Note-off: the pressed key was released (pointer up / left the canvas). Enables sustain. */
+  onRelease?: (midi: number) => void;
 }
 
 interface Particle {
@@ -52,6 +55,7 @@ function Keybed({
   showLabels,
   flats,
   onPlay,
+  onRelease,
   reducedMotion,
 }: PianoSceneProps & { reducedMotion: boolean }) {
   const { app, isInitialised } = useApplication();
@@ -200,6 +204,8 @@ function Keybed({
           eventMode="static"
           cursor="pointer"
           onPointerDown={() => onPlay(midi)}
+          onPointerUp={() => onRelease?.(midi)}
+          onPointerUpOutside={() => onRelease?.(midi)}
           draw={(g: Graphics) => drawWhite(g, midi)}
         />
       ))}
@@ -221,6 +227,8 @@ function Keybed({
           eventMode="static"
           cursor="pointer"
           onPointerDown={() => onPlay(midi)}
+          onPointerUp={() => onRelease?.(midi)}
+          onPointerUpOutside={() => onRelease?.(midi)}
           draw={(g: Graphics) => drawBlack(g, midi, afterWhiteIndex)}
         />
       ))}

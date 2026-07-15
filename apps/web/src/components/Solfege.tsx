@@ -1,8 +1,8 @@
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
-import { playTone } from '@/lib/audio';
-import { midiToFrequency, trebleStaffNotes } from '@/lib/music-theory';
+import { trebleStaffNotes } from '@/lib/music-theory';
+import { playNote } from '@/lib/soundfont';
 
 const POOL = trebleStaffNotes().filter((n) => n.midi >= 60 && n.midi <= 72);
 
@@ -67,7 +67,7 @@ export default function Solfege() {
 
   function play() {
     melody.forEach((n, i) => {
-      window.setTimeout(() => playTone(midiToFrequency(n.midi), 0.5), i * 550);
+      window.setTimeout(() => playNote(n.midi, 0.5), i * 550);
     });
   }
 

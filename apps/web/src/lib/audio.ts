@@ -60,6 +60,67 @@ export function getAnalyser(): AnalyserNode | null {
   return analyserNode;
 }
 
+/**
+ * The master-bus input node all voices connect to, or null during SSR. Exposed so the sampled
+ * (smplr) engine can route through the same analyser tap as the oscillator, keeping visualizers live
+ * for sampled instruments too. See `lib/soundfont.ts`.
+ */
+export function getDestination(): AudioNode | null {
+  const ctx = getContext();
+  if (!ctx) {
+    return null;
+  }
+  return getMasterBus(ctx);
+}
+
+// --- Held oscillator voices (sustain/note-off) -----------------------------------------------
+// The oscillator fallback for the note service: a note rings until released, keyed so note-off can
+// stop the exact voice. Used only when a sampled soundfont isn't loaded (offline/SSR/first-load).
+const heldVoices = new Map<number, { osc: OscillatorNode; gain: GainNode }>();
+
+/** Start a sustained oscillator voice for `key` (a MIDI note) at `frequency`. `velocity` is 0–1. */
+export function oscNoteOn(key: number, frequency: number, velocity = 0.7): void {
+  const ctx = getContext();
+  if (!ctx) {
+    return;
+  }
+  if (ctx.state === 'suspended') {
+    void ctx.resume();
+  }
+  oscNoteOff(key); // retrigger safety — never leak a voice
+  const now = ctx.currentTime;
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+  oscillator.type = 'triangle';
+  oscillator.frequency.value = frequency;
+  const peak = 0.05 + Math.max(0, Math.min(1, velocity)) * 0.22;
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(peak, now + 0.01);
+  oscillator.connect(gain).connect(getMasterBus(ctx));
+  oscillator.start(now);
+  heldVoices.set(key, { osc: oscillator, gain });
+}
+
+/** Release the sustained oscillator voice for `key` with a short fade. */
+export function oscNoteOff(key: number): void {
+  const ctx = getContext();
+  const voice = heldVoices.get(key);
+  if (!voice || !ctx) {
+    heldVoices.delete(key);
+    return;
+  }
+  heldVoices.delete(key);
+  const now = ctx.currentTime;
+  try {
+    voice.gain.gain.cancelScheduledValues?.(now);
+    voice.gain.gain.setValueAtTime(Math.max(voice.gain.gain.value, 0.0001), now);
+    voice.gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+    voice.osc.stop(now + 0.14);
+  } catch {
+    // Voice already stopped — ignore.
+  }
+}
+
 let noiseBuffer: AudioBuffer | null = null;
 function getNoiseBuffer(ctx: AudioContext): AudioBuffer {
   if (!noiseBuffer) {

@@ -238,10 +238,15 @@ src/
     window → browser "Save as PDF"; no stored binary) and an **engraving-credit** line from the
     `MediaAsset` `attribution`/`license`/`sourceUrl` fields. Scores are authored in `apps/api`
     (`content/scores/*`) — see `docs/features/scores.md`.
-  - Sampled instruments `/tools/soundfont` (`tools.soundfont`) — `SoundfontPlayer.tsx` over
-    `src/lib/soundfont.ts`, which **lazily `import('smplr')`** and loads a GM `Soundfont`. Samples stream
-    from a CDN, so `loadSoundfont` catches failures and returns `'fallback'`; `playNote` then uses the
-    oscillator engine (`playTone`) so the keyboard always sounds. Also plays live `useMidiInput`.
+  - **Keyboard + note service (ADR 0025).** `/tools/keyboard` and `/tools/soundfont` are ONE island —
+    `PianoKeyboard.tsx` — with selectable sizes (`lib/keyboard.ts`: `KEYBOARD_SIZES` 25–88, default 61),
+    octave-shift + horizontal scroll, sustain (note-on/off), MIDI velocity, and QWERTY play
+    (`qwertyMap`). `src/lib/soundfont.ts` is the **shared note service**: a per-instrument registry with
+    `loadInstrument`/`noteOn`/`noteOff`/`playNote` (back-compat one-shot) that **lazily `import('smplr')`**,
+    routes through the `audio.ts` master bus (`getDestination`), plumbs velocity, and falls back to the
+    oscillator (`audio.ts` `oscNoteOn/oscNoteOff`, or `playTone`) so it always sounds offline. The
+    play-a-note theory tools (chord/scale/ear) call `playNote`; scheduled/arranged tools keep
+    `scheduleTone`/`scheduleDrum`. Always release notes on blur/unmount (`releaseAll`) so none hang.
   - **Vite gotcha:** after `pnpm add`-ing a browser library (verovio/smplr), the running Astro dev
     server must be restarted (or `rm -rf apps/web/node_modules/.vite`) so Vite re-optimizes deps —
     otherwise islands fail to hydrate with `504 Outdated Optimize Dep` / `_jsxDEV is not a function`.

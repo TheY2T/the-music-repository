@@ -1,8 +1,8 @@
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import StaffSequence, { type StaffNoteDatum } from '@/components/StaffSequence';
-import { playTone } from '@/lib/audio';
-import { midiToFrequency, trebleStaffNotes } from '@/lib/music-theory';
+import { trebleStaffNotes } from '@/lib/music-theory';
+import { playNote } from '@/lib/soundfont';
 
 // One-octave pool C4–C5 so the answer palette covers every note the generator can pick.
 const POOL = trebleStaffNotes().filter((n) => n.midi >= 60 && n.midi <= 72);
@@ -38,7 +38,7 @@ export default function MelodicDictation() {
 
   function play() {
     melody.forEach((n, i) => {
-      window.setTimeout(() => playTone(midiToFrequency(n.midi), 0.5), i * 550);
+      window.setTimeout(() => playNote(n.midi, 0.5), i * 550);
     });
   }
 
@@ -55,7 +55,7 @@ export default function MelodicDictation() {
     }
     const note = POOL.find((n) => n.name === name);
     if (note) {
-      playTone(midiToFrequency(note.midi), 0.4);
+      playNote(note.midi, 0.4);
     }
     setAnswer((a) => [...a, name]);
   }

@@ -1,7 +1,7 @@
 import { Icon } from '@TheY2T/tmr-ui';
 import { useCallback, useState } from 'react';
-import { playTone } from '@/lib/audio';
-import { identifyChords, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
+import { identifyChords, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
+import { playNote } from '@/lib/soundfont';
 import { useMidiInput } from '@/lib/use-midi-input';
 
 const ROOT_MIDI = 60;
@@ -28,7 +28,7 @@ export default function ChordIdentifier() {
       return next;
     });
     if (isOn) {
-      playTone(midiToFrequency(midiNote), 0.6);
+      playNote(midiNote, 0.6);
     }
   }, []);
   const midi = useMidiInput(onMidiNote);
@@ -43,12 +43,12 @@ export default function ChordIdentifier() {
       }
       return next;
     });
-    playTone(midiToFrequency(ROOT_MIDI + pc), 0.5);
+    playNote(ROOT_MIDI + pc, 0.5);
   }
 
   function playSelection() {
     for (const pc of sorted) {
-      playTone(midiToFrequency(ROOT_MIDI + pc), 1.1);
+      playNote(ROOT_MIDI + pc, 1.1);
     }
   }
 

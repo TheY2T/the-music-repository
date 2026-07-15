@@ -1,13 +1,7 @@
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
-import { playTone } from '@/lib/audio';
-import {
-  CHORDS,
-  intervalLabel,
-  midiToFrequency,
-  pitchName,
-  ROOT_CHOICES,
-} from '@/lib/music-theory';
+import { CHORDS, intervalLabel, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
+import { playNote } from '@/lib/soundfont';
 
 const ROOT_MIDI = 60; // C4 reference octave
 
@@ -25,13 +19,13 @@ export default function ChordBuilder() {
 
   function playBlock() {
     for (const tone of tones) {
-      playTone(midiToFrequency(tone.midi), 1.1);
+      playNote(tone.midi, 1.1);
     }
   }
 
   function playArpeggio() {
     tones.forEach((tone, index) => {
-      window.setTimeout(() => playTone(midiToFrequency(tone.midi), 0.7), index * 180);
+      window.setTimeout(() => playNote(tone.midi, 0.7), index * 180);
     });
   }
 

@@ -20,7 +20,7 @@ const locale = Astro.locals.locale;
       title={t(locale, 'tool.keyboard.title')}
       back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}
     >
-      <PianoKeyboard client:load />
+      <PianoKeyboard client:load scaleHighlight={true} />
     </PageShell>
     {showInfoView && <InfoView client:idle />}
     {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}

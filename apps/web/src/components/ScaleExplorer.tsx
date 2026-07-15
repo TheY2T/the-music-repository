@@ -1,14 +1,7 @@
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
-import { playTone } from '@/lib/audio';
-import {
-  intervalLabel,
-  midiToFrequency,
-  pitchName,
-  ROOT_CHOICES,
-  SCALES,
-  stepPattern,
-} from '@/lib/music-theory';
+import { intervalLabel, pitchName, ROOT_CHOICES, SCALES, stepPattern } from '@/lib/music-theory';
+import { playNote } from '@/lib/soundfont';
 
 const ROOT_MIDI = 60; // C4 reference octave
 
@@ -28,7 +21,7 @@ export default function ScaleExplorer() {
   function playAscending() {
     const notes = [...degrees.map((d) => d.midi), ROOT_MIDI + root + 12];
     notes.forEach((midi, index) => {
-      window.setTimeout(() => playTone(midiToFrequency(midi), 0.5), index * 220);
+      window.setTimeout(() => playNote(midi, 0.5), index * 220);
     });
   }
 
@@ -76,7 +69,7 @@ export default function ScaleExplorer() {
             <button
               type="button"
               key={d.degree}
-              onClick={() => playTone(midiToFrequency(d.midi))}
+              onClick={() => playNote(d.midi)}
               className="rounded-md border border-border px-4 py-2 text-center hover:bg-muted"
             >
               <div className="text-lg font-semibold">{d.name}</div>
