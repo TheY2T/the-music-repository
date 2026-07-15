@@ -165,6 +165,12 @@ only **25 of 83 articles use live embeds**.
 5. 4.4 — tuner mic pitch-detection; staff/sight-reading clef+accidental+key coverage.
 6. 4.3 — alternate tunings across fretted tools.
 
+4b. ✅ **DONE (2026-07-15)** wired the generator into two tools: the **CAGED explorer** is no longer
+   major-only — it's a root + chord-type picker (major/minor/dom7/maj7/min7) rendering CAGED shapes
+   (added C/G/D shape families to the library); the **chord-diagrams tool** is now a full chord
+   dictionary (instrument × root × quality → every movable voicing, strummable), replacing the 16-shape
+   static browser. Both use the shared `ChordDiagram` with `baseFret` neck-windowing.
+
 **Phase 3 — Consolidate**
 7. C3 (fretboard family), C4 (band engine), C2 (route/embed dedup), C5, C6 — with route aliases.
 
