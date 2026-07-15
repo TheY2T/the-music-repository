@@ -57,7 +57,7 @@ Overlaps waste maintenance effort and confuse the tool hub. Recommended merges, 
 
 | # | Merge | Rationale | Effort |
 |---|---|---|---|
-| C1 | **keyboard + soundfont → one page** with an "instrument" control | Literally the same `PianoKeyboard.tsx`; soundfont just exposes the picker | XS |
+| C1 | ✅ **DONE (2026-07-15)** **keyboard + soundfont merged** — the keyboard tool now shows both the scale highlighter and the instrument picker; `/tools/soundfont` redirects to it and the duplicate hub card is removed (flag/i18n left intact). | XS |
 | C2 | **Unify the route-tool vs embed-Pixi duplicate pairs** (`intervals`, `rhythm`, `strum/strumming`, `chord-diagrams/chord-board`) | Each concept has *two* implementations. Make the embed card the presentational core; the route page wraps it. Kills 4 parallel codebases | M |
 | C3 | **Fretboard family → one configurable "Fretboard" tool** (`fretboard` + `scale-boxes` + `caged` + `fingering`) with modes: free explore / scale-box window / CAGED shapes / chord fingering, and instrument + tuning props | All render scales/shapes on a neck from the same scene + theory. A mode toggle replaces 4 routes | L |
 | C4 | **Backing/accompaniment family → one "Band" engine** (`backing-track` + `practice-room` + `bassline` + `grooves`) with toggleable parts (drums/bass/comping) + optional chord-diagram/cursor overlay | All share the `scheduleTone`/`scheduleDrum` lookahead scheduler; `practice-room` ≈ `backing-track` + diagram | L |
