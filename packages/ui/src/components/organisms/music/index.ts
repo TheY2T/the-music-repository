@@ -14,9 +14,9 @@ export {
 export {
   BASS_TUNING_LOW_FIRST,
   CAGED_FAMILIES,
+  type GenerateOptions,
   generateCagedShapes,
   generateChordShapes,
-  type GenerateOptions,
   type Instrument,
   supportedQualities,
 } from './chord-library';

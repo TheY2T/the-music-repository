@@ -7,7 +7,7 @@
 // Frets are ABSOLUTE (0 = open, -1 = muted, N = fret N) so the app's audio strum can sound them directly
 // (tuning[i] + frets[i]); `baseFret` only affects how the diagram windows the neck.
 
-import { type ChordShape, TUNING_LOW_FIRST, UKULELE_TUNING_LOW_FIRST } from './chord-diagram';
+import type { ChordShape } from './chord-diagram';
 
 export type Instrument = 'guitar' | 'bass' | 'ukulele';
 
@@ -146,12 +146,6 @@ function templatesFor(instrument: Instrument, quality: string): MovableTemplate[
   return GUITAR_TEMPLATES[quality] ?? [];
 }
 
-function tuningFor(instrument: Instrument): number[] {
-  if (instrument === 'bass') return BASS_TUNING_LOW_FIRST;
-  if (instrument === 'ukulele') return UKULELE_TUNING_LOW_FIRST;
-  return TUNING_LOW_FIRST;
-}
-
 export interface GenerateOptions {
   /** Highest fret a shape may reach; shapes above it are dropped. Default 15. */
   maxFret?: number;
@@ -167,7 +161,6 @@ function realize(
   rootPc: number,
   quality: string,
   tpl: MovableTemplate,
-  tuning: number[],
   name: string,
   maxFret: number,
 ): (ChordShape & { baseFret: number; family: string }) | null {
@@ -192,10 +185,9 @@ export function generateChordShapes(
   opts: GenerateOptions = {},
 ): (ChordShape & { baseFret: number; family: string })[] {
   const maxFret = opts.maxFret ?? 15;
-  const tuning = tuningFor(instrument);
   const name = opts.name ?? `${rootName(rootPc)}${QUALITY_SUFFIX[quality] ?? ''}`;
   const shapes = templatesFor(instrument, quality)
-    .map((tpl) => realize(rootPc, quality, tpl, tuning, name, maxFret))
+    .map((tpl) => realize(rootPc, quality, tpl, name, maxFret))
     .filter((s): s is ChordShape & { baseFret: number; family: string } => s != null);
   return shapes.sort((a, b) => a.baseFret - b.baseFret);
 }
