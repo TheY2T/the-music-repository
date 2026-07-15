@@ -153,7 +153,15 @@ only **25 of 83 articles use live embeds**.
 3. X1 — introduce the level-tier mechanism (start with 2–3 tools as the pattern).
 
 **Phase 2 — Deepen (high leverage)**
-4. 4.2 — generative movable chord-shape library (+ bass shapes).
+4. ✅ **DONE (2026-07-15)** 4.2 — generative movable chord-shape library at
+   `packages/ui/src/components/organisms/music/chord-library.ts` (`generateChordShapes`). Slides E-shape/
+   A-shape barre templates (guitar), barre shapes (ukulele) and root grips (bass — previously zero) to
+   any root, for 14 qualities incl. maj7/min7/m7♭5/6/add9/9/dim/aug. `ChordShape` gained `baseFret`;
+   `ChordDiagram` now windows the neck with a "{n}fr" label for movable shapes. `embeds.ts findChordShape`
+   falls back to the generator, so any `CHORDS` symbol (`F♯m7`, `Bbmaj7`, …) now renders instead of
+   degrading to text — enriching chord-diagrams/chord-board/strum/progression/song/practice-room embeds.
+   21 UI tests (all roots × qualities × instruments: no wrong notes, root-in-bass, essentials) + embeds
+   fallback tests; typecheck green; verified live in-app.
 5. 4.4 — tuner mic pitch-detection; staff/sight-reading clef+accidental+key coverage.
 6. 4.3 — alternate tunings across fretted tools.
 

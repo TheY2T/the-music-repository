@@ -5,13 +5,16 @@
  * tunings) to the data the tool islands need — kept pure + framework-free so they're unit-testable.
  */
 import {
+  BASS_TUNING_LOW_FIRST,
   type ChordShape,
+  generateChordShapes,
   GUITAR_CHORDS,
+  type Instrument,
   TUNING_LOW_FIRST,
   UKULELE_CHORDS,
   UKULELE_TUNING_LOW_FIRST,
 } from '@TheY2T/tmr-ui/music';
-import { CHORDS } from './music-theory';
+import { type ChordDefinition, CHORDS } from './music-theory';
 
 /** Note name → pitch class (0–11). Accepts sharps or flats (`C#`/`Db`). Null for an unknown name. */
 const NOTE_PC: Record<string, number> = {
@@ -54,34 +57,66 @@ export function chordLibraryFor(instrument: string | undefined): ChordShape[] {
 
 /** Open-string MIDI (low-string-first) for an instrument, used to sound a strummed chord shape. */
 export function tuningFor(instrument: string | undefined): number[] {
-  return instrument === 'ukulele' ? UKULELE_TUNING_LOW_FIRST : TUNING_LOW_FIRST;
+  if (instrument === 'ukulele') return UKULELE_TUNING_LOW_FIRST;
+  if (instrument === 'bass') return BASS_TUNING_LOW_FIRST;
+  return TUNING_LOW_FIRST;
 }
 
-/** Resolve a chord symbol (e.g. `Am`, `A7`) to its shape for the instrument, or null if unknown. */
-export function findChordShape(symbol: string, instrument: string | undefined): ChordShape | null {
-  return chordLibraryFor(instrument).find((c) => c.name === symbol) ?? null;
+/** Map an embed's free-text instrument to the generator's instrument set (default guitar). */
+function instrumentKey(instrument: string | undefined): Instrument {
+  if (instrument === 'ukulele') return 'ukulele';
+  if (instrument === 'bass') return 'bass';
+  return 'guitar';
 }
 
 /**
- * Chord-quality suffix → semitone intervals from the root, derived from the single `CHORDS` source of
- * truth (each chord contributes its canonical `symbol` + any `aliases`). Sorted longest-suffix-first so
- * the documented invariant holds even though `parseChordSymbol` matches suffixes exactly.
+ * Resolve a chord symbol to a playable shape. Prefers a curated open-position shape (the familiar
+ * beginner grips), then falls back to the generative movable-shape library so any root/quality the
+ * `CHORDS` table knows — `F♯m7`, `Bbmaj7`, `Ddim` in any key — still renders instead of degrading to a
+ * bare text label. Null only when both the symbol and its quality are unknown.
  */
-const QUALITY_INTERVALS: [string, number[]][] = CHORDS.flatMap((chord) =>
-  [chord.symbol, ...(chord.aliases ?? [])].map(
-    (suffix) => [suffix, chord.intervals] as [string, number[]],
-  ),
-).sort((a, b) => b[0].length - a[0].length);
+export function findChordShape(symbol: string, instrument: string | undefined): ChordShape | null {
+  // Bass has no curated open shapes; go straight to the generated root grips.
+  if (instrument !== 'bass') {
+    const curated = chordLibraryFor(instrument).find((c) => c.name === symbol);
+    if (curated) return curated;
+  }
+  const parsed = parseChordFull(symbol);
+  if (!parsed) return null;
+  const [shape] = generateChordShapes(parsed.root, parsed.key, instrumentKey(instrument), {
+    name: symbol,
+  });
+  return shape ?? null;
+}
 
-/** Parse a chord symbol (`C`, `Dm`, `G7`, `Cmaj7`, `Bdim`, `Am7b5`) → root pitch class + intervals. */
-export function parseChordSymbol(symbol: string): { root: number; intervals: number[] } | null {
+/**
+ * Chord-quality suffix → chord definition, derived from the single `CHORDS` source of truth (each chord
+ * contributes its canonical `symbol` + any `aliases`). The first definition wins for a given suffix
+ * (symbols/aliases are unique across `CHORDS`), so this is an exact-match lookup.
+ */
+const QUALITY_BY_SUFFIX: Map<string, ChordDefinition> = new Map();
+for (const chord of CHORDS) {
+  for (const suffix of [chord.symbol, ...(chord.aliases ?? [])]) {
+    if (!QUALITY_BY_SUFFIX.has(suffix)) QUALITY_BY_SUFFIX.set(suffix, chord);
+  }
+}
+
+/** Parse a chord symbol → root pitch class + quality key (a `CHORDS` key) + intervals, or null. */
+export function parseChordFull(
+  symbol: string,
+): { root: number; key: string; intervals: number[] } | null {
   const m = symbol.trim().match(/^([A-Ga-g][#b]?)(.*)$/);
   if (!m) return null;
   const root = noteNameToPitchClass(m[1]);
   if (root == null) return null;
-  const suffix = m[2].trim();
-  const entry = QUALITY_INTERVALS.find(([q]) => q === suffix);
-  return entry ? { root, intervals: entry[1] } : null;
+  const chord = QUALITY_BY_SUFFIX.get(m[2].trim());
+  return chord ? { root, key: chord.key, intervals: chord.intervals } : null;
+}
+
+/** Parse a chord symbol (`C`, `Dm`, `G7`, `Cmaj7`, `Bdim`, `Am7b5`) → root pitch class + intervals. */
+export function parseChordSymbol(symbol: string): { root: number; intervals: number[] } | null {
+  const parsed = parseChordFull(symbol);
+  return parsed ? { root: parsed.root, intervals: parsed.intervals } : null;
 }
 
 /** MIDI notes for a chord symbol, voiced from the given octave (default 4 → C4=60). Null if unknown. */

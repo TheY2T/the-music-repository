@@ -9,8 +9,12 @@ export const UKULELE_TUNING_LOW_FIRST = [67, 60, 64, 69];
 export interface ChordShape {
   name: string;
   quality: 'major' | 'minor' | 'barre' | 'dominant';
-  /** Fret per string, low string first. -1 = muted, 0 = open. Length = number of strings. */
+  /** Fret per string, low string first. -1 = muted, 0 = open. Length = number of strings. Absolute
+   * fret numbers so audio can sound them (tuning[i] + frets[i]); `baseFret` only windows the display. */
   frets: number[];
+  /** Fret shown at the top of the 5-fret diagram window (default 1 = nut). Set >1 for movable shapes
+   * further up the neck; the diagram then draws a "{baseFret}fr" position label instead of the nut. */
+  baseFret?: number;
 }
 
 export const GUITAR_CHORDS: ChordShape[] = [
@@ -62,6 +66,11 @@ const HEIGHT = TOP + FRETS * ROW + 16;
 export function ChordDiagram({ chord }: { chord: ChordShape }) {
   const strings = chord.frets.length;
   const width = LEFT * 2 + (strings - 1) * COL;
+  // Window the neck: baseFret 1 shows the nut (frets 1–5); >1 shows a movable shape higher up and
+  // labels its starting fret. `displayFret` maps an absolute fret into the current 1–5 window.
+  const baseFret = chord.baseFret && chord.baseFret > 1 ? chord.baseFret : 1;
+  const atNut = baseFret === 1;
+  const displayFret = (f: number) => f - baseFret + 1;
   return (
     <svg
       viewBox={`0 0 ${width} ${HEIGHT}`}
@@ -69,7 +78,7 @@ export function ChordDiagram({ chord }: { chord: ChordShape }) {
       role="img"
       aria-label={`${chord.name} chord diagram`}
     >
-      {/* Fret lines (fret 0 = nut, drawn thicker). */}
+      {/* Fret lines (at the nut, fret 0 is drawn thicker; movable shapes show a position label instead). */}
       {Array.from({ length: FRETS + 1 }, (_, f) => (
         <line
           key={f}
@@ -78,9 +87,19 @@ export function ChordDiagram({ chord }: { chord: ChordShape }) {
           y1={fretY(f)}
           y2={fretY(f)}
           className="stroke-foreground"
-          strokeWidth={f === 0 ? 3 : 1}
+          strokeWidth={atNut && f === 0 ? 3 : 1}
         />
       ))}
+      {!atNut && (
+        <text
+          x={stringX(0) - 5}
+          y={fretY(1) - ROW / 2 + 3}
+          textAnchor="end"
+          className="fill-muted-foreground text-[8px]"
+        >
+          {baseFret}fr
+        </text>
+      )}
       {/* Strings. */}
       {chord.frets.map((_, i) => (
         <line
@@ -125,7 +144,7 @@ export function ChordDiagram({ chord }: { chord: ChordShape }) {
           <circle
             key={key}
             cx={stringX(i)}
-            cy={fretY(fret) - ROW / 2}
+            cy={fretY(displayFret(fret)) - ROW / 2}
             r={4.5}
             className="fill-foreground"
           />

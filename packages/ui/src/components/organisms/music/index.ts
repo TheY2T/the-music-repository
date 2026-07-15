@@ -11,5 +11,12 @@ export {
   UKULELE_CHORDS,
   UKULELE_TUNING_LOW_FIRST,
 } from './chord-diagram';
+export {
+  BASS_TUNING_LOW_FIRST,
+  generateChordShapes,
+  type GenerateOptions,
+  type Instrument,
+  supportedQualities,
+} from './chord-library';
 export { type StaffNoteDatum, StaffSequence, type StaffSequenceProps } from './StaffSequence';
 export { ledgerSteps } from './staff-geometry';

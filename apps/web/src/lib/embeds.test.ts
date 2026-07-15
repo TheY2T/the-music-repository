@@ -4,6 +4,7 @@ import {
   chordToMidi,
   findChordShape,
   noteNameToPitchClass,
+  parseChordFull,
   parseChordSymbol,
   tuningFor,
 } from './embeds';
@@ -42,7 +43,7 @@ describe('chordLibraryFor / tuningFor', () => {
 });
 
 describe('findChordShape', () => {
-  it('finds a guitar open seventh chord', () => {
+  it('prefers a curated guitar open seventh chord', () => {
     const a7 = findChordShape('A7', 'guitar');
     expect(a7?.name).toBe('A7');
     expect(a7?.frets).toHaveLength(6);
@@ -52,8 +53,33 @@ describe('findChordShape', () => {
     expect(c?.name).toBe('C');
     expect(c?.frets).toHaveLength(4);
   });
+  it('falls back to a generated movable shape for a chord not in the curated set', () => {
+    // F♯m7 has no curated open shape → the generator supplies a movable 6-string voicing.
+    const shape = findChordShape('F#m7', 'guitar');
+    expect(shape?.name).toBe('F#m7');
+    expect(shape?.frets).toHaveLength(6);
+    const tuning = tuningFor('guitar');
+    const sounded = shape!.frets
+      .map((f, s) => (f < 0 ? null : (tuning[s] + f) % 12))
+      .filter((pc): pc is number => pc != null);
+    for (const pc of sounded) expect([6, 9, 1, 4].includes(pc)).toBe(true); // F♯ A C♯ E
+  });
+  it('generates a bass root grip', () => {
+    const shape = findChordShape('G', 'bass');
+    expect(shape?.frets).toHaveLength(4);
+  });
   it('returns null for an unknown symbol', () => {
     expect(findChordShape('Zdim13', 'guitar')).toBeNull();
+  });
+});
+
+describe('parseChordFull', () => {
+  it('returns the CHORDS quality key alongside root + intervals', () => {
+    expect(parseChordFull('Am7')).toEqual({ root: 9, key: 'minor-7', intervals: [0, 3, 7, 10] });
+    expect(parseChordFull('Cmaj7')).toEqual({ root: 0, key: 'major-7', intervals: [0, 4, 7, 11] });
+  });
+  it('returns null for junk', () => {
+    expect(parseChordFull('H9')).toBeNull();
   });
 });
 
