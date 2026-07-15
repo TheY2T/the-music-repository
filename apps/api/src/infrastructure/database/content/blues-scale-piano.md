@@ -13,12 +13,15 @@ sources: ["general knowledge"]
 
 The **blues scale** is a minor pentatonic scale with one extra note — the famous "**blue note**," a flattened fifth (♭5) that slots between the 4th and 5th. Those six notes carry the whole sound of blues, boogie, and early rock at the keyboard. In **C**, the scale is:
 
-```
-C  –  E♭  –  F  –  G♭  –  G  –  B♭  –  (C)
-1     ♭3    4    ♭5    5    ♭7
-```
+| Note | C | E♭ | F | G♭ | G | B♭ | (C) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Degree | 1 | ♭3 | 4 | ♭5 | 5 | ♭7 | 8 |
 
-The `G♭` is the blue note. It is normally used as a quick **passing tone** — you slide through it from `F` up to `G` (or from `G` down to `F`) rather than resting on it, and that momentary friction is exactly what gives the blues its cry.
+The `G♭` is the blue note. It is normally used as a quick **passing tone** — you slide through it from `F` up to `G` (or from `G` down to `F`) rather than resting on it, and that momentary friction is exactly what gives the blues its cry. Explore the shape on the interactive keyboard below — the highlighted keys are the C blues scale; click them or play with your QWERTY keys.
+
+```embeds
+[{ "tool": "keyboard", "title": "The C blues scale on the keys", "caption": "Highlighted notes are the C blues scale — click to hear, or play with your QWERTY keys.", "root": "C", "scale": "blues", "size": 49 }]
+```
 
 ## Where it comes from
 
@@ -28,10 +31,9 @@ Start from the C **minor pentatonic** (`C E♭ F G B♭`) — the same five-note
 
 A comfortable right-hand fingering for one octave of C blues:
 
-```
-Note:    C   E♭   F   G♭   G   B♭   C
-Finger:  1    2   3    1    2    3   1
-```
+| Note | C | E♭ | F | G♭ | G | B♭ | C |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Finger | 1 | 2 | 3 | 1 | 2 | 3 | 1 |
 
 Tuck the thumb under after `F` (the blue note starts the second group). Left hand can mirror it an octave lower using fingers `5 4 3 2 1 ...` on the way up. Practise slowly, hands separately, until the thumb-cross is smooth, then combine.
 
@@ -47,14 +49,14 @@ One of the joys of the blues scale is that a *single* scale works over an entire
 
 ## Left-hand accompaniment
 
-To play blues alone, pair the scale (right hand) with a **boogie bass** in the left. A classic pattern over C7 walks the root, third, fifth, and sixth:
+To play blues alone, pair the scale (right hand) with a **boogie bass** in the left. A classic pattern over C7 walks the root, third, fifth, and sixth — `C – E – G – A – G – E` — as a steady stream of eighth notes. Click out that eighth-note drive below:
 
-```
-C – E – G – A – G – E   (repeat, then shift the same shape to F and G)
+```embeds
+[{ "tool": "rhythm", "title": "The boogie-bass pulse", "caption": "Steady eighth notes — the left-hand walk C–E–G–A–G–E rides this constant pulse. Click it out at tempo.", "pattern": ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"], "tempo": 80 }]
 ```
 
 Shift that figure to `F` and `G` to follow the 12-bar changes while your right hand solos with the blues scale.
 
 ## Try it
 
-Play the C blues scale up and down slowly with **/tools/metronome** at 70 BPM, sliding through `G♭` each time rather than stopping on it. Then loop a simple C7–F7–G7 blues (or the 12-bar-blues lesson) and improvise short phrases, always resolving to `C`. Explore the scale's shape on **/tools/scale-explorer**, and try transposing it to G (`G B♭ C D♭ D F`) to prove the pattern is movable.
+Play the C blues scale up and down slowly with a [metronome](/tools/metronome) at 70 BPM, sliding through `G♭` each time rather than stopping on it. Then loop a simple C7–F7–G7 blues (or the 12-bar-blues lesson) and improvise short phrases, always resolving to `C`. Return to the interactive keyboard above — the highlighted keys are the C blues scale, playable with your mouse or QWERTY keys — then try transposing it to G (`G B♭ C D♭ D F`) to prove the pattern is movable.

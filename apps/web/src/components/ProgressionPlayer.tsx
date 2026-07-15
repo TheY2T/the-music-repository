@@ -20,15 +20,24 @@ const PROGRESSIONS: { key: string; label: string; chords: string[] }[] = [
 const chordByName = (name: string) =>
   GUITAR_CHORDS.find((c) => c.name === name) ?? GUITAR_CHORDS[0];
 
-export default function ProgressionPlayer() {
+/** Props let a catalogue embed lock the tool to a specific progression (defaults = the /tools page). */
+export default function ProgressionPlayer({
+  chords: fixedChords,
+  tempo = 90,
+}: {
+  chords?: string[];
+  tempo?: number;
+} = {}) {
   const [progKey, setProgKey] = useState('pop');
   const [patternKey, setPatternKey] = useState('pop');
-  const [bpm, setBpm] = useState(90);
+  const [bpm, setBpm] = useState(tempo);
   const [running, setRunning] = useState(false);
   const [bar, setBar] = useState(0);
   const [slot, setSlot] = useState(-1);
 
-  const progression = PROGRESSIONS.find((p) => p.key === progKey) ?? PROGRESSIONS[0];
+  const progression = fixedChords?.length
+    ? { key: 'lesson', label: fixedChords.join('–'), chords: fixedChords }
+    : (PROGRESSIONS.find((p) => p.key === progKey) ?? PROGRESSIONS[0]);
   const pattern = PATTERNS.find((p) => p.key === patternKey) ?? PATTERNS[0];
 
   const progRef = useRef(progression);
@@ -80,22 +89,24 @@ export default function ProgressionPlayer() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end gap-4">
-        <label className="space-y-1 text-sm">
-          <span className="block font-medium" data-help="chords">
-            Progression
-          </span>
-          <Select
-            value={progKey}
-            onChange={(e) => setProgKey(e.target.value)}
-            className="h-auto w-auto px-2 py-1"
-          >
-            {PROGRESSIONS.map((p) => (
-              <option key={p.key} value={p.key}>
-                {p.label}
-              </option>
-            ))}
-          </Select>
-        </label>
+        {fixedChords?.length ? null : (
+          <label className="space-y-1 text-sm">
+            <span className="block font-medium" data-help="chords">
+              Progression
+            </span>
+            <Select
+              value={progKey}
+              onChange={(e) => setProgKey(e.target.value)}
+              className="h-auto w-auto px-2 py-1"
+            >
+              {PROGRESSIONS.map((p) => (
+                <option key={p.key} value={p.key}>
+                  {p.label}
+                </option>
+              ))}
+            </Select>
+          </label>
+        )}
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Strum</span>
           <Select

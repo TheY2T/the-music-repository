@@ -24,11 +24,11 @@ Use one finger per fret: **1** = index, **2** = middle, **3** = ring, **4** = pi
 
 **One-octave shape (root on the E or A string, played with finger 2):**
 
-```
-root string : 1 (deg 1)   4 (deg 2)
-next string  : 1 (deg 3)   2 (deg 4)   4 (deg 5)
-next string  : 1 (deg 6)   3 (deg 7)   4 (deg 8)
-```
+| String | Fingering (finger → scale degree) |
+| --- | --- |
+| Root string | finger 1 → deg 1, finger 4 → deg 2 |
+| Next string | finger 1 → deg 3, finger 2 → deg 4, finger 4 → deg 5 |
+| Next string | finger 1 → deg 6, finger 3 → deg 7, finger 4 → deg 8 |
 
 Worked in **G major** with the root `G` at the E-string 3rd fret:
 
@@ -47,6 +47,9 @@ Steps:
 **Two octaves:** continue past the octave `G` across all four strings, or shift up a position — a
 common approach is to play the one-octave box, then repeat it starting on the `A`-string root for the
 upper octave.
+
+Play the C-major scale on the playable score below to lock the sound of the major scale in your ear,
+then drill the movable shape above in every key.
 
 ## Common mistakes
 

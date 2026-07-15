@@ -3,7 +3,7 @@
  * Source: src/infrastructure/database/content/*.md
  * Regenerate: pnpm --filter @TheY2T/tmr-api content:build
  *
- * Enriched catalogue content authored via research (80 items): the Markdown body
+ * Enriched catalogue content authored via research (83 items): the Markdown body
  * (rendered on the detail page), structured facts (`details`), and suggested tags. Applied by the
  * seed on top of the base metadata in seed-data.ts.
  */
@@ -11,7 +11,7 @@ import type { SeedContentExtra } from './content-details';
 
 export const SEED_CONTENT: Record<string, SeedContentExtra> = {
   "12-bar-blues-in-a": {
-    "bodyMdx": "## The most important form in blues and rock\n\nThe **12-bar blues** is a repeating 12-measure chord pattern built on just three chords: the **I, IV, and V** of the key. Learn it once and you can play along with a huge swath of blues, early rock and roll, and countless jams. We'll play it in the key of **A**, a great fit for guitar because all three chords sit near the open strings.\n\n## The three chords\n\nIn A, the I–IV–V chords are `A`, `D`, and `E`. Blues almost always uses **dominant seventh** chords for their gritty, unresolved sound, so we play:\n\n```\nI  = A7   (A–C♯–E–G)\nIV = D7   (D–F♯–A–C)\nV  = E7   (E–G♯–B–D)\n```\n\nOpen-position shapes to start with:\n\n```\nA7:  x02020        D7:  xx0212        E7:  020100\n```\n\n## The 12-bar pattern\n\nEach measure gets four beats (4/4). The standard pattern is:\n\n```\n| A7  | A7  | A7  | A7  |\n| D7  | D7  | A7  | A7  |\n| E7  | D7  | A7  | E7  |\n```\n\nRead it row by row, one chord per bar. The last two bars — `A7` then `E7` — are the **turnaround**, which winds the phrase back to the top so the form loops.\n\n## Two common variations\n\n- **Quick change (quick four):** play `D7` in bar 2 instead of staying on `A7`. This adds early movement:\n  `| A7 | D7 | A7 | A7 | D7 | D7 | ...`\n- **Final-bar options:** on the very last time through, players often end on `A7` instead of the `E7` turnaround to signal \"we're done.\"\n\nBoth are optional — master the plain 12 bars first.\n\n## Feel: the shuffle\n\nBlues usually **swings**. Instead of even eighth notes, play a long-short \"shuffle\" feel (think \"doo-ba, doo-ba\"). A classic accompaniment is the **boogie shuffle**: on each chord, alternate the root with the fifth and then the sixth. On A7, that means fretting the low strings and rocking between:\n\n```\nA5  →  A6   (root–fifth, then root–sixth), repeated in the shuffle rhythm\n```\n\nThis single moving pattern, shifted to the D and E chords, is the sound of a thousand blues tunes.\n\n## How the form breathes\n\nNotice the shape: four bars establishing home (I), two bars of departure (IV), two bars back home (I), then the climb through V–IV–I in the last four bars before the turnaround. That tension-and-release arc — leave home, build tension on the dominant, return — is why the form feels so satisfying no matter how many times it repeats. Singers often phrase a lyric across each four-bar unit in a call-and-response pattern.\n\n## Try it\n\nSet **/tools/metronome** to a slow 70 BPM with a shuffle feel, and strum the plain 12-bar pattern above, one chord per bar, until the changes are automatic. Then loop it and solo over the top using the **A minor pentatonic** scale (see the minor-pentatonic-scale-shapes lesson) — it fits the whole progression. Check the chord voicings on **/tools/fretboard** and pair this with the bass-blues-line lesson to hear the full rhythm section.",
+    "bodyMdx": "## The most important form in blues and rock\n\nThe **12-bar blues** is a repeating 12-measure chord pattern built on just three chords: the **I, IV, and V** of the key. Learn it once and you can play along with a huge swath of blues, early rock and roll, and countless jams. We'll play it in the key of **A**, a great fit for guitar because all three chords sit near the open strings.\n\n## The three chords\n\nIn A, the I–IV–V chords are `A`, `D`, and `E`. Blues almost always uses **dominant seventh** chords for their gritty, unresolved sound, so we play:\n\n| Degree | Chord | Notes |\n| --- | --- | --- |\n| I | A7 | A–C♯–E–G |\n| IV | D7 | D–F♯–A–C |\n| V | E7 | E–G♯–B–D |\n\nTap each shape in the diagrams below to hear its voicing before you play the form:\n\n<div data-tmr-embed=\"0\"></div>\n\n## The 12-bar pattern\n\nEach measure gets four beats (4/4). The standard pattern is:\n\n| Bars | 1 | 2 | 3 | 4 |\n| --- | --- | --- | --- | --- |\n| 1–4 | A7 | A7 | A7 | A7 |\n| 5–8 | D7 | D7 | A7 | A7 |\n| 9–12 | E7 | D7 | A7 | E7 |\n\nRead it row by row, one chord per bar. The last two bars — `A7` then `E7` — are the **turnaround**, which winds the phrase back to the top so the form loops. Hit play on the interactive form below to hear it loop and follow the highlighted bar.\n\n<div data-tmr-embed=\"1\"></div>\n\n## Two common variations\n\n- **Quick change (quick four):** play `D7` in bar 2 instead of staying on `A7`. This adds early movement:\n  `| A7 | D7 | A7 | A7 | D7 | D7 | ...`\n- **Final-bar options:** on the very last time through, players often end on `A7` instead of the `E7` turnaround to signal \"we're done.\"\n\nBoth are optional — master the plain 12 bars first.\n\n## Feel: the shuffle\n\nBlues usually **swings**. Instead of even eighth notes, play a long-short \"shuffle\" feel (think \"doo-ba, doo-ba\"). A classic accompaniment is the **boogie shuffle**: on each chord, alternate the root with the fifth and then the sixth. On A7, that means fretting the low strings and rocking between **A5** (root–fifth) and **A6** (root–sixth), two eighth-notes per beat played long–short. Click out the shuffle pulse below and feel the swing, then apply the moving A5→A6 shape:\n\n<div data-tmr-embed=\"2\"></div>\n\nThis single moving pattern, shifted to the D and E chords, is the sound of a thousand blues tunes.\n\n## How the form breathes\n\nNotice the shape: four bars establishing home (I), two bars of departure (IV), two bars back home (I), then the climb through V–IV–I in the last four bars before the turnaround. That tension-and-release arc — leave home, build tension on the dominant, return — is why the form feels so satisfying no matter how many times it repeats. Singers often phrase a lyric across each four-bar unit in a call-and-response pattern.\n\n## Try it\n\nSet a [metronome](/tools/metronome) to a slow 70 BPM with a shuffle feel, and strum the plain 12-bar pattern above, one chord per bar, until the changes are automatic. Then loop it and solo over the top using the **A minor pentatonic** scale (see the minor-pentatonic-scale-shapes lesson) — it fits the whole progression. Tap the three chord shapes above to hear each voicing, then hit play on the looping 12-bar form to lock in the changes. Pair this with the bass-blues-line lesson to hear the full rhythm section.",
     "details": {
       "key": "A",
       "form": "lesson",
@@ -22,6 +22,54 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "blues-scale-piano",
         "bass-blues-line-basics",
         "omt-diatonic-chords"
+      ],
+      "embeds": [
+        {
+          "tool": "chord-diagrams",
+          "title": "The three chords",
+          "caption": "Dominant 7ths give the blues its bite.",
+          "chords": [
+            "A7",
+            "D7",
+            "E7"
+          ]
+        },
+        {
+          "tool": "progression",
+          "title": "Play the 12-bar form",
+          "caption": "Loops the standard 12-bar blues in A — follow the highlighted bar.",
+          "key": "A",
+          "chords": [
+            "A7",
+            "A7",
+            "A7",
+            "A7",
+            "D7",
+            "D7",
+            "A7",
+            "A7",
+            "E7",
+            "D7",
+            "A7",
+            "E7"
+          ]
+        },
+        {
+          "tool": "rhythm",
+          "title": "The shuffle pulse",
+          "caption": "Two eighth-notes per beat, played long–short — the boogie shuffle. Click it out at tempo to internalise the swing.",
+          "pattern": [
+            "eighth",
+            "eighth",
+            "eighth",
+            "eighth",
+            "eighth",
+            "eighth",
+            "eighth",
+            "eighth"
+          ],
+          "tempo": 80
+        }
       ]
     },
     "extraTags": [
@@ -139,7 +187,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "bass-blues-line-basics": {
-    "bodyMdx": "## From root–fifth to a real blues line\n\nOnce you can lock a root–fifth pattern to the beat, the next step is the **boogie blues bass line** — the driving, instantly recognisable figure under a 12-bar blues. It takes the root–fifth idea and adds the **sixth** and **flat seventh**, turning a static bass into a rolling groove. We'll build it in **A**, matching the 12-bar-blues-in-A lesson. Standard bass tuning `E–A–D–G`.\n\n## The building blocks: a boogie cell\n\nOver each chord, the classic pattern climbs root → third → fifth → sixth, then (often) up to the ♭7 and back. For an `A` chord the notes are:\n\n```\nA(root) – C♯(3rd) – E(5th) – F♯(6th)  [ – G(♭7) – F♯ – E – C♯ ]\n1          3          5        6          ♭7\n```\n\nPlayed as steady quarter notes or a swung shuffle, one note per beat:\n\n```\nBeat:  1   2    3   4\nNote:  A   C♯   E   F♯      (bar 1)\nBeat:  1   2    3   4\nNote:  A   F♯   E   C♯      (bar 2, coming back down)\n```\n\nThat two-bar up-and-down shape is the engine of boogie-woogie and blues. On the fretboard it sits neatly under one hand position.\n\n## The movable shape\n\nThe beauty is that the *same* fingering shifts to every chord. Slide the whole cell so its root lands on the new chord:\n\n- **A7** → root on the E string, 5th fret\n- **D7** → root on the A string, 5th fret\n- **E7** → root on the A string, 7th fret\n\nLearn the shape once and you can play all three chords of the blues without rethinking it.\n\n## Mapping it onto the 12-bar form\n\nApply the boogie cell to the 12-bar blues in A, one chord per bar:\n\n```\n| A  | A  | A  | A  |\n| D  | D  | A  | A  |\n| E  | D  | A  | E  |\n```\n\nEach bar, run the up-and-down boogie figure rooted on that chord. On the last bar (`E`) you can play a **turnaround** walk-up back to A — e.g. `E – F♯ – G – G♯` leading into the low `A` at the top of the form.\n\n## Add the shuffle feel\n\nBlues almost always **swings**: play the eighth notes long-short rather than even, or keep quarter notes but with a laid-back, behind-the-beat feel. The boogie pattern in a shuffle rhythm is the sound of a 1950s rock-and-roll bass line.\n\n## Spicing it up\n\n- **Chromatic approach:** slide into the next chord's root from a fret below (e.g. `G♯ → A`) on the last beat of a bar. This \"leading\" note pulls the ear forward.\n- **The ♭7:** dropping in the `G` natural over the A chord adds bluesy grit (it's the ♭7, the note that makes A7 an A*7*).\n- **Rests and space:** you don't have to play all four beats — leaving a gap can groove harder than a wall of notes.\n\n## Try it\n\nAt 70 BPM on **/tools/metronome** with a shuffle feel, loop the boogie cell over a single `A` chord for four bars until it flows. Then play it through the full 12-bar form above, shifting the shape to D and E, and finish with a chromatic walk-up turnaround. Check the note positions on **/tools/fretboard**, then move on to walking-bass-basics to free the line from a fixed pattern.",
+    "bodyMdx": "## From root–fifth to a real blues line\n\nOnce you can lock a root–fifth pattern to the beat, the next step is the **boogie blues bass line** — the driving, instantly recognisable figure under a 12-bar blues. It takes the root–fifth idea and adds the **sixth** and **flat seventh**, turning a static bass into a rolling groove. We'll build it in **A**, matching the 12-bar-blues-in-A lesson. Standard bass tuning `E–A–D–G`.\n\n## The building blocks: a boogie cell\n\nOver each chord, the classic pattern climbs root → third → fifth → sixth, then (often) up to the ♭7 and back. For an `A` chord the notes are:\n\n| Note | A | C♯ | E | F♯ | (G) |\n| --- | --- | --- | --- | --- | --- |\n| Degree | 1 (root) | 3 | 5 | 6 | ♭7 |\n\nClimb A → C♯ → E → F♯, then (often) up to `G` (♭7) and back down through F♯ → E → C♯.\n\nPlayed as steady quarter notes or a swung shuffle, one note per beat:\n\n| Beat | 1 | 2 | 3 | 4 |\n| --- | --- | --- | --- | --- |\n| Bar 1 (up) | A | C♯ | E | F♯ |\n| Bar 2 (back down) | A | F♯ | E | C♯ |\n\nThat two-bar up-and-down shape is the engine of boogie-woogie and blues. On the fretboard it sits neatly under one hand position. Play the interactive score below to hear the first four bars of the cell rooted on A.\n\n<div data-tmr-embed=\"0\"></div>\n\n## The movable shape\n\nThe beauty is that the *same* fingering shifts to every chord. Slide the whole cell so its root lands on the new chord:\n\n- **A7** → root on the E string, 5th fret\n- **D7** → root on the A string, 5th fret\n- **E7** → root on the A string, 7th fret\n\nLearn the shape once and you can play all three chords of the blues without rethinking it.\n\n## Mapping it onto the 12-bar form\n\nApply the boogie cell to the 12-bar blues in A, one chord per bar:\n\n| Bars | 1 | 2 | 3 | 4 |\n| --- | --- | --- | --- | --- |\n| 1–4 | A | A | A | A |\n| 5–8 | D | D | A | A |\n| 9–12 | E | D | A | E |\n\nEach bar, run the up-and-down boogie figure rooted on that chord. On the last bar (`E`) you can play a **turnaround** walk-up back to A — e.g. `E – F♯ – G – G♯` leading into the low `A` at the top of the form.\n\n## Add the shuffle feel\n\nBlues almost always **swings**: play the eighth notes long-short rather than even, or keep quarter notes but with a laid-back, behind-the-beat feel. The boogie pattern in a shuffle rhythm is the sound of a 1950s rock-and-roll bass line.\n\n## Spicing it up\n\n- **Chromatic approach:** slide into the next chord's root from a fret below (e.g. `G♯ → A`) on the last beat of a bar. This \"leading\" note pulls the ear forward.\n- **The ♭7:** dropping in the `G` natural over the A chord adds bluesy grit (it's the ♭7, the note that makes A7 an A*7*).\n- **Rests and space:** you don't have to play all four beats — leaving a gap can groove harder than a wall of notes.\n\n## Try it\n\nAt 70 BPM on a [metronome](/tools/metronome) with a shuffle feel, loop the boogie cell over a single `A` chord for four bars until it flows. Then play it through the full 12-bar form above, shifting the shape to D and E, and finish with a chromatic walk-up turnaround. Replay the first four bars on the interactive score above — the up-and-down boogie cell rooted on A — then move on to walking-bass-basics to free the line from a fixed pattern.",
     "details": {
       "key": "A",
       "form": "lesson",
@@ -149,6 +197,20 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "bass-root-fifth-patterns",
         "walking-bass-basics",
         "minor-pentatonic-scale-shapes"
+      ],
+      "embeds": [
+        {
+          "tool": "score",
+          "title": "A 12-bar blues bass line",
+          "mode": "tab",
+          "tuning": [
+            28,
+            33,
+            38,
+            43
+          ],
+          "tex": "\\tempo 80\n.\n\\track \"Bass\"\n  \\staff{tabs score} \\tuning (G2 D2 A1 E1)\n  :4 0.3 4.3 2.2 4.2 | 0.3 4.2 2.2 4.3 | 0.3 4.3 2.2 4.2 | 0.3 4.2 2.2 4.3 |"
+        }
       ]
     },
     "extraTags": [
@@ -158,7 +220,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "bass-major-scale-fingerings": {
-    "bodyMdx": "## Goal\n\nOn electric bass, major scales are learned as **movable box shapes** rather than open-string\npatterns — memorise the shape once and you can play any major scale just by sliding it to a new root.\nThis builds fretting-hand fingering, position sense, and the \"one-finger-per-fret\" discipline that\nmakes fast lines clean. (Standard 4-string tuning, low to high: `E A D G`.)\n\n## How to do it\n\nUse one finger per fret: **1** = index, **2** = middle, **3** = ring, **4** = pinky.\n\n**One-octave shape (root on the E or A string, played with finger 2):**\n\n```\nroot string : 1 (deg 1)   4 (deg 2)\nnext string  : 1 (deg 3)   2 (deg 4)   4 (deg 5)\nnext string  : 1 (deg 6)   3 (deg 7)   4 (deg 8)\n```\n\nWorked in **G major** with the root `G` at the E-string 3rd fret:\n\n- `E` string: `G`(fr 3, finger 2), `A`(fr 5, finger 4)\n- `A` string: `B`(fr 2, finger 1), `C`(fr 3, finger 2), `D`(fr 5, finger 4)\n- `D` string: `E`(fr 2, finger 1), `F♯`(fr 4, finger 3), `G`(fr 5, finger 4)\n\nSteps:\n\n1. **Play it ascending and descending, slowly,** naming each note aloud.\n2. Keep fingers close to the frets; press just behind the fret, not on top of it.\n3. **Move the whole shape** up two frets and it becomes A major; slide it onto the A string and it\n   becomes C major, D major, and so on. Nothing about the shape changes — only the root.\n4. Anchor everything to a metronome at ♩ = 60, one note per beat, then two.\n\n**Two octaves:** continue past the octave `G` across all four strings, or shift up a position — a\ncommon approach is to play the one-octave box, then repeat it starting on the `A`-string root for the\nupper octave.\n\n## Common mistakes\n\n- **Anchoring the thumb too hard** behind the neck — keep it relaxed and roughly opposite finger 2.\n- **Reaching instead of shifting.** If a note feels like a stretch, move your whole hand position.\n- **Buzzing notes** from pressing too far from the fret or not firmly enough.\n\n## How to progress\n\nCycle the shape through every key around the fretboard, then add the two-octave version and increase\ntempo on [/tools/metronome](/tools/metronome). Visualise the notes with the\n[Fretboard tool](/tools/fretboard), then put the scale to work in\n[Root–Fifth Bass Patterns](/bass-root-fifth-patterns).",
+    "bodyMdx": "## Goal\n\nOn electric bass, major scales are learned as **movable box shapes** rather than open-string\npatterns — memorise the shape once and you can play any major scale just by sliding it to a new root.\nThis builds fretting-hand fingering, position sense, and the \"one-finger-per-fret\" discipline that\nmakes fast lines clean. (Standard 4-string tuning, low to high: `E A D G`.)\n\n## How to do it\n\nUse one finger per fret: **1** = index, **2** = middle, **3** = ring, **4** = pinky.\n\n**One-octave shape (root on the E or A string, played with finger 2):**\n\n| String | Fingering (finger → scale degree) |\n| --- | --- |\n| Root string | finger 1 → deg 1, finger 4 → deg 2 |\n| Next string | finger 1 → deg 3, finger 2 → deg 4, finger 4 → deg 5 |\n| Next string | finger 1 → deg 6, finger 3 → deg 7, finger 4 → deg 8 |\n\nWorked in **G major** with the root `G` at the E-string 3rd fret:\n\n- `E` string: `G`(fr 3, finger 2), `A`(fr 5, finger 4)\n- `A` string: `B`(fr 2, finger 1), `C`(fr 3, finger 2), `D`(fr 5, finger 4)\n- `D` string: `E`(fr 2, finger 1), `F♯`(fr 4, finger 3), `G`(fr 5, finger 4)\n\nSteps:\n\n1. **Play it ascending and descending, slowly,** naming each note aloud.\n2. Keep fingers close to the frets; press just behind the fret, not on top of it.\n3. **Move the whole shape** up two frets and it becomes A major; slide it onto the A string and it\n   becomes C major, D major, and so on. Nothing about the shape changes — only the root.\n4. Anchor everything to a metronome at ♩ = 60, one note per beat, then two.\n\n**Two octaves:** continue past the octave `G` across all four strings, or shift up a position — a\ncommon approach is to play the one-octave box, then repeat it starting on the `A`-string root for the\nupper octave.\n\nPlay the C-major scale on the playable score below to lock the sound of the major scale in your ear,\nthen drill the movable shape above in every key.\n\n## Common mistakes\n\n- **Anchoring the thumb too hard** behind the neck — keep it relaxed and roughly opposite finger 2.\n- **Reaching instead of shifting.** If a note feels like a stretch, move your whole hand position.\n- **Buzzing notes** from pressing too far from the fret or not firmly enough.\n\n## How to progress\n\nCycle the shape through every key around the fretboard, then add the two-octave version and increase\ntempo on [/tools/metronome](/tools/metronome). Visualise the notes with the\n[Fretboard tool](/tools/fretboard), then put the scale to work in\n[Root–Fifth Bass Patterns](/bass-root-fifth-patterns).",
     "details": {
       "key": "G major",
       "form": "exercise",
@@ -174,7 +236,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "bass-root-fifth-patterns": {
-    "bodyMdx": "## The bassist's job\n\nThe bass connects the **harmony** (the chords) to the **rhythm** (the beat). The simplest way to do both jobs at once is the **root–fifth pattern**: play the root of each chord, then its fifth, locked to the pulse. It sounds great, it's easy on the hands, and it underpins countless country, rock, pop, and folk songs. This lesson is for a standard four-string bass tuned `E–A–D–G` (low to high).\n\n## Finding the root and fifth\n\nThe **root** is the note the chord is named for — for a C chord, play `C`. The **fifth** is a perfect fifth above it (seven semitones). On the bass fretboard the fifth sits in a very consistent, easy-to-grab spot relative to the root:\n\n```\n   Root on a string, fret N\n   Fifth = same fret (N), the NEXT string up\n```\n\nExample — a `C` root on the A string (3rd fret): the fifth `G` is on the D string, also at the 3rd fret. Your hand barely moves. (You can also grab the fifth *below* the root: two frets down on the string above — same note, an octave lower.)\n\n## The basic pattern\n\nOver one chord in 4/4, alternate root and fifth:\n\n```\nBeat:   1     2     3     4\nNote:   Root  Fifth Root  Fifth\n```\n\nOr emphasise the root by holding it longer:\n\n```\nBeat:   1        2     3        4\nNote:   Root Root Fifth Root  Fifth\n```\n\nPlay the root on beat 1 (the downbeat) — that's the note the listener anchors to when the chord changes.\n\n## A worked example\n\nSay the song is `C – G – Am – F`, one chord per bar. Playing root then fifth on beats 1 and 3, with the fifth *above* the root:\n\n```\n| C .. G .. | G .. D .. | A .. E .. | F .. C .. |\n  C  chord     G chord     Am chord    F chord\n```\n\n(Each pair is the chord's root and its fifth.) Your left hand stays in nearly one position, and the line locks the harmony to the beat.\n\n## Adding the octave\n\nFor extra lift, reach up to the **octave** — the root one octave higher, found two frets up and one string over from the fifth. A classic \"root–fifth–octave\" figure:\n\n```\nBeat:  1     2       3        4\nNote:  Root  Fifth   Octave   Fifth\n```\n\nThis is the driving pattern behind polka, many rock tunes, and up-tempo country.\n\n## Technique that matters most\n\n- **Lock to the drums.** Your job is to sit exactly with the kick drum and snare. Play *with* the metronome, not near it.\n- **Mute cleanly.** Let go of each note right when the next begins so the line is punchy, not muddy. Use both hands to damp ringing strings.\n- **Alternate plucking fingers** (index, middle) on the right hand for an even, repeatable pulse.\n- **Land on beat 1.** Even if you simplify everything else, hitting the root on the downbeat of each chord is what makes a bass line \"work.\"\n\n## Try it\n\nSet **/tools/metronome** to 80 BPM. Over a single C chord, play root–fifth on beats 1 and 3 for eight bars until it's effortless. Then loop `C – G – Am – F`, one bar each, moving to the new root on every downbeat. Once solid, add the octave figure. Map the root/fifth shapes on **/tools/fretboard**, then advance to the bass-blues-line and walking-bass lessons to add motion.",
+    "bodyMdx": "## The bassist's job\n\nThe bass connects the **harmony** (the chords) to the **rhythm** (the beat). The simplest way to do both jobs at once is the **root–fifth pattern**: play the root of each chord, then its fifth, locked to the pulse. It sounds great, it's easy on the hands, and it underpins countless country, rock, pop, and folk songs. This lesson is for a standard four-string bass tuned `E–A–D–G` (low to high).\n\n## Finding the root and fifth\n\nThe **root** is the note the chord is named for — for a C chord, play `C`. The **fifth** is a perfect fifth above it (seven semitones). On the bass fretboard the fifth sits in a very consistent, easy-to-grab spot relative to the root:\n\n| Note | Where to play it |\n| --- | --- |\n| Root | any string, fret N |\n| Fifth | same fret (N), the next string up |\n\nExample — a `C` root on the A string (3rd fret): the fifth `G` is on the D string, also at the 3rd fret. Your hand barely moves. (You can also grab the fifth *below* the root: two frets down on the string above — same note, an octave lower.)\n\n## The basic pattern\n\nOver one chord in 4/4, alternate root and fifth:\n\n| Beat | 1 | 2 | 3 | 4 |\n| --- | --- | --- | --- | --- |\n| Note | Root | Fifth | Root | Fifth |\n\nOr emphasise the root by holding it longer:\n\n| Beat | 1 | 2 | 3 | 4 |\n| --- | --- | --- | --- | --- |\n| Note | Root (held) | Fifth | Root | Fifth |\n\nPlay the root on beat 1 (the downbeat) — that's the note the listener anchors to when the chord changes.\n\n## A worked example\n\nSay the song is `C – G – Am – F`, one chord per bar. Playing root then fifth on beats 1 and 3, with the fifth *above* the root:\n\n| Bar | Chord | Beat 1 | Beat 3 |\n| --- | --- | --- | --- |\n| 1 | C | C (root) | G (fifth) |\n| 2 | G | G (root) | D (fifth) |\n| 3 | Am | A (root) | E (fifth) |\n| 4 | F | F (root) | C (fifth) |\n\n(Each pair is the chord's root and its fifth.) Your left hand stays in nearly one position, and the line locks the harmony to the beat.\n\n## Adding the octave\n\nFor extra lift, reach up to the **octave** — the root one octave higher, found two frets up and one string over from the fifth. A classic \"root–fifth–octave\" figure:\n\n| Beat | 1 | 2 | 3 | 4 |\n| --- | --- | --- | --- | --- |\n| Note | Root | Fifth | Octave | Fifth |\n\nThis is the driving pattern behind polka, many rock tunes, and up-tempo country. Play the interactive score below to hear the root–fifth pattern and the root–fifth–octave figure in C.\n\n<div data-tmr-embed=\"0\"></div>\n\n## Technique that matters most\n\n- **Lock to the drums.** Your job is to sit exactly with the kick drum and snare. Play *with* the metronome, not near it.\n- **Mute cleanly.** Let go of each note right when the next begins so the line is punchy, not muddy. Use both hands to damp ringing strings.\n- **Alternate plucking fingers** (index, middle) on the right hand for an even, repeatable pulse.\n- **Land on beat 1.** Even if you simplify everything else, hitting the root on the downbeat of each chord is what makes a bass line \"work.\"\n\n## Try it\n\nSet a [metronome](/tools/metronome) to 80 BPM. Over a single C chord, play root–fifth on beats 1 and 3 for eight bars until it's effortless. Then loop `C – G – Am – F`, one bar each, moving to the new root on every downbeat. Once solid, add the octave figure. Replay the interactive score above to check the root–fifth-then-octave shape in C, then advance to the bass-blues-line and walking-bass lessons to add motion.",
     "details": {
       "form": "lesson",
       "timeSignature": "4/4",
@@ -183,6 +245,20 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "walking-bass-basics",
         "omt-intervals",
         "omt-rhythm-and-meter"
+      ],
+      "embeds": [
+        {
+          "tool": "score",
+          "title": "Root–fifth pattern",
+          "mode": "tab",
+          "tuning": [
+            28,
+            33,
+            38,
+            43
+          ],
+          "tex": "\\tempo 90\n.\n\\track \"Bass\"\n  \\staff{tabs score} \\tuning (G2 D2 A1 E1)\n  :4 3.3 5.2 3.3 5.2 | 3.3 5.2 5.1 5.2 |"
+        }
       ]
     },
     "extraTags": [
@@ -192,13 +268,27 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "bass-slap-technique-intro": {
-    "bodyMdx": "## Goal\n\nSlap bass is the percussive, funky sound at the heart of funk, R&B, and countless pop grooves —\npioneered by players like Larry Graham and made iconic by Marcus Miller and Flea. It combines two\nmotions: the **thumb slap** (a low, punchy attack) and the **finger pop** (a bright, snapping high\nnote). Learning it adds rhythm, dynamics, and attitude to your playing.\n\n## How to do it\n\nThink of the plucking hand as a relaxed hammer pivoting from the wrist, not the whole arm.\n\n1. **The thumb slap (\"T\").** Rotate the wrist so the side of your thumb (the knuckle joint, laid\n   roughly parallel to the strings) strikes down onto a string — usually the low `E` or `A` — right\n   over the end of the fingerboard. **Bounce off immediately** so the note rings; don't press in. Aim\n   for a short, drum-like *thump*.\n2. **The finger pop (\"P\").** Hook your index or middle finger *under* a higher string (usually `G` or\n   `D`), pull it slightly up and out, and release so it **snaps back against the frets** with a bright\n   click.\n3. **Combine them.** The classic groove alternates thumb and pop: `T P T P`. A great first pattern is\n   slap the root on the `E` string, then pop the octave on the `G` string.\n4. **Add left-hand muting.** Lightly rest unused fingers on the strings so only the intended note\n   sounds — clarity in slap comes as much from muting as from striking.\n5. **Start slow with a metronome,** ♩ = 60. Play `T (root) — P (octave)` as steady quarter notes\n   until each attack is even and clean.\n\n## Common mistakes\n\n- **Using arm force instead of wrist rotation.** Tension kills the bounce — keep the wrist loose.\n- **Digging in on the slap.** Bounce off the string; pressing in deadens the note.\n- **Muddy, ringing strings.** Weak muting is the number-one beginner problem — mute aggressively with\n  both hands.\n- **Chasing speed too early.** Groove and evenness first; tempo follows.\n\n## How to progress\n\nOnce `T P` is comfortable, add hammer-ons, ghost notes (muted percussive hits), and double thumbing.\nBuild lines from the [Bass Major Scale Fingerings](/bass-major-scale-fingerings) and\n[Root–Fifth Bass Patterns](/bass-root-fifth-patterns), then apply slap to\n[Building a Blues Bass Line](/bass-blues-line-basics). Lock the groove with\n[/tools/metronome](/tools/metronome).",
+    "bodyMdx": "## Goal\n\nSlap bass is the percussive, funky sound at the heart of funk, R&B, and countless pop grooves —\npioneered by players like Larry Graham and made iconic by Marcus Miller and Flea. It combines two\nmotions: the **thumb slap** (a low, punchy attack) and the **finger pop** (a bright, snapping high\nnote). Learning it adds rhythm, dynamics, and attitude to your playing.\n\n## How to do it\n\nThink of the plucking hand as a relaxed hammer pivoting from the wrist, not the whole arm.\n\n1. **The thumb slap (\"T\").** Rotate the wrist so the side of your thumb (the knuckle joint, laid\n   roughly parallel to the strings) strikes down onto a string — usually the low `E` or `A` — right\n   over the end of the fingerboard. **Bounce off immediately** so the note rings; don't press in. Aim\n   for a short, drum-like *thump*.\n2. **The finger pop (\"P\").** Hook your index or middle finger *under* a higher string (usually `G` or\n   `D`), pull it slightly up and out, and release so it **snaps back against the frets** with a bright\n   click.\n3. **Combine them.** The classic groove alternates thumb and pop: `T P T P`. A great first pattern is\n   slap the root on the `E` string, then pop the octave on the `G` string.\n4. **Add left-hand muting.** Lightly rest unused fingers on the strings so only the intended note\n   sounds — clarity in slap comes as much from muting as from striking.\n5. **Start slow with a metronome,** ♩ = 60. Play `T (root) — P (octave)` as steady quarter notes\n   until each attack is even and clean.\n\n## Common mistakes\n\n- **Using arm force instead of wrist rotation.** Tension kills the bounce — keep the wrist loose.\n- **Digging in on the slap.** Bounce off the string; pressing in deadens the note.\n- **Muddy, ringing strings.** Weak muting is the number-one beginner problem — mute aggressively with\n  both hands.\n- **Chasing speed too early.** Groove and evenness first; tempo follows.\n\n## How to progress\n\nOnce `T P` is comfortable, add hammer-ons, ghost notes (muted percussive hits), and double thumbing.\nBuild lines from the [Bass Major Scale Fingerings](/bass-major-scale-fingerings) and\n[Root–Fifth Bass Patterns](/bass-root-fifth-patterns), then apply slap to\n[Building a Blues Bass Line](/bass-blues-line-basics). Lock the groove with a\n[metronome](/tools/metronome).\n\n## Try it\n\nHear the classic octave slap figure on the interactive score below — thumb the low `E` (T), pop the octave `E` (P), and loop it slowly until each attack is even and clean.\n\n<div data-tmr-embed=\"0\"></div>",
     "details": {
       "form": "technique",
       "related": [
         "bass-major-scale-fingerings",
         "bass-root-fifth-patterns",
         "bass-blues-line-basics"
+      ],
+      "embeds": [
+        {
+          "tool": "score",
+          "title": "A slap groove",
+          "mode": "tab",
+          "tuning": [
+            28,
+            33,
+            38,
+            43
+          ],
+          "tex": "\\tempo 90\n.\n\\track \"Bass\"\n  \\staff{tabs score} \\tuning (G2 D2 A1 E1)\n  :8 0.4 2.2 r 2.2 0.4 2.2 r 2.2 | 0.4 2.2 r 2.2 0.4 2.2 r 2.2 |"
+        }
       ]
     },
     "extraTags": [
@@ -288,7 +378,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "blues-scale-piano": {
-    "bodyMdx": "## The six-note blues scale\n\nThe **blues scale** is a minor pentatonic scale with one extra note — the famous \"**blue note**,\" a flattened fifth (♭5) that slots between the 4th and 5th. Those six notes carry the whole sound of blues, boogie, and early rock at the keyboard. In **C**, the scale is:\n\n```\nC  –  E♭  –  F  –  G♭  –  G  –  B♭  –  (C)\n1     ♭3    4    ♭5    5    ♭7\n```\n\nThe `G♭` is the blue note. It is normally used as a quick **passing tone** — you slide through it from `F` up to `G` (or from `G` down to `F`) rather than resting on it, and that momentary friction is exactly what gives the blues its cry.\n\n## Where it comes from\n\nStart from the C **minor pentatonic** (`C E♭ F G B♭`) — the same five-note skeleton guitarists use — then insert `G♭`. That single added note is the only difference between the pentatonic and the blues scale, so if you already know one you nearly know the other.\n\n## Fingering at the piano\n\nA comfortable right-hand fingering for one octave of C blues:\n\n```\nNote:    C   E♭   F   G♭   G   B♭   C\nFinger:  1    2   3    1    2    3   1\n```\n\nTuck the thumb under after `F` (the blue note starts the second group). Left hand can mirror it an octave lower using fingers `5 4 3 2 1 ...` on the way up. Practise slowly, hands separately, until the thumb-cross is smooth, then combine.\n\n## Using the blue note tastefully\n\n- **Crush it:** play `G♭` and `G` almost together (a quick grace-note \"crush\"), releasing the flat into the natural. This imitates a guitar bend or a singer scooping up to pitch.\n- **Pass through, don't park:** because the ♭5 is dissonant, it works best moving. Landing and holding it sounds sour.\n- **Land on chord tones:** end phrases on `C`, `E♭`, `G`, or `B♭` — the notes of a C7 chord — so your lines resolve.\n\n## It fits the whole progression\n\nOne of the joys of the blues scale is that a *single* scale works over an entire 12-bar blues. Over a blues in C (`C7 – F7 – G7`), the **C blues scale sounds good over all three chords** — you don't have to change scales when the chord changes. That makes it the ideal first improvisation tool: pick the scale for the key, then focus your energy on rhythm and phrasing.\n\n## Left-hand accompaniment\n\nTo play blues alone, pair the scale (right hand) with a **boogie bass** in the left. A classic pattern over C7 walks the root, third, fifth, and sixth:\n\n```\nC – E – G – A – G – E   (repeat, then shift the same shape to F and G)\n```\n\nShift that figure to `F` and `G` to follow the 12-bar changes while your right hand solos with the blues scale.\n\n## Try it\n\nPlay the C blues scale up and down slowly with **/tools/metronome** at 70 BPM, sliding through `G♭` each time rather than stopping on it. Then loop a simple C7–F7–G7 blues (or the 12-bar-blues lesson) and improvise short phrases, always resolving to `C`. Explore the scale's shape on **/tools/scale-explorer**, and try transposing it to G (`G B♭ C D♭ D F`) to prove the pattern is movable.",
+    "bodyMdx": "## The six-note blues scale\n\nThe **blues scale** is a minor pentatonic scale with one extra note — the famous \"**blue note**,\" a flattened fifth (♭5) that slots between the 4th and 5th. Those six notes carry the whole sound of blues, boogie, and early rock at the keyboard. In **C**, the scale is:\n\n| Note | C | E♭ | F | G♭ | G | B♭ | (C) |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| Degree | 1 | ♭3 | 4 | ♭5 | 5 | ♭7 | 8 |\n\nThe `G♭` is the blue note. It is normally used as a quick **passing tone** — you slide through it from `F` up to `G` (or from `G` down to `F`) rather than resting on it, and that momentary friction is exactly what gives the blues its cry. Explore the shape on the interactive keyboard below — the highlighted keys are the C blues scale; click them or play with your QWERTY keys.\n\n<div data-tmr-embed=\"0\"></div>\n\n## Where it comes from\n\nStart from the C **minor pentatonic** (`C E♭ F G B♭`) — the same five-note skeleton guitarists use — then insert `G♭`. That single added note is the only difference between the pentatonic and the blues scale, so if you already know one you nearly know the other.\n\n## Fingering at the piano\n\nA comfortable right-hand fingering for one octave of C blues:\n\n| Note | C | E♭ | F | G♭ | G | B♭ | C |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| Finger | 1 | 2 | 3 | 1 | 2 | 3 | 1 |\n\nTuck the thumb under after `F` (the blue note starts the second group). Left hand can mirror it an octave lower using fingers `5 4 3 2 1 ...` on the way up. Practise slowly, hands separately, until the thumb-cross is smooth, then combine.\n\n## Using the blue note tastefully\n\n- **Crush it:** play `G♭` and `G` almost together (a quick grace-note \"crush\"), releasing the flat into the natural. This imitates a guitar bend or a singer scooping up to pitch.\n- **Pass through, don't park:** because the ♭5 is dissonant, it works best moving. Landing and holding it sounds sour.\n- **Land on chord tones:** end phrases on `C`, `E♭`, `G`, or `B♭` — the notes of a C7 chord — so your lines resolve.\n\n## It fits the whole progression\n\nOne of the joys of the blues scale is that a *single* scale works over an entire 12-bar blues. Over a blues in C (`C7 – F7 – G7`), the **C blues scale sounds good over all three chords** — you don't have to change scales when the chord changes. That makes it the ideal first improvisation tool: pick the scale for the key, then focus your energy on rhythm and phrasing.\n\n## Left-hand accompaniment\n\nTo play blues alone, pair the scale (right hand) with a **boogie bass** in the left. A classic pattern over C7 walks the root, third, fifth, and sixth — `C – E – G – A – G – E` — as a steady stream of eighth notes. Click out that eighth-note drive below:\n\n<div data-tmr-embed=\"1\"></div>\n\nShift that figure to `F` and `G` to follow the 12-bar changes while your right hand solos with the blues scale.\n\n## Try it\n\nPlay the C blues scale up and down slowly with a [metronome](/tools/metronome) at 70 BPM, sliding through `G♭` each time rather than stopping on it. Then loop a simple C7–F7–G7 blues (or the 12-bar-blues lesson) and improvise short phrases, always resolving to `C`. Return to the interactive keyboard above — the highlighted keys are the C blues scale, playable with your mouse or QWERTY keys — then try transposing it to G (`G B♭ C D♭ D F`) to prove the pattern is movable.",
     "details": {
       "key": "C",
       "form": "lesson",
@@ -297,6 +387,32 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "12-bar-blues-in-a",
         "bass-blues-line-basics",
         "omt-seventh-chords"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The C blues scale on the keys",
+          "caption": "Highlighted notes are the C blues scale — click to hear, or play with your QWERTY keys.",
+          "root": "C",
+          "scale": "blues",
+          "size": 49
+        },
+        {
+          "tool": "rhythm",
+          "title": "The boogie-bass pulse",
+          "caption": "Steady eighth notes — the left-hand walk C–E–G–A–G–E rides this constant pulse. Click it out at tempo.",
+          "pattern": [
+            "eighth",
+            "eighth",
+            "eighth",
+            "eighth",
+            "eighth",
+            "eighth",
+            "eighth",
+            "eighth"
+          ],
+          "tempo": 80
+        }
       ]
     },
     "extraTags": [
@@ -527,13 +643,20 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "circle-of-fifths-reference": {
-    "bodyMdx": "## What the circle of fifths is\n\nThe circle of fifths is a single diagram that arranges all twelve major (and minor) keys around a\nclock face, ordered by the **perfect fifth**. Move one step **clockwise** and you go *up* a fifth,\nadding one sharp; move one step **counter-clockwise** you go *up* a fourth (down a fifth), adding one\nflat. It is the master map of key signatures, relationships, and chord movement.\n\n## How to read it\n\nStart at the top (12 o'clock) with **C major — no sharps, no flats** — and travel clockwise:\n\n- **Clockwise (sharps add one at a time):**\n  `C → G(1♯) → D(2♯) → A(3♯) → E(4♯) → B(5♯) → F♯(6♯) → C♯(7♯)`\n- **Counter-clockwise (flats add one at a time):**\n  `C → F(1♭) → B♭(2♭) → E♭(3♭) → A♭(4♭) → D♭(5♭) → G♭(6♭) → C♭(7♭)`\n- At the bottom the keys meet as **enharmonic** pairs (same sound, different spelling): `B/C♭`,\n  `F♯/G♭`, `C♯/D♭`.\n\nTwo memory aids:\n\n- **Order of sharps:** `F C G D A E B` — \"Father Charles Goes Down And Ends Battle.\"\n- **Order of flats:** the reverse — `B E A D G C F` (\"BEAD\" + \"GCF\").\n\nEach major key also has a **relative minor** sharing its key signature, sitting just inside the\ncircle — a minor third *below* the major (its 6th scale degree). So `C` major pairs with `A` minor,\n`G` major with `E` minor, and so on.\n\n## How to use it\n\n- **Find a key signature fast.** Count the steps from C: `A` major is 3 clockwise, so 3 sharps.\n- **Transpose.** Rotate a progression around the circle to shift it into a new key.\n- **Build progressions.** Chords next to each other on the circle sound closely related — the ii–V–I\n  and I–IV–V progressions are all near neighbours.\n- **Practise scales in order** so each new key changes by only one accidental.\n\nUse the interactive **[Circle of Fifths tool](/tools/circle-of-fifths)** to click any key and see its\nsignature, relative minor, and neighbouring chords light up.\n\n## Related practice\n\nPut the circle to work by learning [Major Scales in All Keys](/major-scales-all-keys) in circle order,\nstarting from the [C Major Scale — Two Octaves](/c-major-scale-two-octaves), and connect keys to sound\nwith the [Interval Ear-Training Primer](/interval-ear-training-primer).",
+    "bodyMdx": "## What the circle of fifths is\n\nThe circle of fifths is a single diagram that arranges all twelve major (and minor) keys around a\nclock face, ordered by the **perfect fifth**. Move one step **clockwise** and you go *up* a fifth,\nadding one sharp; move one step **counter-clockwise** you go *up* a fourth (down a fifth), adding one\nflat. It is the master map of key signatures, relationships, and chord movement.\n\n## How to read it\n\nStart at the top (12 o'clock) with **C major — no sharps, no flats** — and travel clockwise:\n\n- **Clockwise (sharps add one at a time):**\n  `C → G(1♯) → D(2♯) → A(3♯) → E(4♯) → B(5♯) → F♯(6♯) → C♯(7♯)`\n- **Counter-clockwise (flats add one at a time):**\n  `C → F(1♭) → B♭(2♭) → E♭(3♭) → A♭(4♭) → D♭(5♭) → G♭(6♭) → C♭(7♭)`\n- At the bottom the keys meet as **enharmonic** pairs (same sound, different spelling): `B/C♭`,\n  `F♯/G♭`, `C♯/D♭`.\n\nTwo memory aids:\n\n- **Order of sharps:** `F C G D A E B` — \"Father Charles Goes Down And Ends Battle.\"\n- **Order of flats:** the reverse — `B E A D G C F` (\"BEAD\" + \"GCF\").\n\nEach major key also has a **relative minor** sharing its key signature, sitting just inside the\ncircle — a minor third *below* the major (its 6th scale degree). So `C` major pairs with `A` minor,\n`G` major with `E` minor, and so on.\n\n## How to use it\n\n- **Find a key signature fast.** Count the steps from C: `A` major is 3 clockwise, so 3 sharps.\n- **Transpose.** Rotate a progression around the circle to shift it into a new key.\n- **Build progressions.** Chords next to each other on the circle sound closely related — the ii–V–I\n  and I–IV–V progressions are all near neighbours.\n- **Practise scales in order** so each new key changes by only one accidental.\n\nUse the interactive circle below to click any key and see its signature, relative minor, and\nneighbouring chords light up.\n\n<div data-tmr-embed=\"0\"></div>\n\n## Related practice\n\nPut the circle to work by learning [Major Scales in All Keys](/major-scales-all-keys) in circle order,\nstarting from the [C Major Scale — Two Octaves](/c-major-scale-two-octaves), and connect keys to sound\nwith the [Interval Ear-Training Primer](/interval-ear-training-primer).",
     "details": {
       "form": "reference",
       "related": [
         "major-scales-all-keys",
         "interval-ear-training-primer",
         "c-major-scale-two-octaves"
+      ],
+      "embeds": [
+        {
+          "tool": "circle-of-fifths",
+          "title": "The circle of fifths",
+          "caption": "Click a key to see its signature and neighbours."
+        }
       ]
     },
     "extraTags": []
@@ -746,12 +869,22 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "interval-ear-training-primer": {
-    "bodyMdx": "## Goal\n\nAn **interval** is the distance between two pitches, and hearing intervals reliably is the foundation\nof every ear skill — transcribing melodies, tuning, improvising, and reading by sound rather than by\neye. The fastest way in is to **anchor each interval to the opening of a song you already know**. Once\n\"that leap sounds like *Twinkle*,\" you can name it instantly.\n\n## How to do it\n\nSing (or play) two notes, then match the leap to its reference song. Ascending references:\n\n| Interval | Semitones | Reference song (first two notes) |\n|---|---|---|\n| Minor 2nd | 1 | *Jaws* theme |\n| Major 2nd | 2 | \"Happy Birthday\" |\n| Minor 3rd | 3 | \"Greensleeves\" / \"Smoke on the Water\" |\n| Major 3rd | 4 | \"When the Saints Go Marching In\" |\n| Perfect 4th | 5 | \"Here Comes the Bride\" |\n| Tritone | 6 | *The Simpsons* (\"The Simp-\") |\n| Perfect 5th | 7 | \"Twinkle, Twinkle\" / *Star Wars* theme |\n| Minor 6th | 8 | \"The Entertainer\" (opening leap) |\n| Major 6th | 9 | \"My Bonnie Lies Over the Ocean\" |\n| Minor 7th | 10 | *Star Trek* (original series) theme |\n| Major 7th | 11 | \"Take On Me\" (chorus leap) |\n| Octave | 12 | \"Somewhere Over the Rainbow\" (\"Some-where\") |\n\nSteps:\n\n1. **Start with three:** the octave, perfect 5th, and major 3rd. Play each, hum its song, then guess\n   before checking. Do 10 a day.\n2. **Add one interval at a time.** Only move on when the previous ones are automatic.\n3. **Test both directions.** Descending sounds different — e.g. a descending perfect 4th opens \"Amazing\n   Grace\" (\"A-ma-\"), a descending major 3rd opens \"Swing Low, Sweet Chariot.\"\n4. **Sing back** what you hear before naming it — the voice cements the sound faster than the ear alone.\n\n## Common mistakes\n\n- **Leaning only on songs.** Use them as training wheels, then challenge yourself to name intervals\n  cold.\n- **Ignoring direction.** Ascending and descending are separate skills — drill both.\n- **Confusing near neighbours** (P4 vs P5, M6 vs m7). Contrast the pair directly until the difference\n  is obvious.\n\n## How to progress\n\nMove from single intervals to short two- and three-note melodies, then whole phrases. Connect what you\nhear to theory using the [Circle of Fifths reference](/circle-of-fifths-reference), and reinforce\npitch relationships by singing [Major Scales in All Keys](/major-scales-all-keys) as you play them.",
+    "bodyMdx": "## Goal\n\nAn **interval** is the distance between two pitches, and hearing intervals reliably is the foundation\nof every ear skill — transcribing melodies, tuning, improvising, and reading by sound rather than by\neye. The fastest way in is to **anchor each interval to the opening of a song you already know**. Once\n\"that leap sounds like *Twinkle*,\" you can name it instantly.\n\n## How to do it\n\nSing (or play) two notes, then match the leap to its reference song. Ascending references:\n\n| Interval | Semitones | Reference song (first two notes) |\n|---|---|---|\n| Minor 2nd | 1 | *Jaws* theme |\n| Major 2nd | 2 | \"Happy Birthday\" |\n| Minor 3rd | 3 | \"Greensleeves\" / \"Smoke on the Water\" |\n| Major 3rd | 4 | \"When the Saints Go Marching In\" |\n| Perfect 4th | 5 | \"Here Comes the Bride\" |\n| Tritone | 6 | *The Simpsons* (\"The Simp-\") |\n| Perfect 5th | 7 | \"Twinkle, Twinkle\" / *Star Wars* theme |\n| Minor 6th | 8 | \"The Entertainer\" (opening leap) |\n| Major 6th | 9 | \"My Bonnie Lies Over the Ocean\" |\n| Minor 7th | 10 | *Star Trek* (original series) theme |\n| Major 7th | 11 | \"Take On Me\" (chorus leap) |\n| Octave | 12 | \"Somewhere Over the Rainbow\" (\"Some-where\") |\n\nSteps:\n\n1. **Start with three:** the octave, perfect 5th, and major 3rd. Play each, hum its song, then guess\n   before checking. Do 10 a day.\n2. **Add one interval at a time.** Only move on when the previous ones are automatic.\n3. **Test both directions.** Descending sounds different — e.g. a descending perfect 4th opens \"Amazing\n   Grace\" (\"A-ma-\"), a descending major 3rd opens \"Swing Low, Sweet Chariot.\"\n4. **Sing back** what you hear before naming it — the voice cements the sound faster than the ear alone.\n\n## Common mistakes\n\n- **Leaning only on songs.** Use them as training wheels, then challenge yourself to name intervals\n  cold.\n- **Ignoring direction.** Ascending and descending are separate skills — drill both.\n- **Confusing near neighbours** (P4 vs P5, M6 vs m7). Contrast the pair directly until the difference\n  is obvious.\n\n## How to progress\n\nMove from single intervals to short two- and three-note melodies, then whole phrases. Use the keyboard\nbelow to play the reference intervals from C, connect what you hear to theory using the\n[Circle of Fifths reference](/circle-of-fifths-reference), and reinforce pitch relationships by singing\n[Major Scales in All Keys](/major-scales-all-keys) as you play them.\n\n<div data-tmr-embed=\"0\"></div>",
     "details": {
       "form": "exercise",
       "related": [
         "circle-of-fifths-reference",
         "major-scales-all-keys"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "Play the reference intervals",
+          "caption": "Use the highlighted C-major notes to sing/play the reference songs.",
+          "root": "C",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -920,7 +1053,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "minor-pentatonic-scale-shapes": {
-    "bodyMdx": "## The scale that unlocks soloing\n\nThe **minor pentatonic** scale has just five notes (\"penta\" = five), and it is the single most useful scale for blues, rock, and pop soloing on guitar. Because it drops the two most dissonant tones of the minor scale, almost anything you play with it sounds good. We'll learn it in **A minor**, whose notes are:\n\n```\nA  –  C  –  D  –  E  –  G\n1     ♭3    4     5     ♭7\n```\n\nCompared to the natural minor scale (`A B C D E F G`), the pentatonic simply removes the 2nd (`B`) and the ♭6 (`F`).\n\n## Shape 1: the home box\n\nEvery guitarist starts here — the \"box\" at the 5th fret. Play two notes per string:\n\n```\ne|--5--8--|\nB|--5--8--|\nG|--5--7--|\nD|--5--7--|\nA|--5--7--|\nE|--5--8--|   (root A is on the low E string, 5th fret)\n```\n\nThe roots (A) sit on the low `E`, `D` (7th fret... via octave) and high `e` strings — learn where they are so you always know your \"home\" note. Practise it ascending and descending until it's automatic.\n\n## The five movable shapes\n\nThe pentatonic covers the whole fretboard as **five connected shapes** that interlock, each picking up where the last leaves off. They are movable: the pattern's shape never changes, only its fret position. For A minor:\n\n```\nShape 1  — starts at fret 5  (root on low E)\nShape 2  — starts at fret 8\nShape 3  — starts at fret 10\nShape 4  — starts at fret 12 (octave of shape 1)\nShape 5  — starts at fret 3  (just below shape 1)\n```\n\nTogether they tile the neck end to end; shape 4 at fret 12 is shape 1 an octave higher. Learn shape 1 cold first, then add its neighbours one at a time, always noting where the root notes fall.\n\n## Movable = every key\n\nBecause there are no open strings inside these shapes, you can slide the whole pattern to any key. Move shape 1 so its low-E root lands on:\n\n- fret 5 → **A minor**\n- fret 8 → **C minor**\n- fret 3 → **G minor**\n- fret 10 → **D minor**\n\nThe root note on the low E string names the key. This is why one memorised shape gives you all twelve minor keys.\n\n## Making it musical\n\nThe notes alone won't sound like the blues — the *phrasing* does. Borrow these staples:\n\n- **Bends:** bend the ♭7 (`G`) up a whole step toward the root, or the 4th (`D`) up to the 5th.\n- **Slides & hammer-ons** between the two notes on a string.\n- **The blue note:** add a ♭5 (`E♭`) as a quick passing tone between the 4th and 5th to turn the minor pentatonic into the full **blues scale**.\n- **Vibrato** on held notes for expression.\n\n## Relative major connection\n\nA minor pentatonic contains the same five notes as **C major pentatonic** — they are relatives, three frets apart. So the very same shapes work over major-key songs in C if you center on `C` instead of `A`.\n\n## Try it\n\nLoop the 12-bar blues in A (see that lesson) and solo using only shape 1 at the 5th fret. Focus on landing on `A` (the root) at the ends of phrases and bending the `G`. When that feels comfortable, connect into shape 2. Map all five shapes on **/tools/fretboard** and **/tools/scale-explorer**, then move the boxes to a new key to prove they're movable.",
+    "bodyMdx": "## The scale that unlocks soloing\n\nThe **minor pentatonic** scale has just five notes (\"penta\" = five), and it is the single most useful scale for blues, rock, and pop soloing on guitar. Because it drops the two most dissonant tones of the minor scale, almost anything you play with it sounds good. We'll learn it in **A minor**, whose notes are:\n\n| Note | A | C | D | E | G |\n| --- | --- | --- | --- | --- | --- |\n| Degree | 1 | ♭3 | 4 | 5 | ♭7 |\n\nCompared to the natural minor scale (`A B C D E F G`), the pentatonic simply removes the 2nd (`B`) and the ♭6 (`F`).\n\n## Shape 1: the home box\n\nEvery guitarist starts here — the \"box\" at the 5th fret, two notes per string, with root `A` on the low `E` string. Explore it right on the fretboard: tap any note to hear it, and note where the roots (dark) fall so you always know your \"home\" note.\n\n<div data-tmr-embed=\"0\"></div>\n\nPractise the box ascending and descending until it's automatic, always coming to rest on a root `A`.\n\n## The five movable shapes\n\nThe pentatonic covers the whole neck as **five connected shapes** that interlock, each picking up where the last leaves off. Slide the position control above (or tick **Whole neck**) to see them tile the fretboard: shape 1 at fret 5, then shapes at frets 8, 10, and 12 (the octave of shape 1), plus one at fret 3 just below. Learn shape 1 cold first, then add its neighbours one at a time, always noting where the root notes fall.\n\n## Movable = every key\n\nBecause there are no open strings inside these shapes, you can slide the whole pattern to any key. Switch the **Root** on the fretboard above to move shape 1's low-E root:\n\n- **A** → home at fret 5\n- **C** → fret 8\n- **G** → fret 3\n- **D** → fret 10\n\nThe root note on the low E string names the key — one memorised shape gives you all twelve minor keys.\n\n## Making it musical\n\nThe notes alone won't sound like the blues — the *phrasing* does. Borrow these staples:\n\n- **Bends:** bend the ♭7 (`G`) up a whole step toward the root, or the 4th (`D`) up to the 5th.\n- **Slides & hammer-ons** between the two notes on a string.\n- **The blue note:** add a ♭5 (`E♭`) as a quick passing tone between the 4th and 5th to turn the minor pentatonic into the full **blues scale**.\n- **Vibrato** on held notes for expression.\n\n## Relative major connection\n\nA minor pentatonic contains the same five notes as **C major pentatonic** — they are relatives, three frets apart. So the very same shapes work over major-key songs in C if you center on `C` instead of `A`.\n\n## Try it\n\nLoop the [12-bar blues in A](/catalogue/12-bar-blues-in-a) and solo using only shape 1 at the 5th fret. Focus on landing on `A` at the ends of phrases and bending the `G`. When that feels comfortable, connect into shape 2.",
     "details": {
       "key": "A minor",
       "form": "lesson",
@@ -929,6 +1062,15 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "blues-scale-piano",
         "omt-modes-of-major",
         "bass-blues-line-basics"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The A minor pentatonic on the fretboard",
+          "caption": "Shape 1 sits at fret 5 (roots in dark blue). Tap a note to hear it; drag the position slider to walk through the five boxes.",
+          "root": "A",
+          "scale": "minor-pentatonic"
+        }
       ]
     },
     "extraTags": [
@@ -979,7 +1121,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "omt-advanced-harmony-institution": {
-    "bodyMdx": "## Beyond the diatonic\n\nOnce the seven diatonic chords feel like home, harmony grows richer by borrowing notes from *outside* the key. **Chromatic harmony** is the art of using pitches foreign to the current scale to add colour, tension, and — above all — to steer between keys. This deep dive assumes you know diatonic chords, seventh chords, Roman numerals, and basic voice leading.\n\n## Tonicisation and secondary dominants\n\nThe gateway to chromaticism is the **secondary dominant** — a dominant chord that resolves to a scale degree other than the tonic, briefly making that degree sound like a temporary home. Written `V/x` (\"five of x\"), each borrows a chromatic leading tone aimed at its target. In C major, `V/V` = `D7 → G`; `V/vi` = `E7 → Am`. Related are **secondary leading-tone chords** (`vii°/x`), which tonicise the same targets with a diminished sonority.\n\n## Modal mixture (borrowed chords)\n\n**Mixture** borrows chords from the parallel minor into a major key (or vice versa). In C major, pulling from C minor gives you `iv` (`Fm`), `♭VI` (`A♭`), `♭III` (`E♭`), `♭VII` (`B♭`), and the darker-sounding minor `i`. The move `I – iv – I` — with its borrowed minor subdominant — is a hallmark of Romantic and film-score warmth.\n\n## Two chromatic predominants\n\nTwo chords deserve special attention because they intensify the drive to the dominant:\n\n- **Neapolitan sixth (`♭II6`)** — a major triad built on the lowered second degree, almost always in first inversion. In C major/minor it is `D♭–F–A♭` over `F` in the bass, functioning as a predominant heading to `V`.\n- **Augmented sixth chords** — Italian, French, and German varieties, all featuring the interval of an **augmented sixth** (e.g. `A♭` up to `F♯`) that expands *outward* to an octave on the dominant. The German sixth (`A♭–C–E♭–F♯`) sounds identical to a dominant seventh, a coincidence composers exploit for surprise.\n\n## Modulation: changing key\n\n**Modulation** is a lasting move to a new tonal centre (versus a fleeting tonicisation). The most common technique is the **pivot chord** — a chord diatonic to *both* keys that reinterprets its function mid-stream. To modulate from C major to G major, a `C` chord (I in C) is heard again as IV in G, after which a `D7 (V7/G)` confirms the new key.\n\nOther routes:\n\n- **Common-tone / chromatic modulation** — a shared pitch or a smooth chromatic slide bridges distant keys.\n- **Enharmonic modulation** — respelling a pivot (the German-sixth/dominant-seventh trick, or the four-way symmetry of a diminished seventh) to jump to a remote key.\n- Closely related keys (a fifth away, or the relative minor/major) are easiest; the more sharps/flats separate the keys, the more chromatic preparation is needed.\n\n## Voice leading holds it together\n\nChromaticism sounds *coherent* only when the lines move smoothly. Keep these principles from part-writing:\n\n1. Resolve every chromatic tendency tone in its natural direction — leading tones up, chordal sevenths and the top of augmented sixths outward or down.\n2. Prefer common tones and stepwise motion; let chromatic voices slither by half step.\n3. Avoid parallel fifths and octaves even amid dense chromatic textures.\n\n## Check yourself\n\nHarmonise a modulation from C major to A minor (its relative minor): try `C: I – vi – | ` then reinterpret and cadence `a: iv – V7 – i` using a `G♯` leading tone. Identify your pivot chord and label the augmented-sixth or Neapolitan if you add one. Build the progressions in the **analyzer** and **chord-progression** tools to hear each resolution, and revisit the secondary-dominants and voice-leading lessons for the underlying mechanics.",
+    "bodyMdx": "## Beyond the diatonic\n\nOnce the seven diatonic chords feel like home, harmony grows richer by borrowing notes from *outside* the key. **Chromatic harmony** is the art of using pitches foreign to the current scale to add colour, tension, and — above all — to steer between keys. This deep dive assumes you know diatonic chords, seventh chords, Roman numerals, and basic voice leading.\n\n## Tonicisation and secondary dominants\n\nThe gateway to chromaticism is the **secondary dominant** — a dominant chord that resolves to a scale degree other than the tonic, briefly making that degree sound like a temporary home. Written `V/x` (\"five of x\"), each borrows a chromatic leading tone aimed at its target. In C major, `V/V` = `D7 → G`; `V/vi` = `E7 → Am`. Related are **secondary leading-tone chords** (`vii°/x`), which tonicise the same targets with a diminished sonority.\n\n## Modal mixture (borrowed chords)\n\n**Mixture** borrows chords from the parallel minor into a major key (or vice versa). In C major, pulling from C minor gives you `iv` (`Fm`), `♭VI` (`A♭`), `♭III` (`E♭`), `♭VII` (`B♭`), and the darker-sounding minor `i`. The move `I – iv – I` — with its borrowed minor subdominant — is a hallmark of Romantic and film-score warmth.\n\n## Two chromatic predominants\n\nTwo chords deserve special attention because they intensify the drive to the dominant:\n\n- **Neapolitan sixth (`♭II6`)** — a major triad built on the lowered second degree, almost always in first inversion. In C major/minor it is `D♭–F–A♭` over `F` in the bass, functioning as a predominant heading to `V`.\n- **Augmented sixth chords** — Italian, French, and German varieties, all featuring the interval of an **augmented sixth** (e.g. `A♭` up to `F♯`) that expands *outward* to an octave on the dominant. The German sixth (`A♭–C–E♭–F♯`) sounds identical to a dominant seventh, a coincidence composers exploit for surprise.\n\n## Modulation: changing key\n\n**Modulation** is a lasting move to a new tonal centre (versus a fleeting tonicisation). The most common technique is the **pivot chord** — a chord diatonic to *both* keys that reinterprets its function mid-stream. To modulate from C major to G major, a `C` chord (I in C) is heard again as IV in G, after which a `D7 (V7/G)` confirms the new key.\n\nOther routes:\n\n- **Common-tone / chromatic modulation** — a shared pitch or a smooth chromatic slide bridges distant keys.\n- **Enharmonic modulation** — respelling a pivot (the German-sixth/dominant-seventh trick, or the four-way symmetry of a diminished seventh) to jump to a remote key.\n- Closely related keys (a fifth away, or the relative minor/major) are easiest; the more sharps/flats separate the keys, the more chromatic preparation is needed.\n\n## Voice leading holds it together\n\nChromaticism sounds *coherent* only when the lines move smoothly. Keep these principles from part-writing:\n\n1. Resolve every chromatic tendency tone in its natural direction — leading tones up, chordal sevenths and the top of augmented sixths outward or down.\n2. Prefer common tones and stepwise motion; let chromatic voices slither by half step.\n3. Avoid parallel fifths and octaves even amid dense chromatic textures.\n\n## Check yourself\n\nHarmonise a modulation from C major to A minor (its relative minor): try `C: I – vi – | ` then reinterpret and cadence `a: iv – V7 – i` using a `G♯` leading tone. Identify your pivot chord and label the augmented-sixth or Neapolitan if you add one. Loop the chromatic turnaround below to hear how a secondary dominant colours a progression, and revisit the secondary-dominants and voice-leading lessons for the underlying mechanics.\n\n<div data-tmr-embed=\"0\"></div>",
     "details": {
       "form": "lesson",
       "related": [
@@ -988,6 +1130,20 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "omt-seventh-chords",
         "omt-diatonic-chords",
         "omt-cadences"
+      ],
+      "embeds": [
+        {
+          "tool": "progression",
+          "title": "A chromatic progression to hear",
+          "caption": "A secondary dominant (A7 = V/ii) colours this turnaround.",
+          "key": "C",
+          "chords": [
+            "C",
+            "A7",
+            "Dm",
+            "G7"
+          ]
+        }
       ]
     },
     "extraTags": [
@@ -995,8 +1151,37 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
       "advanced"
     ]
   },
+  "omt-cadences": {
+    "bodyMdx": "## Punctuation for music\n\nA **cadence** is a short harmonic formula that closes a phrase. If a melody is a sentence, cadences are its punctuation: some land like a full stop, others hang open like a comma, and one sets you up for a surprise. Learning to hear them is the fastest way to feel *where* a piece of music breathes.\n\nEvery cadence is defined by the **last two chords** of the phrase and by how strongly they resolve. Four of them cover almost everything you will meet at first.\n\n## Authentic cadence (V–I)\n\nThe **authentic cadence** moves from the dominant to the tonic — `V–I` (or `V7–I`). It is the strongest close in tonal music because the dominant is packed with tension that only the tonic relieves. In C major that is `G–C`.\n\nTwo things make it decisive:\n\n- The **leading tone** (scale degree 7, `B` in C major) sits in the `V` chord and pulls up a half-step to the tonic `C`.\n- If there is a seventh (`G7`), its `F` falls to `E`, so the tritone `B–F` resolves outward-and-inward at once.\n\nA **perfect** authentic cadence (PAC) puts both chords in root position with the tonic note on top of the final chord — the most conclusive ending there is. Anything less (an inversion, or the third/fifth in the top voice) is an **imperfect** authentic cadence: still a close, but softer.\n\n## Plagal cadence (IV–I)\n\nThe **plagal cadence** moves `IV–I` — in C major, `F–C`. It is the gentle \"Amen\" heard at the end of hymns, and it often *follows* an authentic cadence as a final, settling gesture. There is no leading tone driving it, so it feels warm and rounded rather than urgent.\n\n## Half cadence (…–V)\n\nA **half cadence** ends *on* the dominant rather than resolving to it. Any phrase that pauses on `V` — `I–V`, `ii–V`, `IV–V` — leaves the ear expecting more, exactly like a comma. It is the classic way to end the first half of a tune before the answering phrase completes the thought.\n\n## Deceptive cadence (V–vi)\n\nThe **deceptive** (or interrupted) cadence promises the tonic and then side-steps it: `V–vi`, in C major `G–Am`. The dominant sets up every expectation of arriving home, and instead the music slips to the relative minor. It is a favourite device for extending a phrase — the \"real\" cadence is postponed for a few more bars.\n\n## Putting them side by side\n\n| Cadence | Chords | Feels like | Ends the phrase? |\n|---|---|---|---|\n| Authentic | V – I | full stop | yes, strongly |\n| Plagal | IV – I | a soft \"Amen\" | yes, gently |\n| Half | … – V | a comma | no — leaves it open |\n| Deceptive | V – vi | a surprise turn | no — postpones the close |\n\nNotice that authentic and plagal both land on `I` (closed), while half and deceptive deliberately avoid a settled tonic (open). That open/closed contrast is what lets a composer shape long stretches of music out of short phrases.\n\n## Hear them yourself\n\nBelow, a `IV–V–I` runs a plagal move (`IV–I` sound of `F` reaching toward home) straight into a full authentic cadence (`V–I`). Loop it and listen for the release when `G` finally resolves to `C`.\n\n<div data-tmr-embed=\"0\"></div>\n\n## Check yourself\n\nName the cadence for each ending in C major: (a) `G7–C`, (b) `F–C`, (c) `Dm–G` (phrase stops here), (d) `G–Am`. (Answers: authentic, plagal, half, deceptive.) Then listen for cadences at the ends of phrases in pieces from the catalogue — once you can spot them, formal structure stops being mysterious. Next, see voice-leading to learn how the individual voices actually move through these chords.",
+    "details": {
+      "form": "lesson",
+      "related": [
+        "omt-diatonic-chords",
+        "omt-seventh-chords",
+        "omt-voice-leading",
+        "omt-secondary-dominants",
+        "omt-triads-and-inversions"
+      ],
+      "embeds": [
+        {
+          "tool": "progression",
+          "title": "Hear the cadences",
+          "caption": "IV–V–I: a plagal move into an authentic cadence.",
+          "key": "C",
+          "chords": [
+            "F",
+            "G",
+            "C"
+          ]
+        }
+      ]
+    },
+    "extraTags": [
+      "cc-by-sa"
+    ]
+  },
   "omt-diatonic-chords": {
-    "bodyMdx": "## Chords that belong to a key\n\nA **diatonic chord** is a chord built only from the notes of one scale. Take a major scale, build a triad on each degree by stacking thirds *within the scale*, and you get the seven chords that \"belong\" to that key.\n\n## Building them in C major\n\nUsing only the white keys, stack a third and a fifth above each scale degree:\n\n```\nDegree  Triad      Notes      Quality      Roman numeral\n1        C          C–E–G      major        I\n2        D          D–F–A      minor        ii\n3        E          E–G–B      minor        iii\n4        F          F–A–C      major        IV\n5        G          G–B–D      major        V\n6        A          A–C–E      minor        vi\n7        B          B–D–F      diminished   vii°\n```\n\n## The pattern is the same in every major key\n\nBecause a major scale always has the same step pattern, the *qualities* of its diatonic triads never change — only the note names do. Memorise this one sequence and it works for all twelve keys:\n\n```\nI   ii   iii   IV   V   vi   vii°\nmaj min  min   maj  maj min  dim\n```\n\n**Roman-numeral notation** encodes both position and quality: uppercase for major (`I`, `IV`, `V`), lowercase for minor (`ii`, `iii`, `vi`), and lowercase with a small circle for diminished (`vii°`). This lets you describe a progression independently of key — `I–V–vi–IV` is the same \"shape\" whether you play it in C, G, or E♭.\n\n## The three functional families\n\nThe seven chords group by **function** — the role they play in tension and release:\n\n- **Tonic (rest):** `I`, and its relatives `vi` and `iii`. Home base.\n- **Predominant (motion):** `ii` and `IV`. They set up the dominant.\n- **Dominant (tension):** `V` and `vii°`. They pull strongly back to `I`, because both contain the leading tone (scale degree 7) that wants to rise to the tonic.\n\nA huge amount of tonal music is just **T → PD → D → T**, for example `I – IV – V – I` or `I – ii – V – I`.\n\n## Diatonic chords in minor keys\n\nThe natural-minor scale gives a different set of qualities (`i – ii° – III – iv – v – VI – VII`). In practice composers **raise the seventh** (the harmonic-minor adjustment) so the `v` becomes a major `V` with a true leading tone — that is what gives minor keys their strong dominant pull, as in `i – iv – V – i`.\n\n## Reading real progressions\n\nOnce you can label chords with Roman numerals, patterns jump off the page:\n\n- `I – V – vi – IV` — the ubiquitous pop progression.\n- `ii – V – I` — the backbone of jazz.\n- `I – vi – IV – V` — the classic doo-wop / 50s progression.\n\n## Check yourself\n\nWrite the seven diatonic triads of **G major** and label each. (Answer: `G` I, `Am` ii, `Bm` iii, `C` IV, `D` V, `Em` vi, `F♯°` vii° — the pattern maj-min-min-maj-maj-min-dim, exactly as in C.) Then build the same set in **/tools/scale-explorer**, play the `I–IV–V–I` in **/tools/circle-of-fifths**, and move on to the cadences and seventh-chords lessons to hear how these chords resolve.",
+    "bodyMdx": "## Chords that belong to a key\n\nA **diatonic chord** is a chord built only from the notes of one scale. Take a major scale, build a triad on each degree by stacking thirds *within the scale*, and you get the seven chords that \"belong\" to that key.\n\n## Building them in C major\n\nUsing only the white keys, stack a third and a fifth above each scale degree. This yields all seven diatonic chords of C major — `I ii iii IV V vi`, plus the seventh chord `vii°`, the diminished triad `B–D–F`. Tap through them in the board below to hear each one.\n\n## The pattern is the same in every major key\n\nBecause a major scale always has the same step pattern, the *qualities* of its diatonic triads never change — only the note names do. Tap each card below to hear the seven diatonic chords of C major, labelled with their Roman numerals; memorise this one sequence (maj–min–min–maj–maj–min–dim) and it works for all twelve keys:\n\n<div data-tmr-embed=\"0\"></div>\n\n**Roman-numeral notation** encodes both position and quality: uppercase for major (`I`, `IV`, `V`), lowercase for minor (`ii`, `iii`, `vi`), and lowercase with a small circle for diminished (`vii°`). This lets you describe a progression independently of key — `I–V–vi–IV` is the same \"shape\" whether you play it in C, G, or E♭.\n\n## The three functional families\n\nThe seven chords group by **function** — the role they play in tension and release:\n\n- **Tonic (rest):** `I`, and its relatives `vi` and `iii`. Home base.\n- **Predominant (motion):** `ii` and `IV`. They set up the dominant.\n- **Dominant (tension):** `V` and `vii°`. They pull strongly back to `I`, because both contain the leading tone (scale degree 7) that wants to rise to the tonic.\n\nA huge amount of tonal music is just **T → PD → D → T**, for example `I – IV – V – I` or `I – ii – V – I`.\n\n## Diatonic chords in minor keys\n\nThe natural-minor scale gives a different set of qualities (`i – ii° – III – iv – v – VI – VII`). In practice composers **raise the seventh** (the harmonic-minor adjustment) so the `v` becomes a major `V` with a true leading tone — that is what gives minor keys their strong dominant pull, as in `i – iv – V – i`.\n\n## Reading real progressions\n\nOnce you can label chords with Roman numerals, patterns jump off the page:\n\n- `I – V – vi – IV` — the ubiquitous pop progression.\n- `ii – V – I` — the backbone of jazz.\n- `I – vi – IV – V` — the classic doo-wop / 50s progression.\n\n## Check yourself\n\nWrite the seven diatonic triads of **G major** and label each. (Answer: `G` I, `Am` ii, `Bm` iii, `C` IV, `D` V, `Em` vi, `F♯°` vii° — the pattern maj-min-min-maj-maj-min-dim, exactly as in C.) Then tap back through the diatonic chords of C major above to hear each one, and move on to the cadences and seventh-chords lessons to hear how these chords resolve.",
     "details": {
       "form": "lesson",
       "related": [
@@ -1005,6 +1190,31 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "omt-cadences",
         "omt-major-scale-key-signatures",
         "omt-secondary-dominants"
+      ],
+      "embeds": [
+        {
+          "tool": "chord-board",
+          "title": "The seven diatonic chords of C major",
+          "caption": "I ii iii IV V vi vii° — tap each to hear it.",
+          "chords": [
+            "C",
+            "Dm",
+            "Em",
+            "F",
+            "G",
+            "Am",
+            "Bdim"
+          ],
+          "labels": [
+            "I",
+            "ii",
+            "iii",
+            "IV",
+            "V",
+            "vi",
+            "vii°"
+          ]
+        }
       ]
     },
     "extraTags": [
@@ -1012,7 +1222,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "omt-intervals": {
-    "bodyMdx": "## What an interval is\n\nAn **interval** is the distance between two pitches. Naming an interval takes two pieces of information: its **size** (a number) and its **quality** (a word like *major*, *minor*, *perfect*). Get both, and you have named the distance exactly.\n\n## Size: count the letter names\n\nSize comes from counting letter names inclusively, starting on the lower note as \"1.\"\n\n- `C` up to `E` spans C–D–E = three letters, so it is a **third**.\n- `C` up to `G` spans C–D–E–F–G = five letters, so it is a **fifth**.\n- A note to itself is a **unison** (1); eight letters up is an **octave** (8).\n\nNotice that the accidentals (sharps/flats) do **not** change the size. `C`–`E`, `C`–`E♭`, and `C`–`E♯` are all \"some kind of third,\" because they all span three letter names.\n\n## Quality: count the semitones\n\nQuality tells you exactly how wide the interval is, measured in **semitones** (half steps — the smallest distance on a keyboard). Two families of qualities exist:\n\n- **Perfect** applies to unisons, fourths, fifths, and octaves.\n- **Major / minor** applies to seconds, thirds, sixths, and sevenths.\n\nHere are the intervals within one octave, measured up from `C`:\n\n```\nSemitones  Interval            Example\n0          Perfect unison      C–C\n1          Minor 2nd           C–D♭\n2          Major 2nd           C–D\n3          Minor 3rd           C–E♭\n4          Major 3rd           C–E\n5          Perfect 4th         C–F\n6          Tritone (aug 4/dim 5) C–F♯ / C–G♭\n7          Perfect 5th         C–G\n8          Minor 6th           C–A♭\n9          Major 6th           C–A\n10         Minor 7th           C–B♭\n11         Major 7th           C–B\n12         Perfect octave      C–C\n```\n\n## Altering the quality\n\nShrink or stretch an interval by a semitone and its quality changes by one step:\n\n- A **major** interval made one semitone smaller becomes **minor** (major 3rd `C–E` → minor 3rd `C–E♭`).\n- A **minor** or **perfect** interval made one semitone smaller becomes **diminished**.\n- Any interval made one semitone larger becomes **augmented** (perfect 5th `C–G` → augmented 5th `C–G♯`).\n\nThe full ladder for changing a semitone at a time:\n\n`diminished → minor → MAJOR → augmented`\n`diminished → PERFECT → augmented`\n\n## Consonance and inversion\n\nPerfect intervals and major/minor thirds and sixths sound **consonant** (stable, restful); seconds, sevenths, and the tritone sound **dissonant** (tense, wanting to move). When you flip the two notes so the lower becomes the upper, you **invert** the interval. Inversions follow two tidy rules: the sizes add up to 9 (a 3rd inverts to a 6th, a 2nd to a 7th), and quality flips — major↔minor, augmented↔diminished, perfect stays perfect. So `C–E` (major 3rd) inverts to `E–C` (minor 6th).\n\n## Compound intervals\n\nIntervals larger than an octave are **compound**. A 9th is an octave plus a 2nd, an 11th an octave plus a 4th, and so on — useful vocabulary once you start reading extended chords.\n\n## Try it\n\nPick any two notes on a keyboard or the **/tools/fretboard**. Name the size by counting letters, then count semitones to fix the quality. Test yourself: what is `F` up to `B`? (Four letters = a fourth; six semitones = augmented — the tritone.) Then try the **/tools/scale-explorer** to see how these intervals stack into scales, and the interval-ear-training primer to start hearing them.",
+    "bodyMdx": "## What an interval is\n\nAn **interval** is the distance between two pitches. Naming an interval takes two pieces of information: its **size** (a number) and its **quality** (a word like *major*, *minor*, *perfect*). Get both, and you have named the distance exactly.\n\n## Size: count the letter names\n\nSize comes from counting letter names inclusively, starting on the lower note as \"1.\"\n\n- `C` up to `E` spans C–D–E = three letters, so it is a **third**.\n- `C` up to `G` spans C–D–E–F–G = five letters, so it is a **fifth**.\n- A note to itself is a **unison** (1); eight letters up is an **octave** (8).\n\nNotice that the accidentals (sharps/flats) do **not** change the size. `C`–`E`, `C`–`E♭`, and `C`–`E♯` are all \"some kind of third,\" because they all span three letter names.\n\n## Quality: count the semitones\n\nQuality tells you exactly how wide the interval is, measured in **semitones** (half steps — the smallest distance on a keyboard). Two families of qualities exist:\n\n- **Perfect** applies to unisons, fourths, fifths, and octaves.\n- **Major / minor** applies to seconds, thirds, sixths, and sevenths.\n\nTap through the twelve intervals above `C` below — each card sounds the interval and shows its semitone count, from the perfect unison (0) up through the tritone (6) to the perfect octave (12). Count the letters for the size, then the semitones to fix the quality:\n\n<div data-tmr-embed=\"0\"></div>\n\n## Altering the quality\n\nShrink or stretch an interval by a semitone and its quality changes by one step:\n\n- A **major** interval made one semitone smaller becomes **minor** (major 3rd `C–E` → minor 3rd `C–E♭`).\n- A **minor** or **perfect** interval made one semitone smaller becomes **diminished**.\n- Any interval made one semitone larger becomes **augmented** (perfect 5th `C–G` → augmented 5th `C–G♯`).\n\nThe full ladder for changing a semitone at a time:\n\n`diminished → minor → MAJOR → augmented`\n`diminished → PERFECT → augmented`\n\n## Consonance and inversion\n\nPerfect intervals and major/minor thirds and sixths sound **consonant** (stable, restful); seconds, sevenths, and the tritone sound **dissonant** (tense, wanting to move). When you flip the two notes so the lower becomes the upper, you **invert** the interval. Inversions follow two tidy rules: the sizes add up to 9 (a 3rd inverts to a 6th, a 2nd to a 7th), and quality flips — major↔minor, augmented↔diminished, perfect stays perfect. So `C–E` (major 3rd) inverts to `E–C` (minor 6th).\n\n## Compound intervals\n\nIntervals larger than an octave are **compound**. A 9th is an octave plus a 2nd, an 11th an octave plus a 4th, and so on — useful vocabulary once you start reading extended chords.\n\n## Try it\n\nTap through the interval cards above and, for each, name the size by counting letters, then confirm the quality against the semitone count. Test yourself: what is `F` up to `B`? (Four letters = a fourth; six semitones = augmented — the tritone.) Then move on to the interval-ear-training primer to start hearing them.",
     "details": {
       "form": "lesson",
       "related": [
@@ -1020,6 +1230,14 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "omt-triads-and-inversions",
         "omt-diatonic-chords",
         "interval-ear-training-primer"
+      ],
+      "embeds": [
+        {
+          "tool": "intervals",
+          "title": "The intervals within an octave",
+          "caption": "Every interval from a perfect unison to a perfect octave, measured up from C — tap each to hear it.",
+          "root": "C"
+        }
       ]
     },
     "extraTags": [
@@ -1028,7 +1246,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "omt-major-scale-key-signatures": {
-    "bodyMdx": "## The major scale is a pattern of steps\n\nEvery major scale, in any key, uses the same sequence of whole steps (W, two semitones) and half steps (H, one semitone):\n\n```\nW  W  H  W  W  W  H\n```\n\nStarting on `C`, that pattern lands on exactly the white keys:\n\n```\nC — D — E — F — G — A — B — C\n W   W   H   W   W   W   H\n```\n\nThe half steps fall between scale degrees 3–4 (`E–F`) and 7–8 (`B–C`). Because `C` major needs no accidentals to make the pattern work, it has an **empty key signature**.\n\n## Why other keys need accidentals\n\nStart the same W-W-H-W-W-W-H pattern on `G` and something breaks: the pattern demands a half step between degrees 7 and 8, but `F–G` is a whole step. To fix it we raise the seventh note to `F♯`:\n\n```\nG — A — B — C — D — E — F♯ — G\n```\n\n`G` major therefore has a key signature of **one sharp (F♯)**. A **key signature** is simply the collection of sharps or flats needed to keep the major-scale pattern intact, written once at the start of the staff instead of on every note.\n\n## The circle of fifths generates the signatures\n\nMove up a **perfect fifth** each time (`C → G → D → A → E → B → F♯`) and you add one sharp at every step. Move down a fifth / up a fourth (`C → F → B♭ → E♭ → A♭ → D♭ → G♭`) and you add one flat.\n\n```\nSharps:  C(0) G(1) D(2) A(3) E(4) B(5) F♯(6) C♯(7)\nFlats:   C(0) F(1) B♭(2) E♭(3) A♭(4) D♭(5) G♭(6) C♭(7)\n```\n\n## The order is fixed\n\nSharps are always **added** in this order: `F♯ C♯ G♯ D♯ A♯ E♯ B♯` (mnemonic: *Father Charles Goes Down And Ends Battle*). Flats are added in the reverse order: `B♭ E♭ A♭ D♭ G♭ C♭ F♭` (*Battle Ends And Down Goes Charles' Father*). Each new sharp is a fifth above the last; each new flat is a fourth above.\n\n## Reading a signature quickly\n\n- **Sharp keys:** the tonic is one semitone **above the last sharp**. Four sharps end on `D♯`; a semitone up is `E`, so it's E major.\n- **Flat keys:** the tonic is the **second-to-last flat**. Flats `B♭ E♭ A♭ D♭` — the second-to-last is `A♭`, so it's A♭ major. (The one-flat key, F major, you simply memorise.)\n\n## Enharmonic neighbours\n\nAt the bottom of the circle, keys overlap. B major (5 sharps) sounds identical to C♭ major (7 flats); F♯ major (6 sharps) equals G♭ major (6 flats). They are **enharmonically** the same pitches spelled differently — composers pick whichever notation is easier to read.\n\n## Try it\n\nName the major scale two steps clockwise from `C`: that's `D` major — apply W-W-H-W-W-W-H and you should get `D E F♯ G A B C♯`, matching its two-sharp signature. Then open **/tools/circle-of-fifths** to watch the sharps and flats accumulate, and **/tools/scale-explorer** to hear each key. Next lesson: how these scales generate diatonic chords.",
+    "bodyMdx": "## The major scale is a pattern of steps\n\nEvery major scale, in any key, uses the same sequence of whole steps (W, two semitones) and half steps (H, one semitone): **W – W – H – W – W – W – H**.\n\nStarting on `C`, that pattern lands on exactly the white keys — the step between each pair of notes:\n\n| C → D | D → E | E → F | F → G | G → A | A → B | B → C |\n|---|---|---|---|---|---|---|\n| W | W | H | W | W | W | H |\n\nThe half steps fall between scale degrees 3–4 (`E–F`) and 7–8 (`B–C`). Because `C` major needs no accidentals to make the pattern work, it has an **empty key signature**.\n\n## Why other keys need accidentals\n\nStart the same W-W-H-W-W-W-H pattern on `G` and something breaks: the pattern demands a half step between degrees 7 and 8, but `F–G` is a whole step. To fix it we raise the seventh note to `F♯`, giving **G – A – B – C – D – E – F♯ – G**.\n\n`G` major therefore has a key signature of **one sharp (F♯)**. A **key signature** is simply the collection of sharps or flats needed to keep the major-scale pattern intact, written once at the start of the staff instead of on every note.\n\n## The circle of fifths generates the signatures\n\nMove up a **perfect fifth** each time (`C → G → D → A → E → B → F♯`) and you add one sharp at every step. Move down a fifth / up a fourth (`C → F → B♭ → E♭ → A♭ → D♭ → G♭`) and you add one flat. Turn the circle below to watch the sharps stack up clockwise and the flats anticlockwise, one at a time, from `C` (no accidentals) out to the seven-sharp and seven-flat keys:\n\n<div data-tmr-embed=\"0\"></div>\n\n## The order is fixed\n\nSharps are always **added** in this order: `F♯ C♯ G♯ D♯ A♯ E♯ B♯` (mnemonic: *Father Charles Goes Down And Ends Battle*). Flats are added in the reverse order: `B♭ E♭ A♭ D♭ G♭ C♭ F♭` (*Battle Ends And Down Goes Charles' Father*). Each new sharp is a fifth above the last; each new flat is a fourth above.\n\n## Reading a signature quickly\n\n- **Sharp keys:** the tonic is one semitone **above the last sharp**. Four sharps end on `D♯`; a semitone up is `E`, so it's E major.\n- **Flat keys:** the tonic is the **second-to-last flat**. Flats `B♭ E♭ A♭ D♭` — the second-to-last is `A♭`, so it's A♭ major. (The one-flat key, F major, you simply memorise.)\n\n## Enharmonic neighbours\n\nAt the bottom of the circle, keys overlap. B major (5 sharps) sounds identical to C♭ major (7 flats); F♯ major (6 sharps) equals G♭ major (6 flats). They are **enharmonically** the same pitches spelled differently — composers pick whichever notation is easier to read.\n\n## Try it\n\nName the major scale two steps clockwise from `C`: that's `D` major — apply W-W-H-W-W-W-H and you should get `D E F♯ G A B C♯`, matching its two-sharp signature. Confirm it on the circle above, then move around the keys and watch the signatures accumulate. Next lesson: how these scales generate diatonic chords.",
     "details": {
       "form": "lesson",
       "related": [
@@ -1037,6 +1255,13 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "omt-modes-of-major",
         "circle-of-fifths-reference",
         "major-scales-all-keys"
+      ],
+      "embeds": [
+        {
+          "tool": "circle-of-fifths",
+          "title": "Keys around the circle",
+          "caption": "Clockwise adds sharps, anticlockwise adds flats."
+        }
       ]
     },
     "extraTags": [
@@ -1045,7 +1270,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "omt-modes-of-major": {
-    "bodyMdx": "## What a mode is\n\nA **mode** is a scale you get by starting the major scale on a different degree while keeping the same notes. Play the white keys from `C` to `C` and you have C major. Play the same white keys from `D` to `D` and the pattern of whole and half steps shifts — you have a *different* scale colour with the *same* notes. That is D Dorian. There are seven modes, one for each starting degree.\n\n## The seven modes of the major scale\n\nStarting each mode on a white key makes the notes obvious; the \"start degree\" is where it begins in the parent major scale:\n\n```\nMode         Start on   White-key run   Character\nIonian       1 (C)      C D E F G A B    the major scale itself — bright\nDorian       2 (D)      D E F G A B C    minor but hopeful (raised 6th)\nPhrygian     3 (E)      E F G A B C D    dark, \"Spanish\" (flat 2nd)\nLydian       4 (F)      F G A B C D E    bright, floating (sharp 4th)\nMixolydian   5 (G)      G A B C D E F    major but bluesy (flat 7th)\nAeolian      6 (A)      A B C D E F G    the natural minor scale\nLocrian      7 (B)      B C D E F G A    unstable (flat 2nd AND flat 5th)\n```\n\n## Two ways to think about modes\n\n**Relative (parallel-notes) view:** all seven modes above share the notes of C major; only the starting pitch — the tonal centre — changes. This is the easy way to *find* the notes.\n\n**Parallel (same-root) view:** more useful for hearing a mode's *flavour* is to compare it to the major or minor scale built on the **same root**. Describe each mode as an alteration:\n\n```\nCompared to a MAJOR scale on the same root:\n  Ionian     — the major scale\n  Lydian     — major with a ♯4\n  Mixolydian — major with a ♭7\n\nCompared to a NATURAL MINOR (Aeolian) on the same root:\n  Aeolian    — natural minor\n  Dorian     — minor with a ♮6 (raised 6th)\n  Phrygian   — minor with a ♭2\n  Locrian    — minor with a ♭2 and ♭5\n```\n\nSo **D Dorian** = `D E F G A B C` — it is D minor but with a `B♮` instead of `B♭`, and that single bright 6th is its signature.\n\n## The \"characteristic note\"\n\nEach mode has one note that gives it its identity — change or lose it and the mode collapses into ordinary major or minor:\n\n- **Lydian:** the ♯4 (`F` Lydian's `B♮`).\n- **Mixolydian:** the ♭7 (`G` Mixolydian's `F♮`).\n- **Dorian:** the ♮6.\n- **Phrygian:** the ♭2.\n\nEmphasise that note over a drone or a static chord and the mode sings.\n\n## Where modes live in real music\n\n- **Dorian** — funk, folk, and jazz (*Scarborough Fair*, \"So What\").\n- **Mixolydian** — rock, blues, and folk vamps built on a dominant-seventh feel.\n- **Lydian** — film scores and dreamy pop.\n- **Phrygian** — flamenco and metal.\n- **Aeolian & Ionian** — most everyday minor and major songs.\n\nLocrian, with its unstable diminished tonic chord, is rare as a home key but useful in passing.\n\n## Try it\n\nPlay only the white keys but treat `G` as home — drone a `G` in the bass and improvise. You are in G Mixolydian; listen for how the `F♮` (not `F♯`) gives a bluesy, un-resolved brightness. Then try the same over `E` for Phrygian's dark colour. Use **/tools/scale-explorer** to hear each mode against a drone, and revisit the major-scale-key-signatures lesson to see why the notes stay the same while the colour changes.",
+    "bodyMdx": "## What a mode is\n\nA **mode** is a scale you get by starting the major scale on a different degree while keeping the same notes. Play the white keys from `C` to `C` and you have C major. Play the same white keys from `D` to `D` and the pattern of whole and half steps shifts — you have a *different* scale colour with the *same* notes. That is D Dorian. There are seven modes, one for each starting degree.\n\n## The seven modes of the major scale\n\nStarting each mode on a white key makes the notes obvious; the \"start degree\" is where it begins in the parent major scale:\n\n| Mode | Start on | White-key run | Character |\n|---|---|---|---|\n| Ionian | 1 (C) | C D E F G A B | the major scale itself — bright |\n| Dorian | 2 (D) | D E F G A B C | minor but hopeful (raised 6th) |\n| Phrygian | 3 (E) | E F G A B C D | dark, \"Spanish\" (flat 2nd) |\n| Lydian | 4 (F) | F G A B C D E | bright, floating (sharp 4th) |\n| Mixolydian | 5 (G) | G A B C D E F | major but bluesy (flat 7th) |\n| Aeolian | 6 (A) | A B C D E F G | the natural minor scale |\n| Locrian | 7 (B) | B C D E F G A | unstable (flat 2nd AND flat 5th) |\n\nEvery mode above uses the same white keys — the keyboard below highlights the parent C-major scale. Start on a different note for each mode (`D` = Dorian, `E` = Phrygian …) and listen to how the colour changes while the notes stay put:\n\n<div data-tmr-embed=\"0\"></div>\n\n## Two ways to think about modes\n\n**Relative (parallel-notes) view:** all seven modes above share the notes of C major; only the starting pitch — the tonal centre — changes. This is the easy way to *find* the notes.\n\n**Parallel (same-root) view:** more useful for hearing a mode's *flavour* is to compare it to the major or minor scale built on the **same root**. Describe each mode as an alteration:\n\n| Mode | Compared to | Alteration |\n|---|---|---|\n| Ionian | major scale | the major scale itself |\n| Lydian | major scale | major with a ♯4 |\n| Mixolydian | major scale | major with a ♭7 |\n| Aeolian | natural minor | the natural minor scale |\n| Dorian | natural minor | minor with a ♮6 (raised 6th) |\n| Phrygian | natural minor | minor with a ♭2 |\n| Locrian | natural minor | minor with a ♭2 and ♭5 |\n\nSo **D Dorian** = `D E F G A B C` — it is D minor but with a `B♮` instead of `B♭`, and that single bright 6th is its signature.\n\n## The \"characteristic note\"\n\nEach mode has one note that gives it its identity — change or lose it and the mode collapses into ordinary major or minor:\n\n- **Lydian:** the ♯4 (`F` Lydian's `B♮`).\n- **Mixolydian:** the ♭7 (`G` Mixolydian's `F♮`).\n- **Dorian:** the ♮6.\n- **Phrygian:** the ♭2.\n\nEmphasise that note over a drone or a static chord and the mode sings.\n\n## Where modes live in real music\n\n- **Dorian** — funk, folk, and jazz (*Scarborough Fair*, \"So What\").\n- **Mixolydian** — rock, blues, and folk vamps built on a dominant-seventh feel.\n- **Lydian** — film scores and dreamy pop.\n- **Phrygian** — flamenco and metal.\n- **Aeolian & Ionian** — most everyday minor and major songs.\n\nLocrian, with its unstable diminished tonic chord, is rare as a home key but useful in passing.\n\n## Try it\n\nPlay only the white keys but treat `G` as home — drone a `G` in the bass and improvise. You are in G Mixolydian; listen for how the `F♮` (not `F♯`) gives a bluesy, un-resolved brightness. Then try the same over `E` for Phrygian's dark colour. Use the parent-scale keyboard above to explore each mode — start on a different note for each — and revisit the major-scale-key-signatures lesson to see why the notes stay the same while the colour changes.",
     "details": {
       "form": "lesson",
       "related": [
@@ -1053,6 +1278,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "omt-intervals",
         "omt-diatonic-chords",
         "minor-pentatonic-scale-shapes"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The parent scale",
+          "caption": "Every mode of C major uses only these white keys — start on a different note for each mode (D = Dorian, E = Phrygian …).",
+          "root": "C",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -1060,7 +1295,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "omt-rhythm-and-meter": {
-    "bodyMdx": "## Beat, tempo, and meter\n\n**Rhythm** is how music is organised in time. Three ideas underpin it:\n\n- **Beat** — the steady pulse you tap your foot to.\n- **Tempo** — how fast that pulse goes, measured in beats per minute (BPM).\n- **Meter** — how beats group into repeating patterns of strong and weak.\n\nWe hear beats in groups because some feel stronger than others. Group them in twos or threes and you get the familiar feel of a march (STRONG-weak) or a waltz (STRONG-weak-weak).\n\n## Note values\n\nNote durations are related by a chain of halving. In common time each is a fraction of a whole note:\n\n```\nWhole note      𝅝     = 4 beats\nHalf note       𝅗𝅥     = 2 beats\nQuarter note    ♩     = 1 beat\nEighth note     ♪     = ½ beat\nSixteenth note  𝅘𝅥𝅯     = ¼ beat\n```\n\nA **dot** after a note adds half its value again: a dotted half note = 2 + 1 = 3 beats. A **rest** is a silence of the same duration as its matching note.\n\n## Measures and time signatures\n\nMusic is divided into **measures** (bars) by barlines. A **time signature** at the start tells you how each measure is counted:\n\n```\n 4  ← top: how many beats per measure\n 4  ← bottom: which note value gets one beat (4 = quarter note)\n```\n\n- **4/4** (\"common time\"): four quarter-note beats per bar — the default for pop, rock, and most songs.\n- **3/4**: three quarter-note beats — the waltz.\n- **2/4**: two beats — marches and polkas.\n\nCount 4/4 as \"**1** 2 3 4,\" landing weight on beat 1 (the **downbeat**). The offbeats — the \"and\" between numbers — are where syncopation lives.\n\n## Simple vs. compound meter\n\nThe bottom-number/beat relationship splits meters into two families:\n\n- **Simple meter:** each beat divides into **two** (`4/4`, `3/4`, `2/4`). Count \"1-and-2-and.\"\n- **Compound meter:** each beat divides into **three**. Here the top number is 6, 9, or 12, and the beat is a *dotted* value. **6/8** has two beats, each a dotted quarter subdividing into three eighths: count \"**1**-2-3 **4**-5-6\" but *feel* two big beats. Think of a jig or \"We Are the Champions.\"\n\nSo 6/8 is not \"six beats\" in feel — it is two beats that each split in three.\n\n## Syncopation, ties, and swing\n\n- **Syncopation** stresses the weak parts of the beat (the offbeats), creating momentum — the engine of funk, reggae, and ragtime.\n- A **tie** joins two notes into one longer sound across a beat or barline.\n- **Swing** stretches pairs of eighth notes into a long-short \"loping\" feel, central to jazz and blues, even though they are written as even eighths.\n\n## Why the barline matters\n\nThe first beat of each measure carries natural emphasis. Composers place important notes and chord changes there, and performers lean into it. Feeling *where beat 1 is* — not just counting notes — is what makes playing sound grounded rather than mechanical.\n\n## Try it\n\nSet **/tools/metronome** to 80 BPM. Tap quarter notes for four bars of 4/4, accenting beat 1. Then switch to eighth notes (\"1-and-2-and-3-and-4-and\") without letting the pulse drift. Finally set the metronome to a dotted-quarter feel and count 6/8 in two. Once the pulse is solid, try clapping an offbeat rhythm against it to feel syncopation. Then apply it in the 12-bar-blues and ukulele-strumming lessons.",
+    "bodyMdx": "## Beat, tempo, and meter\n\n**Rhythm** is how music is organised in time. Three ideas underpin it:\n\n- **Beat** — the steady pulse you tap your foot to.\n- **Tempo** — how fast that pulse goes, measured in beats per minute (BPM).\n- **Meter** — how beats group into repeating patterns of strong and weak.\n\nWe hear beats in groups because some feel stronger than others. Group them in twos or threes and you get the familiar feel of a march (STRONG-weak) or a waltz (STRONG-weak-weak).\n\n## Note values\n\nNote durations are related by a chain of halving. In common time a **whole note** lasts 4 beats, a **half note** 2, a **quarter note** 1, an **eighth note** ½ a beat, and a **sixteenth note** ¼ of a beat. Play the score below to hear the top of that chain line up in 4/4 — a whole note, then two halves, four quarters, and eight eighths:\n\n<div data-tmr-embed=\"0\"></div>\n\nA **dot** after a note adds half its value again: a dotted half note = 2 + 1 = 3 beats. A **rest** is a silence of the same duration as its matching note.\n\n## Measures and time signatures\n\nMusic is divided into **measures** (bars) by barlines. A **time signature** at the start tells you how each measure is counted:\n\n```\n 4  ← top: how many beats per measure\n 4  ← bottom: which note value gets one beat (4 = quarter note)\n```\n\n- **4/4** (\"common time\"): four quarter-note beats per bar — the default for pop, rock, and most songs.\n- **3/4**: three quarter-note beats — the waltz.\n- **2/4**: two beats — marches and polkas.\n\nCount 4/4 as \"**1** 2 3 4,\" landing weight on beat 1 (the **downbeat**). The offbeats — the \"and\" between numbers — are where syncopation lives.\n\n## Simple vs. compound meter\n\nThe bottom-number/beat relationship splits meters into two families:\n\n- **Simple meter:** each beat divides into **two** (`4/4`, `3/4`, `2/4`). Count \"1-and-2-and.\"\n- **Compound meter:** each beat divides into **three**. Here the top number is 6, 9, or 12, and the beat is a *dotted* value. **6/8** has two beats, each a dotted quarter subdividing into three eighths: count \"**1**-2-3 **4**-5-6\" but *feel* two big beats. Think of a jig or \"We Are the Champions.\"\n\nSo 6/8 is not \"six beats\" in feel — it is two beats that each split in three.\n\n## Syncopation, ties, and swing\n\n- **Syncopation** stresses the weak parts of the beat (the offbeats), creating momentum — the engine of funk, reggae, and ragtime.\n- A **tie** joins two notes into one longer sound across a beat or barline.\n- **Swing** stretches pairs of eighth notes into a long-short \"loping\" feel, central to jazz and blues, even though they are written as even eighths.\n\n## Why the barline matters\n\nThe first beat of each measure carries natural emphasis. Composers place important notes and chord changes there, and performers lean into it. Feeling *where beat 1 is* — not just counting notes — is what makes playing sound grounded rather than mechanical.\n\n## Try it\n\nReplay the note-values score above to lock the 4/4 subdivisions in your ear, then set a [metronome](/tools/metronome) to 80 BPM. Tap quarter notes for four bars of 4/4, accenting beat 1. Then switch to eighth notes (\"1-and-2-and-3-and-4-and\") without letting the pulse drift. Finally set the metronome to a dotted-quarter feel and count 6/8 in two. Once the pulse is solid, try clapping an offbeat rhythm against it to feel syncopation. Then apply it in the 12-bar-blues and ukulele-strumming lessons.",
     "details": {
       "form": "lesson",
       "related": [
@@ -1068,6 +1303,14 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "12-bar-blues-in-a",
         "ukulele-strumming-patterns",
         "bass-root-fifth-patterns"
+      ],
+      "embeds": [
+        {
+          "tool": "score",
+          "title": "Note values in 4/4",
+          "caption": "A whole note, two halves, four quarters, eight eighths.",
+          "tex": ":1 c4 | :2 c4 c4 | :4 c4 c4 c4 c4 | :8 c4 c4 c4 c4 c4 c4 c4 c4 |"
+        }
       ]
     },
     "extraTags": [
@@ -1075,8 +1318,38 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
       "beginner"
     ]
   },
+  "omt-secondary-dominants": {
+    "bodyMdx": "## Borrowing the pull of the dominant\n\nIn any major key only one chord is naturally a dominant seventh — the `V7` built on scale degree 5, which pulls strongly home to the tonic. A **secondary dominant** takes that same pulling power and aims it at a *different* chord in the key, briefly making some other degree feel like a temporary home.\n\nWe write it as **V/x**, read \"five of x\". A `V/V` is \"the dominant of the dominant\" — the chord that would be `V` if the real `V` were the tonic for a moment. Every diatonic chord except the diminished `vii°` can be tonicised this way.\n\n## Building one\n\nTo find `V/x`, ask: *what is the dominant seventh a fifth above the target chord?* Then borrow it. In C major:\n\n| Symbol | Chord | Target | Why |\n|---|---|---|---|\n| V/V | D7 | G (V) | D7 is the dominant of G |\n| V/ii | A7 | Dm (ii) | A7 is the dominant of D minor |\n| V/vi | E7 | Am (vi) | E7 is the dominant of A minor |\n| V/IV | C7 | F (IV) | C7 is the dominant of F |\n\nNotice `V/ii` is `A7`, not the diatonic `Am`. Raising the third of `A` to `C♯` turns the key's `vi` chord into a real dominant seventh with its own leading tone.\n\n## The chromatic giveaway\n\nThe reason a secondary dominant sounds so strong is that it introduces a note **outside the key** — the raised third that becomes the target's own leading tone. In `A7 → Dm`, the `C♯` is that leading tone: it wants to rise a half-step to `D`, exactly the way `B` rises to `C` in a normal `V–I`. That single chromatic pitch is what your ear latches onto as extra colour.\n\nBecause the tonicisation is momentary, the key does not actually change. As soon as the secondary dominant resolves, the music is back in C major — you have simply borrowed a stronger approach to one chord.\n\n## Hear it in a progression\n\nThe progression below is a workhorse: `C – A7 – Dm – G7 – C`. The `A7` is `V/ii`; instead of drifting into `Dm`, the harmony arrives there with a hard pull, because `A7`'s `C♯` leans up into `D`. Then the ordinary `G7–C` closes with an authentic cadence.\n\n<div data-tmr-embed=\"0\"></div>\n\n## Chains of dominants\n\nSecondary dominants can string together, each one tonicising the next: `E7 → A7 → D7 → G7 → C`. Every chord is the dominant of the one that follows, so the whole passage tumbles downhill toward the tonic. This \"dominant chain\" powers countless jazz turnarounds and Romantic-era sequences.\n\n## Check yourself\n\nIn G major, spell `V/V` and name its target. (Answer: `A7`, resolving to `D`, the dominant — the raised third `C♯` is A7's leading tone into D.) Then build `V/ii`, `V/vi`, and `V/IV` in C major and listen for the out-of-key note in each. Next, see cadences and voice-leading to hear how these tonicisations resolve smoothly into place.",
+    "details": {
+      "form": "lesson",
+      "related": [
+        "omt-diatonic-chords",
+        "omt-seventh-chords",
+        "omt-cadences",
+        "omt-voice-leading",
+        "omt-triads-and-inversions"
+      ],
+      "embeds": [
+        {
+          "tool": "progression",
+          "title": "A secondary dominant in action",
+          "caption": "A7 is V/ii — it pulls strongly to Dm.",
+          "key": "C",
+          "chords": [
+            "C",
+            "A7",
+            "Dm",
+            "G7"
+          ]
+        }
+      ]
+    },
+    "extraTags": [
+      "cc-by-sa"
+    ]
+  },
   "omt-seventh-chords": {
-    "bodyMdx": "## Adding a fourth note\n\nA **seventh chord** is a triad with one more third stacked on top — a note a seventh above the root. That extra note adds colour and, crucially, a **tendency to resolve**. Seventh chords are the harmonic vocabulary of blues, jazz, and Romantic music.\n\nThe four members are **root, third, fifth, seventh**. Two thirds set the triad quality; the interval from the root to the top note sets the seventh's quality (major 7th = 11 semitones, minor 7th = 10 semitones).\n\n## The five common qualities\n\n```\nChord            Symbol      Triad + 7th          Example (on C)\nMajor seventh    maj7 / Δ7   major + major 7th    C–E–G–B\nDominant seventh 7           major + minor 7th    C–E–G–B♭\nMinor seventh    m7          minor + minor 7th    C–E♭–G–B♭\nHalf-diminished  m7♭5 / ø7   diminished + minor 7 C–E♭–G♭–B♭\nFully diminished dim7 / °7   diminished + dim 7th C–E♭–G♭–B♭♭(A)\n```\n\nTwo things to notice: the **dominant seventh** (major triad, minor 7th) is the workhorse of tension because it contains a **tritone** between its third and seventh; and the **fully diminished seventh** stacks three minor thirds, so it divides the octave evenly and can resolve in several directions.\n\n## Diatonic seventh chords in a major key\n\nStack sevenths on each degree of the major scale, exactly as you did with triads, and the qualities line up as a fixed pattern. In C major:\n\n```\nDegree  Chord        Notes         Quality           Numeral\n1        Cmaj7        C–E–G–B       major 7th         Imaj7\n2        Dm7          D–F–A–C       minor 7th         ii7\n3        Em7          E–G–B–D       minor 7th         iii7\n4        Fmaj7        F–A–C–E       major 7th         IVmaj7\n5        G7           G–B–D–F       dominant 7th      V7\n6        Am7          A–C–E–G       minor 7th         vi7\n7        Bm7♭5        B–D–F–A       half-diminished   vii⌀7\n```\n\nThe **only dominant-seventh chord that occurs naturally** in a major key is on the fifth degree — `V7` — which is why `V7` so reliably signals \"we are heading home to the tonic.\"\n\n## Resolving the tension\n\nThe power of a `V7` comes from its tritone. In `G7 → C`, the tritone `B–F` squeezes inward: the leading tone `B` rises to `C`, and the seventh `F` falls to `E`. That double resolution is the strongest cadence in tonal music (a `V7–I` authentic cadence).\n\n## Figured-bass inversions\n\nSeventh chords have four notes, so they have three inversions plus root position, labelled with figures:\n\n```\nRoot position   7      (7/5/3)\nFirst inversion 6/5\nSecond inversion 4/3\nThird inversion 4/2  (or just 2)\n```\n\nSo `V6/5` is a dominant seventh with its third in the bass.\n\n## Where you'll meet them\n\n- **Blues** leans on dominant sevenths for *every* chord — `A7`, `D7`, `E7` — not just the V.\n- **Jazz** strings minor and dominant sevenths through `ii7–V7–Imaj7`.\n- **Classical** uses `V7` for cadences and diminished sevenths for dramatic tension and modulation.\n\n## Check yourself\n\nSpell the `ii7–V7–Imaj7` in C major and resolve it. (Answer: `Dm7` → `G7` → `Cmaj7`; listen for `G7`'s `B` rising and `F` falling into the C chord.) Build each of the five qualities on the root `D` in the **chord-builder** tool, then explore how they sit in a key with **/tools/scale-explorer**. Next, see cadences and secondary dominants to hear these chords in action.",
+    "bodyMdx": "## Adding a fourth note\n\nA **seventh chord** is a triad with one more third stacked on top — a note a seventh above the root. That extra note adds colour and, crucially, a **tendency to resolve**. Seventh chords are the harmonic vocabulary of blues, jazz, and Romantic music.\n\nThe four members are **root, third, fifth, seventh**. Two thirds set the triad quality; the interval from the root to the top note sets the seventh's quality (major 7th = 11 semitones, minor 7th = 10 semitones).\n\n## The five common qualities\n\nFive seventh-chord qualities cover most music, each stacking a different pair of thirds on the root. Play the five built on `C` in the score below and listen to how the colour shifts from bright to tense:\n\n<div data-tmr-embed=\"0\"></div>\n\nReading left to right they are the **major seventh** (`maj7` / `Δ7` — major triad + major 7th), the **dominant seventh** (`7` — major triad + minor 7th), the **minor seventh** (`m7` — minor triad + minor 7th), the **half-diminished seventh** (`m7♭5` / `ø7` — diminished triad + minor 7th), and the **fully diminished seventh** (`dim7` / `°7` — diminished triad + diminished 7th, its top note spelled `B♭♭`/`A`).\n\nTwo things to notice: the **dominant seventh** (major triad, minor 7th) is the workhorse of tension because it contains a **tritone** between its third and seventh; and the **fully diminished seventh** stacks three minor thirds, so it divides the octave evenly and can resolve in several directions.\n\n## Diatonic seventh chords in a major key\n\nStack sevenths on each degree of the major scale, exactly as you did with triads, and the qualities line up as a fixed pattern. Tap each chord below to hear the seven diatonic sevenths of C major, labelled with their Roman numerals — the colour runs major 7th, minor 7th, minor 7th, major 7th, dominant 7th, minor 7th, half-diminished:\n\n<div data-tmr-embed=\"1\"></div>\n\nThe **only dominant-seventh chord that occurs naturally** in a major key is on the fifth degree — `V7` — which is why `V7` so reliably signals \"we are heading home to the tonic.\"\n\n## Resolving the tension\n\nThe power of a `V7` comes from its tritone. In `G7 → C`, the tritone `B–F` squeezes inward: the leading tone `B` rises to `C`, and the seventh `F` falls to `E`. That double resolution is the strongest cadence in tonal music (a `V7–I` authentic cadence).\n\n## Figured-bass inversions\n\nSeventh chords have four notes, so they have three inversions plus root position, labelled with figures:\n\n| Position | Figure |\n|---|---|\n| Root position | `7` (full: `7/5/3`) |\n| First inversion | `6/5` |\n| Second inversion | `4/3` |\n| Third inversion | `4/2` (or just `2`) |\n\nSo `V6/5` is a dominant seventh with its third in the bass.\n\n## Where you'll meet them\n\n- **Blues** leans on dominant sevenths for *every* chord — `A7`, `D7`, `E7` — not just the V.\n- **Jazz** strings minor and dominant sevenths through `ii7–V7–Imaj7`.\n- **Classical** uses `V7` for cadences and diminished sevenths for dramatic tension and modulation.\n\n## Check yourself\n\nSpell the `ii7–V7–Imaj7` in C major and resolve it. (Answer: `Dm7` → `G7` → `Cmaj7`; listen for `G7`'s `B` rising and `F` falling into the C chord.) Replay the five qualities built on C in the score above to fix the colour of each in your ear. Next, see cadences and secondary dominants to hear these chords in action.",
     "details": {
       "form": "lesson",
       "related": [
@@ -1085,6 +1358,37 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "omt-cadences",
         "omt-secondary-dominants",
         "walking-bass-basics"
+      ],
+      "embeds": [
+        {
+          "tool": "score",
+          "title": "The five seventh-chord qualities",
+          "caption": "Cmaj7, C7, Cm7, Cm7♭5, C°7 — listen to the colour of each.",
+          "tex": ":1 (c4 e4 g4 b4) | (c4 e4 g4 bb4) | (c4 eb4 g4 bb4) | (c4 eb4 gb4 bb4) | (c4 eb4 gb4 a4) |"
+        },
+        {
+          "tool": "chord-board",
+          "title": "The diatonic sevenths of C major",
+          "caption": "Imaj7 ii7 iii7 IVmaj7 V7 vi7 vii∅7 — tap each to hear it.",
+          "chords": [
+            "Cmaj7",
+            "Dm7",
+            "Em7",
+            "Fmaj7",
+            "G7",
+            "Am7",
+            "Bm7b5"
+          ],
+          "labels": [
+            "Imaj7",
+            "ii7",
+            "iii7",
+            "IVmaj7",
+            "V7",
+            "vi7",
+            "vii∅7"
+          ]
+        }
       ]
     },
     "extraTags": [
@@ -1092,7 +1396,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "omt-triads-and-inversions": {
-    "bodyMdx": "## What a triad is\n\nA **triad** is a three-note chord built by stacking two thirds. Its members have names:\n\n- **Root** — the note the chord is named for and built from.\n- **Third** — a third above the root; it decides *major vs. minor*.\n- **Fifth** — a fifth above the root; it decides *stability*.\n\nStack `C`, then a third up (`E`), then another third up (`G`) and you have a **C major** triad: `C–E–G`.\n\n## The four qualities\n\nThe two thirds inside the triad can each be major (M3, 4 semitones) or minor (m3, 3 semitones). The combination sets the quality:\n\n```\nQuality       Lower 3rd   Upper 3rd   Root-to-5th   Example\nMajor         M3          m3          Perfect 5th   C–E–G\nMinor         m3          M3          Perfect 5th   C–E♭–G\nDiminished    m3          m3          Diminished 5  C–E♭–G♭\nAugmented     M3          M3          Augmented 5   C–E–G♯\n```\n\nMajor and minor triads are consonant and common; diminished and augmented triads contain an unstable fifth and sound tense.\n\n## Inversions: which note is in the bass\n\nA triad is in **root position** when the root is the lowest sounding note. Move the root up an octave and a different chord tone sits in the bass — that is an **inversion**. The notes are the same, so it is still a C major chord, but its voicing and function shift.\n\n```\nRoot position:   C–E–G   (root C in bass)\nFirst inversion: E–G–C   (third E in bass)\nSecond inversion:G–C–E   (fifth G in bass)\n```\n\n## Figured bass shorthand\n\nClassical harmony labels inversions with **figured bass** — numbers showing the intervals above the bass note. The full figures reduce to a familiar shorthand:\n\n- **Root position** — intervals of a 5th and 3rd above the bass → figure `5/3`, usually written as nothing at all.\n- **First inversion** — a 6th and a 3rd above the bass → `6/3`, shortened to **`6`**.\n- **Second inversion** — a 6th and a 4th above the bass → **`6/4`**.\n\nSo a C major chord with `E` in the bass is a \"six chord\"; with `G` in the bass it is a \"six-four.\"\n\n## Roman numerals plus inversion\n\nCombine the two systems and you can describe any diatonic chord precisely. In C major:\n\n- `I` — C major, root position (`C–E–G`).\n- `I6` — C major, first inversion (`E–G–C`).\n- `V6/4` — G major, second inversion (`D–G–B`).\n\nThe lowercase/uppercase of the Roman numeral shows quality; the added figure shows the inversion. This is the notation you will use to analyse the pieces in the catalogue.\n\n## Why inversions matter\n\nInversions let the bass line move smoothly instead of leaping between roots, and they change a chord's stability. A root-position tonic feels final; a `6/4` chord is unstable and typically resolves onward. Composers choose inversions largely to control **voice leading** — how each line moves from chord to chord.\n\n## Check yourself\n\nSpell the F major triad, then write all three positions. (Answer: `F–A–C` root position; `A–C–F` first inversion, figure `6`; `C–F–A` second inversion, figure `6/4`.) Then build triads on every white key and identify each quality using the two-thirds test — try the **/tools/scale-explorer** and **chord-builder** to check your spellings, and continue to the diatonic-chords and seventh-chords lessons.",
+    "bodyMdx": "## What a triad is\n\nA **triad** is a three-note chord built by stacking two thirds. Its members have names:\n\n- **Root** — the note the chord is named for and built from.\n- **Third** — a third above the root; it decides *major vs. minor*.\n- **Fifth** — a fifth above the root; it decides *stability*.\n\nStack `C`, then a third up (`E`), then another third up (`G`) and you have a **C major** triad: `C–E–G`.\n\n## The four qualities\n\nThe two thirds inside the triad can each be major (M3, 4 semitones) or minor (m3, 3 semitones). The combination sets the quality: **major** stacks M3 then m3 (`C–E–G`, perfect 5th), **minor** stacks m3 then M3 (`C–E♭–G`, perfect 5th), **diminished** stacks two m3s (`C–E♭–G♭`, diminished 5th), and **augmented** stacks two M3s (`C–E–G♯`, augmented 5th). Tap each card below to hear all four built on `C`:\n\n<div data-tmr-embed=\"0\"></div>\n\nMajor and minor triads are consonant and common; diminished and augmented triads contain an unstable fifth and sound tense.\n\n## Inversions: which note is in the bass\n\nA triad is in **root position** when the root is the lowest sounding note. Move the root up an octave and a different chord tone sits in the bass — that is an **inversion**. The notes are the same, so it is still a C major chord, but its voicing and function shift. Play the three positions in the score below — root position (`C` in the bass), first inversion (`E` in the bass), then second inversion (`G` in the bass) — and hear how the same three notes re-stack:\n\n<div data-tmr-embed=\"1\"></div>\n\n## Figured bass shorthand\n\nClassical harmony labels inversions with **figured bass** — numbers showing the intervals above the bass note. The full figures reduce to a familiar shorthand:\n\n- **Root position** — intervals of a 5th and 3rd above the bass → figure `5/3`, usually written as nothing at all.\n- **First inversion** — a 6th and a 3rd above the bass → `6/3`, shortened to **`6`**.\n- **Second inversion** — a 6th and a 4th above the bass → **`6/4`**.\n\nSo a C major chord with `E` in the bass is a \"six chord\"; with `G` in the bass it is a \"six-four.\"\n\n## Roman numerals plus inversion\n\nCombine the two systems and you can describe any diatonic chord precisely. In C major:\n\n- `I` — C major, root position (`C–E–G`).\n- `I6` — C major, first inversion (`E–G–C`).\n- `V6/4` — G major, second inversion (`D–G–B`).\n\nThe lowercase/uppercase of the Roman numeral shows quality; the added figure shows the inversion. This is the notation you will use to analyse the pieces in the catalogue.\n\n## Why inversions matter\n\nInversions let the bass line move smoothly instead of leaping between roots, and they change a chord's stability. A root-position tonic feels final; a `6/4` chord is unstable and typically resolves onward. Composers choose inversions largely to control **voice leading** — how each line moves from chord to chord.\n\n## Check yourself\n\nSpell the F major triad, then write all three positions. (Answer: `F–A–C` root position; `A–C–F` first inversion, figure `6`; `C–F–A` second inversion, figure `6/4`.) Replay the C major triad and its inversions in the score above to hear how the same three notes shift, then continue to the diatonic-chords and seventh-chords lessons.",
     "details": {
       "form": "lesson",
       "related": [
@@ -1100,6 +1404,55 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "omt-diatonic-chords",
         "omt-seventh-chords",
         "omt-voice-leading"
+      ],
+      "embeds": [
+        {
+          "tool": "chord-board",
+          "title": "The four triad qualities on C",
+          "caption": "Major, minor, diminished, augmented — tap each to hear it.",
+          "chords": [
+            "C",
+            "Cm",
+            "Cdim",
+            "Caug"
+          ],
+          "labels": [
+            "major",
+            "minor",
+            "dim",
+            "aug"
+          ]
+        },
+        {
+          "tool": "score",
+          "title": "C major triad and its inversions",
+          "caption": "Root position, first inversion, second inversion.",
+          "tex": ":1 (c4 e4 g4) | (e4 g4 c5) | (g4 c5 e5) |"
+        }
+      ]
+    },
+    "extraTags": [
+      "cc-by-sa"
+    ]
+  },
+  "omt-voice-leading": {
+    "bodyMdx": "## Lines, not just chords\n\n**Voice leading** is how the individual melodic lines — the *voices* — move from one chord to the next. A progression like `C–F–G–C` tells you *which* chords sound, but not *how* each note travels to the next. Good voice leading connects those notes smoothly, so the harmony sounds like several singing lines rather than a stack of blocks being shoved around.\n\nThink of a four-part choir: soprano, alto, tenor, bass. Each singer holds one line and wants an easy note to move to. The art is choosing chord positions so that every voice moves as little as possible while the harmony still changes.\n\n## Keep the common tones\n\nIf two chords share a note, **hold that note in the same voice**. `C` (C–E–G) and `F` (F–A–C) share the note `C`; keeping `C` in one voice means only the other two notes have to move. Common tones are the glue that make consecutive chords feel related.\n\n## Move by the smallest interval\n\nWhen a voice must move, prefer a **step** (a second) over a **leap**. Inner voices especially should tiptoe from one chord tone to the nearest one in the next chord. Big jumps draw attention and break the illusion of independent lines; small moves keep everything smooth.\n\n## Resolve the tendency tones\n\nSome notes carry built-in pull and want to move a specific way:\n\n- The **leading tone** (scale degree 7) wants to rise a half-step to the tonic.\n- The **seventh of a chord** wants to fall by step.\n\nIn `G7–C`, the leading tone `B` rises to `C` and the seventh `F` falls to `E`. Honour those tendencies and cadences resolve convincingly; ignore them and the harmony sounds unfinished.\n\n## Favour contrary motion\n\n**Contrary motion** — one voice rising while another falls — is the single most reliable way to keep voices independent and the texture clean. When the bass climbs, let an upper voice descend, and vice versa. It is the opposite of everyone moving in the same direction, which tends to flatten the lines into a single thickened melody.\n\n## Avoid parallel fifths and octaves\n\nIf two voices are a fifth (or an octave) apart and both move to *another* fifth (or octave) in the same direction, they briefly fuse into one — you lose an independent voice. Classical part-writing forbids these **parallel fifths and octaves** for exactly that reason. Contrary or oblique motion is the usual cure.\n\n## A worked example\n\nThe score below is pure **contrary motion**: the top voice climbs a full scale while the bass walks down against it, one two-note chord per beat. Play it slowly and follow each line separately — the outer voices mirror each other, which is why it sounds so smooth.\n\n<div data-tmr-embed=\"0\"></div>\n\n## Where it matters\n\n- **Harmonising a melody:** choose chord voicings that keep the accompaniment lines smooth under the tune.\n- **Arranging a lead sheet:** a lead sheet gives symbols; voice leading decides which note of each chord sits where.\n- **Writing bass lines:** a stepwise bass moving in contrary motion to the melody is a hallmark of strong writing.\n\n## Check yourself\n\nVoice `C–Am–F–G` for four parts, keeping common tones and moving the rest by step. (One good answer keeps the shared `C` between `C` and `Am`, and the shared `A` between `Am` and `F`, so each change moves only one or two notes.) Small, smooth moves beat big jumps almost every time. Next, see cadences to hear where these resolving lines come to rest.",
+    "details": {
+      "form": "lesson",
+      "related": [
+        "omt-diatonic-chords",
+        "omt-cadences",
+        "omt-seventh-chords",
+        "omt-secondary-dominants",
+        "omt-triads-and-inversions"
+      ],
+      "embeds": [
+        {
+          "tool": "score",
+          "title": "Contrary motion",
+          "caption": "Top voice rises while the bass falls — the smoothest way between chords.",
+          "tex": "\\title \"Contrary motion\" .\n:4 (c4 e3) (d4 d3) (e4 c3) (f4 b2) | (g4 a2) (a4 g2) (b4 f2) (c5 e2) |"
+        }
       ]
     },
     "extraTags": [
@@ -1452,7 +1805,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "ukulele-fingerpicking-primer": {
-    "bodyMdx": "## From strumming to picking\n\n**Fingerpicking** (or fingerstyle) means plucking strings individually instead of strumming them all at once. It turns a chord into a flowing, arpeggiated texture — perfect for ballads and instrumentals. This primer assumes you can hold basic chords and are in standard `g–C–E–A` tuning.\n\n## The picking hand\n\nAssign one finger per string. Rest your picking hand lightly and let each finger \"own\" a string:\n\n```\nString:  g      C      E      A\nFinger:  thumb  index  middle ring\nSymbol:  p      i      m      a     (classical guitar notation)\n```\n\n- **Thumb (p)** plucks the top `g` string with a downward motion.\n- **Index (i), middle (m), ring (a)** pluck the `C`, `E`, and `A` strings with a slight upward curl.\n\nKeep the hand relaxed and let the fingers move from the knuckle, not the whole arm. Aim for an even, warm tone — pluck, don't yank.\n\n## Pattern 1: straight roll\n\nPluck the strings one after another, low to high, as an arpeggio. Hold a **C chord** (`0 0 0 3`) and play:\n\n```\nCount:  1     2     3     4\nString: g     C     E     A\nFinger: p     i     m     a\n```\n\nEach note rings into the next, outlining the chord. Practise slowly and evenly with **/tools/metronome**.\n\n## Pattern 2: roll up and back\n\nA fuller, four-note-plus pattern that goes up then partway back down — eight notes over the bar:\n\n```\nCount:  1 & 2 & 3 & 4 &\nString: g C E A E C E A\nFinger: p i m a m i m a\n```\n\nThis \"wave\" shape is the backbone of gentle fingerstyle accompaniment.\n\n## Pattern 3: pinch and alternate\n\nPlay the thumb and a finger **together** (a \"pinch\") on beat 1, then fill in:\n\n```\nBeat 1: g + A together (p + a)\nBeat 2: E   (m)\nBeat 3: C   (i)\nBeat 4: E   (m)\n```\n\nThe simultaneous bass-and-melody pinch gives the illusion of two players at once — the foundation of melodic fingerstyle.\n\n## Making it musical\n\n- **Let notes ring:** keep the fretting hand holding the full chord so plucked notes sustain into a harmony.\n- **Bring out the top:** the `A`-string note (ring finger) often carries the melody — pluck it slightly louder.\n- **Anchor lightly:** some players rest a pinky near the soundhole for stability, but don't press down or tense up.\n- **Stay steady:** fingerpicking exposes timing. A rock-solid thumb pulse holds everything together.\n\n## Combining with chords\n\nThe real payoff comes from changing chords *while* keeping the pattern going. Loop `| C | Am | F | G |`, one bar each, and play Pattern 1 through every chord. The picking hand keeps doing the same `p-i-m-a` roll; only the fretting hand changes shape. Because the pattern is chord-shape-agnostic, you can apply it to any progression you already know.\n\n## Try it\n\nHold a C chord and play Pattern 1 (`p-i-m-a`) slowly at 60 BPM on **/tools/metronome** until each note is clean and even. Then loop `| C | Am | F | G |` and keep the roll going through the changes, letting every note ring. When comfortable, try Pattern 3's pinch to start shaping a melody. Revisit the first-four-chords lesson for the shapes and the strumming lesson for rhythmic variety.",
+    "bodyMdx": "## From strumming to picking\n\n**Fingerpicking** (or fingerstyle) means plucking strings individually instead of strumming them all at once. It turns a chord into a flowing, arpeggiated texture — perfect for ballads and instrumentals. This primer assumes you can hold basic chords and are in standard `g–C–E–A` tuning.\n\n## The picking hand\n\nAssign one finger per string. Rest your picking hand lightly and let each finger \"own\" a string:\n\n| String | Finger | Symbol |\n| --- | --- | --- |\n| g | thumb | p |\n| C | index | i |\n| E | middle | m |\n| A | ring | a |\n\n(`p`, `i`, `m`, `a` are the classical-guitar symbols for thumb, index, middle, and ring.)\n\n- **Thumb (p)** plucks the top `g` string with a downward motion.\n- **Index (i), middle (m), ring (a)** pluck the `C`, `E`, and `A` strings with a slight upward curl.\n\nKeep the hand relaxed and let the fingers move from the knuckle, not the whole arm. Aim for an even, warm tone — pluck, don't yank.\n\n## Pattern 1: straight roll\n\nPluck the strings one after another, low to high, as an arpeggio. Hold a **C chord** (`0 0 0 3`) and play:\n\n| Count | 1 | 2 | 3 | 4 |\n| --- | --- | --- | --- | --- |\n| String | g | C | E | A |\n| Finger | p | i | m | a |\n\nEach note rings into the next, outlining the chord. Practise slowly and evenly with a [metronome](/tools/metronome).\n\n## Pattern 2: roll up and back\n\nA fuller, four-note-plus pattern that goes up then partway back down — eight notes over the bar:\n\n| Count | 1 | & | 2 | & | 3 | & | 4 | & |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| String | g | C | E | A | E | C | E | A |\n| Finger | p | i | m | a | m | i | m | a |\n\nThis \"wave\" shape is the backbone of gentle fingerstyle accompaniment.\n\n## Pattern 3: pinch and alternate\n\nPlay the thumb and a finger **together** (a \"pinch\") on beat 1, then fill in:\n\n| Beat | String(s) | Finger(s) |\n| --- | --- | --- |\n| 1 | g + A (pinch together) | p + a |\n| 2 | E | m |\n| 3 | C | i |\n| 4 | E | m |\n\nThe simultaneous bass-and-melody pinch gives the illusion of two players at once — the foundation of melodic fingerstyle.\n\n## Making it musical\n\n- **Let notes ring:** keep the fretting hand holding the full chord so plucked notes sustain into a harmony.\n- **Bring out the top:** the `A`-string note (ring finger) often carries the melody — pluck it slightly louder.\n- **Anchor lightly:** some players rest a pinky near the soundhole for stability, but don't press down or tense up.\n- **Stay steady:** fingerpicking exposes timing. A rock-solid thumb pulse holds everything together.\n\n## Combining with chords\n\nThe real payoff comes from changing chords *while* keeping the pattern going. Loop `| C | Am | F | G |`, one bar each, and play Pattern 1 through every chord. The picking hand keeps doing the same `p-i-m-a` roll; only the fretting hand changes shape. Because the pattern is chord-shape-agnostic, you can apply it to any progression you already know. Tap the interactive chord diagrams below to hear each grip you'll pick over.\n\n<div data-tmr-embed=\"0\"></div>\n\n## Try it\n\nHold a C chord and play Pattern 1 (`p-i-m-a`) slowly at 60 BPM on a [metronome](/tools/metronome) until each note is clean and even. Then loop `| C | Am | F | G |` and keep the roll going through the changes, letting every note ring. Check each grip you'll pick over against the interactive chord diagrams above. When comfortable, try Pattern 3's pinch to start shaping a melody. Revisit the first-four-chords lesson for the shapes and the strumming lesson for rhythmic variety.",
     "details": {
       "form": "lesson",
       "timeSignature": "4/4",
@@ -1460,6 +1813,19 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "ukulele-first-four-chords",
         "ukulele-strumming-patterns",
         "omt-rhythm-and-meter"
+      ],
+      "embeds": [
+        {
+          "tool": "chord-diagrams",
+          "title": "The chords to pick",
+          "instrument": "ukulele",
+          "chords": [
+            "C",
+            "Am",
+            "F",
+            "G"
+          ]
+        }
       ]
     },
     "extraTags": [
@@ -1469,7 +1835,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "ukulele-first-four-chords": {
-    "bodyMdx": "## Four chords, dozens of songs\n\nThe ukulele is the friendliest fretted instrument to start on, and just four chords — **C, G, Am, and F** — unlock an enormous number of songs. Together they form a `I – V – vi – IV` progression in the key of C, the pattern behind countless pop hits. This lesson assumes **standard tuning**, `g–C–E–A` (the top `g` is a high \"re-entrant\" string).\n\n## Reading a chord diagram\n\nA ukulele has four strings. We'll write each chord as four numbers, one per string in order `g C E A`, where `0` means an open string and a number means the fret to press:\n\n```\ng C E A\n```\n\nKeep fingertips just behind the fret, press firmly, and arch your fingers so they don't mute neighbouring strings.\n\n## The four shapes\n\n**C major** — the easiest chord on the instrument:\n\n```\ng C E A\n0 0 0 3     ← ring finger, A string, 3rd fret\n```\n\n**A minor** — one finger:\n\n```\ng C E A\n2 0 0 0     ← middle finger, g string, 2nd fret\n```\n\n**F major** — two fingers:\n\n```\ng C E A\n2 0 1 0     ← index on E string 1st fret, middle on g string 2nd fret\n```\n\n**G major** — three fingers, forms a little triangle:\n\n```\ng C E A\n0 2 3 2     ← index C-2, middle A-2, ring E-3\n```\n\n## Practise the changes, not just the chords\n\nHolding a chord is easy; *switching* is the real skill. Two friendly pairs to drill first:\n\n- **C ↔ Am:** only your fretting hand's position shifts — a great confidence builder.\n- **F ↔ C:** lift to one finger and back.\n\nThen tackle the harder move, **anything ↔ G**, since G uses three fingers. Practise each change slowly: strum the first chord, switch, strum the second, repeat. Speed comes from repetition, not force.\n\n## Your first progression\n\nPut them in this order and strum each chord four times (one bar of 4/4 each):\n\n```\n| C  | G  | Am | F  |\n```\n\nThat `C – G – Am – F` loop is the \"four-chord song\" — try singing along to any pop tune over it. Reverse or reorder them (`Am – F – C – G`, `C – Am – F – G`) for different moods; the same four shapes cover them all.\n\n## Tips for clean chords\n\n- **Tune first, every time** — an out-of-tune uke makes correct fingering sound wrong. Aim for `g C E A`.\n- Press just hard enough to sound clear; if a string buzzes, move your finger closer to the fret.\n- Strum over the spot where the neck meets the body for a bright, even tone.\n\n## Try it\n\nSet **/tools/metronome** to a slow 60 BPM and play `| C | G | Am | F |`, changing chords exactly on beat 1 of each bar. If a change is late, slow down until it lands on time. Once smooth, speed up gradually. Then move on to the ukulele-strumming-patterns lesson to add rhythm, and check your finger placement against **/tools/fretboard**.",
+    "bodyMdx": "## Four chords, dozens of songs\n\nThe ukulele is the friendliest fretted instrument to start on, and just four chords — **C, G, Am, and F** — unlock an enormous number of songs. Together they form a `I – V – vi – IV` progression in the key of C, the pattern behind countless pop hits. This lesson assumes **standard tuning**, `g–C–E–A` (the top `g` is a high \"re-entrant\" string).\n\n## Reading a chord diagram\n\nA ukulele has four strings, in order `g C E A` (the top `g` is a high, \"re-entrant\" string). In the interactive chord diagrams below, each shape shows those four strings: a dot marks a string you press, and an open (undotted) string rings freely. Tap any shape to hear it.\n\nKeep fingertips just behind the fret, press firmly, and arch your fingers so they don't mute neighbouring strings.\n\n## The four shapes\n\nTap any shape in the diagrams below to hear it, then copy the grip. Each chord adds a finger:\n\n- **C major** — the easiest chord on the instrument: ring finger on the A string, 3rd fret (one finger).\n- **A minor** — one finger: middle finger on the g string, 2nd fret.\n- **F major** — two fingers: index on the E string 1st fret, middle on the g string 2nd fret.\n- **G major** — three fingers forming a little triangle: index on C-2, middle on A-2, ring on E-3.\n\n<div data-tmr-embed=\"0\"></div>\n\n## Practise the changes, not just the chords\n\nHolding a chord is easy; *switching* is the real skill. Two friendly pairs to drill first:\n\n- **C ↔ Am:** only your fretting hand's position shifts — a great confidence builder.\n- **F ↔ C:** lift to one finger and back.\n\nThen tackle the harder move, **anything ↔ G**, since G uses three fingers. Practise each change slowly: strum the first chord, switch, strum the second, repeat. Speed comes from repetition, not force.\n\n## Your first progression\n\nPut them in this order and strum each chord four times (one bar of 4/4 each):\n\n```\n| C  | G  | Am | F  |\n```\n\nThat `C – G – Am – F` loop is the \"four-chord song\" — try singing along to any pop tune over it. Reverse or reorder them (`Am – F – C – G`, `C – Am – F – G`) for different moods; the same four shapes cover them all.\n\n## Tips for clean chords\n\n- **Tune first, every time** — an out-of-tune uke makes correct fingering sound wrong. Aim for `g C E A`.\n- Press just hard enough to sound clear; if a string buzzes, move your finger closer to the fret.\n- Strum over the spot where the neck meets the body for a bright, even tone.\n\n## Try it\n\nSet a [metronome](/tools/metronome) to a slow 60 BPM and play `| C | G | Am | F |`, changing chords exactly on beat 1 of each bar. If a change is late, slow down until it lands on time. Once smooth, speed up gradually. Then move on to the ukulele-strumming-patterns lesson to add rhythm, and check your finger placement against the interactive chord diagrams above — tap any shape to hear it.",
     "details": {
       "key": "C",
       "form": "lesson",
@@ -1478,6 +1844,20 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "ukulele-strumming-patterns",
         "ukulele-fingerpicking-primer",
         "omt-diatonic-chords"
+      ],
+      "embeds": [
+        {
+          "tool": "chord-diagrams",
+          "title": "Your first four chords",
+          "caption": "Tap a shape to hear it. C, G, Am, F — enough for hundreds of songs.",
+          "instrument": "ukulele",
+          "chords": [
+            "C",
+            "G",
+            "Am",
+            "F"
+          ]
+        }
       ]
     },
     "extraTags": [
@@ -1486,7 +1866,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "ukulele-major-scale-shapes": {
-    "bodyMdx": "## Goal\n\nMajor-scale shapes turn the ukulele fretboard from a mystery into a map. Learn one shape and you can\nplay a scale in any key just by sliding it — the same movable idea guitarists and bassists use. This\nbuilds finger accuracy, fretboard knowledge, and the melodic vocabulary behind riffs and solos.\n(Standard re-entrant tuning, strings 4→1: `G C E A`.)\n\n## How to do it\n\nStart with the **open-position C major scale** — the clearest one to hear and see. Strings numbered\n`4` (top `G`) to `1` (bottom `A`):\n\n```\nC string (3): C (open)   D (fr 2)\nE string (2): E (open)   F (fr 1)   G (fr 3)\nA string (1): A (open)   B (fr 2)   C (fr 3)\n```\n\nSo the scale runs `C D E F G A B C` across the bottom three strings.\n\nSteps:\n\n1. **Play it up and down slowly,** one finger per fret, saying the note names.\n2. **Fret cleanly** just behind each fret so open and fretted notes ring equally.\n3. Loop it until the sound of the major scale is locked in your ear.\n\n**Making it movable (closed shape).** Replace the open strings with a fretted root so the shape can\nslide. A one-octave closed major shape with the root on the C string (string 3) at fret `n`:\n\n```\nC string (3): n (deg 1)   n+2 (deg 2)   n+4 (deg 3)\nE string (2): n+1 (deg 4)  n+3 (deg 5)\nA string (1): n   (deg 6)  n+2 (deg 7)   n+3 (deg 8)\n```\n\nBecause there are no open strings, sliding the whole shape up two frets raises the whole scale a whole\nstep — move it and read off the new key. Practise to a click at ♩ = 60.\n\n## Common mistakes\n\n- **Muting the next string** by letting a fretting finger lean flat — keep fingertips arched.\n- **Uneven volume between open and fretted notes** — press a touch firmer on fretted ones at first.\n- **Forgetting where the root is.** Always know which note is \"1\"; that is what makes the shape movable.\n\n## How to progress\n\nSlide the closed shape into different keys, add a second octave, and speed up on\n[/tools/metronome](/tools/metronome). Map the notes with the [Fretboard tool](/tools/fretboard), then\napply the scale melodically in [Aloha ʻOe](/aloha-oe-ukulele).",
+    "bodyMdx": "## Goal\n\nMajor-scale shapes turn the ukulele fretboard from a mystery into a map. Learn one shape and you can\nplay a scale in any key just by sliding it — the same movable idea guitarists and bassists use. This\nbuilds finger accuracy, fretboard knowledge, and the melodic vocabulary behind riffs and solos.\n(Standard re-entrant tuning, strings 4→1: `G C E A`.)\n\n## How to do it\n\nStart with the **open-position C major scale** — the clearest one to hear and see. Strings numbered\n`4` (top `G`) to `1` (bottom `A`):\n\n| String | Notes (fret) |\n| --- | --- |\n| C string (3) | C (open), D (fr 2) |\n| E string (2) | E (open), F (fr 1), G (fr 3) |\n| A string (1) | A (open), B (fr 2), C (fr 3) |\n\nSo the scale runs `C D E F G A B C` across the bottom three strings.\n\nSteps:\n\n1. **Play it up and down slowly,** one finger per fret, saying the note names.\n2. **Fret cleanly** just behind each fret so open and fretted notes ring equally.\n3. Loop it until the sound of the major scale is locked in your ear.\n\n**Making it movable (closed shape).** Replace the open strings with a fretted root so the shape can\nslide. A one-octave closed major shape with the root on the C string (string 3) at fret `n`:\n\n| String | Frets (scale degree) |\n| --- | --- |\n| C string (3) | n (deg 1), n+2 (deg 2), n+4 (deg 3) |\n| E string (2) | n+1 (deg 4), n+3 (deg 5) |\n| A string (1) | n (deg 6), n+2 (deg 7), n+3 (deg 8) |\n\nBecause there are no open strings, sliding the whole shape up two frets raises the whole scale a whole\nstep — move it and read off the new key. Practise to a click at ♩ = 60.\n\nPlay the C-major scale on the playable score below to hear the target sound as you learn the shapes.\n\n## Common mistakes\n\n- **Muting the next string** by letting a fretting finger lean flat — keep fingertips arched.\n- **Uneven volume between open and fretted notes** — press a touch firmer on fretted ones at first.\n- **Forgetting where the root is.** Always know which note is \"1\"; that is what makes the shape movable.\n\n## How to progress\n\nSlide the closed shape into different keys, add a second octave, and speed up on\n[/tools/metronome](/tools/metronome). Map the notes with the [Fretboard tool](/tools/fretboard), then\napply the scale melodically in [Aloha ʻOe](/aloha-oe-ukulele).",
     "details": {
       "key": "C major",
       "form": "exercise",
@@ -1502,7 +1882,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "ukulele-strumming-patterns": {
-    "bodyMdx": "## Rhythm is what brings chords to life\n\nOnce you can hold a few ukulele chords, the **strumming hand** is what turns them into music. Good strumming is mostly about a relaxed, *constant* arm motion and knowing when to actually touch the strings. This lesson uses `D` for a downstroke (strum toward the floor) and `U` for an upstroke (strum back up).\n\n## How to strum\n\nStrum with the pad of your index finger (nail-side going down, fleshy pad coming up) or a felt pick, over the spot where the neck meets the body. Keep your wrist loose — the motion comes from a gentle rotation of the forearm and wrist, not stiff fingers. Aim to brush all four strings evenly.\n\n## Pattern 1: all downstrokes\n\nStart dead simple — four downstrokes per bar of 4/4:\n\n```\nBeat:   1   2   3   4\nStrum:  D   D   D   D\n```\n\nCount out loud with **/tools/metronome**. This builds the steady pulse everything else sits on.\n\n## Pattern 2: down-up eighths\n\nFill in the \"and\" between each beat with an upstroke. Your hand now moves down-up continuously:\n\n```\nCount:  1 & 2 & 3 & 4 &\nStrum:  D U D U D U D U\n```\n\nThe secret: keep your hand pumping down-up the whole time like a metronome, even on beats where you don't hit the strings. That constant motion keeps your timing locked.\n\n## Pattern 3: the most common pop strum\n\nMiss a couple of strums to create a groove. Here the hand still moves down-up throughout, but on the \"2\" (the third motion) you *miss* the strings — shown as `(x)`:\n\n```\nCount:  1 & 2 & 3 & 4 &\nStrum:  D   D U   U D U\nMotion: D U D U D U D U   ← hand never stops moving\n```\n\nSo you play: **down, (skip), down-up, (skip)-up, down-up**. This \"D-DU-UDU\" pattern fits a huge number of songs.\n\n## Pattern 4: the island strum\n\nThe signature ukulele groove, four bars of feel-good rhythm:\n\n```\nCount:  1 & 2 & 3 & 4 &\nStrum:  D   D U   U D U\n```\n\nYes — the classic \"island strum\" is the same **D – D U – U D U** shape as pattern 3. Once your hand internalises the constant down-up motion, this famous pattern falls out naturally. Emphasise beat 1 slightly for a lilt.\n\n## Adding chunks (muting)\n\nFor a percussive feel, add a **chunk**: as your hand strums down, lightly slap the strings with the side or heel of your palm to deaden them, making a \"chuck\" sound on the backbeat (beats 2 and 4). This is what gives reggae and modern pop ukulele its bounce.\n\n## Practice strategy\n\n1. Pick **one** chord you already know and drill the pattern until it's automatic — don't fight the chord changes and the rhythm at once.\n2. Keep the strumming hand moving continuously; think of missed strums as the hand passing *near* the strings.\n3. Only then add chord changes, keeping the strum steady even if the chords lag at first.\n\n## Try it\n\nLoop `| C | G | Am | F |` from the first-four-chords lesson and apply pattern 3 (**D-DU-UDU**) to each bar at 70 BPM on **/tools/metronome**. Keep the arm swinging even during skipped strums. When the groove feels natural, add palm chunks on beats 2 and 4. Then explore the ukulele-fingerpicking-primer for a gentler, melodic approach.",
+    "bodyMdx": "## Rhythm is what brings chords to life\n\nOnce you can hold a few ukulele chords, the **strumming hand** is what turns them into music. Good strumming is mostly about a relaxed, *constant* arm motion and knowing when to actually touch the strings. Throughout this lesson `↓` is a downstroke (strum toward the floor), `↑` is an upstroke (strum back up), and `·` is a rest where your hand keeps moving but misses the strings.\n\n## How to strum\n\nStrum with the pad of your index finger (nail-side going down, fleshy pad coming up) or a felt pick, over the spot where the neck meets the body. Keep your wrist loose — the motion comes from a gentle rotation of the forearm and wrist, not stiff fingers. Aim to brush all four strings evenly.\n\n## Pattern 1: all downstrokes\n\nStart dead simple — four downstrokes per bar of 4/4. Press play and strum with the head:\n\n<div data-tmr-embed=\"0\"></div>\n\n## Pattern 2: down-up eighths\n\nFill in the \"and\" between each beat with an upstroke. Your hand now moves down-up continuously:\n\n<div data-tmr-embed=\"1\"></div>\n\n## Pattern 3: the most common pop strum\n\nMiss a couple of strums to create a groove. The hand still moves down-up throughout, but you *skip* the strings on some motions — the famous **D–DU–UDU**:\n\n<div data-tmr-embed=\"2\"></div>\n\nThe secret is that your strumming hand never stops moving down-up — the skipped strums are just the hand passing *near* the strings without touching them.\n\n## Pattern 4: the island strum\n\nThe signature ukulele groove is the **same D–DU–UDU shape**, played through a chord progression. Emphasise beat 1 slightly for a lilt:\n\n<div data-tmr-embed=\"3\"></div>\n\n## Adding chunks (muting)\n\nFor a percussive feel, add a **chunk**: as your hand strums down, lightly slap the strings with the side or heel of your palm to deaden them, making a \"chuck\" sound on the backbeat (beats 2 and 4). This is what gives reggae and modern pop ukulele its bounce.\n\n## The chords to strum over\n\nCheck each grip before you strum over it — tap any shape to hear it.\n\n<div data-tmr-embed=\"4\"></div>\n\n## Practice strategy\n\n1. Pick **one** chord you already know and drill the pattern until it's automatic — don't fight the chord changes and the rhythm at once.\n2. Keep the strumming hand moving continuously; think of missed strums as the hand passing *near* the strings.\n3. Only then add chord changes, keeping the strum steady even if the chords lag at first.\n\n## Try it\n\nLoop `| C | G | Am | F |` and apply pattern 3 (**D–DU–UDU**) to each bar. Keep the arm swinging even during skipped strums, and when the groove feels natural add palm chunks on beats 2 and 4. Then explore the [fingerpicking primer](/catalogue/ukulele-fingerpicking-primer) for a gentler, melodic approach.",
     "details": {
       "form": "lesson",
       "timeSignature": "4/4",
@@ -1510,6 +1890,101 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "ukulele-first-four-chords",
         "ukulele-fingerpicking-primer",
         "omt-rhythm-and-meter"
+      ],
+      "embeds": [
+        {
+          "tool": "strum",
+          "title": "Four on the floor",
+          "caption": "One downstroke per beat over a C chord. Build the steady pulse everything else sits on.",
+          "instrument": "ukulele",
+          "chords": [
+            "C"
+          ],
+          "pattern": [
+            "D",
+            "-",
+            "D",
+            "-",
+            "D",
+            "-",
+            "D",
+            "-"
+          ],
+          "tempo": 80
+        },
+        {
+          "tool": "strum",
+          "title": "Down-up eighths",
+          "caption": "Keep the hand pumping down-up like a metronome — that constant motion keeps your timing locked.",
+          "instrument": "ukulele",
+          "chords": [
+            "C"
+          ],
+          "pattern": [
+            "D",
+            "U",
+            "D",
+            "U",
+            "D",
+            "U",
+            "D",
+            "U"
+          ],
+          "tempo": 80
+        },
+        {
+          "tool": "strum",
+          "title": "D–DU–UDU (the pop strum)",
+          "caption": "Down, skip, down-up, skip-up, down-up. This one pattern fits a huge number of songs.",
+          "instrument": "ukulele",
+          "chords": [
+            "C"
+          ],
+          "pattern": [
+            "D",
+            "-",
+            "D",
+            "U",
+            "-",
+            "U",
+            "D",
+            "U"
+          ],
+          "tempo": 80
+        },
+        {
+          "tool": "strum",
+          "title": "The island strum over a progression",
+          "caption": "The pop pattern applied to C–G–Am–F, one chord per bar — the classic feel-good ukulele groove.",
+          "instrument": "ukulele",
+          "chords": [
+            "C",
+            "G",
+            "Am",
+            "F"
+          ],
+          "pattern": [
+            "D",
+            "-",
+            "D",
+            "U",
+            "-",
+            "U",
+            "D",
+            "U"
+          ],
+          "tempo": 80
+        },
+        {
+          "tool": "chord-diagrams",
+          "instrument": "ukulele",
+          "chords": [
+            "C",
+            "G",
+            "Am",
+            "F"
+          ]
+        }
       ]
     },
     "extraTags": [
@@ -1519,7 +1994,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "walking-bass-basics": {
-    "bodyMdx": "## What \"walking\" means\n\nA **walking bass line** is a smooth, mostly stepwise line of steady quarter notes — one note per beat — that outlines the chords while keeping the swing feel moving forward. It's the heartbeat of jazz, and the same principles serve blues and swing. We'll build one over a **ii–V–I** in C major, the most important progression in jazz: `Dm7 – G7 – Cmaj7`. Standard bass tuning `E–A–D–G`.\n\n## The one unbreakable rule: root on beat 1\n\nWhatever else you do, **play the chord's root on beat 1** of each new chord. That single note tells the listener the harmony has changed. Everything between downbeats is your freedom to connect smoothly to the *next* root.\n\n```\nBeat:  1     2     3     4    | 1 (next chord)\nNote:  Root  ...   ...   ...  | Root\n        ↑ chord tone            ↑ approach the next root\n```\n\n## The four beats of a bar\n\nA reliable recipe for each bar:\n\n- **Beat 1** — the **root** (always).\n- **Beats 2 & 3** — other **chord tones** (3rd, 5th, 7th) or scale notes that move by step.\n- **Beat 4** — an **approach note** that leads by a half step or a step into the next bar's root.\n\nThat beat-4 approach is the glue. The strongest is a chromatic (half-step) approach from just above or below the target root.\n\n## A worked ii–V–I line\n\nOver `Dm7 – G7 – Cmaj7` (one chord per bar) in C:\n\n```\n| Dm7              | G7               | Cmaj7   |\n  D    A    F    A♭   G    B    D    D♭   C ...\n  1    5    ♭3   ↓    1    3    5    ↓    1\n  root chord tones ↑approach  root  tones ↑approach root\n```\n\nRead it beat by beat:\n\n- **Bar 1 (Dm7):** `D – A – F – A♭`. Root on beat 1, then chord tones (`A` the 5th, `F` the ♭3rd), then `A♭` on beat 4 — a chromatic half step **down** into the next root, `G`.\n- **Bar 2 (G7):** `G – B – D – D♭`. Root, then chord tones (`B` the 3rd, `D` the 5th), then `D♭` on beat 4 — a chromatic half step **down** into `C`.\n- **Bar 3 (Cmaj7):** lands on the root `C` on beat 1, resolving the line.\n\nThose beat-4 half-step approaches (`A♭→G`, `D♭→C`) are what make the line sound intentional and connected rather than random.\n\n## Techniques for smoothness\n\n- **Approach notes:** a half step above or below the next root is the most common and strongest connector; a scale step also works.\n- **Prefer steps over leaps.** A walking line should mostly *walk*, not jump. Occasional octave leaps add variety but shouldn't dominate.\n- **Use chord tones on strong beats (1 and 3),** passing/approach tones on weak beats (2 and 4).\n- **Keep it steady.** Even, swung quarter notes with consistent note length and volume are more important than fancy note choices.\n\n## Practice approach\n\n1. First play *only roots* on beat 1 of each chord through the progression — get the changes solid.\n2. Add the fifth on beat 3.\n3. Fill in beat 2 with a chord tone.\n4. Finally add a chromatic approach on beat 4. You've built a full walking line one layer at a time.\n\n## Try it\n\nLoop `Dm7 – G7 – Cmaj7 – Cmaj7`, one chord per bar, at 80 BPM on **/tools/metronome** with a swing feel. Play only roots on beat 1 for four passes, then add the fifth, then a beat-4 chromatic approach into each next root. Keep the quarter notes dead steady. Check chord-tone locations on **/tools/fretboard** and review the seventh-chords lesson so you know which notes belong to each chord.",
+    "bodyMdx": "## What \"walking\" means\n\nA **walking bass line** is a smooth, mostly stepwise line of steady quarter notes — one note per beat — that outlines the chords while keeping the swing feel moving forward. It's the heartbeat of jazz, and the same principles serve blues and swing. We'll build one over a **ii–V–I** in C major, the most important progression in jazz: `Dm7 – G7 – Cmaj7`. Standard bass tuning `E–A–D–G`.\n\n## The one unbreakable rule: root on beat 1\n\nWhatever else you do, **play the chord's root on beat 1** of each new chord. That single note tells the listener the harmony has changed. Everything between downbeats is your freedom to connect smoothly to the *next* root.\n\n```\nBeat:  1     2     3     4    | 1 (next chord)\nNote:  Root  ...   ...   ...  | Root\n        ↑ chord tone            ↑ approach the next root\n```\n\n## The four beats of a bar\n\nA reliable recipe for each bar:\n\n- **Beat 1** — the **root** (always).\n- **Beats 2 & 3** — other **chord tones** (3rd, 5th, 7th) or scale notes that move by step.\n- **Beat 4** — an **approach note** that leads by a half step or a step into the next bar's root.\n\nThat beat-4 approach is the glue. The strongest is a chromatic (half-step) approach from just above or below the target root.\n\n## A worked ii–V–I line\n\nOver `Dm7 – G7 – Cmaj7` (one chord per bar) in C, here is a line — spelled out beat by beat:\n\n- **Bar 1 (Dm7):** `D – A – F – A♭`. Root on beat 1, then chord tones (`A` the 5th, `F` the ♭3rd), then `A♭` on beat 4 — a chromatic half step **down** into the next root, `G`.\n- **Bar 2 (G7):** `G – B – D – D♭`. Root, then chord tones (`B` the 3rd, `D` the 5th), then `D♭` on beat 4 — a chromatic half step **down** into `C`.\n- **Bar 3 (Cmaj7):** lands on the root `C` on beat 1, resolving the line.\n\nThose beat-4 half-step approaches (`A♭→G`, `D♭→C`) are what make the line sound intentional and connected rather than random. Play and loop a full walking line on the interactive score below to hear the steady quarter-note motion.\n\n<div data-tmr-embed=\"0\"></div>\n\n## Techniques for smoothness\n\n- **Approach notes:** a half step above or below the next root is the most common and strongest connector; a scale step also works.\n- **Prefer steps over leaps.** A walking line should mostly *walk*, not jump. Occasional octave leaps add variety but shouldn't dominate.\n- **Use chord tones on strong beats (1 and 3),** passing/approach tones on weak beats (2 and 4).\n- **Keep it steady.** Even, swung quarter notes with consistent note length and volume are more important than fancy note choices.\n\n## Practice approach\n\n1. First play *only roots* on beat 1 of each chord through the progression — get the changes solid.\n2. Add the fifth on beat 3.\n3. Fill in beat 2 with a chord tone.\n4. Finally add a chromatic approach on beat 4. You've built a full walking line one layer at a time.\n\n## Try it\n\nLoop `Dm7 – G7 – Cmaj7 – Cmaj7`, one chord per bar, at 80 BPM on a [metronome](/tools/metronome) with a swing feel. Play only roots on beat 1 for four passes, then add the fifth, then a beat-4 chromatic approach into each next root. Keep the quarter notes dead steady. Hear the worked line on the interactive score above — hit play, or loop it to drill the beat-4 approaches — and review the seventh-chords lesson so you know which notes belong to each chord.",
     "details": {
       "key": "C",
       "form": "lesson",
@@ -1529,6 +2004,21 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "bass-root-fifth-patterns",
         "omt-seventh-chords",
         "omt-diatonic-chords"
+      ],
+      "embeds": [
+        {
+          "tool": "score",
+          "title": "A walking bass line",
+          "caption": "Quarter-note walking bass over a ii–V–I. Play it and loop it.",
+          "mode": "tab",
+          "tuning": [
+            28,
+            33,
+            38,
+            43
+          ],
+          "tex": "\\tempo 90\n.\n\\track \"Bass\"\n  \\staff{tabs score} \\tuning (G2 D2 A1 E1)\n  :4 0.2 0.3 1.4 4.4 | 3.4 2.3 0.2 4.3 | 3.3 2.2 0.1 2.1 | 0.1 3.2 2.2 4.3 |"
+        }
       ]
     },
     "extraTags": [

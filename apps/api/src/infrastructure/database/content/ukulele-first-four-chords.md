@@ -15,42 +15,21 @@ The ukulele is the friendliest fretted instrument to start on, and just four cho
 
 ## Reading a chord diagram
 
-A ukulele has four strings. We'll write each chord as four numbers, one per string in order `g C E A`, where `0` means an open string and a number means the fret to press:
-
-```
-g C E A
-```
+A ukulele has four strings, in order `g C E A` (the top `g` is a high, "re-entrant" string). In the interactive chord diagrams below, each shape shows those four strings: a dot marks a string you press, and an open (undotted) string rings freely. Tap any shape to hear it.
 
 Keep fingertips just behind the fret, press firmly, and arch your fingers so they don't mute neighbouring strings.
 
 ## The four shapes
 
-**C major** — the easiest chord on the instrument:
+Tap any shape in the diagrams below to hear it, then copy the grip. Each chord adds a finger:
 
-```
-g C E A
-0 0 0 3     ← ring finger, A string, 3rd fret
-```
+- **C major** — the easiest chord on the instrument: ring finger on the A string, 3rd fret (one finger).
+- **A minor** — one finger: middle finger on the g string, 2nd fret.
+- **F major** — two fingers: index on the E string 1st fret, middle on the g string 2nd fret.
+- **G major** — three fingers forming a little triangle: index on C-2, middle on A-2, ring on E-3.
 
-**A minor** — one finger:
-
-```
-g C E A
-2 0 0 0     ← middle finger, g string, 2nd fret
-```
-
-**F major** — two fingers:
-
-```
-g C E A
-2 0 1 0     ← index on E string 1st fret, middle on g string 2nd fret
-```
-
-**G major** — three fingers, forms a little triangle:
-
-```
-g C E A
-0 2 3 2     ← index C-2, middle A-2, ring E-3
+```embeds
+[{ "tool": "chord-diagrams", "title": "Your first four chords", "caption": "Tap a shape to hear it. C, G, Am, F — enough for hundreds of songs.", "instrument": "ukulele", "chords": ["C", "G", "Am", "F"] }]
 ```
 
 ## Practise the changes, not just the chords
@@ -80,4 +59,4 @@ That `C – G – Am – F` loop is the "four-chord song" — try singing along 
 
 ## Try it
 
-Set **/tools/metronome** to a slow 60 BPM and play `| C | G | Am | F |`, changing chords exactly on beat 1 of each bar. If a change is late, slow down until it lands on time. Once smooth, speed up gradually. Then move on to the ukulele-strumming-patterns lesson to add rhythm, and check your finger placement against **/tools/fretboard**.
+Set a [metronome](/tools/metronome) to a slow 60 BPM and play `| C | G | Am | F |`, changing chords exactly on beat 1 of each bar. If a change is late, slow down until it lands on time. Once smooth, speed up gradually. Then move on to the ukulele-strumming-patterns lesson to add rhythm, and check your finger placement against the interactive chord diagrams above — tap any shape to hear it.

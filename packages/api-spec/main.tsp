@@ -125,6 +125,60 @@ model ContentDetails {
   composedYear?: string;
 }
 
+/**
+ * A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the
+ * prose. The `tool` field selects which learning tool; the remaining optional fields configure it for
+ * the specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the
+ * web narrows on `tool`). Authored in the content Markdown's `embeds` block; stored in `details` JSONB.
+ */
+model ContentEmbed {
+  /** Which tool to render. */
+  tool:
+    | "score"
+    | "keyboard"
+    | "scale-boxes"
+    | "chord-diagrams"
+    | "progression"
+    | "circle-of-fifths"
+    // Fit-for-purpose Pixi visualisations (ADR 0029) that replace static ASCII examples:
+    | "strum"
+    | "rhythm"
+    | "chord-board"
+    | "intervals"
+    | "fingering";
+  /** Optional heading shown above the embed. */
+  title?: string;
+  /** Optional explanatory caption shown under the heading. */
+  caption?: string;
+  /** `score`: inline alphaTex source to render + play. */
+  tex?: string;
+  /** `score`: reference an existing catalogue score by slug instead of inline `tex`. */
+  scoreSlug?: string;
+  /** `score`/`scale-boxes`: engraving mode (piano-style `standard` vs guitar `tab`). */
+  mode?: "standard" | "tab";
+  /** `score` (tab): open-string MIDI pitches so a pitched score renders as tablature. */
+  tuning?: int32[];
+  /** Fretted/keyboard instrument hint: `guitar` | `ukulele` | `bass` | `piano`. */
+  instrument?: string;
+  /** `scale-boxes`/`keyboard`: scale root note, e.g. `A`, `C#`. */
+  root?: string;
+  /** `scale-boxes`/`keyboard`: scale id, e.g. `major`, `minor-pentatonic`, `blues`. */
+  scale?: string;
+  /** `progression`: key the Roman-numeral/chord progression is in, e.g. `A`. */
+  key?: string;
+  /** `chord-diagrams`/`progression`/`chord-board`: chord symbols, e.g. `["C","G","Am","F"]`. */
+  chords?: string[];
+  /** `keyboard`: number of keys (e.g. 25, 49, 61, 88). */
+  size?: int32;
+  /** `strum`/`rhythm`: per-cell tokens over one bar, e.g. `["D","-","D","U","-","U","D","U"]`
+   * (strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`). */
+  pattern?: string[];
+  /** `chord-board`: parallel labels for `chords` (e.g. Roman numerals `["I","ii","iii",…]`). */
+  labels?: string[];
+  /** `strum`/`progression`: beats per minute for playback. */
+  tempo?: int32;
+}
+
 /** Full detail view of a catalogue item. */
 model ContentDetail {
   ...ContentSummary;
@@ -133,6 +187,8 @@ model ContentDetail {
   attribution?: string;
   license?: string;
   details?: ContentDetails;
+  /** Preconfigured interactive tools to render below the prose (authored, from `details` JSONB). */
+  embeds?: ContentEmbed[];
   tags: TaxonomyRef[];
   media: MediaAsset[];
   createdAt: string;

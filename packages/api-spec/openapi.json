@@ -3932,6 +3932,13 @@
           "details": {
             "$ref": "#/components/schemas/ContentDetails"
           },
+          "embeds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentEmbed"
+            },
+            "description": "Preconfigured interactive tools to render below the prose (authored, from `details` JSONB)."
+          },
           "tags": {
             "type": "array",
             "items": {
@@ -3979,6 +3986,111 @@
           }
         },
         "description": "Structured \"facts\" for the detail-page Details panel + the Era facet. All optional."
+      },
+      "ContentEmbed": {
+        "type": "object",
+        "required": [
+          "tool"
+        ],
+        "properties": {
+          "tool": {
+            "type": "string",
+            "enum": [
+              "score",
+              "keyboard",
+              "scale-boxes",
+              "chord-diagrams",
+              "progression",
+              "circle-of-fifths",
+              "strum",
+              "rhythm",
+              "chord-board",
+              "intervals",
+              "fingering"
+            ],
+            "description": "Which tool to render."
+          },
+          "title": {
+            "type": "string",
+            "description": "Optional heading shown above the embed."
+          },
+          "caption": {
+            "type": "string",
+            "description": "Optional explanatory caption shown under the heading."
+          },
+          "tex": {
+            "type": "string",
+            "description": "`score`: inline alphaTex source to render + play."
+          },
+          "scoreSlug": {
+            "type": "string",
+            "description": "`score`: reference an existing catalogue score by slug instead of inline `tex`."
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "tab"
+            ],
+            "description": "`score`/`scale-boxes`: engraving mode (piano-style `standard` vs guitar `tab`)."
+          },
+          "tuning": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "`score` (tab): open-string MIDI pitches so a pitched score renders as tablature."
+          },
+          "instrument": {
+            "type": "string",
+            "description": "Fretted/keyboard instrument hint: `guitar` | `ukulele` | `bass` | `piano`."
+          },
+          "root": {
+            "type": "string",
+            "description": "`scale-boxes`/`keyboard`: scale root note, e.g. `A`, `C#`."
+          },
+          "scale": {
+            "type": "string",
+            "description": "`scale-boxes`/`keyboard`: scale id, e.g. `major`, `minor-pentatonic`, `blues`."
+          },
+          "key": {
+            "type": "string",
+            "description": "`progression`: key the Roman-numeral/chord progression is in, e.g. `A`."
+          },
+          "chords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "`chord-diagrams`/`progression`/`chord-board`: chord symbols, e.g. `[\"C\",\"G\",\"Am\",\"F\"]`."
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32",
+            "description": "`keyboard`: number of keys (e.g. 25, 49, 61, 88)."
+          },
+          "pattern": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "`strum`/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`)."
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`)."
+          },
+          "tempo": {
+            "type": "integer",
+            "format": "int32",
+            "description": "`strum`/`progression`: beats per minute for playback."
+          }
+        },
+        "description": "A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown's `embeds` block; stored in `details` JSONB."
       },
       "ContentSummary": {
         "type": "object",

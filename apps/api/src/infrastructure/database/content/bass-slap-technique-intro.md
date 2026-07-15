@@ -49,5 +49,13 @@ Think of the plucking hand as a relaxed hammer pivoting from the wrist, not the 
 Once `T P` is comfortable, add hammer-ons, ghost notes (muted percussive hits), and double thumbing.
 Build lines from the [Bass Major Scale Fingerings](/bass-major-scale-fingerings) and
 [Root–Fifth Bass Patterns](/bass-root-fifth-patterns), then apply slap to
-[Building a Blues Bass Line](/bass-blues-line-basics). Lock the groove with
-[/tools/metronome](/tools/metronome).
+[Building a Blues Bass Line](/bass-blues-line-basics). Lock the groove with a
+[metronome](/tools/metronome).
+
+## Try it
+
+Hear the classic octave slap figure on the interactive score below — thumb the low `E` (T), pop the octave `E` (P), and loop it slowly until each attack is even and clean.
+
+```embeds
+[{ "tool": "score", "title": "A slap groove", "mode": "tab", "tuning": [28, 33, 38, 43], "tex": "\\tempo 90\n.\n\\track \"Bass\"\n  \\staff{tabs score} \\tuning (G2 D2 A1 E1)\n  :8 0.4 2.2 r 2.2 0.4 2.2 r 2.2 | 0.4 2.2 r 2.2 0.4 2.2 r 2.2 |" }]
+```

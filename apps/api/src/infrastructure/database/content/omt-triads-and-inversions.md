@@ -21,26 +21,20 @@ Stack `C`, then a third up (`E`), then another third up (`G`) and you have a **C
 
 ## The four qualities
 
-The two thirds inside the triad can each be major (M3, 4 semitones) or minor (m3, 3 semitones). The combination sets the quality:
+The two thirds inside the triad can each be major (M3, 4 semitones) or minor (m3, 3 semitones). The combination sets the quality: **major** stacks M3 then m3 (`C–E–G`, perfect 5th), **minor** stacks m3 then M3 (`C–E♭–G`, perfect 5th), **diminished** stacks two m3s (`C–E♭–G♭`, diminished 5th), and **augmented** stacks two M3s (`C–E–G♯`, augmented 5th). Tap each card below to hear all four built on `C`:
 
-```
-Quality       Lower 3rd   Upper 3rd   Root-to-5th   Example
-Major         M3          m3          Perfect 5th   C–E–G
-Minor         m3          M3          Perfect 5th   C–E♭–G
-Diminished    m3          m3          Diminished 5  C–E♭–G♭
-Augmented     M3          M3          Augmented 5   C–E–G♯
+```embeds
+[{ "tool": "chord-board", "title": "The four triad qualities on C", "caption": "Major, minor, diminished, augmented — tap each to hear it.", "chords": ["C", "Cm", "Cdim", "Caug"], "labels": ["major", "minor", "dim", "aug"] }]
 ```
 
 Major and minor triads are consonant and common; diminished and augmented triads contain an unstable fifth and sound tense.
 
 ## Inversions: which note is in the bass
 
-A triad is in **root position** when the root is the lowest sounding note. Move the root up an octave and a different chord tone sits in the bass — that is an **inversion**. The notes are the same, so it is still a C major chord, but its voicing and function shift.
+A triad is in **root position** when the root is the lowest sounding note. Move the root up an octave and a different chord tone sits in the bass — that is an **inversion**. The notes are the same, so it is still a C major chord, but its voicing and function shift. Play the three positions in the score below — root position (`C` in the bass), first inversion (`E` in the bass), then second inversion (`G` in the bass) — and hear how the same three notes re-stack:
 
-```
-Root position:   C–E–G   (root C in bass)
-First inversion: E–G–C   (third E in bass)
-Second inversion:G–C–E   (fifth G in bass)
+```embeds
+[{ "tool": "score", "title": "C major triad and its inversions", "caption": "Root position, first inversion, second inversion.", "tex": ":1 (c4 e4 g4) | (e4 g4 c5) | (g4 c5 e5) |" }]
 ```
 
 ## Figured bass shorthand
@@ -69,4 +63,4 @@ Inversions let the bass line move smoothly instead of leaping between roots, and
 
 ## Check yourself
 
-Spell the F major triad, then write all three positions. (Answer: `F–A–C` root position; `A–C–F` first inversion, figure `6`; `C–F–A` second inversion, figure `6/4`.) Then build triads on every white key and identify each quality using the two-thirds test — try the **/tools/scale-explorer** and **chord-builder** to check your spellings, and continue to the diatonic-chords and seventh-chords lessons.
+Spell the F major triad, then write all three positions. (Answer: `F–A–C` root position; `A–C–F` first inversion, figure `6`; `C–F–A` second inversion, figure `6/4`.) Replay the C major triad and its inversions in the score above to hear how the same three notes shift, then continue to the diatonic-chords and seventh-chords lessons.

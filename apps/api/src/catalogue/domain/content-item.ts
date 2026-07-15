@@ -22,8 +22,44 @@ export interface TaxonomyRef {
   name: string;
 }
 
+/**
+ * A preconfigured interactive tool embedded in a catalogue article (rendered below the prose). Flat
+ * shape (a `tool` discriminator + optional per-tool config) mirroring the `ContentEmbed` contract model;
+ * authored in the content Markdown's `embeds` block, stored in `details` JSONB, served on the detail view.
+ */
+export interface ContentEmbed {
+  tool:
+    | 'score'
+    | 'keyboard'
+    | 'scale-boxes'
+    | 'chord-diagrams'
+    | 'progression'
+    | 'circle-of-fifths'
+    | 'strum'
+    | 'rhythm'
+    | 'chord-board'
+    | 'intervals'
+    | 'fingering';
+  title?: string;
+  caption?: string;
+  tex?: string;
+  scoreSlug?: string;
+  mode?: 'standard' | 'tab';
+  tuning?: number[];
+  instrument?: string;
+  root?: string;
+  scale?: string;
+  key?: string;
+  chords?: string[];
+  size?: number;
+  pattern?: string[];
+  labels?: string[];
+  tempo?: number;
+}
+
 /** Structured facts stored on a content item (JSONB `details`). `related` = curated "if you like
- * this" slugs (served via the related endpoint, not shown in the Details panel). */
+ * this" slugs (served via the related endpoint, not shown in the Details panel). `embeds` = authored
+ * interactive-tool embeds (served on the detail view, not in the Details facts panel). */
 export interface ContentDetails {
   key?: string;
   era?: string;
@@ -33,6 +69,7 @@ export interface ContentDetails {
   composerDates?: string;
   composedYear?: string;
   related?: string[];
+  embeds?: ContentEmbed[];
 }
 
 /** The facts subset surfaced on the detail page (no `related`) — matches the `ContentDetails` DTO. */
@@ -107,6 +144,8 @@ export interface ContentDetailView extends ContentSummaryView {
   attribution?: string;
   license?: string;
   details?: ContentDetailsView;
+  /** Preconfigured interactive-tool embeds rendered below the prose. */
+  embeds?: ContentEmbed[];
   tags: TaxonomyRef[];
   media: MediaView[];
   createdAt: string;
@@ -202,6 +241,7 @@ export function toContentDetailView(item: ContentItem, media: MediaView[]): Cont
     attribution: item.attribution ?? undefined,
     license: item.license ?? undefined,
     details: item.details ? toContentDetailsView(item.details) : undefined,
+    embeds: item.details?.embeds,
     tags: item.tags,
     media,
     createdAt: item.createdAt.toISOString(),
@@ -217,6 +257,7 @@ export function toLockedContentDetailView(item: ContentItem): ContentDetailView 
   return {
     ...toContentDetailView(item, []),
     bodyMdx: undefined,
+    embeds: undefined,
     locked: true,
   };
 }

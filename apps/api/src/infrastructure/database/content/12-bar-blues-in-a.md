@@ -17,29 +17,33 @@ The **12-bar blues** is a repeating 12-measure chord pattern built on just three
 
 In A, the I–IV–V chords are `A`, `D`, and `E`. Blues almost always uses **dominant seventh** chords for their gritty, unresolved sound, so we play:
 
-```
-I  = A7   (A–C♯–E–G)
-IV = D7   (D–F♯–A–C)
-V  = E7   (E–G♯–B–D)
-```
+| Degree | Chord | Notes |
+| --- | --- | --- |
+| I | A7 | A–C♯–E–G |
+| IV | D7 | D–F♯–A–C |
+| V | E7 | E–G♯–B–D |
 
-Open-position shapes to start with:
+Tap each shape in the diagrams below to hear its voicing before you play the form:
 
-```
-A7:  x02020        D7:  xx0212        E7:  020100
+```embeds
+[{ "tool": "chord-diagrams", "title": "The three chords", "caption": "Dominant 7ths give the blues its bite.", "chords": ["A7", "D7", "E7"] }]
 ```
 
 ## The 12-bar pattern
 
 Each measure gets four beats (4/4). The standard pattern is:
 
-```
-| A7  | A7  | A7  | A7  |
-| D7  | D7  | A7  | A7  |
-| E7  | D7  | A7  | E7  |
-```
+| Bars | 1 | 2 | 3 | 4 |
+| --- | --- | --- | --- | --- |
+| 1–4 | A7 | A7 | A7 | A7 |
+| 5–8 | D7 | D7 | A7 | A7 |
+| 9–12 | E7 | D7 | A7 | E7 |
 
-Read it row by row, one chord per bar. The last two bars — `A7` then `E7` — are the **turnaround**, which winds the phrase back to the top so the form loops.
+Read it row by row, one chord per bar. The last two bars — `A7` then `E7` — are the **turnaround**, which winds the phrase back to the top so the form loops. Hit play on the interactive form below to hear it loop and follow the highlighted bar.
+
+```embeds
+[{ "tool": "progression", "title": "Play the 12-bar form", "caption": "Loops the standard 12-bar blues in A — follow the highlighted bar.", "key": "A", "chords": ["A7", "A7", "A7", "A7", "D7", "D7", "A7", "A7", "E7", "D7", "A7", "E7"] }]
+```
 
 ## Two common variations
 
@@ -51,10 +55,10 @@ Both are optional — master the plain 12 bars first.
 
 ## Feel: the shuffle
 
-Blues usually **swings**. Instead of even eighth notes, play a long-short "shuffle" feel (think "doo-ba, doo-ba"). A classic accompaniment is the **boogie shuffle**: on each chord, alternate the root with the fifth and then the sixth. On A7, that means fretting the low strings and rocking between:
+Blues usually **swings**. Instead of even eighth notes, play a long-short "shuffle" feel (think "doo-ba, doo-ba"). A classic accompaniment is the **boogie shuffle**: on each chord, alternate the root with the fifth and then the sixth. On A7, that means fretting the low strings and rocking between **A5** (root–fifth) and **A6** (root–sixth), two eighth-notes per beat played long–short. Click out the shuffle pulse below and feel the swing, then apply the moving A5→A6 shape:
 
-```
-A5  →  A6   (root–fifth, then root–sixth), repeated in the shuffle rhythm
+```embeds
+[{ "tool": "rhythm", "title": "The shuffle pulse", "caption": "Two eighth-notes per beat, played long–short — the boogie shuffle. Click it out at tempo to internalise the swing.", "pattern": ["eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth", "eighth"], "tempo": 80 }]
 ```
 
 This single moving pattern, shifted to the D and E chords, is the sound of a thousand blues tunes.
@@ -65,4 +69,4 @@ Notice the shape: four bars establishing home (I), two bars of departure (IV), t
 
 ## Try it
 
-Set **/tools/metronome** to a slow 70 BPM with a shuffle feel, and strum the plain 12-bar pattern above, one chord per bar, until the changes are automatic. Then loop it and solo over the top using the **A minor pentatonic** scale (see the minor-pentatonic-scale-shapes lesson) — it fits the whole progression. Check the chord voicings on **/tools/fretboard** and pair this with the bass-blues-line lesson to hear the full rhythm section.
+Set a [metronome](/tools/metronome) to a slow 70 BPM with a shuffle feel, and strum the plain 12-bar pattern above, one chord per bar, until the changes are automatic. Then loop it and solo over the top using the **A minor pentatonic** scale (see the minor-pentatonic-scale-shapes lesson) — it fits the whole progression. Tap the three chord shapes above to hear each voicing, then hit play on the looping 12-bar form to lock in the changes. Pair this with the bass-blues-line lesson to hear the full rhythm section.

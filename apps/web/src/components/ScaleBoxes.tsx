@@ -14,10 +14,19 @@ const FRET_COUNT = 15;
 const BOX_WIDTH = 4; // frets spanned by a position box
 // STANDARD_TUNING is high-e first; render high e at the top.
 
-export default function ScaleBoxes() {
-  const [root, setRoot] = useState(9); // A
-  const [scaleKey, setScaleKey] = useState('minor-pentatonic');
-  const [position, setPosition] = useState(5);
+/** Props let a catalogue embed preconfigure the tool to a specific scale (defaults = the /tools page). */
+export default function ScaleBoxes({
+  root: initialRoot = 9, // A
+  scale: initialScale = 'minor-pentatonic',
+  position: initialPosition = 5,
+}: {
+  root?: number;
+  scale?: string;
+  position?: number;
+} = {}) {
+  const [root, setRoot] = useState(initialRoot);
+  const [scaleKey, setScaleKey] = useState(initialScale);
+  const [position, setPosition] = useState(initialPosition);
   const [showAll, setShowAll] = useState(false);
 
   const scale = SCALES.find((s) => s.key === scaleKey) ?? SCALES[0];

@@ -15,26 +15,14 @@ A **diatonic chord** is a chord built only from the notes of one scale. Take a m
 
 ## Building them in C major
 
-Using only the white keys, stack a third and a fifth above each scale degree:
-
-```
-Degree  Triad      Notes      Quality      Roman numeral
-1        C          C–E–G      major        I
-2        D          D–F–A      minor        ii
-3        E          E–G–B      minor        iii
-4        F          F–A–C      major        IV
-5        G          G–B–D      major        V
-6        A          A–C–E      minor        vi
-7        B          B–D–F      diminished   vii°
-```
+Using only the white keys, stack a third and a fifth above each scale degree. This yields all seven diatonic chords of C major — `I ii iii IV V vi`, plus the seventh chord `vii°`, the diminished triad `B–D–F`. Tap through them in the board below to hear each one.
 
 ## The pattern is the same in every major key
 
-Because a major scale always has the same step pattern, the *qualities* of its diatonic triads never change — only the note names do. Memorise this one sequence and it works for all twelve keys:
+Because a major scale always has the same step pattern, the *qualities* of its diatonic triads never change — only the note names do. Tap each card below to hear the seven diatonic chords of C major, labelled with their Roman numerals; memorise this one sequence (maj–min–min–maj–maj–min–dim) and it works for all twelve keys:
 
-```
-I   ii   iii   IV   V   vi   vii°
-maj min  min   maj  maj min  dim
+```embeds
+[{ "tool": "chord-board", "title": "The seven diatonic chords of C major", "caption": "I ii iii IV V vi vii° — tap each to hear it.", "chords": ["C", "Dm", "Em", "F", "G", "Am", "Bdim"], "labels": ["I", "ii", "iii", "IV", "V", "vi", "vii°"] }]
 ```
 
 **Roman-numeral notation** encodes both position and quality: uppercase for major (`I`, `IV`, `V`), lowercase for minor (`ii`, `iii`, `vi`), and lowercase with a small circle for diminished (`vii°`). This lets you describe a progression independently of key — `I–V–vi–IV` is the same "shape" whether you play it in C, G, or E♭.
@@ -63,4 +51,4 @@ Once you can label chords with Roman numerals, patterns jump off the page:
 
 ## Check yourself
 
-Write the seven diatonic triads of **G major** and label each. (Answer: `G` I, `Am` ii, `Bm` iii, `C` IV, `D` V, `Em` vi, `F♯°` vii° — the pattern maj-min-min-maj-maj-min-dim, exactly as in C.) Then build the same set in **/tools/scale-explorer**, play the `I–IV–V–I` in **/tools/circle-of-fifths**, and move on to the cadences and seventh-chords lessons to hear how these chords resolve.
+Write the seven diatonic triads of **G major** and label each. (Answer: `G` I, `Am` ii, `Bm` iii, `C` IV, `D` V, `Em` vi, `F♯°` vii° — the pattern maj-min-min-maj-maj-min-dim, exactly as in C.) Then tap back through the diatonic chords of C major above to hear each one, and move on to the cadences and seventh-chords lessons to hear how these chords resolve.

@@ -37,11 +37,14 @@ the controller drops empties. MinIO presigned URLs use `S3_PUBLIC_ENDPOINT` so t
 - Schema: `src/infrastructure/database/schema.ts`. Client: `DatabaseModule` (token `DATABASE`).
 - Only `infrastructure/` adapters may import Drizzle. Map ORM rows ↔ domain in a mapper.
 - `pnpm --filter @TheY2T/tmr-api db:generate` after schema changes; migrations live in `drizzle/`.
-- **Catalogue content** (rich `body_mdx` + `details` JSONB facts + curated `related`) is authored as
-  one Markdown file per item in `src/infrastructure/database/content/<slug>.md`; run
-  `pnpm --filter @TheY2T/tmr-api content:build` to regenerate the build-safe `seed-content.ts` bundle
-  the seed consumes. Era is a Meilisearch facet derived from `details.era` (no SQL taxonomy table). See
-  `docs/features/catalogue.md`.
+- **Catalogue content** (rich `body_mdx` + `details` JSONB facts + curated `related` + interactive
+  `embeds`) is authored as one Markdown file per item in `src/infrastructure/database/content/<slug>.md`;
+  run `pnpm --filter @TheY2T/tmr-api content:build` to regenerate the build-safe `seed-content.ts` bundle
+  the seed consumes. Era is a Meilisearch facet derived from `details.era` (no SQL taxonomy table).
+  A fenced ```embeds block in the body (JSON array of `ContentEmbed`) renders **preconfigured interactive
+  tools** below the prose — stored in `details.embeds`, spec-first (`ContentEmbed` in TypeSpec), rendered
+  by the web `ContentEmbeds`; the build fails on bad JSON / unknown tool. Follow the **`embed-tool`**
+  skill (ADR 0028). See `docs/features/catalogue.md` + `docs/features/content-embeds.md`.
 - **Collections** (`src/collections/`, ADR 0023) are authored the same way:
   `content/collections/<slug>.md` (frontmatter + `## Outcomes` + `## Section:` blocks with
   `- slug (note: …; skills: […])` items) → `pnpm --filter @TheY2T/tmr-api collections:build` →
@@ -62,8 +65,9 @@ optional `displayMode` `standard|tab`) → `pnpm --filter @TheY2T/tmr-api scores
 `seed-scores.ts` (`SCORE_ALPHATEX` + `SCORE_META`). The seed uploads each as an **`alphatex`** media
 asset and records the engraving's license/attribution/`source_url` (not the piece's). The web
 `ScorePlayer` renders + plays it with **alphaTab** and exports the PDF client-side (`api.print()`); no
-stored PDF. `scores:validate` re-parses each alphaTex via alphaTab (structure gate; visual proofing is
-in the browser). **Legacy MusicXML** converts losslessly via `scores:migrate` (`musicxml-to-alphatex.mjs`,
+stored PDF. `scores:validate` re-parses each alphaTex via alphaTab — both `.alphatex` media files **and**
+every inline `score` embed `tex` in a content article's ```embeds block (structure gate; visual proofing
+is in the browser). **Legacy MusicXML** converts losslessly via `scores:migrate` (`musicxml-to-alphatex.mjs`,
 alphaTab's own importer→AlphaTexExporter). Author new scores with the **`add-score`** skill.
 **Licensing:** ship only CC0 (OpenScore) or hand-authored (ours); never MuseScore/musetrainer uploads,
 the unlicensed CCARH kern, or ODbL/anti-LLM ABC. Full sourcing matrix + status in

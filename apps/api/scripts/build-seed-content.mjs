@@ -36,6 +36,58 @@ function parseArray(raw) {
     .filter(Boolean);
 }
 
+const EMBED_TOOLS = new Set([
+  'score',
+  'keyboard',
+  'scale-boxes',
+  'chord-diagrams',
+  'progression',
+  'circle-of-fifths',
+  'strum',
+  'rhythm',
+  'chord-board',
+  'intervals',
+  'fingering',
+]);
+
+/**
+ * Extract every fenced ```embeds block (each a JSON array of ContentEmbed) from a body. Each block is
+ * replaced IN PLACE with one `<div data-tmr-embed="N">` marker per embed (N = index into the returned
+ * flat embeds array), so the web renderer can interleave the interactive tool exactly where the block was
+ * authored — inline with the prose, replacing a static example. Returns the flat embeds + the marked-up
+ * body. Throws on malformed JSON or an unknown `tool` so a typo fails the build.
+ */
+function extractEmbeds(body, file) {
+  const embeds = [];
+  const re = /```embeds\s*\n([\s\S]*?)\n```/g;
+  let out = '';
+  let last = 0;
+  let m;
+  while ((m = re.exec(body)) !== null) {
+    let parsed;
+    try {
+      parsed = JSON.parse(m[1]);
+    } catch (err) {
+      throw new Error(`${file}: invalid JSON in \`\`\`embeds block: ${err.message}`);
+    }
+    if (!Array.isArray(parsed)) throw new Error(`${file}: \`\`\`embeds block must be a JSON array`);
+    for (const e of parsed) {
+      if (!e || typeof e.tool !== 'string' || !EMBED_TOOLS.has(e.tool)) {
+        throw new Error(`${file}: embed has missing/unknown "tool" (${JSON.stringify(e?.tool)})`);
+      }
+    }
+    const markers = parsed
+      .map((_, j) => `<div data-tmr-embed="${embeds.length + j}"></div>`)
+      .join('\n');
+    out += `${body.slice(last, m.index)}\n\n${markers}\n\n`;
+    embeds.push(...parsed);
+    last = m.index + m[0].length;
+  }
+  out += body.slice(last);
+  const cleaned = out.replace(/\n{3,}/g, '\n\n').trim();
+  return { embeds, body: cleaned };
+}
+
 /** Split a `<slug>.md` into { frontmatter: Record<string,string>, body: string }. */
 function parse(md) {
   const m = md.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
@@ -55,7 +107,8 @@ const files = readdirSync(contentDir)
 
 const entries = [];
 for (const file of files) {
-  const { fm, body } = parse(readFileSync(join(contentDir, file), 'utf8'));
+  const { fm, body: rawBody } = parse(readFileSync(join(contentDir, file), 'utf8'));
+  const { embeds, body } = extractEmbeds(rawBody, file);
   const slug = unquote(fm.slug ?? file.replace(/\.md$/, ''));
 
   // details: only keep non-empty scalar facts; `related` from relatedSlugs.
@@ -74,6 +127,7 @@ for (const file of files) {
   }
   const related = fm.relatedSlugs ? parseArray(fm.relatedSlugs) : [];
   if (related.length) details.related = related;
+  if (embeds.length) details.embeds = embeds;
 
   const extraTags = fm.suggestedTags ? parseArray(fm.suggestedTags) : [];
 

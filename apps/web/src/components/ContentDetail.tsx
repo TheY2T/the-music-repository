@@ -28,6 +28,7 @@ import {
 } from '@TheY2T/tmr-ui';
 import { marked } from 'marked';
 import AnimatedCoverArt from '@/components/AnimatedCoverArt';
+import ContentBody from '@/components/content/ContentBody';
 import ScorePlayer from '@/components/ScorePlayer';
 import { resolveDisplayMode, tabTuningFor } from '@/lib/score/loop';
 
@@ -282,13 +283,12 @@ function Detail({
         </Card>
       ) : (
         <>
-          {bodyHtml ? (
-            <section
-              className="prose max-w-none prose-headings:font-display"
-              // biome-ignore lint/security/noDangerouslySetInnerHtml: rendered from trusted seeded/CMS markdown via marked.
-              dangerouslySetInnerHTML={{ __html: bodyHtml }}
-            />
-          ) : null}
+          <ContentBody
+            bodyHtml={bodyHtml}
+            embeds={item.embeds}
+            locale={locale}
+            interactive={interactiveScores}
+          />
 
           {score ? (
             <section className="space-y-2">

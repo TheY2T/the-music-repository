@@ -17,21 +17,24 @@ Once you can lock a root–fifth pattern to the beat, the next step is the **boo
 
 Over each chord, the classic pattern climbs root → third → fifth → sixth, then (often) up to the ♭7 and back. For an `A` chord the notes are:
 
-```
-A(root) – C♯(3rd) – E(5th) – F♯(6th)  [ – G(♭7) – F♯ – E – C♯ ]
-1          3          5        6          ♭7
-```
+| Note | A | C♯ | E | F♯ | (G) |
+| --- | --- | --- | --- | --- | --- |
+| Degree | 1 (root) | 3 | 5 | 6 | ♭7 |
+
+Climb A → C♯ → E → F♯, then (often) up to `G` (♭7) and back down through F♯ → E → C♯.
 
 Played as steady quarter notes or a swung shuffle, one note per beat:
 
-```
-Beat:  1   2    3   4
-Note:  A   C♯   E   F♯      (bar 1)
-Beat:  1   2    3   4
-Note:  A   F♯   E   C♯      (bar 2, coming back down)
-```
+| Beat | 1 | 2 | 3 | 4 |
+| --- | --- | --- | --- | --- |
+| Bar 1 (up) | A | C♯ | E | F♯ |
+| Bar 2 (back down) | A | F♯ | E | C♯ |
 
-That two-bar up-and-down shape is the engine of boogie-woogie and blues. On the fretboard it sits neatly under one hand position.
+That two-bar up-and-down shape is the engine of boogie-woogie and blues. On the fretboard it sits neatly under one hand position. Play the interactive score below to hear the first four bars of the cell rooted on A.
+
+```embeds
+[{ "tool": "score", "title": "A 12-bar blues bass line", "mode": "tab", "tuning": [28, 33, 38, 43], "tex": "\\tempo 80\n.\n\\track \"Bass\"\n  \\staff{tabs score} \\tuning (G2 D2 A1 E1)\n  :4 0.3 4.3 2.2 4.2 | 0.3 4.2 2.2 4.3 | 0.3 4.3 2.2 4.2 | 0.3 4.2 2.2 4.3 |" }]
+```
 
 ## The movable shape
 
@@ -47,11 +50,11 @@ Learn the shape once and you can play all three chords of the blues without reth
 
 Apply the boogie cell to the 12-bar blues in A, one chord per bar:
 
-```
-| A  | A  | A  | A  |
-| D  | D  | A  | A  |
-| E  | D  | A  | E  |
-```
+| Bars | 1 | 2 | 3 | 4 |
+| --- | --- | --- | --- | --- |
+| 1–4 | A | A | A | A |
+| 5–8 | D | D | A | A |
+| 9–12 | E | D | A | E |
 
 Each bar, run the up-and-down boogie figure rooted on that chord. On the last bar (`E`) you can play a **turnaround** walk-up back to A — e.g. `E – F♯ – G – G♯` leading into the low `A` at the top of the form.
 
@@ -67,4 +70,4 @@ Blues almost always **swings**: play the eighth notes long-short rather than eve
 
 ## Try it
 
-At 70 BPM on **/tools/metronome** with a shuffle feel, loop the boogie cell over a single `A` chord for four bars until it flows. Then play it through the full 12-bar form above, shifting the shape to D and E, and finish with a chromatic walk-up turnaround. Check the note positions on **/tools/fretboard**, then move on to walking-bass-basics to free the line from a fixed pattern.
+At 70 BPM on a [metronome](/tools/metronome) with a shuffle feel, loop the boogie cell over a single `A` chord for four bars until it flows. Then play it through the full 12-bar form above, shifting the shape to D and E, and finish with a chromatic walk-up turnaround. Replay the first four bars on the interactive score above — the up-and-down boogie cell rooted on A — then move on to walking-bass-basics to free the line from a fixed pattern.

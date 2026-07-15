@@ -13,52 +13,44 @@ sources: ["general knowledge"]
 
 The **minor pentatonic** scale has just five notes ("penta" = five), and it is the single most useful scale for blues, rock, and pop soloing on guitar. Because it drops the two most dissonant tones of the minor scale, almost anything you play with it sounds good. We'll learn it in **A minor**, whose notes are:
 
-```
-A  –  C  –  D  –  E  –  G
-1     ♭3    4     5     ♭7
-```
+| Note | A | C | D | E | G |
+| --- | --- | --- | --- | --- | --- |
+| Degree | 1 | ♭3 | 4 | 5 | ♭7 |
 
 Compared to the natural minor scale (`A B C D E F G`), the pentatonic simply removes the 2nd (`B`) and the ♭6 (`F`).
 
 ## Shape 1: the home box
 
-Every guitarist starts here — the "box" at the 5th fret. Play two notes per string:
+Every guitarist starts here — the "box" at the 5th fret, two notes per string, with root `A` on the low `E` string. Explore it right on the fretboard: tap any note to hear it, and note where the roots (dark) fall so you always know your "home" note.
 
-```
-e|--5--8--|
-B|--5--8--|
-G|--5--7--|
-D|--5--7--|
-A|--5--7--|
-E|--5--8--|   (root A is on the low E string, 5th fret)
+```embeds
+[
+  {
+    "tool": "scale-boxes",
+    "title": "The A minor pentatonic on the fretboard",
+    "caption": "Shape 1 sits at fret 5 (roots in dark blue). Tap a note to hear it; drag the position slider to walk through the five boxes.",
+    "root": "A",
+    "scale": "minor-pentatonic"
+  }
+]
 ```
 
-The roots (A) sit on the low `E`, `D` (7th fret... via octave) and high `e` strings — learn where they are so you always know your "home" note. Practise it ascending and descending until it's automatic.
+Practise the box ascending and descending until it's automatic, always coming to rest on a root `A`.
 
 ## The five movable shapes
 
-The pentatonic covers the whole fretboard as **five connected shapes** that interlock, each picking up where the last leaves off. They are movable: the pattern's shape never changes, only its fret position. For A minor:
-
-```
-Shape 1  — starts at fret 5  (root on low E)
-Shape 2  — starts at fret 8
-Shape 3  — starts at fret 10
-Shape 4  — starts at fret 12 (octave of shape 1)
-Shape 5  — starts at fret 3  (just below shape 1)
-```
-
-Together they tile the neck end to end; shape 4 at fret 12 is shape 1 an octave higher. Learn shape 1 cold first, then add its neighbours one at a time, always noting where the root notes fall.
+The pentatonic covers the whole neck as **five connected shapes** that interlock, each picking up where the last leaves off. Slide the position control above (or tick **Whole neck**) to see them tile the fretboard: shape 1 at fret 5, then shapes at frets 8, 10, and 12 (the octave of shape 1), plus one at fret 3 just below. Learn shape 1 cold first, then add its neighbours one at a time, always noting where the root notes fall.
 
 ## Movable = every key
 
-Because there are no open strings inside these shapes, you can slide the whole pattern to any key. Move shape 1 so its low-E root lands on:
+Because there are no open strings inside these shapes, you can slide the whole pattern to any key. Switch the **Root** on the fretboard above to move shape 1's low-E root:
 
-- fret 5 → **A minor**
-- fret 8 → **C minor**
-- fret 3 → **G minor**
-- fret 10 → **D minor**
+- **A** → home at fret 5
+- **C** → fret 8
+- **G** → fret 3
+- **D** → fret 10
 
-The root note on the low E string names the key. This is why one memorised shape gives you all twelve minor keys.
+The root note on the low E string names the key — one memorised shape gives you all twelve minor keys.
 
 ## Making it musical
 
@@ -75,4 +67,4 @@ A minor pentatonic contains the same five notes as **C major pentatonic** — th
 
 ## Try it
 
-Loop the 12-bar blues in A (see that lesson) and solo using only shape 1 at the 5th fret. Focus on landing on `A` (the root) at the ends of phrases and bending the `G`. When that feels comfortable, connect into shape 2. Map all five shapes on **/tools/fretboard** and **/tools/scale-explorer**, then move the boxes to a new key to prove they're movable.
+Loop the [12-bar blues in A](/catalogue/12-bar-blues-in-a) and solo using only shape 1 at the 5th fret. Focus on landing on `A` at the ends of phrases and bending the `G`. When that feels comfortable, connect into shape 2.

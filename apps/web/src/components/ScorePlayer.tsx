@@ -340,6 +340,7 @@ export default function ScorePlayer({
         .tmr-score .at-cursor-bar { background: var(--primary); opacity: 0.07; }
         .tmr-score .at-cursor-beat { background: var(--primary); width: 2px; }
         .tmr-score .at-selection div { background: var(--primary); opacity: 0.18; }
+        .tmr-score[data-looping='true'] .at-selection div { background: var(--accent); opacity: 0.32; }
       `}</style>
 
       {/* Integrated media-player control bar. */}
@@ -487,6 +488,7 @@ export default function ScorePlayer({
           onMouseLeave={onPointerUp}
           onContextMenu={onContextMenu}
           data-mode={mode}
+          data-looping={looping && selection ? 'true' : undefined}
           className={cn(
             'tmr-score select-none p-2',
             interactiveUI && status === 'ready' && 'cursor-crosshair',

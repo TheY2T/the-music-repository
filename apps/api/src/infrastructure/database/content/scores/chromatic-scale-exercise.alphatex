@@ -1,0 +1,11 @@
+\title "Chromatic Scale — One Octave" \tempo 76
+.
+\track "Piano"
+  \staff{score} \instrument acousticgrandpiano
+    \ts 4 4
+    \clef g2
+    \ks c
+    :8 C4 C#4 D4 D#4 E4 F4 F#4 G4 |
+    :8 G#4 A4 A#4 B4 C5 B4 Bb4 A4 |
+    :8 Ab4 G4 Gb4 F4 E4 Eb4 D4 Db4 |
+    :1 C4 |

@@ -11,7 +11,7 @@ sources: ["general knowledge"]
 ---
 ## Rhythm is what brings chords to life
 
-Once you can hold a few ukulele chords, the **strumming hand** is what turns them into music. Good strumming is mostly about a relaxed, *constant* arm motion and knowing when to actually touch the strings. This lesson uses `D` for a downstroke (strum toward the floor) and `U` for an upstroke (strum back up).
+Once you can hold a few ukulele chords, the **strumming hand** is what turns them into music. Good strumming is mostly about a relaxed, *constant* arm motion and knowing when to actually touch the strings. Throughout this lesson `↓` is a downstroke (strum toward the floor), `↑` is an upstroke (strum back up), and `·` is a rest where your hand keeps moving but misses the strings.
 
 ## How to strum
 
@@ -19,52 +19,49 @@ Strum with the pad of your index finger (nail-side going down, fleshy pad coming
 
 ## Pattern 1: all downstrokes
 
-Start dead simple — four downstrokes per bar of 4/4:
+Start dead simple — four downstrokes per bar of 4/4. Press play and strum with the head:
 
+```embeds
+[{ "tool": "strum", "title": "Four on the floor", "caption": "One downstroke per beat over a C chord. Build the steady pulse everything else sits on.", "instrument": "ukulele", "chords": ["C"], "pattern": ["D", "-", "D", "-", "D", "-", "D", "-"], "tempo": 80 }]
 ```
-Beat:   1   2   3   4
-Strum:  D   D   D   D
-```
-
-Count out loud with **/tools/metronome**. This builds the steady pulse everything else sits on.
 
 ## Pattern 2: down-up eighths
 
 Fill in the "and" between each beat with an upstroke. Your hand now moves down-up continuously:
 
+```embeds
+[{ "tool": "strum", "title": "Down-up eighths", "caption": "Keep the hand pumping down-up like a metronome — that constant motion keeps your timing locked.", "instrument": "ukulele", "chords": ["C"], "pattern": ["D", "U", "D", "U", "D", "U", "D", "U"], "tempo": 80 }]
 ```
-Count:  1 & 2 & 3 & 4 &
-Strum:  D U D U D U D U
-```
-
-The secret: keep your hand pumping down-up the whole time like a metronome, even on beats where you don't hit the strings. That constant motion keeps your timing locked.
 
 ## Pattern 3: the most common pop strum
 
-Miss a couple of strums to create a groove. Here the hand still moves down-up throughout, but on the "2" (the third motion) you *miss* the strings — shown as `(x)`:
+Miss a couple of strums to create a groove. The hand still moves down-up throughout, but you *skip* the strings on some motions — the famous **D–DU–UDU**:
 
-```
-Count:  1 & 2 & 3 & 4 &
-Strum:  D   D U   U D U
-Motion: D U D U D U D U   ← hand never stops moving
+```embeds
+[{ "tool": "strum", "title": "D–DU–UDU (the pop strum)", "caption": "Down, skip, down-up, skip-up, down-up. This one pattern fits a huge number of songs.", "instrument": "ukulele", "chords": ["C"], "pattern": ["D", "-", "D", "U", "-", "U", "D", "U"], "tempo": 80 }]
 ```
 
-So you play: **down, (skip), down-up, (skip)-up, down-up**. This "D-DU-UDU" pattern fits a huge number of songs.
+The secret is that your strumming hand never stops moving down-up — the skipped strums are just the hand passing *near* the strings without touching them.
 
 ## Pattern 4: the island strum
 
-The signature ukulele groove, four bars of feel-good rhythm:
+The signature ukulele groove is the **same D–DU–UDU shape**, played through a chord progression. Emphasise beat 1 slightly for a lilt:
 
+```embeds
+[{ "tool": "strum", "title": "The island strum over a progression", "caption": "The pop pattern applied to C–G–Am–F, one chord per bar — the classic feel-good ukulele groove.", "instrument": "ukulele", "chords": ["C", "G", "Am", "F"], "pattern": ["D", "-", "D", "U", "-", "U", "D", "U"], "tempo": 80 }]
 ```
-Count:  1 & 2 & 3 & 4 &
-Strum:  D   D U   U D U
-```
-
-Yes — the classic "island strum" is the same **D – D U – U D U** shape as pattern 3. Once your hand internalises the constant down-up motion, this famous pattern falls out naturally. Emphasise beat 1 slightly for a lilt.
 
 ## Adding chunks (muting)
 
 For a percussive feel, add a **chunk**: as your hand strums down, lightly slap the strings with the side or heel of your palm to deaden them, making a "chuck" sound on the backbeat (beats 2 and 4). This is what gives reggae and modern pop ukulele its bounce.
+
+## The chords to strum over
+
+Check each grip before you strum over it — tap any shape to hear it.
+
+```embeds
+[{ "tool": "chord-diagrams", "instrument": "ukulele", "chords": ["C", "G", "Am", "F"] }]
+```
 
 ## Practice strategy
 
@@ -74,4 +71,4 @@ For a percussive feel, add a **chunk**: as your hand strums down, lightly slap t
 
 ## Try it
 
-Loop `| C | G | Am | F |` from the first-four-chords lesson and apply pattern 3 (**D-DU-UDU**) to each bar at 70 BPM on **/tools/metronome**. Keep the arm swinging even during skipped strums. When the groove feels natural, add palm chunks on beats 2 and 4. Then explore the ukulele-fingerpicking-primer for a gentler, melodic approach.
+Loop `| C | G | Am | F |` and apply pattern 3 (**D–DU–UDU**) to each bar. Keep the arm swinging even during skipped strums, and when the groove feels natural add palm chunks on beats 2 and 4. Then explore the [fingerpicking primer](/catalogue/ukulele-fingerpicking-primer) for a gentler, melodic approach.

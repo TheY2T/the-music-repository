@@ -3,11 +3,13 @@
 
 // Open-string MIDI, low-E first (diagram convention: low E on the left).
 export const TUNING_LOW_FIRST = [40, 45, 50, 55, 59, 64];
+// Standard (reentrant) ukulele, g-C-E-A shown left→right on the diagram.
+export const UKULELE_TUNING_LOW_FIRST = [67, 60, 64, 69];
 
 export interface ChordShape {
   name: string;
-  quality: 'major' | 'minor' | 'barre';
-  /** Fret per string, low-E first. -1 = muted, 0 = open. */
+  quality: 'major' | 'minor' | 'barre' | 'dominant';
+  /** Fret per string, low string first. -1 = muted, 0 = open. Length = number of strings. */
   frets: number[];
 }
 
@@ -22,6 +24,28 @@ export const GUITAR_CHORDS: ChordShape[] = [
   { name: 'Dm', quality: 'minor', frets: [-1, -1, 0, 2, 3, 1] },
   { name: 'F', quality: 'barre', frets: [1, 3, 3, 2, 1, 1] },
   { name: 'Bm', quality: 'barre', frets: [-1, 2, 4, 4, 3, 2] },
+  // Open dominant sevenths (blues / turnarounds).
+  { name: 'A7', quality: 'dominant', frets: [-1, 0, 2, 0, 2, 0] },
+  { name: 'D7', quality: 'dominant', frets: [-1, -1, 0, 2, 1, 2] },
+  { name: 'E7', quality: 'dominant', frets: [0, 2, 0, 1, 0, 0] },
+  { name: 'C7', quality: 'dominant', frets: [-1, 3, 2, 3, 1, 0] },
+  { name: 'G7', quality: 'dominant', frets: [3, 2, 0, 0, 0, 1] },
+  { name: 'B7', quality: 'dominant', frets: [-1, 2, 1, 2, 0, 2] },
+];
+
+// Standard C-tuning ukulele open shapes (frets low-string-first: g, C, E, A).
+export const UKULELE_CHORDS: ChordShape[] = [
+  { name: 'C', quality: 'major', frets: [0, 0, 0, 3] },
+  { name: 'G', quality: 'major', frets: [0, 2, 3, 2] },
+  { name: 'F', quality: 'major', frets: [2, 0, 1, 0] },
+  { name: 'D', quality: 'major', frets: [2, 2, 2, 0] },
+  { name: 'A', quality: 'major', frets: [2, 1, 0, 0] },
+  { name: 'Am', quality: 'minor', frets: [2, 0, 0, 0] },
+  { name: 'Em', quality: 'minor', frets: [0, 4, 3, 2] },
+  { name: 'Dm', quality: 'minor', frets: [2, 2, 1, 0] },
+  { name: 'C7', quality: 'dominant', frets: [0, 0, 0, 1] },
+  { name: 'G7', quality: 'dominant', frets: [0, 2, 1, 2] },
+  { name: 'D7', quality: 'dominant', frets: [2, 2, 3, 3] },
 ];
 
 const LEFT = 12;
@@ -31,14 +55,16 @@ const ROW = 16;
 const FRETS = 5;
 const stringX = (i: number) => LEFT + i * COL;
 const fretY = (f: number) => TOP + f * ROW;
-const WIDTH = LEFT * 2 + (TUNING_LOW_FIRST.length - 1) * COL;
 const HEIGHT = TOP + FRETS * ROW + 16;
 
-/** A single guitar chord shape rendered as an SVG fret grid (low E on the left). */
+/** A single fretted-chord shape rendered as an SVG fret grid (low string on the left). String count
+ * is taken from `chord.frets.length`, so it renders 6-string guitar and 4-string ukulele alike. */
 export function ChordDiagram({ chord }: { chord: ChordShape }) {
+  const strings = chord.frets.length;
+  const width = LEFT * 2 + (strings - 1) * COL;
   return (
     <svg
-      viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+      viewBox={`0 0 ${width} ${HEIGHT}`}
       className="w-24"
       role="img"
       aria-label={`${chord.name} chord diagram`}
@@ -48,7 +74,7 @@ export function ChordDiagram({ chord }: { chord: ChordShape }) {
         <line
           key={f}
           x1={stringX(0)}
-          x2={stringX(5)}
+          x2={stringX(strings - 1)}
           y1={fretY(f)}
           y2={fretY(f)}
           className="stroke-foreground"
@@ -56,7 +82,7 @@ export function ChordDiagram({ chord }: { chord: ChordShape }) {
         />
       ))}
       {/* Strings. */}
-      {TUNING_LOW_FIRST.map((_, i) => (
+      {chord.frets.map((_, i) => (
         <line
           key={stringX(i)}
           x1={stringX(i)}

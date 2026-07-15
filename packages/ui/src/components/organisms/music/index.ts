@@ -8,6 +8,8 @@ export {
   type ChordShape,
   GUITAR_CHORDS,
   TUNING_LOW_FIRST,
+  UKULELE_CHORDS,
+  UKULELE_TUNING_LOW_FIRST,
 } from './chord-diagram';
 export { type StaffNoteDatum, StaffSequence, type StaffSequenceProps } from './StaffSequence';
 export { ledgerSteps } from './staff-geometry';

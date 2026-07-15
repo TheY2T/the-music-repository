@@ -35,22 +35,17 @@ That beat-4 approach is the glue. The strongest is a chromatic (half-step) appro
 
 ## A worked ii–V–I line
 
-Over `Dm7 – G7 – Cmaj7` (one chord per bar) in C:
-
-```
-| Dm7              | G7               | Cmaj7   |
-  D    A    F    A♭   G    B    D    D♭   C ...
-  1    5    ♭3   ↓    1    3    5    ↓    1
-  root chord tones ↑approach  root  tones ↑approach root
-```
-
-Read it beat by beat:
+Over `Dm7 – G7 – Cmaj7` (one chord per bar) in C, here is a line — spelled out beat by beat:
 
 - **Bar 1 (Dm7):** `D – A – F – A♭`. Root on beat 1, then chord tones (`A` the 5th, `F` the ♭3rd), then `A♭` on beat 4 — a chromatic half step **down** into the next root, `G`.
 - **Bar 2 (G7):** `G – B – D – D♭`. Root, then chord tones (`B` the 3rd, `D` the 5th), then `D♭` on beat 4 — a chromatic half step **down** into `C`.
 - **Bar 3 (Cmaj7):** lands on the root `C` on beat 1, resolving the line.
 
-Those beat-4 half-step approaches (`A♭→G`, `D♭→C`) are what make the line sound intentional and connected rather than random.
+Those beat-4 half-step approaches (`A♭→G`, `D♭→C`) are what make the line sound intentional and connected rather than random. Play and loop a full walking line on the interactive score below to hear the steady quarter-note motion.
+
+```embeds
+[{ "tool": "score", "title": "A walking bass line", "caption": "Quarter-note walking bass over a ii–V–I. Play it and loop it.", "mode": "tab", "tuning": [28, 33, 38, 43], "tex": "\\tempo 90\n.\n\\track \"Bass\"\n  \\staff{tabs score} \\tuning (G2 D2 A1 E1)\n  :4 0.2 0.3 1.4 4.4 | 3.4 2.3 0.2 4.3 | 3.3 2.2 0.1 2.1 | 0.1 3.2 2.2 4.3 |" }]
+```
 
 ## Techniques for smoothness
 
@@ -68,4 +63,4 @@ Those beat-4 half-step approaches (`A♭→G`, `D♭→C`) are what make the lin
 
 ## Try it
 
-Loop `Dm7 – G7 – Cmaj7 – Cmaj7`, one chord per bar, at 80 BPM on **/tools/metronome** with a swing feel. Play only roots on beat 1 for four passes, then add the fifth, then a beat-4 chromatic approach into each next root. Keep the quarter notes dead steady. Check chord-tone locations on **/tools/fretboard** and review the seventh-chords lesson so you know which notes belong to each chord.
+Loop `Dm7 – G7 – Cmaj7 – Cmaj7`, one chord per bar, at 80 BPM on a [metronome](/tools/metronome) with a swing feel. Play only roots on beat 1 for four passes, then add the fifth, then a beat-4 chromatic approach into each next root. Keep the quarter notes dead steady. Hear the worked line on the interactive score above — hit play, or loop it to drill the beat-4 approaches — and review the seventh-chords lesson so you know which notes belong to each chord.

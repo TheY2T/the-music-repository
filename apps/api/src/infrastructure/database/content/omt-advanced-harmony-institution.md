@@ -48,4 +48,8 @@ Chromaticism sounds *coherent* only when the lines move smoothly. Keep these pri
 
 ## Check yourself
 
-Harmonise a modulation from C major to A minor (its relative minor): try `C: I – vi – | ` then reinterpret and cadence `a: iv – V7 – i` using a `G♯` leading tone. Identify your pivot chord and label the augmented-sixth or Neapolitan if you add one. Build the progressions in the **analyzer** and **chord-progression** tools to hear each resolution, and revisit the secondary-dominants and voice-leading lessons for the underlying mechanics.
+Harmonise a modulation from C major to A minor (its relative minor): try `C: I – vi – | ` then reinterpret and cadence `a: iv – V7 – i` using a `G♯` leading tone. Identify your pivot chord and label the augmented-sixth or Neapolitan if you add one. Loop the chromatic turnaround below to hear how a secondary dominant colours a progression, and revisit the secondary-dominants and voice-leading lessons for the underlying mechanics.
+
+```embeds
+[{ "tool": "progression", "title": "A chromatic progression to hear", "caption": "A secondary dominant (A7 = V/ii) colours this turnaround.", "key": "C", "chords": ["C", "A7", "Dm", "G7"] }]
+```

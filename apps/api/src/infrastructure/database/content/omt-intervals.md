@@ -30,23 +30,10 @@ Quality tells you exactly how wide the interval is, measured in **semitones** (h
 - **Perfect** applies to unisons, fourths, fifths, and octaves.
 - **Major / minor** applies to seconds, thirds, sixths, and sevenths.
 
-Here are the intervals within one octave, measured up from `C`:
+Tap through the twelve intervals above `C` below — each card sounds the interval and shows its semitone count, from the perfect unison (0) up through the tritone (6) to the perfect octave (12). Count the letters for the size, then the semitones to fix the quality:
 
-```
-Semitones  Interval            Example
-0          Perfect unison      C–C
-1          Minor 2nd           C–D♭
-2          Major 2nd           C–D
-3          Minor 3rd           C–E♭
-4          Major 3rd           C–E
-5          Perfect 4th         C–F
-6          Tritone (aug 4/dim 5) C–F♯ / C–G♭
-7          Perfect 5th         C–G
-8          Minor 6th           C–A♭
-9          Major 6th           C–A
-10         Minor 7th           C–B♭
-11         Major 7th           C–B
-12         Perfect octave      C–C
+```embeds
+[{ "tool": "intervals", "title": "The intervals within an octave", "caption": "Every interval from a perfect unison to a perfect octave, measured up from C — tap each to hear it.", "root": "C" }]
 ```
 
 ## Altering the quality
@@ -72,4 +59,4 @@ Intervals larger than an octave are **compound**. A 9th is an octave plus a 2nd,
 
 ## Try it
 
-Pick any two notes on a keyboard or the **/tools/fretboard**. Name the size by counting letters, then count semitones to fix the quality. Test yourself: what is `F` up to `B`? (Four letters = a fourth; six semitones = augmented — the tritone.) Then try the **/tools/scale-explorer** to see how these intervals stack into scales, and the interval-ear-training primer to start hearing them.
+Tap through the interval cards above and, for each, name the size by counting letters, then confirm the quality against the semitone count. Test yourself: what is `F` up to `B`? (Four letters = a fourth; six semitones = augmented — the tritone.) Then move on to the interval-ear-training primer to start hearing them.

@@ -65,7 +65,9 @@ the whole split and delete most of the custom playback code.
 6. **Theme-driven notation colors.** alphaTab glyph colors aren't CSS-reactive, so `use-alphatab-theme.ts`
    reads the semantic tokens (per aesthetic × light/dark, ADR 0021) as hex and applies them via
    `display.resources` + re-render on theme change (mirrors the Pixi `useThemeColors` bridge). The
-   cursor + A–B selection overlays are plain DOM, themed via `.at-cursor-*` / `.at-selection` CSS.
+   cursor + A–B selection overlays are plain DOM, themed via `.at-cursor-*` / `.at-selection` CSS —
+   a plain selection uses `--primary`; once looped (`data-looping` on the container) it switches to
+   `--accent` so an active loop is visually distinct from a pending selection.
    The right-click menu reuses the design-system `DropdownMenu` (extended with controlled
    `open`/`onOpenChange` + a `style` passthrough so it can anchor `position: fixed` at the pointer);
    its `z-index` must exceed alphaTab's own cursor/selection layer (`.at-cursors`, `z-index: 1000`),

@@ -21,14 +21,10 @@ We hear beats in groups because some feel stronger than others. Group them in tw
 
 ## Note values
 
-Note durations are related by a chain of halving. In common time each is a fraction of a whole note:
+Note durations are related by a chain of halving. In common time a **whole note** lasts 4 beats, a **half note** 2, a **quarter note** 1, an **eighth note** ½ a beat, and a **sixteenth note** ¼ of a beat. Play the score below to hear the top of that chain line up in 4/4 — a whole note, then two halves, four quarters, and eight eighths:
 
-```
-Whole note      𝅝     = 4 beats
-Half note       𝅗𝅥     = 2 beats
-Quarter note    ♩     = 1 beat
-Eighth note     ♪     = ½ beat
-Sixteenth note  𝅘𝅥𝅯     = ¼ beat
+```embeds
+[{ "tool": "score", "title": "Note values in 4/4", "caption": "A whole note, two halves, four quarters, eight eighths.", "tex": ":1 c4 | :2 c4 c4 | :4 c4 c4 c4 c4 | :8 c4 c4 c4 c4 c4 c4 c4 c4 |" }]
 ```
 
 A **dot** after a note adds half its value again: a dotted half note = 2 + 1 = 3 beats. A **rest** is a silence of the same duration as its matching note.
@@ -69,4 +65,4 @@ The first beat of each measure carries natural emphasis. Composers place importa
 
 ## Try it
 
-Set **/tools/metronome** to 80 BPM. Tap quarter notes for four bars of 4/4, accenting beat 1. Then switch to eighth notes ("1-and-2-and-3-and-4-and") without letting the pulse drift. Finally set the metronome to a dotted-quarter feel and count 6/8 in two. Once the pulse is solid, try clapping an offbeat rhythm against it to feel syncopation. Then apply it in the 12-bar-blues and ukulele-strumming lessons.
+Replay the note-values score above to lock the 4/4 subdivisions in your ear, then set a [metronome](/tools/metronome) to 80 BPM. Tap quarter notes for four bars of 4/4, accenting beat 1. Then switch to eighth notes ("1-and-2-and-3-and-4-and") without letting the pulse drift. Finally set the metronome to a dotted-quarter feel and count 6/8 in two. Once the pulse is solid, try clapping an offbeat rhythm against it to feel syncopation. Then apply it in the 12-bar-blues and ukulele-strumming lessons.

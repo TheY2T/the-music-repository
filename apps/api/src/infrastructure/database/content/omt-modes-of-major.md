@@ -17,15 +17,20 @@ A **mode** is a scale you get by starting the major scale on a different degree 
 
 Starting each mode on a white key makes the notes obvious; the "start degree" is where it begins in the parent major scale:
 
-```
-Mode         Start on   White-key run   Character
-Ionian       1 (C)      C D E F G A B    the major scale itself — bright
-Dorian       2 (D)      D E F G A B C    minor but hopeful (raised 6th)
-Phrygian     3 (E)      E F G A B C D    dark, "Spanish" (flat 2nd)
-Lydian       4 (F)      F G A B C D E    bright, floating (sharp 4th)
-Mixolydian   5 (G)      G A B C D E F    major but bluesy (flat 7th)
-Aeolian      6 (A)      A B C D E F G    the natural minor scale
-Locrian      7 (B)      B C D E F G A    unstable (flat 2nd AND flat 5th)
+| Mode | Start on | White-key run | Character |
+|---|---|---|---|
+| Ionian | 1 (C) | C D E F G A B | the major scale itself — bright |
+| Dorian | 2 (D) | D E F G A B C | minor but hopeful (raised 6th) |
+| Phrygian | 3 (E) | E F G A B C D | dark, "Spanish" (flat 2nd) |
+| Lydian | 4 (F) | F G A B C D E | bright, floating (sharp 4th) |
+| Mixolydian | 5 (G) | G A B C D E F | major but bluesy (flat 7th) |
+| Aeolian | 6 (A) | A B C D E F G | the natural minor scale |
+| Locrian | 7 (B) | B C D E F G A | unstable (flat 2nd AND flat 5th) |
+
+Every mode above uses the same white keys — the keyboard below highlights the parent C-major scale. Start on a different note for each mode (`D` = Dorian, `E` = Phrygian …) and listen to how the colour changes while the notes stay put:
+
+```embeds
+[{ "tool": "keyboard", "title": "The parent scale", "caption": "Every mode of C major uses only these white keys — start on a different note for each mode (D = Dorian, E = Phrygian …).", "root": "C", "scale": "major", "size": 49 }]
 ```
 
 ## Two ways to think about modes
@@ -34,18 +39,15 @@ Locrian      7 (B)      B C D E F G A    unstable (flat 2nd AND flat 5th)
 
 **Parallel (same-root) view:** more useful for hearing a mode's *flavour* is to compare it to the major or minor scale built on the **same root**. Describe each mode as an alteration:
 
-```
-Compared to a MAJOR scale on the same root:
-  Ionian     — the major scale
-  Lydian     — major with a ♯4
-  Mixolydian — major with a ♭7
-
-Compared to a NATURAL MINOR (Aeolian) on the same root:
-  Aeolian    — natural minor
-  Dorian     — minor with a ♮6 (raised 6th)
-  Phrygian   — minor with a ♭2
-  Locrian    — minor with a ♭2 and ♭5
-```
+| Mode | Compared to | Alteration |
+|---|---|---|
+| Ionian | major scale | the major scale itself |
+| Lydian | major scale | major with a ♯4 |
+| Mixolydian | major scale | major with a ♭7 |
+| Aeolian | natural minor | the natural minor scale |
+| Dorian | natural minor | minor with a ♮6 (raised 6th) |
+| Phrygian | natural minor | minor with a ♭2 |
+| Locrian | natural minor | minor with a ♭2 and ♭5 |
 
 So **D Dorian** = `D E F G A B C` — it is D minor but with a `B♮` instead of `B♭`, and that single bright 6th is its signature.
 
@@ -72,4 +74,4 @@ Locrian, with its unstable diminished tonic chord, is rare as a home key but use
 
 ## Try it
 
-Play only the white keys but treat `G` as home — drone a `G` in the bass and improvise. You are in G Mixolydian; listen for how the `F♮` (not `F♯`) gives a bluesy, un-resolved brightness. Then try the same over `E` for Phrygian's dark colour. Use **/tools/scale-explorer** to hear each mode against a drone, and revisit the major-scale-key-signatures lesson to see why the notes stay the same while the colour changes.
+Play only the white keys but treat `G` as home — drone a `G` in the bass and improvise. You are in G Mixolydian; listen for how the `F♮` (not `F♯`) gives a bluesy, un-resolved brightness. Then try the same over `E` for Phrygian's dark colour. Use the parent-scale keyboard above to explore each mode — start on a different note for each — and revisit the major-scale-key-signatures lesson to see why the notes stay the same while the colour changes.

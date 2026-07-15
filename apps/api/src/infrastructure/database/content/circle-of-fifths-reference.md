@@ -46,8 +46,12 @@ circle — a minor third *below* the major (its 6th scale degree). So `C` major 
   and I–IV–V progressions are all near neighbours.
 - **Practise scales in order** so each new key changes by only one accidental.
 
-Use the interactive **[Circle of Fifths tool](/tools/circle-of-fifths)** to click any key and see its
-signature, relative minor, and neighbouring chords light up.
+Use the interactive circle below to click any key and see its signature, relative minor, and
+neighbouring chords light up.
+
+```embeds
+[{ "tool": "circle-of-fifths", "title": "The circle of fifths", "caption": "Click a key to see its signature and neighbours." }]
+```
 
 ## Related practice
 

@@ -279,6 +279,14 @@ src/
     `apps/web` (still in `@TheY2T/tmr-ui` for Storybook). **ScaleBoxes + ScaleExplorer are NOT on
     alphaTab** — a fretboard-box grid and degree chips aren't staff notation (alphaTab has no
     fretboard-diagram view); they keep their bespoke SVG/DOM.
+  - **Content embeds (ADR 0028).** Catalogue articles render **preconfigured** tools below the prose via
+    an authored `embeds` array (`ContentDetail.embeds`). `components/content/ContentEmbeds.tsx` maps each
+    embed → a lazy-loaded island (`score`→`ScorePlayer` inline tex, `scale-boxes`, `keyboard`,
+    `chord-diagrams`, `progression`, `circle-of-fifths`); pure resolution (note→pc, chord lookup, tuning)
+    in `lib/embeds.ts`. Embeddable tools take **optional initial-state props** (defaults = their `/tools`
+    page). `ChordDiagram` (`@TheY2T/tmr-ui/music`) derives string count from `chord.frets.length` (guitar
+    6 / ukulele 4). Authored in `apps/api` content `.md` (```embeds block); see `docs/features/content-embeds.md`
+    + the **`embed-tool`** skill.
   - **Keyboard + note service (ADR 0025).** `/tools/keyboard` and `/tools/soundfont` are ONE island —
     `PianoKeyboard.tsx` — with selectable sizes (`lib/keyboard.ts`: `KEYBOARD_SIZES` 25–88, default 61),
     octave-shift + horizontal scroll, sustain (note-on/off), MIDI velocity, and QWERTY play

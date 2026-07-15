@@ -37,6 +37,10 @@ interface PianoKeyboardProps {
   defaultInstrument?: string;
   /** Show the "highlight a scale" controls. */
   scaleHighlight?: boolean;
+  /** Preselect a scale root (pitch class 0–11) for the highlight — for catalogue embeds. */
+  defaultRoot?: number | null;
+  /** Preselect the highlighted scale id (e.g. `major`, `minor-pentatonic`). */
+  defaultScale?: string;
   ariaLabel?: string;
 }
 
@@ -45,6 +49,8 @@ export default function PianoKeyboard({
   defaultSize = DEFAULT_KEYBOARD_KEYS,
   defaultInstrument = DEFAULT_INSTRUMENT,
   scaleHighlight = false,
+  defaultRoot = null,
+  defaultScale = 'major',
   ariaLabel = 'Piano keyboard',
 }: PianoKeyboardProps) {
   const [keys, setKeys] = useState(defaultSize);
@@ -56,8 +62,8 @@ export default function PianoKeyboard({
   const [showLabels, setShowLabels] = useState(true);
   const [lastNote, setLastNote] = useState<string | null>(null);
   const [active, setActive] = useState<Set<number>>(new Set());
-  const [root, setRoot] = useState<number | null>(null);
-  const [scaleKey, setScaleKey] = useState('major');
+  const [root, setRoot] = useState<number | null>(defaultRoot);
+  const [scaleKey, setScaleKey] = useState(defaultScale);
 
   const { midis, whiteMidis, blackMidis, whiteWidthPct } = useMemo(
     () => layoutForKeys(keys),

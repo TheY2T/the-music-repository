@@ -17,11 +17,14 @@ sources: ["general knowledge"]
 
 Assign one finger per string. Rest your picking hand lightly and let each finger "own" a string:
 
-```
-String:  g      C      E      A
-Finger:  thumb  index  middle ring
-Symbol:  p      i      m      a     (classical guitar notation)
-```
+| String | Finger | Symbol |
+| --- | --- | --- |
+| g | thumb | p |
+| C | index | i |
+| E | middle | m |
+| A | ring | a |
+
+(`p`, `i`, `m`, `a` are the classical-guitar symbols for thumb, index, middle, and ring.)
 
 - **Thumb (p)** plucks the top `g` string with a downward motion.
 - **Index (i), middle (m), ring (a)** pluck the `C`, `E`, and `A` strings with a slight upward curl.
@@ -32,23 +35,21 @@ Keep the hand relaxed and let the fingers move from the knuckle, not the whole a
 
 Pluck the strings one after another, low to high, as an arpeggio. Hold a **C chord** (`0 0 0 3`) and play:
 
-```
-Count:  1     2     3     4
-String: g     C     E     A
-Finger: p     i     m     a
-```
+| Count | 1 | 2 | 3 | 4 |
+| --- | --- | --- | --- | --- |
+| String | g | C | E | A |
+| Finger | p | i | m | a |
 
-Each note rings into the next, outlining the chord. Practise slowly and evenly with **/tools/metronome**.
+Each note rings into the next, outlining the chord. Practise slowly and evenly with a [metronome](/tools/metronome).
 
 ## Pattern 2: roll up and back
 
 A fuller, four-note-plus pattern that goes up then partway back down — eight notes over the bar:
 
-```
-Count:  1 & 2 & 3 & 4 &
-String: g C E A E C E A
-Finger: p i m a m i m a
-```
+| Count | 1 | & | 2 | & | 3 | & | 4 | & |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| String | g | C | E | A | E | C | E | A |
+| Finger | p | i | m | a | m | i | m | a |
 
 This "wave" shape is the backbone of gentle fingerstyle accompaniment.
 
@@ -56,12 +57,12 @@ This "wave" shape is the backbone of gentle fingerstyle accompaniment.
 
 Play the thumb and a finger **together** (a "pinch") on beat 1, then fill in:
 
-```
-Beat 1: g + A together (p + a)
-Beat 2: E   (m)
-Beat 3: C   (i)
-Beat 4: E   (m)
-```
+| Beat | String(s) | Finger(s) |
+| --- | --- | --- |
+| 1 | g + A (pinch together) | p + a |
+| 2 | E | m |
+| 3 | C | i |
+| 4 | E | m |
 
 The simultaneous bass-and-melody pinch gives the illusion of two players at once — the foundation of melodic fingerstyle.
 
@@ -74,8 +75,12 @@ The simultaneous bass-and-melody pinch gives the illusion of two players at once
 
 ## Combining with chords
 
-The real payoff comes from changing chords *while* keeping the pattern going. Loop `| C | Am | F | G |`, one bar each, and play Pattern 1 through every chord. The picking hand keeps doing the same `p-i-m-a` roll; only the fretting hand changes shape. Because the pattern is chord-shape-agnostic, you can apply it to any progression you already know.
+The real payoff comes from changing chords *while* keeping the pattern going. Loop `| C | Am | F | G |`, one bar each, and play Pattern 1 through every chord. The picking hand keeps doing the same `p-i-m-a` roll; only the fretting hand changes shape. Because the pattern is chord-shape-agnostic, you can apply it to any progression you already know. Tap the interactive chord diagrams below to hear each grip you'll pick over.
+
+```embeds
+[{ "tool": "chord-diagrams", "title": "The chords to pick", "instrument": "ukulele", "chords": ["C", "Am", "F", "G"] }]
+```
 
 ## Try it
 
-Hold a C chord and play Pattern 1 (`p-i-m-a`) slowly at 60 BPM on **/tools/metronome** until each note is clean and even. Then loop `| C | Am | F | G |` and keep the roll going through the changes, letting every note ring. When comfortable, try Pattern 3's pinch to start shaping a melody. Revisit the first-four-chords lesson for the shapes and the strumming lesson for rhythmic variety.
+Hold a C chord and play Pattern 1 (`p-i-m-a`) slowly at 60 BPM on a [metronome](/tools/metronome) until each note is clean and even. Then loop `| C | Am | F | G |` and keep the roll going through the changes, letting every note ring. Check each grip you'll pick over against the interactive chord diagrams above. When comfortable, try Pattern 3's pinch to start shaping a melody. Revisit the first-four-chords lesson for the shapes and the strumming lesson for rhythmic variety.

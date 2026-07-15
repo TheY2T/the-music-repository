@@ -1,0 +1,18 @@
+\title "Major Scales — C, G, F" \tempo 88
+.
+\track "Piano"
+  \staff{score} \instrument acousticgrandpiano
+    \ts 4 4
+    \clef g2
+    \ks c
+    \section "C major"
+    :8 C4 D4 E4 F4 G4 A4 B4 C5 |
+    :8 C5 B4 A4 G4 F4 E4 D4 C4 |
+    \ks g
+    \section "G major"
+    :8 G4 A4 B4 C5 D5 E5 F#5 G5 |
+    :8 G5 F#5 E5 D5 C5 B4 A4 G4 |
+    \ks f
+    \section "F major"
+    :8 F4 G4 A4 Bb4 C5 D5 E5 F5 |
+    :8 F5 E5 D5 C5 Bb4 A4 G4 F4 |

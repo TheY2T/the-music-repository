@@ -56,6 +56,11 @@ Steps:
 
 ## How to progress
 
-Move from single intervals to short two- and three-note melodies, then whole phrases. Connect what you
-hear to theory using the [Circle of Fifths reference](/circle-of-fifths-reference), and reinforce
-pitch relationships by singing [Major Scales in All Keys](/major-scales-all-keys) as you play them.
+Move from single intervals to short two- and three-note melodies, then whole phrases. Use the keyboard
+below to play the reference intervals from C, connect what you hear to theory using the
+[Circle of Fifths reference](/circle-of-fifths-reference), and reinforce pitch relationships by singing
+[Major Scales in All Keys](/major-scales-all-keys) as you play them.
+
+```embeds
+[{ "tool": "keyboard", "title": "Play the reference intervals", "caption": "Use the highlighted C-major notes to sing/play the reference songs.", "root": "C", "scale": "major", "size": 49 }]
+```
