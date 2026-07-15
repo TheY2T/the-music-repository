@@ -21,7 +21,7 @@ export class GetContentBySlugUseCase {
    * A premium item below the viewer's rank returns a locked preview (metadata only). */
   async execute(slug: string, viewerRank: number): Promise<ContentDetailView> {
     const item = await this.repository.getBySlug(slug);
-    if (!item || item.status !== 'published') {
+    if (item?.status !== 'published') {
       throw new ContentNotFoundError(slug);
     }
 

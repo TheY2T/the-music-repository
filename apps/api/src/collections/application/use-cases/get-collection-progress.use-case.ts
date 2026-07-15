@@ -21,7 +21,7 @@ export class GetCollectionWithProgressUseCase {
 
   async execute(slug: string, userId: string | null): Promise<CollectionProgressDetailView> {
     const collection = await this.repository.getBySlug(slug);
-    if (!collection || collection.status !== 'published' || collection.visibility === 'private') {
+    if (collection?.status !== 'published' || collection.visibility === 'private') {
       throw new CollectionNotFoundError(slug);
     }
     const [rating, completedSlugs] = await Promise.all([

@@ -47,7 +47,7 @@ export class DrizzleContentRepository extends ContentRepository {
 
   async findRelated(slug: string, limit: number): Promise<ContentItem[]> {
     const source = await this.getBySlug(slug);
-    if (!source || source.status !== 'published') {
+    if (source?.status !== 'published') {
       return [];
     }
     // Overlap = count of shared taxonomy slugs (genre/instrument/topic). At seed scale, scoring in
@@ -113,8 +113,8 @@ export class DrizzleContentRepository extends ContentRepository {
     };
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: join/dimension tables share a shape but differ by exact type.
   private async taxonomy(
+    // biome-ignore lint/suspicious/noExplicitAny: join/dimension tables share a shape but differ by exact type.
     join: any,
     // biome-ignore lint/suspicious/noExplicitAny: drizzle column type varies per dimension.
     joinFk: any,

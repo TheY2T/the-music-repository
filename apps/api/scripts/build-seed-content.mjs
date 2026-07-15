@@ -62,8 +62,8 @@ function extractEmbeds(body, file) {
   const re = /```embeds\s*\n([\s\S]*?)\n```/g;
   let out = '';
   let last = 0;
-  let m;
-  while ((m = re.exec(body)) !== null) {
+  let m = re.exec(body);
+  while (m !== null) {
     let parsed;
     try {
       parsed = JSON.parse(m[1]);
@@ -82,6 +82,7 @@ function extractEmbeds(body, file) {
     out += `${body.slice(last, m.index)}\n\n${markers}\n\n`;
     embeds.push(...parsed);
     last = m.index + m[0].length;
+    m = re.exec(body);
   }
   out += body.slice(last);
   const cleaned = out.replace(/\n{3,}/g, '\n\n').trim();

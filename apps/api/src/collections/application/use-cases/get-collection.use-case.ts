@@ -16,7 +16,7 @@ export class GetCollectionBySlugUseCase {
   /** Public: a published collection with its published items (renumbered), grouped into sections. */
   async execute(slug: string): Promise<CollectionDetailView> {
     const collection = await this.repository.getBySlug(slug);
-    if (!collection || collection.status !== 'published' || collection.visibility === 'private') {
+    if (collection?.status !== 'published' || collection.visibility === 'private') {
       throw new CollectionNotFoundError(slug);
     }
     const rating = (await this.ratings.getAggregate([slug])).get(slug);

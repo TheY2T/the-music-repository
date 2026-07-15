@@ -1,6 +1,6 @@
-import { alphaTab } from '@coderline/alphatab-vite';
 import node from '@astrojs/node';
 import react from '@astrojs/react';
+import { alphaTab } from '@coderline/alphatab-vite';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import icon from 'astro-icon';

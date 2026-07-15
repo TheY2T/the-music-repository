@@ -58,7 +58,9 @@ for (const slug of slugs) {
   }
 }
 
-console.log(`Converted ${ok}/${slugs.length} scores to alphaTex${deleteSource ? ' (removed .musicxml sources)' : ''}.`);
+console.log(
+  `Converted ${ok}/${slugs.length} scores to alphaTex${deleteSource ? ' (removed .musicxml sources)' : ''}.`,
+);
 if (failures.length) {
   console.error(`\n${failures.length} failed:`);
   for (const f of failures) console.error(`  - ${f}`);
