@@ -1,13 +1,24 @@
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
-import { useState } from 'react';
-import { CHORDS, intervalLabel, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
+import { useEffect, useState } from 'react';
+import LevelToggle from '@/components/LevelToggle';
+import { CHORDS, chordsByLevel, intervalLabel, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
+import { useLevel } from '@/lib/use-level';
 
 const ROOT_MIDI = 60; // C4 reference octave
 
 export default function ChordBuilder() {
+  const { level, setLevel } = useLevel();
   const [root, setRoot] = useState(0);
   const [chordKey, setChordKey] = useState('major');
+
+  const chordChoices = chordsByLevel(level);
+  // Keep the selection valid when the level narrows past it.
+  useEffect(() => {
+    if (!chordChoices.some((c) => c.key === chordKey)) {
+      setChordKey(chordChoices[0]?.key ?? 'major');
+    }
+  }, [chordChoices, chordKey]);
 
   const chord = CHORDS.find((c) => c.key === chordKey) ?? CHORDS[0];
   const flats = [1, 3, 5, 8, 10].includes(root);
@@ -55,13 +66,14 @@ export default function ChordBuilder() {
             onChange={(e) => setChordKey(e.target.value)}
             className="h-auto w-auto px-2 py-1"
           >
-            {CHORDS.map((c) => (
+            {chordChoices.map((c) => (
               <option key={c.key} value={c.key}>
                 {c.name}
               </option>
             ))}
           </Select>
         </label>
+        <LevelToggle level={level} onChange={setLevel} />
       </div>
 
       <div className="space-y-2">

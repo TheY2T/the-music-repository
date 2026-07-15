@@ -1,13 +1,31 @@
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
-import { useState } from 'react';
-import { intervalLabel, pitchName, ROOT_CHOICES, SCALES, stepPattern } from '@/lib/music-theory';
+import { useEffect, useState } from 'react';
+import LevelToggle from '@/components/LevelToggle';
+import {
+  intervalLabel,
+  pitchName,
+  ROOT_CHOICES,
+  SCALES,
+  scalesByLevel,
+  stepPattern,
+} from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
+import { useLevel } from '@/lib/use-level';
 
 const ROOT_MIDI = 60; // C4 reference octave
 
 export default function ScaleExplorer() {
+  const { level, setLevel } = useLevel();
   const [root, setRoot] = useState(0);
   const [scaleKey, setScaleKey] = useState('major');
+
+  const scaleChoices = scalesByLevel(level);
+  // Keep the selection valid when the level narrows past it.
+  useEffect(() => {
+    if (!scaleChoices.some((s) => s.key === scaleKey)) {
+      setScaleKey(scaleChoices[0]?.key ?? 'major');
+    }
+  }, [scaleChoices, scaleKey]);
 
   const scale = SCALES.find((s) => s.key === scaleKey) ?? SCALES[0];
   const flats = [1, 3, 5, 8, 10].includes(root);
@@ -51,13 +69,14 @@ export default function ScaleExplorer() {
             onChange={(e) => setScaleKey(e.target.value)}
             className="h-auto w-auto px-2 py-1"
           >
-            {SCALES.map((s) => (
+            {scaleChoices.map((s) => (
               <option key={s.key} value={s.key}>
                 {s.name}
               </option>
             ))}
           </Select>
         </label>
+        <LevelToggle level={level} onChange={setLevel} />
       </div>
 
       <div className="space-y-2">

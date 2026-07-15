@@ -1,8 +1,16 @@
 import { Button, Card, Icon, Select } from '@TheY2T/tmr-ui';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import LevelToggle from '@/components/LevelToggle';
 import { playTone } from '@/lib/audio';
 import { keyLayout } from '@/lib/keyboard';
-import { CHORDS, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
+import {
+  CHORDS,
+  chordsByLevel,
+  midiToFrequency,
+  pitchName,
+  ROOT_CHOICES,
+} from '@/lib/music-theory';
+import { useLevel } from '@/lib/use-level';
 
 // Fixed 3-octave diagram (C3–B5) so voicings stay comparable across selections. Geometry from the
 // shared keyboard helper (ADR 0025).
@@ -144,8 +152,17 @@ function VoicingKeyboard({ midis, flats }: { midis: Set<number>; flats: boolean 
 }
 
 export default function VoicingLibrary() {
+  const { level, setLevel } = useLevel();
   const [root, setRoot] = useState(0);
   const [chordKey, setChordKey] = useState('major-7');
+
+  const chordChoices = chordsByLevel(level);
+  // Keep the selection valid when the level narrows past it.
+  useEffect(() => {
+    if (!chordChoices.some((c) => c.key === chordKey)) {
+      setChordKey(chordChoices[0]?.key ?? 'major');
+    }
+  }, [chordChoices, chordKey]);
 
   const chord = CHORDS.find((c) => c.key === chordKey) ?? CHORDS[0];
   const flats = [1, 3, 5, 8, 10].includes(root);
@@ -190,13 +207,14 @@ export default function VoicingLibrary() {
             onChange={(e) => setChordKey(e.target.value)}
             className="h-auto w-auto px-2 py-1"
           >
-            {CHORDS.map((c) => (
+            {chordChoices.map((c) => (
               <option key={c.key} value={c.key}>
                 {c.name}
               </option>
             ))}
           </Select>
         </label>
+        <LevelToggle level={level} onChange={setLevel} />
         <div className="ml-auto text-sm text-muted-foreground">
           Voicings of <span className="font-medium text-foreground">{chordLabel}</span>
         </div>

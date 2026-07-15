@@ -147,6 +147,14 @@ only **25 of 83 articles use live embeds**.
 
 ## 8. Prioritized roadmap
 
+**Cross-cutting**
+- ✅ **DONE (2026-07-15)** X1 — level-tier selector. `useLevel` hook (`localStorage`-persisted, carries
+  across tools) + shared `LevelToggle` (design-system `SegmentedToggle`). Wired into ChordBuilder,
+  ScaleExplorer, VoicingLibrary and the chord-diagrams picker: each filters its scale/chord menu via
+  `scalesByLevel`/`chordsByLevel` and resets an out-of-range selection. Beginner sees a focused set
+  (2 chords / 6 scales), Expert unlocks everything (26 / 20). More tools can adopt `<LevelToggle>` the
+  same way. Also **tuner mic pitch-detection was already shipped** (`pitch-detection.ts` + `TuningReference`).
+
 **Phase 1 — Foundation (unblocks everything, do first)**
 1. ✅ **DONE (2026-07-15)** X2 + 4.1 — unified + expanded `SCALES` (9→20) and `CHORDS` (10→26). `music-theory.ts` is now the single source of truth: each chord carries `symbol`/`aliases`, from which `embeds.ts` derives its parser. Every scale/chord tagged with a `Level` (beginner→expert) + `scalesByLevel`/`chordsByLevel`/`isWithinLevel` helpers (seeds X1). Added compound interval labels (9/11/13), `diatonicChordsMinor`, and minor-key Roman suffixes. SRS chord-quality deck gated to ≤intermediate so it doesn't regress. Tests + typecheck green; verified live (chords tool 26 types, scale tool 20 scales).
 2. C1 — merge keyboard/soundfont. _Trivial win._

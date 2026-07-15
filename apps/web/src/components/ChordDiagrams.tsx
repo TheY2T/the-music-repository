@@ -7,10 +7,18 @@ import {
   supportedQualities,
   TUNING_LOW_FIRST,
 } from '@TheY2T/tmr-ui/music';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import LevelToggle from '@/components/LevelToggle';
 import { playTone } from '@/lib/audio';
 import { tuningFor } from '@/lib/embeds';
-import { CHORDS, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
+import {
+  CHORDS,
+  chordsByLevel,
+  midiToFrequency,
+  pitchName,
+  ROOT_CHOICES,
+} from '@/lib/music-theory';
+import { useLevel } from '@/lib/use-level';
 
 // Chord-diagram DATA + rendering now live in @TheY2T/tmr-ui/music. Re-exported here so the ~6
 // tools importing from `@/components/ChordDiagrams` keep working. Audio (`strumChord`) stays in
@@ -70,19 +78,22 @@ function strumShape(frets: number[], tuning: number[]): void {
 }
 
 export default function ChordDiagrams() {
+  const { level, setLevel } = useLevel();
   const [instrument, setInstrument] = useState<Instrument>('guitar');
   const [root, setRoot] = useState(0);
   const [quality, setQuality] = useState('major');
 
   const tuning = tuningFor(instrument);
+  // Qualities this instrument can voice, narrowed to the learner's level.
+  const levelKeys = new Set(chordsByLevel(level).map((c) => c.key));
+  const qualityKeys = qualityKeysFor(instrument).filter((key) => levelKeys.has(key));
+  // Keep the selection valid when the instrument or level narrows past it (major is always available).
+  useEffect(() => {
+    if (!qualityKeys.includes(quality)) setQuality(qualityKeys[0] ?? 'major');
+  }, [qualityKeys, quality]);
+
   const shapes = generateChordShapes(root, quality, instrument);
   const qualityName = CHORDS.find((c) => c.key === quality)?.name ?? quality;
-
-  function changeInstrument(next: Instrument) {
-    setInstrument(next);
-    // Every instrument voices major, so it is always a safe fallback when the quality isn't supported.
-    if (!qualityKeysFor(next).includes(quality)) setQuality('major');
-  }
 
   return (
     <div className="space-y-5">
@@ -91,7 +102,7 @@ export default function ChordDiagrams() {
           <span className="block font-medium">Instrument</span>
           <Select
             value={instrument}
-            onChange={(e) => changeInstrument(e.target.value as Instrument)}
+            onChange={(e) => setInstrument(e.target.value as Instrument)}
             className="h-auto w-auto px-2 py-1"
           >
             {INSTRUMENTS.map((i) => (
@@ -124,13 +135,14 @@ export default function ChordDiagrams() {
             onChange={(e) => setQuality(e.target.value)}
             className="h-auto w-auto px-2 py-1"
           >
-            {qualityKeysFor(instrument).map((key) => (
+            {qualityKeys.map((key) => (
               <option key={key} value={key}>
                 {CHORDS.find((c) => c.key === key)?.name ?? key}
               </option>
             ))}
           </Select>
         </label>
+        <LevelToggle level={level} onChange={setLevel} />
       </div>
 
       {shapes.length > 0 ? (
