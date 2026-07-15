@@ -20,18 +20,52 @@ import {
 } from './audio';
 import { midiToFrequency } from './music-theory';
 
-/** A short, friendly menu of General-MIDI instruments (smplr accepts the full GM set). */
+/** A curated menu of General-MIDI instruments across families (smplr accepts the full GM set). */
 export const SOUNDFONT_INSTRUMENTS = [
+  // Keyboards
   { name: 'acoustic_grand_piano', label: 'Grand piano' },
+  { name: 'bright_acoustic_piano', label: 'Bright piano' },
   { name: 'electric_piano_1', label: 'Electric piano' },
+  { name: 'harpsichord', label: 'Harpsichord' },
+  { name: 'clavinet', label: 'Clavinet' },
+  // Tuned percussion
+  { name: 'celesta', label: 'Celesta' },
+  { name: 'music_box', label: 'Music box' },
+  { name: 'vibraphone', label: 'Vibraphone' },
+  { name: 'marimba', label: 'Marimba' },
+  { name: 'xylophone', label: 'Xylophone' },
+  { name: 'tubular_bells', label: 'Tubular bells' },
+  // Organs & free reed
+  { name: 'drawbar_organ', label: 'Drawbar organ' },
+  { name: 'rock_organ', label: 'Rock organ' },
+  { name: 'church_organ', label: 'Church organ' },
+  { name: 'accordion', label: 'Accordion' },
+  { name: 'harmonica', label: 'Harmonica' },
+  // Guitars
   { name: 'acoustic_guitar_nylon', label: 'Nylon guitar' },
   { name: 'acoustic_guitar_steel', label: 'Steel guitar' },
+  { name: 'electric_guitar_jazz', label: 'Jazz guitar' },
   { name: 'electric_guitar_clean', label: 'Electric guitar' },
+  { name: 'overdriven_guitar', label: 'Overdriven guitar' },
+  // Basses
   { name: 'acoustic_bass', label: 'Upright bass' },
+  { name: 'electric_bass_finger', label: 'Electric bass' },
+  { name: 'fretless_bass', label: 'Fretless bass' },
+  // Strings & voice
+  { name: 'violin', label: 'Violin' },
+  { name: 'cello', label: 'Cello' },
+  { name: 'orchestral_harp', label: 'Harp' },
   { name: 'string_ensemble_1', label: 'Strings' },
-  { name: 'church_organ', label: 'Church organ' },
+  { name: 'choir_aahs', label: 'Choir' },
+  // Brass & reeds
+  { name: 'trumpet', label: 'Trumpet' },
+  { name: 'trombone', label: 'Trombone' },
+  { name: 'alto_sax', label: 'Alto sax' },
+  { name: 'tenor_sax', label: 'Tenor sax' },
+  { name: 'clarinet', label: 'Clarinet' },
+  // Winds
   { name: 'flute', label: 'Flute' },
-  { name: 'vibraphone', label: 'Vibraphone' },
+  { name: 'pan_flute', label: 'Pan flute' },
 ] as const;
 
 export type SoundfontStatus = 'idle' | 'loading' | 'sampled' | 'fallback';
