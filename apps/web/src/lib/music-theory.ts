@@ -14,24 +14,112 @@ export function midiToFrequency(midi: number): number {
   return 440 * 2 ** ((midi - 69) / 12);
 }
 
+/**
+ * Difficulty tier for a scale or chord, used to progressively disclose options per learner level
+ * (Beginner → Expert). Tools filter their pickers with `scalesByLevel` / `chordsByLevel`; a tool that
+ * ignores the field simply shows everything.
+ */
+export type Level = 'beginner' | 'intermediate' | 'advanced' | 'expert';
+
+/** Level order, low → high; a learner at level N sees everything up to and including N. */
+export const LEVELS: Level[] = ['beginner', 'intermediate', 'advanced', 'expert'];
+
+/** True when `level` is at or below `maxLevel` in the `LEVELS` order. */
+export function isWithinLevel(level: Level, maxLevel: Level): boolean {
+  return LEVELS.indexOf(level) <= LEVELS.indexOf(maxLevel);
+}
+
 export interface ScaleDefinition {
   key: string;
   name: string;
   /** Semitone offsets from the root. */
   intervals: number[];
+  /** Difficulty tier for level-based disclosure. */
+  level: Level;
 }
 
 export const SCALES: ScaleDefinition[] = [
-  { key: 'major', name: 'Major (Ionian)', intervals: [0, 2, 4, 5, 7, 9, 11] },
-  { key: 'natural-minor', name: 'Natural minor (Aeolian)', intervals: [0, 2, 3, 5, 7, 8, 10] },
-  { key: 'harmonic-minor', name: 'Harmonic minor', intervals: [0, 2, 3, 5, 7, 8, 11] },
-  { key: 'dorian', name: 'Dorian', intervals: [0, 2, 3, 5, 7, 9, 10] },
-  { key: 'mixolydian', name: 'Mixolydian', intervals: [0, 2, 4, 5, 7, 9, 10] },
-  { key: 'major-pentatonic', name: 'Major pentatonic', intervals: [0, 2, 4, 7, 9] },
-  { key: 'minor-pentatonic', name: 'Minor pentatonic', intervals: [0, 3, 5, 7, 10] },
-  { key: 'blues', name: 'Blues', intervals: [0, 3, 5, 6, 7, 10] },
-  { key: 'chromatic', name: 'Chromatic', intervals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
+  { key: 'major', name: 'Major (Ionian)', intervals: [0, 2, 4, 5, 7, 9, 11], level: 'beginner' },
+  {
+    key: 'natural-minor',
+    name: 'Natural minor (Aeolian)',
+    intervals: [0, 2, 3, 5, 7, 8, 10],
+    level: 'beginner',
+  },
+  { key: 'major-pentatonic', name: 'Major pentatonic', intervals: [0, 2, 4, 7, 9], level: 'beginner' },
+  { key: 'minor-pentatonic', name: 'Minor pentatonic', intervals: [0, 3, 5, 7, 10], level: 'beginner' },
+  { key: 'blues', name: 'Blues', intervals: [0, 3, 5, 6, 7, 10], level: 'beginner' },
+  {
+    key: 'chromatic',
+    name: 'Chromatic',
+    intervals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+    level: 'beginner',
+  },
+  {
+    key: 'harmonic-minor',
+    name: 'Harmonic minor',
+    intervals: [0, 2, 3, 5, 7, 8, 11],
+    level: 'intermediate',
+  },
+  {
+    key: 'melodic-minor',
+    name: 'Melodic minor (jazz)',
+    intervals: [0, 2, 3, 5, 7, 9, 11],
+    level: 'intermediate',
+  },
+  { key: 'dorian', name: 'Dorian', intervals: [0, 2, 3, 5, 7, 9, 10], level: 'intermediate' },
+  { key: 'phrygian', name: 'Phrygian', intervals: [0, 1, 3, 5, 7, 8, 10], level: 'intermediate' },
+  { key: 'lydian', name: 'Lydian', intervals: [0, 2, 4, 6, 7, 9, 11], level: 'intermediate' },
+  { key: 'mixolydian', name: 'Mixolydian', intervals: [0, 2, 4, 5, 7, 9, 10], level: 'intermediate' },
+  { key: 'locrian', name: 'Locrian', intervals: [0, 1, 3, 5, 6, 8, 10], level: 'advanced' },
+  {
+    key: 'whole-tone',
+    name: 'Whole tone',
+    intervals: [0, 2, 4, 6, 8, 10],
+    level: 'advanced',
+  },
+  {
+    key: 'diminished-hw',
+    name: 'Diminished (half–whole)',
+    intervals: [0, 1, 3, 4, 6, 7, 9, 10],
+    level: 'advanced',
+  },
+  {
+    key: 'diminished-wh',
+    name: 'Diminished (whole–half)',
+    intervals: [0, 2, 3, 5, 6, 8, 9, 11],
+    level: 'advanced',
+  },
+  {
+    key: 'bebop-dominant',
+    name: 'Bebop dominant',
+    intervals: [0, 2, 4, 5, 7, 9, 10, 11],
+    level: 'advanced',
+  },
+  {
+    key: 'bebop-major',
+    name: 'Bebop major',
+    intervals: [0, 2, 4, 5, 7, 8, 9, 11],
+    level: 'advanced',
+  },
+  {
+    key: 'phrygian-dominant',
+    name: 'Phrygian dominant (Spanish)',
+    intervals: [0, 1, 4, 5, 7, 8, 10],
+    level: 'advanced',
+  },
+  {
+    key: 'hungarian-minor',
+    name: 'Hungarian minor',
+    intervals: [0, 2, 3, 6, 7, 8, 11],
+    level: 'expert',
+  },
 ];
+
+/** Scales available at or below `maxLevel` (see `Level`). */
+export function scalesByLevel(maxLevel: Level): ScaleDefinition[] {
+  return SCALES.filter((s) => isWithinLevel(s.level, maxLevel));
+}
 
 /** The pitch classes (0–11) of a scale built on `rootPitchClass`. */
 export function scalePitchClasses(rootPitchClass: number, intervals: number[]): Set<number> {
@@ -92,6 +180,23 @@ export function diatonicChords(rootPitchClass: number, flats: boolean): Diatonic
   });
 }
 
+const MINOR_ROMAN = ['i', 'ii°', '♭III', 'iv', 'v', '♭VI', '♭VII'];
+const MINOR_QUALITY = ['m', '°', '', 'm', 'm', '', ''];
+
+/** The seven diatonic triads of the natural-minor key on `rootPitchClass`. */
+export function diatonicChordsMinor(rootPitchClass: number, flats: boolean): DiatonicChord[] {
+  const minorScale = [0, 2, 3, 5, 7, 8, 10];
+  return minorScale.map((interval, degree) => {
+    const quality = MINOR_QUALITY[degree];
+    const chordRoot = (rootPitchClass + interval) % 12;
+    return {
+      roman: MINOR_ROMAN[degree],
+      name: `${pitchName(chordRoot, flats)}${quality}`,
+      pitchClasses: TRIAD_INTERVALS[quality].map((i) => (chordRoot + i) % 12),
+    };
+  });
+}
+
 /** Describe a signature: `2 sharps`, `3 flats`, or `no sharps or flats`. */
 export function describeAccidentals(accidentals: number): string {
   if (accidentals === 0) {
@@ -116,28 +221,68 @@ export const FRET_MARKERS = new Set([3, 5, 7, 9, 12, 15]);
 export interface ChordDefinition {
   key: string;
   name: string;
-  /** Semitone offsets from the root. */
+  /** Semitone offsets from the root (may exceed 12 for extended tones, e.g. 14 = 9th). */
   intervals: number[];
+  /**
+   * Canonical chord-symbol suffix (appended to the root, e.g. `m7`, `maj7`, `` for a bare major).
+   * The single source of truth for `parseChordSymbol` in `embeds.ts`.
+   */
+  symbol: string;
+  /** Alternate suffixes that also resolve to this chord (e.g. `M7`, `Δ` for a major 7th). */
+  aliases?: string[];
+  /** Difficulty tier for level-based disclosure. */
+  level: Level;
 }
 
 export const CHORDS: ChordDefinition[] = [
-  { key: 'major', name: 'Major', intervals: [0, 4, 7] },
-  { key: 'minor', name: 'Minor', intervals: [0, 3, 7] },
-  { key: 'diminished', name: 'Diminished', intervals: [0, 3, 6] },
-  { key: 'augmented', name: 'Augmented', intervals: [0, 4, 8] },
-  { key: 'sus2', name: 'Suspended 2nd', intervals: [0, 2, 7] },
-  { key: 'sus4', name: 'Suspended 4th', intervals: [0, 5, 7] },
-  { key: 'major-7', name: 'Major 7th', intervals: [0, 4, 7, 11] },
-  { key: 'minor-7', name: 'Minor 7th', intervals: [0, 3, 7, 10] },
-  { key: 'dominant-7', name: 'Dominant 7th', intervals: [0, 4, 7, 10] },
-  { key: 'diminished-7', name: 'Diminished 7th', intervals: [0, 3, 6, 9] },
+  { key: 'major', name: 'Major', intervals: [0, 4, 7], symbol: '', aliases: ['maj'], level: 'beginner' },
+  { key: 'minor', name: 'Minor', intervals: [0, 3, 7], symbol: 'm', aliases: ['min'], level: 'beginner' },
+  { key: 'diminished', name: 'Diminished', intervals: [0, 3, 6], symbol: 'dim', aliases: ['°'], level: 'intermediate' },
+  { key: 'augmented', name: 'Augmented', intervals: [0, 4, 8], symbol: 'aug', aliases: ['+'], level: 'intermediate' },
+  { key: 'sus2', name: 'Suspended 2nd', intervals: [0, 2, 7], symbol: 'sus2', level: 'intermediate' },
+  { key: 'sus4', name: 'Suspended 4th', intervals: [0, 5, 7], symbol: 'sus4', level: 'intermediate' },
+  { key: 'sixth', name: 'Major 6th', intervals: [0, 4, 7, 9], symbol: '6', level: 'intermediate' },
+  { key: 'minor-6', name: 'Minor 6th', intervals: [0, 3, 7, 9], symbol: 'm6', level: 'intermediate' },
+  { key: 'major-7', name: 'Major 7th', intervals: [0, 4, 7, 11], symbol: 'maj7', aliases: ['M7', 'Δ7', 'Δ'], level: 'intermediate' },
+  { key: 'minor-7', name: 'Minor 7th', intervals: [0, 3, 7, 10], symbol: 'm7', aliases: ['min7'], level: 'intermediate' },
+  { key: 'dominant-7', name: 'Dominant 7th', intervals: [0, 4, 7, 10], symbol: '7', level: 'intermediate' },
+  { key: 'dominant-7-sus4', name: 'Dominant 7th sus4', intervals: [0, 5, 7, 10], symbol: '7sus4', level: 'intermediate' },
+  { key: 'diminished-7', name: 'Diminished 7th', intervals: [0, 3, 6, 9], symbol: 'dim7', aliases: ['°7'], level: 'intermediate' },
+  { key: 'add9', name: 'Add 9', intervals: [0, 4, 7, 14], symbol: 'add9', level: 'intermediate' },
+  { key: 'half-diminished', name: 'Half-diminished (m7♭5)', intervals: [0, 3, 6, 10], symbol: 'm7b5', aliases: ['ø7', 'ø'], level: 'advanced' },
+  { key: 'minor-major-7', name: 'Minor-major 7th', intervals: [0, 3, 7, 11], symbol: 'mMaj7', aliases: ['mM7'], level: 'advanced' },
+  { key: 'augmented-7', name: 'Augmented 7th', intervals: [0, 4, 8, 10], symbol: '7#5', aliases: ['+7', 'aug7'], level: 'advanced' },
+  { key: 'dominant-9', name: 'Dominant 9th', intervals: [0, 4, 7, 10, 14], symbol: '9', level: 'advanced' },
+  { key: 'major-9', name: 'Major 9th', intervals: [0, 4, 7, 11, 14], symbol: 'maj9', aliases: ['M9'], level: 'advanced' },
+  { key: 'minor-9', name: 'Minor 9th', intervals: [0, 3, 7, 10, 14], symbol: 'm9', aliases: ['min9'], level: 'advanced' },
+  { key: 'dominant-11', name: 'Dominant 11th', intervals: [0, 7, 10, 14, 17], symbol: '11', level: 'expert' },
+  { key: 'dominant-13', name: 'Dominant 13th', intervals: [0, 4, 10, 14, 21], symbol: '13', level: 'expert' },
+  { key: 'dominant-7-b9', name: 'Dominant 7♭9', intervals: [0, 4, 7, 10, 13], symbol: '7b9', level: 'expert' },
+  { key: 'dominant-7-sharp9', name: 'Dominant 7♯9', intervals: [0, 4, 7, 10, 15], symbol: '7#9', level: 'expert' },
+  { key: 'dominant-7-sharp11', name: 'Dominant 7♯11', intervals: [0, 4, 7, 10, 18], symbol: '7#11', level: 'expert' },
+  { key: 'dominant-7-b13', name: 'Dominant 7♭13', intervals: [0, 4, 7, 10, 20], symbol: '7b13', level: 'expert' },
 ];
 
-const INTERVAL_LABELS = ['R', '♭2', '2', '♭3', '3', '4', '♭5', '5', '♯5', '6', '♭7', '7'];
+/** Chords available at or below `maxLevel` (see `Level`). */
+export function chordsByLevel(maxLevel: Level): ChordDefinition[] {
+  return CHORDS.filter((c) => isWithinLevel(c.level, maxLevel));
+}
 
-/** Scale-degree label for a semitone offset (0 = root). */
+const INTERVAL_LABELS = ['R', '♭2', '2', '♭3', '3', '4', '♭5', '5', '♯5', '6', '♭7', '7'];
+// Compound (above-the-octave) tensions, so extended chords read as 9/11/13, not 2/4/6.
+const COMPOUND_LABELS: Record<number, string> = {
+  13: '♭9',
+  14: '9',
+  15: '♯9',
+  17: '11',
+  18: '♯11',
+  20: '♭13',
+  21: '13',
+};
+
+/** Scale-degree label for a semitone offset (0 = root); compound offsets read as 9/11/13. */
 export function intervalLabel(semitones: number): string {
-  return INTERVAL_LABELS[((semitones % 12) + 12) % 12];
+  return COMPOUND_LABELS[semitones] ?? INTERVAL_LABELS[((semitones % 12) + 12) % 12];
 }
 
 // --- Functional / Roman-numeral analysis ---
@@ -177,12 +322,37 @@ const ROMAN_SUFFIX: Record<string, string> = {
   augmented: '+',
   sus2: 'sus2',
   sus4: 'sus4',
+  sixth: '6',
+  'minor-6': '6',
   'major-7': 'maj7',
   'minor-7': '7',
   'dominant-7': '7',
+  'dominant-7-sus4': '7sus4',
   'diminished-7': '°7',
+  add9: 'add9',
+  'half-diminished': 'ø7',
+  'minor-major-7': 'maj7',
+  'augmented-7': '+7',
+  'dominant-9': '9',
+  'major-9': 'maj9',
+  'minor-9': '9',
+  'dominant-11': '11',
+  'dominant-13': '13',
+  'dominant-7-b9': '7♭9',
+  'dominant-7-sharp9': '7♯9',
+  'dominant-7-sharp11': '7♯11',
+  'dominant-7-b13': '7♭13',
 };
-const LOWERCASE_QUALITIES = new Set(['minor', 'diminished', 'minor-7', 'diminished-7']);
+const LOWERCASE_QUALITIES = new Set([
+  'minor',
+  'diminished',
+  'minor-7',
+  'diminished-7',
+  'minor-6',
+  'half-diminished',
+  'minor-major-7',
+  'minor-9',
+]);
 
 export interface ChordAnalysis {
   roman: string;

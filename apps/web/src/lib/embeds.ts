@@ -11,6 +11,7 @@ import {
   UKULELE_CHORDS,
   UKULELE_TUNING_LOW_FIRST,
 } from '@TheY2T/tmr-ui/music';
+import { CHORDS } from './music-theory';
 
 /** Note name → pitch class (0–11). Accepts sharps or flats (`C#`/`Db`). Null for an unknown name. */
 const NOTE_PC: Record<string, number> = {
@@ -61,33 +62,16 @@ export function findChordShape(symbol: string, instrument: string | undefined): 
   return chordLibraryFor(instrument).find((c) => c.name === symbol) ?? null;
 }
 
-/** Chord-quality suffix → semitone intervals from the root. Order matters: longer keys first. */
-const QUALITY_INTERVALS: [string, number[]][] = [
-  ['maj7', [0, 4, 7, 11]],
-  ['M7', [0, 4, 7, 11]],
-  ['Δ7', [0, 4, 7, 11]],
-  ['Δ', [0, 4, 7, 11]],
-  ['m7b5', [0, 3, 6, 10]],
-  ['ø7', [0, 3, 6, 10]],
-  ['ø', [0, 3, 6, 10]],
-  ['dim7', [0, 3, 6, 9]],
-  ['°7', [0, 3, 6, 9]],
-  ['m7', [0, 3, 7, 10]],
-  ['min7', [0, 3, 7, 10]],
-  ['maj', [0, 4, 7]],
-  ['sus2', [0, 2, 7]],
-  ['sus4', [0, 5, 7]],
-  ['dim', [0, 3, 6]],
-  ['°', [0, 3, 6]],
-  ['aug', [0, 4, 8]],
-  ['+', [0, 4, 8]],
-  ['m6', [0, 3, 7, 9]],
-  ['6', [0, 4, 7, 9]],
-  ['m', [0, 3, 7]],
-  ['min', [0, 3, 7]],
-  ['7', [0, 4, 7, 10]],
-  ['', [0, 4, 7]],
-];
+/**
+ * Chord-quality suffix → semitone intervals from the root, derived from the single `CHORDS` source of
+ * truth (each chord contributes its canonical `symbol` + any `aliases`). Sorted longest-suffix-first so
+ * the documented invariant holds even though `parseChordSymbol` matches suffixes exactly.
+ */
+const QUALITY_INTERVALS: [string, number[]][] = CHORDS.flatMap((chord) =>
+  [chord.symbol, ...(chord.aliases ?? [])].map(
+    (suffix) => [suffix, chord.intervals] as [string, number[]],
+  ),
+).sort((a, b) => b[0].length - a[0].length);
 
 /** Parse a chord symbol (`C`, `Dm`, `G7`, `Cmaj7`, `Bdim`, `Am7b5`) → root pitch class + intervals. */
 export function parseChordSymbol(symbol: string): { root: number; intervals: number[] } | null {

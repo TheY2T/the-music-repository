@@ -1,5 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { midiToFrequency, pitchName, scalePitchClasses } from './music-theory';
+import {
+  CHORDS,
+  chordsByLevel,
+  diatonicChordsMinor,
+  intervalLabel,
+  isWithinLevel,
+  midiToFrequency,
+  pitchName,
+  SCALES,
+  scalePitchClasses,
+  scalesByLevel,
+} from './music-theory';
 
 describe('pitchName', () => {
   it('names sharps by default and flats when asked', () => {
@@ -37,5 +48,72 @@ describe('scalePitchClasses', () => {
     expect(pcs.has(1)).toBe(true); // C♯
     expect(pcs.has(6)).toBe(true); // F♯
     expect(pcs.has(0)).toBe(false);
+  });
+});
+
+describe('SCALES / CHORDS tables', () => {
+  it('includes the expanded scale vocabulary', () => {
+    const keys = SCALES.map((s) => s.key);
+    for (const key of ['melodic-minor', 'lydian', 'whole-tone', 'diminished-hw', 'bebop-dominant']) {
+      expect(keys).toContain(key);
+    }
+    const wholeTone = SCALES.find((s) => s.key === 'whole-tone');
+    expect(wholeTone?.intervals).toEqual([0, 2, 4, 6, 8, 10]);
+  });
+
+  it('includes the expanded chord vocabulary with unique symbols', () => {
+    const keys = CHORDS.map((c) => c.key);
+    for (const key of ['half-diminished', 'sixth', 'dominant-9', 'add9', 'dominant-13']) {
+      expect(keys).toContain(key);
+    }
+    const symbols = CHORDS.flatMap((c) => [c.symbol, ...(c.aliases ?? [])]);
+    expect(new Set(symbols).size).toBe(symbols.length); // no suffix collisions
+  });
+
+  it('tags every scale and chord with a level', () => {
+    expect(SCALES.every((s) => s.level)).toBe(true);
+    expect(CHORDS.every((c) => c.level)).toBe(true);
+  });
+});
+
+describe('level filters', () => {
+  it('orders levels low → high', () => {
+    expect(isWithinLevel('beginner', 'expert')).toBe(true);
+    expect(isWithinLevel('expert', 'beginner')).toBe(false);
+    expect(isWithinLevel('intermediate', 'intermediate')).toBe(true);
+  });
+
+  it('narrows scales/chords to a level ceiling', () => {
+    const beginnerScales = scalesByLevel('beginner');
+    expect(beginnerScales.every((s) => s.level === 'beginner')).toBe(true);
+    expect(scalesByLevel('expert').length).toBe(SCALES.length);
+
+    const intermediate = chordsByLevel('intermediate');
+    expect(intermediate.map((c) => c.key)).not.toContain('dominant-13'); // expert
+    expect(intermediate.map((c) => c.key)).toContain('major-7');
+  });
+});
+
+describe('intervalLabel', () => {
+  it('labels intervals within an octave', () => {
+    expect(intervalLabel(0)).toBe('R');
+    expect(intervalLabel(4)).toBe('3');
+    expect(intervalLabel(10)).toBe('♭7');
+  });
+
+  it('reads compound tensions as 9/11/13', () => {
+    expect(intervalLabel(14)).toBe('9');
+    expect(intervalLabel(17)).toBe('11');
+    expect(intervalLabel(21)).toBe('13');
+    expect(intervalLabel(13)).toBe('♭9');
+  });
+});
+
+describe('diatonicChordsMinor', () => {
+  it('builds the natural-minor triads of A minor (root 9)', () => {
+    const chords = diatonicChordsMinor(9, false);
+    expect(chords.map((c) => c.roman)).toEqual(['i', 'ii°', '♭III', 'iv', 'v', '♭VI', '♭VII']);
+    expect(chords.map((c) => c.name)).toEqual(['Am', 'B°', 'C', 'Dm', 'Em', 'F', 'G']);
+    expect(chords[0].pitchClasses).toEqual([9, 0, 4]); // A C E
   });
 });

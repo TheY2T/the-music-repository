@@ -7,6 +7,7 @@ import {
   parseChordSymbol,
   tuningFor,
 } from './embeds';
+import { CHORDS } from './music-theory';
 
 describe('noteNameToPitchClass', () => {
   it('parses natural note names', () => {
@@ -67,11 +68,30 @@ describe('parseChordSymbol', () => {
     expect(parseChordSymbol('Cmaj7')).toEqual({ root: 0, intervals: [0, 4, 7, 11] });
     expect(parseChordSymbol('Bm7b5')).toEqual({ root: 11, intervals: [0, 3, 6, 10] });
   });
+  it('parses the expanded vocabulary (6ths, extensions, alterations)', () => {
+    expect(parseChordSymbol('C6')).toEqual({ root: 0, intervals: [0, 4, 7, 9] });
+    expect(parseChordSymbol('Am6')).toEqual({ root: 9, intervals: [0, 3, 7, 9] });
+    expect(parseChordSymbol('Cadd9')).toEqual({ root: 0, intervals: [0, 4, 7, 14] });
+    expect(parseChordSymbol('C9')).toEqual({ root: 0, intervals: [0, 4, 7, 10, 14] });
+    expect(parseChordSymbol('Cmaj9')).toEqual({ root: 0, intervals: [0, 4, 7, 11, 14] });
+    expect(parseChordSymbol('C7b9')).toEqual({ root: 0, intervals: [0, 4, 7, 10, 13] });
+    expect(parseChordSymbol('Cø')).toEqual({ root: 0, intervals: [0, 3, 6, 10] });
+  });
   it('parses a flat root', () => {
     expect(parseChordSymbol('Bbm')).toEqual({ root: 10, intervals: [0, 3, 7] });
   });
   it('returns null for junk', () => {
     expect(parseChordSymbol('H7')).toBeNull();
+  });
+});
+
+describe('single source of truth: every CHORDS symbol round-trips through parseChordSymbol', () => {
+  it('resolves each chord symbol + alias to its defining intervals', () => {
+    for (const chord of CHORDS) {
+      for (const suffix of [chord.symbol, ...(chord.aliases ?? [])]) {
+        expect(parseChordSymbol(`C${suffix}`)).toEqual({ root: 0, intervals: chord.intervals });
+      }
+    }
   });
 });
 

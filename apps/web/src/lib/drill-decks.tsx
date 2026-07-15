@@ -1,7 +1,13 @@
 import type { ReactNode } from 'react';
 import StaffNotePrompt from '@/components/StaffNotePrompt';
 import { playTone } from '@/lib/audio';
-import { CHORDS, INTERVAL_NAMES, midiToFrequency, trebleStaffNotes } from '@/lib/music-theory';
+import {
+  CHORDS,
+  chordsByLevel,
+  INTERVAL_NAMES,
+  midiToFrequency,
+  trebleStaffNotes,
+} from '@/lib/music-theory';
 
 const BASE_MIDI = 48; // C3
 
@@ -55,7 +61,9 @@ export const DECKS: Deck[] = [
     key: 'chord-quality',
     title: 'Chord quality',
     description: 'Hear a chord; name its quality.',
-    cards: CHORDS.map((chord) => chord.key),
+    // Beginner + intermediate qualities only — the advanced/extended chords in CHORDS are too
+    // fine-grained to distinguish by ear in a recognition drill.
+    cards: chordsByLevel('intermediate').map((chord) => chord.key),
     play(card) {
       const chord = CHORDS.find((c) => c.key === card);
       if (!chord) {
