@@ -54,6 +54,7 @@ const CATEGORY_BY_SLUG: Record<string, ToolCategory> = {
   tuner: 'rhythm-time',
   sequencer: 'rhythm-time',
   rhythm: 'rhythm-time',
+  'rhythm-game': 'rhythm-time',
   grooves: 'rhythm-time',
   // Reading & Notation
   staff: 'reading-notation',
@@ -110,6 +111,7 @@ export const TOOL_ICON: Record<string, string> = {
   arpeggio: 'music',
   'progression-player': 'play',
   rhythm: 'clock',
+  'rhythm-game': 'gauge',
   caged: 'guitar',
   'scale-boxes': 'guitar',
   song: 'music',

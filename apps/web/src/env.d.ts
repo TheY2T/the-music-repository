@@ -60,6 +60,7 @@ declare namespace App {
       toolFretGame: boolean;
       toolScaleMap: boolean;
       toolStaffGame: boolean;
+      toolRhythmGame: boolean;
       toolBassline: boolean;
       toolMelodicDictation: boolean;
       toolRhythmDictation: boolean;

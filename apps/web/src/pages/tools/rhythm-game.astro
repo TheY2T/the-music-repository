@@ -1,0 +1,28 @@
+---
+import InfoView from '@/components/InfoView.tsx';
+import RhythmTapGame from '@/components/RhythmTapGame.tsx';
+import ToolPracticeLogger from '@/components/ToolPracticeLogger.tsx';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+if (!Astro.locals.flags.toolRhythmGame) {
+  return Astro.redirect('/tools');
+}
+const showInfoView = Astro.locals.flags.infoView;
+const logPracticeEnabled =
+  Astro.locals.flags.toolPractice && Astro.locals.flags.progress && !!Astro.locals.user;
+const locale = Astro.locals.locale;
+---
+
+<BaseLayout title={`${t(locale, 'tool.rhythm-game.title')} — ${t(locale, 'site.name')}`}>
+    <PageShell
+      title={t(locale, 'tool.rhythm-game.title')}
+      subtitle={t(locale, 'tool.rhythm-game.summary')}
+      back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}
+    >
+      <RhythmTapGame client:load />
+    </PageShell>
+    {showInfoView && <InfoView client:idle />}
+    {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}
+  </BaseLayout>

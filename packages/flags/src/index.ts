@@ -149,6 +149,8 @@ export const FlagKeys = {
   ToolScaleMap: 'tools.scale-map',
   /** Expansion — timed staff note-reading game. */
   ToolStaffGame: 'tools.staff-game',
+  /** Expansion — tap-the-rhythm timing game. */
+  ToolRhythmGame: 'tools.rhythm-game',
   /** Phase 6 — premium entitlements gate `visibility=premium` content + the subscription flow. */
   Premium: 'monetization.premium',
   /** Phase 6 — teacher/classroom mode (create/join classrooms, grant premium to a class). */
@@ -227,6 +229,7 @@ export const FlagDefaults = {
   [FlagKeys.ToolFretGame]: true,
   [FlagKeys.ToolScaleMap]: true,
   [FlagKeys.ToolStaffGame]: true,
+  [FlagKeys.ToolRhythmGame]: true,
   [FlagKeys.Premium]: true,
   [FlagKeys.Classrooms]: true,
   [FlagKeys.I18n]: true,

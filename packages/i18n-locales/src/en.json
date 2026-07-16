@@ -435,6 +435,8 @@
   "tool.scale-map.summary": "See a scale or chord lit on the keyboard and the neck at once.",
   "tool.staff-game.title": "Note reading game",
   "tool.staff-game.summary": "A 60-second sprint: name the note on the staff (treble or bass).",
+  "tool.rhythm-game.title": "Rhythm tap game",
+  "tool.rhythm-game.summary": "Hear a one-bar rhythm, then tap it back in time.",
   "myfav.loading": "Loading…",
   "myfav.emptyBefore": "No favorites yet. Browse the",
   "myfav.catalogue": "catalogue",

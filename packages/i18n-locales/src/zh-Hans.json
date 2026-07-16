@@ -435,6 +435,8 @@
   "tool.scale-map.summary": "在键盘和指板上同时看到一个音阶或和弦。",
   "tool.staff-game.title": "读谱游戏",
   "tool.staff-game.summary": "60 秒挑战：说出五线谱上的音名（高音或低音谱号）。",
+  "tool.rhythm-game.title": "节奏拍击游戏",
+  "tool.rhythm-game.summary": "听一小节节奏，然后按拍打出来。",
   "myfav.loading": "加载中…",
   "myfav.emptyBefore": "还没有收藏。浏览",
   "myfav.catalogue": "曲库",
