@@ -24,5 +24,9 @@ This is a superb introduction to the twelve-bar blues form and its chords (the I
 ## How to practise
 Learn the twelve-bar chord pattern first and get it thoroughly memorised — count the bars until the shape is automatic. Then add the melody, letting the blue notes bend expressively. Practise the tango-rhythm bridge separately, feeling its gentle sway. Keep a relaxed, laid-back groove; the blues should breathe, not rush.
 
+```embeds
+[{ "tool": "progression", "title": "The twelve-bar blues in G", "caption": "The chord shape behind the tune: I7–IV7–V7 over twelve bars. Play it through, one bar per chord, until the form is automatic.", "key": "G", "chords": ["G7", "C7", "G7", "G7", "C7", "C7", "G7", "G7", "D7", "C7", "G7", "D7"] }]
+```
+
 ## If you like this
 Try Joplin's habanera-flavoured *Solace* for a related "Spanish tinge," or step back into pure ragtime with *The Entertainer*.

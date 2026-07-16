@@ -474,7 +474,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "c-major-scale-two-octaves": {
-    "bodyMdx": "## Goal\n\nThe C major scale is the first scale most pianists learn, and playing it **two octaves, hands\ntogether** teaches the single most important scale skill: passing the **thumb under** smoothly so a\nfive-finger hand can travel the whole keyboard without a bump. Get this fingering into muscle memory\nand every other major scale becomes a variation on it.\n\n## How to do it\n\nC major uses only white keys: `C D E F G A B C`. The standard fingering is:\n\n- **Right hand, ascending:** `1 2 3 1 2 3 4 1 2 3 1 2 3 4 5`\n  (`C`=1, `F`=1, `C`=1 again, top `C`=5). The thumb tucks under after finger 3, then after finger 4.\n- **Left hand, ascending:** `5 4 3 2 1 3 2 1 4 3 2 1 3 2 1`\n  (start on finger 5, thumb on `G` and `C`, finger 4 crosses over on `F`).\n- **Descending:** simply reverse each hand's fingering.\n\nSteps:\n\n1. **Right hand alone,** slowly. As finger 3 plays `E`, prepare the thumb to slip under and land on\n   `F`. Keep the wrist level — no jerk or accent on the thumb note.\n2. **Left hand alone.** Here finger 3 (then 4) crosses *over* the thumb going up. Aim for the same\n   smoothness.\n3. **Hands together,** very slowly. They are not symmetrical — the thumb-unders happen at different\n   moments — so combining them is the real work.\n4. Start around ♩ = 60, two notes per beat, then four notes per beat as it cleans up.\n\n## Common mistakes\n\n- **Accenting the thumb.** The tuck-under note pops out louder — consciously soften it so the line\n  stays even.\n- **Wrist twisting.** Move the elbow gently along with the hand instead of flicking the wrist.\n- **Rushing hands together too soon.** Each hand must be automatic alone first.\n\n## How to progress\n\nPush the metronome up gradually with [/tools/metronome](/tools/metronome). Add a third octave, then\ncarry the thumb-under technique into [Major Scales in All Keys](/major-scales-all-keys) and the\n[Chromatic Scale Exercise](/chromatic-scale-exercise). See how C relates to every other key on the\n[Circle of Fifths reference](/circle-of-fifths-reference).",
+    "bodyMdx": "## Goal\n\nThe C major scale is the first scale most pianists learn, and playing it **two octaves, hands\ntogether** teaches the single most important scale skill: passing the **thumb under** smoothly so a\nfive-finger hand can travel the whole keyboard without a bump. Get this fingering into muscle memory\nand every other major scale becomes a variation on it.\n\n## How to do it\n\nC major uses only white keys: `C D E F G A B C`. The standard fingering is:\n\n- **Right hand, ascending:** `1 2 3 1 2 3 4 1 2 3 1 2 3 4 5`\n  (`C`=1, `F`=1, `C`=1 again, top `C`=5). The thumb tucks under after finger 3, then after finger 4.\n- **Left hand, ascending:** `5 4 3 2 1 3 2 1 4 3 2 1 3 2 1`\n  (start on finger 5, thumb on `G` and `C`, finger 4 crosses over on `F`).\n- **Descending:** simply reverse each hand's fingering.\n\nSteps:\n\n1. **Right hand alone,** slowly. As finger 3 plays `E`, prepare the thumb to slip under and land on\n   `F`. Keep the wrist level — no jerk or accent on the thumb note.\n2. **Left hand alone.** Here finger 3 (then 4) crosses *over* the thumb going up. Aim for the same\n   smoothness.\n3. **Hands together,** very slowly. They are not symmetrical — the thumb-unders happen at different\n   moments — so combining them is the real work.\n4. Start around ♩ = 60, two notes per beat, then four notes per beat as it cleans up.\n\n<div data-tmr-embed=\"0\"></div>\n\n## Common mistakes\n\n- **Accenting the thumb.** The tuck-under note pops out louder — consciously soften it so the line\n  stays even.\n- **Wrist twisting.** Move the elbow gently along with the hand instead of flicking the wrist.\n- **Rushing hands together too soon.** Each hand must be automatic alone first.\n\n## How to progress\n\nPush the metronome up gradually with [/tools/metronome](/tools/metronome). Add a third octave, then\ncarry the thumb-under technique into [Major Scales in All Keys](/major-scales-all-keys) and the\n[Chromatic Scale Exercise](/chromatic-scale-exercise). See how C relates to every other key on the\n[Circle of Fifths reference](/circle-of-fifths-reference).",
     "details": {
       "key": "C major",
       "form": "exercise",
@@ -482,6 +482,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "major-scales-all-keys",
         "chromatic-scale-exercise",
         "circle-of-fifths-reference"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "C major on the keys",
+          "caption": "The seven notes of C major are highlighted — all white keys. Click them in order, or play along with your QWERTY keys.",
+          "root": "C",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -639,13 +649,23 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "chromatic-scale-exercise": {
-    "bodyMdx": "## Goal\n\nThe chromatic scale climbs by **every half step** — all twelve notes inside an octave. Practising it\nbuilds **fluent finger crossings** and pinpoint evenness across black and white keys. Because the\nfingering is a fixed, repeating rule, it is one of the fastest ways to develop a light, quick,\nlevel hand.\n\n## How to do it\n\nThe golden rule: **finger 3 on every black key**, thumb (1) on the white keys, and finger 2 on the\nwhite key that immediately follows another white key (`E`→`F` and `B`→`C` going up).\n\n- **Right hand, ascending from C:**\n  `C`=1 `C♯`=3 `D`=1 `D♯`=3 `E`=1 `F`=2 `F♯`=3 `G`=1 `G♯`=3 `A`=1 `A♯`=3 `B`=1 `C`=2\n  (fingering `1 3 1 3 1 2 3 1 3 1 3 1 2`).\n- **Left hand, ascending from C:**\n  `C`=1 `C♯`=3 `D`=1 `D♯`=3 `E`=2 `F`=1 `F♯`=3 `G`=1 `G♯`=3 `A`=1 `A♯`=3 `B`=2 `C`=1\n  (fingering `1 3 1 3 2 1 3 1 3 1 3 2 1`).\n- **Descending:** reverse each hand — the same 3-on-black-keys logic applies.\n\nSteps:\n\n1. **One hand at a time, slowly.** Say \"one, three, one, three…\" so the pattern becomes automatic.\n2. Keep finger 3 arched and confident on the black keys; let the thumb glide, never jab.\n3. Play close to the keys — fingers barely leave the surface — for speed and control.\n4. **Hands together** once each hand is secure. Start around ♩ = 60 at four notes per beat.\n\n## Common mistakes\n\n- **Thumb accents.** The thumb note tends to bark — soften it and match the black-key volume.\n- **Losing the pattern at E–F and B–C.** These adjacent white keys are where fingering breaks down;\n  drill them in isolation.\n- **Playing too loud/tense.** Chromatics reward a light touch; force just slows you down.\n\n## How to progress\n\nExtend to two octaves, then start the scale from different notes (the fingering rule stays the same).\nRamp the tempo on [/tools/metronome](/tools/metronome). Pair with the finger-independence work in\n[Hanon Exercise No. 1](/hanon-virtuoso-pianist-no-1) and the diatonic\n[C Major Scale — Two Octaves](/c-major-scale-two-octaves).",
+    "bodyMdx": "## Goal\n\nThe chromatic scale climbs by **every half step** — all twelve notes inside an octave. Practising it\nbuilds **fluent finger crossings** and pinpoint evenness across black and white keys. Because the\nfingering is a fixed, repeating rule, it is one of the fastest ways to develop a light, quick,\nlevel hand.\n\n## How to do it\n\nThe golden rule: **finger 3 on every black key**, thumb (1) on the white keys, and finger 2 on the\nwhite key that immediately follows another white key (`E`→`F` and `B`→`C` going up).\n\n- **Right hand, ascending from C:**\n  `C`=1 `C♯`=3 `D`=1 `D♯`=3 `E`=1 `F`=2 `F♯`=3 `G`=1 `G♯`=3 `A`=1 `A♯`=3 `B`=1 `C`=2\n  (fingering `1 3 1 3 1 2 3 1 3 1 3 1 2`).\n- **Left hand, ascending from C:**\n  `C`=1 `C♯`=3 `D`=1 `D♯`=3 `E`=2 `F`=1 `F♯`=3 `G`=1 `G♯`=3 `A`=1 `A♯`=3 `B`=2 `C`=1\n  (fingering `1 3 1 3 2 1 3 1 3 1 3 2 1`).\n- **Descending:** reverse each hand — the same 3-on-black-keys logic applies.\n\nSteps:\n\n1. **One hand at a time, slowly.** Say \"one, three, one, three…\" so the pattern becomes automatic.\n2. Keep finger 3 arched and confident on the black keys; let the thumb glide, never jab.\n3. Play close to the keys — fingers barely leave the surface — for speed and control.\n4. **Hands together** once each hand is secure. Start around ♩ = 60 at four notes per beat.\n\n<div data-tmr-embed=\"0\"></div>\n\n## Common mistakes\n\n- **Thumb accents.** The thumb note tends to bark — soften it and match the black-key volume.\n- **Losing the pattern at E–F and B–C.** These adjacent white keys are where fingering breaks down;\n  drill them in isolation.\n- **Playing too loud/tense.** Chromatics reward a light touch; force just slows you down.\n\n## How to progress\n\nExtend to two octaves, then start the scale from different notes (the fingering rule stays the same).\nRamp the tempo on [/tools/metronome](/tools/metronome). Pair with the finger-independence work in\n[Hanon Exercise No. 1](/hanon-virtuoso-pianist-no-1) and the diatonic\n[C Major Scale — Two Octaves](/c-major-scale-two-octaves).",
     "details": {
       "form": "exercise",
       "related": [
         "c-major-scale-two-octaves",
         "hanon-virtuoso-pianist-no-1",
         "major-scales-all-keys"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "Every note, in order",
+          "caption": "The chromatic scale lights up all twelve keys. Click along from C to C — every white and black key in turn.",
+          "root": "C",
+          "scale": "chromatic",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -818,7 +838,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "handy-st-louis-blues": {
-    "bodyMdx": "## About this piece\nW. C. Handy — often called the \"Father of the Blues\" — published \"St. Louis Blues\" in September 1914, and it became one of the most recorded and beloved songs of the twentieth century. Handy didn't invent the blues, but he was the first to write it down and publish it in a form that swept the world. His stated goal was \"to combine ragtime syncopation with a real melody in the spiritual tradition,\" and this song did exactly that, bridging folk blues and the popular song of its day.\n\n## What to listen for\nThe song is a fascinating hybrid. Its main verses use the classic twelve-bar blues form — the same three-line, call-and-response pattern that underpins nearly all blues and much of jazz and rock. But the famous middle section switches to a swaying habanera (tango) rhythm, the \"Spanish tinge\" that Handy loved, giving the song a smoky, exotic lift before the blues returns. Notice how the melody bends and leans on \"blue\" notes for its aching, expressive colour.\n\n## What you'll learn\nThis is a superb introduction to the twelve-bar blues form and its chords (the I, IV and V harmonies), plus the habanera rhythm — foundations for blues, jazz, and improvisation. Once the twelve-bar pattern is under your fingers, you have a template you can improvise over for a lifetime.\n\n## How to practise\nLearn the twelve-bar chord pattern first and get it thoroughly memorised — count the bars until the shape is automatic. Then add the melody, letting the blue notes bend expressively. Practise the tango-rhythm bridge separately, feeling its gentle sway. Keep a relaxed, laid-back groove; the blues should breathe, not rush.\n\n## If you like this\nTry Joplin's habanera-flavoured *Solace* for a related \"Spanish tinge,\" or step back into pure ragtime with *The Entertainer*.",
+    "bodyMdx": "## About this piece\nW. C. Handy — often called the \"Father of the Blues\" — published \"St. Louis Blues\" in September 1914, and it became one of the most recorded and beloved songs of the twentieth century. Handy didn't invent the blues, but he was the first to write it down and publish it in a form that swept the world. His stated goal was \"to combine ragtime syncopation with a real melody in the spiritual tradition,\" and this song did exactly that, bridging folk blues and the popular song of its day.\n\n## What to listen for\nThe song is a fascinating hybrid. Its main verses use the classic twelve-bar blues form — the same three-line, call-and-response pattern that underpins nearly all blues and much of jazz and rock. But the famous middle section switches to a swaying habanera (tango) rhythm, the \"Spanish tinge\" that Handy loved, giving the song a smoky, exotic lift before the blues returns. Notice how the melody bends and leans on \"blue\" notes for its aching, expressive colour.\n\n## What you'll learn\nThis is a superb introduction to the twelve-bar blues form and its chords (the I, IV and V harmonies), plus the habanera rhythm — foundations for blues, jazz, and improvisation. Once the twelve-bar pattern is under your fingers, you have a template you can improvise over for a lifetime.\n\n## How to practise\nLearn the twelve-bar chord pattern first and get it thoroughly memorised — count the bars until the shape is automatic. Then add the melody, letting the blue notes bend expressively. Practise the tango-rhythm bridge separately, feeling its gentle sway. Keep a relaxed, laid-back groove; the blues should breathe, not rush.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nTry Joplin's habanera-flavoured *Solace* for a related \"Spanish tinge,\" or step back into pure ragtime with *The Entertainer*.",
     "details": {
       "key": "G major",
       "era": "Blues",
@@ -830,6 +850,28 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
       "related": [
         "joplin-solace",
         "joplin-the-entertainer"
+      ],
+      "embeds": [
+        {
+          "tool": "progression",
+          "title": "The twelve-bar blues in G",
+          "caption": "The chord shape behind the tune: I7–IV7–V7 over twelve bars. Play it through, one bar per chord, until the form is automatic.",
+          "key": "G",
+          "chords": [
+            "G7",
+            "C7",
+            "G7",
+            "G7",
+            "C7",
+            "C7",
+            "G7",
+            "G7",
+            "D7",
+            "C7",
+            "G7",
+            "D7"
+          ]
+        }
       ]
     },
     "extraTags": [
@@ -1049,13 +1091,20 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "major-scales-all-keys": {
-    "bodyMdx": "## Goal\n\nOnce you can play C major, the goal is to play a major scale **starting on any of the twelve notes**.\nEvery major scale follows the same interval recipe — whole and half steps `W W H W W W H` — so what\nchanges from key to key is only the **fingering** and which black keys are involved. Learning them all\nunlocks nearly every piece and warms the hand up completely.\n\n## How to do it\n\n**White-key group — C, G, D, A, E major.** Same fingering as C:\n\n- **RH ascending:** `1 2 3 1 2 3 4` (5 on the top note)\n- **LH ascending:** `5 4 3 2 1 3 2 1`\n\n**F major** (one flat, `B♭`):\n\n- **RH:** `1 2 3 4 1 2 3 4` — the thumb tucks under after finger 4 (on `B♭`).\n- **LH:** `5 4 3 2 1 3 2 1`\n\n**The flat/black-key scales (B♭, E♭, A♭, D♭, G♭) and B major** use custom fingerings, but they all\nobey one rule that makes them learnable:\n\n1. **Never put the thumb on a black key.** The thumb lives on white keys, so the black keys fall under\n   fingers 2, 3, and 4.\n2. Because of that rule, most flat scales *start* on a finger other than 1 in the right hand — e.g.\n   **B♭ major RH begins on finger 4** (`B♭`=4 `C`=1 `D`=2 `E♭`=3 `F`=1 `G`=2 `A`=3 `B♭`=4).\n3. Learn each hand **separately and slowly**, watching where the thumb crosses. A fingering chart is\n   worth its weight here — memorise one scale per week.\n4. Practise in **circle-of-fifths order** (C → G → D → A → E …) so each new key adds just one sharp.\n\nStart at ♩ = 60, two notes per beat, one octave, then extend to two.\n\n## Common mistakes\n\n- **Improvising the thumb on a black key.** It feels fine slowly and collapses at speed — follow the\n  rule.\n- **Skipping hands-separate work** on the harder keys.\n- **Always starting from C.** Rotate which key you practise first so no scale stays weak.\n\n## How to progress\n\nAdd octaves and speed with [/tools/metronome](/tools/metronome), then add contrary motion and\nparallel thirds. Use the [Circle of Fifths tool](/tools/circle-of-fifths) and\n[reference](/circle-of-fifths-reference) to drill keys in order, and revisit\n[C Major Scale — Two Octaves](/c-major-scale-two-octaves) as your fingering template.",
+    "bodyMdx": "## Goal\n\nOnce you can play C major, the goal is to play a major scale **starting on any of the twelve notes**.\nEvery major scale follows the same interval recipe — whole and half steps `W W H W W W H` — so what\nchanges from key to key is only the **fingering** and which black keys are involved. Learning them all\nunlocks nearly every piece and warms the hand up completely.\n\n## How to do it\n\n**White-key group — C, G, D, A, E major.** Same fingering as C:\n\n- **RH ascending:** `1 2 3 1 2 3 4` (5 on the top note)\n- **LH ascending:** `5 4 3 2 1 3 2 1`\n\n**F major** (one flat, `B♭`):\n\n- **RH:** `1 2 3 4 1 2 3 4` — the thumb tucks under after finger 4 (on `B♭`).\n- **LH:** `5 4 3 2 1 3 2 1`\n\n**The flat/black-key scales (B♭, E♭, A♭, D♭, G♭) and B major** use custom fingerings, but they all\nobey one rule that makes them learnable:\n\n1. **Never put the thumb on a black key.** The thumb lives on white keys, so the black keys fall under\n   fingers 2, 3, and 4.\n2. Because of that rule, most flat scales *start* on a finger other than 1 in the right hand — e.g.\n   **B♭ major RH begins on finger 4** (`B♭`=4 `C`=1 `D`=2 `E♭`=3 `F`=1 `G`=2 `A`=3 `B♭`=4).\n3. Learn each hand **separately and slowly**, watching where the thumb crosses. A fingering chart is\n   worth its weight here — memorise one scale per week.\n4. Practise in **circle-of-fifths order** (C → G → D → A → E …) so each new key adds just one sharp.\n\nStart at ♩ = 60, two notes per beat, one octave, then extend to two.\n\n<div data-tmr-embed=\"0\"></div>\n\n## Common mistakes\n\n- **Improvising the thumb on a black key.** It feels fine slowly and collapses at speed — follow the\n  rule.\n- **Skipping hands-separate work** on the harder keys.\n- **Always starting from C.** Rotate which key you practise first so no scale stays weak.\n\n## How to progress\n\nAdd octaves and speed with [/tools/metronome](/tools/metronome), then add contrary motion and\nparallel thirds. Use the [Circle of Fifths tool](/tools/circle-of-fifths) and\n[reference](/circle-of-fifths-reference) to drill keys in order, and revisit\n[C Major Scale — Two Octaves](/c-major-scale-two-octaves) as your fingering template.",
     "details": {
       "form": "exercise",
       "related": [
         "c-major-scale-two-octaves",
         "circle-of-fifths-reference",
         "chromatic-scale-exercise"
+      ],
+      "embeds": [
+        {
+          "tool": "circle-of-fifths",
+          "title": "Every key, one turn at a time",
+          "caption": "Click a key to hear its tonic and see its sharps or flats. Moving one step clockwise adds a sharp; counter-clockwise adds a flat — the order you should learn the scales in."
+        }
       ]
     },
     "extraTags": [

@@ -38,6 +38,10 @@ Steps:
    moments — so combining them is the real work.
 4. Start around ♩ = 60, two notes per beat, then four notes per beat as it cleans up.
 
+```embeds
+[{ "tool": "keyboard", "title": "C major on the keys", "caption": "The seven notes of C major are highlighted — all white keys. Click them in order, or play along with your QWERTY keys.", "root": "C", "scale": "major", "size": 49 }]
+```
+
 ## Common mistakes
 
 - **Accenting the thumb.** The tuck-under note pops out louder — consciously soften it so the line

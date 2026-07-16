@@ -43,6 +43,10 @@ obey one rule that makes them learnable:
 
 Start at ♩ = 60, two notes per beat, one octave, then extend to two.
 
+```embeds
+[{ "tool": "circle-of-fifths", "title": "Every key, one turn at a time", "caption": "Click a key to hear its tonic and see its sharps or flats. Moving one step clockwise adds a sharp; counter-clockwise adds a flat — the order you should learn the scales in." }]
+```
+
 ## Common mistakes
 
 - **Improvising the thumb on a black key.** It feels fine slowly and collapses at speed — follow the

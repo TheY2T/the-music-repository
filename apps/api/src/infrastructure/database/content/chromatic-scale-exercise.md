@@ -38,6 +38,10 @@ Steps:
 3. Play close to the keys — fingers barely leave the surface — for speed and control.
 4. **Hands together** once each hand is secure. Start around ♩ = 60 at four notes per beat.
 
+```embeds
+[{ "tool": "keyboard", "title": "Every note, in order", "caption": "The chromatic scale lights up all twelve keys. Click along from C to C — every white and black key in turn.", "root": "C", "scale": "chromatic", "size": 49 }]
+```
+
 ## Common mistakes
 
 - **Thumb accents.** The thumb note tends to bark — soften it and match the black-key volume.
