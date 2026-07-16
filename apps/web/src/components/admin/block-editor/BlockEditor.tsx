@@ -39,6 +39,12 @@ export interface BlockEditorChange {
 export interface BlockEditorProps {
   locale: Locale;
   interactive?: boolean;
+  /**
+   * `full` (default) = the catalogue-article editor with the insert-tool menu + tables. `minimal` =
+   * prose + basic marks only (no interactive embeds, no tables) — for collection descriptions and help
+   * topics, which store plain markdown.
+   */
+  profile?: 'full' | 'minimal';
   /** Canonical doc (preferred). When null, the editor falls back to parsing `bodyMdx` + `embeds`. */
   initialDoc: PMDoc | null;
   initialBodyMdx: string;
@@ -81,11 +87,13 @@ function ToolbarButton({
 export function BlockEditor({
   locale,
   interactive = false,
+  profile = 'full',
   initialDoc,
   initialBodyMdx,
   initialEmbeds,
   onChange,
 }: BlockEditorProps) {
+  const full = profile === 'full';
   const [target, setTarget] = useState<EmbedInspectorTarget | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onChangeRef = useRef(onChange);
@@ -230,32 +238,38 @@ export function BlockEditor({
             active={editor?.isActive('link')}
             onClick={addLink}
           />
-          <ToolbarButton
-            icon="table"
-            label={t(locale, 'blockEditor.table')}
-            onClick={() =>
-              editor?.chain().focus().insertTable({ rows: 2, cols: 2, withHeaderRow: true }).run()
-            }
-          />
+          {full ? (
+            <ToolbarButton
+              icon="table"
+              label={t(locale, 'blockEditor.table')}
+              onClick={() =>
+                editor?.chain().focus().insertTable({ rows: 2, cols: 2, withHeaderRow: true }).run()
+              }
+            />
+          ) : null}
           <ToolbarButton
             icon="minus"
             label={t(locale, 'blockEditor.rule')}
             onClick={() => editor?.chain().focus().setHorizontalRule().run()}
           />
-          <span className="mx-1 h-6 w-px bg-border" />
-          <DropdownMenu>
-            <DropdownMenuTrigger className="inline-flex items-center gap-1.5 rounded-md bg-accent/15 px-2.5 py-1.5 text-sm font-medium text-accent hover:bg-accent/25">
-              <Icon name="plus" className="size-4" />
-              {t(locale, 'blockEditor.insertTool')}
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="max-h-80 overflow-y-auto">
-              {TOOL_ORDER.map((tool) => (
-                <DropdownMenuItem key={tool} onSelect={() => insertTool(tool)}>
-                  {t(locale, TOOL_LABEL_KEY[tool])}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {full ? (
+            <>
+              <span className="mx-1 h-6 w-px bg-border" />
+              <DropdownMenu>
+                <DropdownMenuTrigger className="inline-flex items-center gap-1.5 rounded-md bg-accent/15 px-2.5 py-1.5 text-sm font-medium text-accent hover:bg-accent/25">
+                  <Icon name="plus" className="size-4" />
+                  {t(locale, 'blockEditor.insertTool')}
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="max-h-80 overflow-y-auto">
+                  {TOOL_ORDER.map((tool) => (
+                    <DropdownMenuItem key={tool} onSelect={() => insertTool(tool)}>
+                      {t(locale, TOOL_LABEL_KEY[tool])}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          ) : null}
         </div>
 
         <EditorContent

@@ -66,4 +66,6 @@ export abstract class ContentAuthoring {
   abstract delete(slug: string): Promise<void>;
   /** Insert a media row; returns the new media id. */
   abstract addMedia(slug: string, media: MediaRowInput): Promise<string>;
+  /** Replace the item's single `alphatex` media asset (deletes any existing, inserts one). */
+  abstract replaceAlphaTex(slug: string, storageKey: string, filename: string): Promise<void>;
 }

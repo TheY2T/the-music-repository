@@ -40,6 +40,26 @@ export const contentItems = pgTable('content_items', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+/**
+ * Immutable content snapshots (ADR 0030). One row is written on each publish, capturing the full
+ * editable state (canonical `body_doc` + derived `body_mdx`/`details` + title/summary) so an editor can
+ * list and restore prior versions. Restore lifts a snapshot's fields back onto the content item.
+ */
+export const contentRevisions = pgTable('content_revisions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  contentId: uuid('content_id')
+    .notNull()
+    .references(() => contentItems.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  summary: text('summary'),
+  bodyMdx: text('body_mdx'),
+  bodyDoc: jsonb('body_doc').$type<ProseMirrorDoc>(),
+  details: jsonb('details').$type<ContentDetails>(),
+  /** The user who created the snapshot (Better Auth user id); null if unknown. */
+  authorId: text('author_id'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const mediaAssets = pgTable('media_assets', {
   id: uuid('id').primaryKey().defaultRandom(),
   contentId: uuid('content_id')

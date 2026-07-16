@@ -22,6 +22,11 @@ const locale = Astro.locals.locale;
     back={{ href: localizedPath(locale, '/admin/help'), label: t(locale, 'common.backHelpTopics') }}
     maxWidth="max-w-2xl"
   >
-    <HelpTopicForm client:load slug={slug} locale={locale} />
+    <HelpTopicForm
+      client:load
+      slug={slug}
+      locale={locale}
+      blockEditor={Astro.locals.flags.blockEditor}
+    />
   </PageShell>
 </BaseLayout>

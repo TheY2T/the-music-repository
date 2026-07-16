@@ -3,7 +3,11 @@ import { Injectable } from '@nestjs/common';
 import { ContentRepository } from '../../../catalogue/application/ports/content-repository.port';
 import { MediaLibrary } from '../../../catalogue/application/ports/media-library.port';
 import { ContentNotFoundError } from '../../../catalogue/domain/errors/content-not-found.error';
+import { UnsafeMediaTypeError } from '../../domain/errors/unsafe-media-type.error';
 import { ContentAuthoring } from '../ports/content-authoring.port';
+
+/** MIME types rejected for safety (SVG can embed scripts). */
+const UNSAFE_MIME = /svg/i;
 
 export interface MediaUploadRequest {
   filename: string;
@@ -32,6 +36,9 @@ export class RequestMediaUploadUseCase {
   ) {}
 
   async execute(slug: string, request: MediaUploadRequest): Promise<MediaUploadTicket> {
+    if (UNSAFE_MIME.test(request.mime) || /\.svg$/i.test(request.filename)) {
+      throw new UnsafeMediaTypeError(request.mime);
+    }
     const item = await this.repository.getBySlug(slug);
     if (!item) {
       throw new ContentNotFoundError(slug);

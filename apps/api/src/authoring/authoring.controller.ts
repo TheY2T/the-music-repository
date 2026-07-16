@@ -9,20 +9,25 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { CurrentUser } from '../auth/application/current-user';
 import { RequirePermissions } from '../auth/require-permissions.decorator';
 import { CreateContentUseCase } from './application/use-cases/create-content.use-case';
 import { CreateTaxonomyUseCase } from './application/use-cases/create-taxonomy.use-case';
 import { DeleteContentUseCase } from './application/use-cases/delete-content.use-case';
 import { GetContentForEditUseCase } from './application/use-cases/get-content-for-edit.use-case';
 import { ListContentUseCase } from './application/use-cases/list-content.use-case';
+import { ListContentRevisionsUseCase } from './application/use-cases/list-content-revisions.use-case';
 import { ListTaxonomyUseCase } from './application/use-cases/list-taxonomy.use-case';
 import { RequestMediaUploadUseCase } from './application/use-cases/request-media-upload.use-case';
+import { RestoreContentRevisionUseCase } from './application/use-cases/restore-content-revision.use-case';
+import { SetContentScoreUseCase } from './application/use-cases/set-content-score.use-case';
 import { SetContentStatusUseCase } from './application/use-cases/set-content-status.use-case';
 import { UpdateContentUseCase } from './application/use-cases/update-content.use-case';
 import {
   CreateContentDto,
   CreateTaxonomyDto,
   RequestMediaUploadDto,
+  SetContentScoreDto,
   UpdateContentDto,
 } from './dto/authoring.dto';
 
@@ -42,6 +47,10 @@ export class AuthoringController {
     private readonly requestMedia: RequestMediaUploadUseCase,
     private readonly listTaxonomy: ListTaxonomyUseCase,
     private readonly createTaxonomy: CreateTaxonomyUseCase,
+    private readonly listRevisions: ListContentRevisionsUseCase,
+    private readonly restoreRevision: RestoreContentRevisionUseCase,
+    private readonly setScore: SetContentScoreUseCase,
+    private readonly currentUser: CurrentUser,
   ) {}
 
   @Get('content')
@@ -73,7 +82,20 @@ export class AuthoringController {
   @HttpCode(HttpStatus.OK)
   @RequirePermissions({ content: ['publish'] })
   publish(@Param('slug') slug: string) {
-    return this.setStatus.execute(slug, 'published');
+    return this.setStatus.execute(slug, 'published', this.currentUser.optional()?.id ?? null);
+  }
+
+  @Get('content/:slug/revisions')
+  @RequirePermissions({ content: ['update'] })
+  revisions(@Param('slug') slug: string) {
+    return this.listRevisions.execute(slug);
+  }
+
+  @Post('content/:slug/revisions/:revisionId/restore')
+  @HttpCode(HttpStatus.OK)
+  @RequirePermissions({ content: ['publish'] })
+  restore(@Param('slug') slug: string, @Param('revisionId') revisionId: string) {
+    return this.restoreRevision.execute(slug, revisionId);
   }
 
   @Post('content/:slug/unpublish')
@@ -95,6 +117,12 @@ export class AuthoringController {
   @RequirePermissions({ media: ['create'] })
   media(@Param('slug') slug: string, @Body() body: RequestMediaUploadDto) {
     return this.requestMedia.execute(slug, body);
+  }
+
+  @Put('content/:slug/score')
+  @RequirePermissions({ content: ['update'] })
+  score(@Param('slug') slug: string, @Body() body: SetContentScoreDto) {
+    return this.setScore.execute(slug, body.tex);
   }
 
   @Get('taxonomy/:dimension')

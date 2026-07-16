@@ -21,6 +21,6 @@ const locale = Astro.locals.locale;
     back={{ href: localizedPath(locale, '/admin/collections'), label: t(locale, 'common.backCollections') }}
     maxWidth="max-w-2xl"
   >
-    <CollectionForm client:load locale={locale} />
+    <CollectionForm client:load locale={locale} blockEditor={Astro.locals.flags.blockEditor} />
   </PageShell>
 </BaseLayout>

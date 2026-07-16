@@ -27,6 +27,8 @@ export const FlagKeys = {
   BlockEditor: 'admin.block-editor',
   /** Block editor live preview (ADR 0030) — side-by-side iframe rendering the real page components. */
   BlockEditorPreview: 'admin.block-editor-preview',
+  /** Content revisions (ADR 0030) — autosave + publish snapshots with a restore history panel. */
+  ContentRevisions: 'admin.content-revisions',
   /** Slice 2c — gates favorites (heart toggles + My favorites page). */
   Favorites: 'personalization.favorites',
   /** Phase 5 backlog — gates cloud-synced saved chord progressions (chord analyzer). */
@@ -180,6 +182,7 @@ export const FlagDefaults = {
   [FlagKeys.AdminCms]: true,
   [FlagKeys.BlockEditor]: true,
   [FlagKeys.BlockEditorPreview]: true,
+  [FlagKeys.ContentRevisions]: true,
   [FlagKeys.Favorites]: true,
   [FlagKeys.SavedProgressions]: true,
   [FlagKeys.Collections]: true,

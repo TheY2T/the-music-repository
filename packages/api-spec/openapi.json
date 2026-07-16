@@ -1631,6 +1631,117 @@
         ]
       }
     },
+    "/content/{slug}/revisions": {
+      "get": {
+        "operationId": "listContentRevisions",
+        "description": "List a content item's saved revisions (newest first).",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentRevisionList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authoring"
+        ]
+      }
+    },
+    "/content/{slug}/revisions/{revisionId}/restore": {
+      "post": {
+        "operationId": "restoreContentRevision",
+        "description": "Restore a revision's snapshot onto the content item; returns the updated detail.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "revisionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authoring"
+        ]
+      }
+    },
+    "/content/{slug}/score": {
+      "put": {
+        "operationId": "setContentScore",
+        "description": "Set (replace) a score item's alphaTex — stored as its single `alphatex` media asset.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authoring"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContentScoreInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/content/{slug}/unpublish": {
       "post": {
         "operationId": "unpublishContent",
@@ -4091,6 +4202,57 @@
           }
         },
         "description": "A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown's `embeds` block; stored in `details` JSONB."
+      },
+      "ContentRevisionList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentRevisionSummary"
+            }
+          }
+        },
+        "description": "Version history for a content item, newest first."
+      },
+      "ContentRevisionSummary": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "authorId": {
+            "type": "string",
+            "description": "Better Auth user id of who published this snapshot, if known."
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "description": "One saved content snapshot (written on publish)."
+      },
+      "ContentScoreInput": {
+        "type": "object",
+        "required": [
+          "tex"
+        ],
+        "properties": {
+          "tex": {
+            "type": "string"
+          }
+        },
+        "description": "alphaTex source for a standalone score content item."
       },
       "ContentSummary": {
         "type": "object",

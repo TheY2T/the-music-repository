@@ -7,7 +7,7 @@ import postgres from 'postgres';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Database } from '../../infrastructure/database/database.module';
 import * as schema from '../../infrastructure/database/schema';
-import { contentItems } from '../../infrastructure/database/schema';
+import { contentItems, mediaAssets } from '../../infrastructure/database/schema';
 import type { ContentWriteData } from '../application/ports/content-authoring.port';
 import { DrizzleContentAuthoring } from './drizzle-content-authoring.adapter';
 
@@ -117,5 +117,24 @@ describe('DrizzleContentAuthoring (Testcontainers Postgres)', () => {
     expect(row.details?.embeds).toBeUndefined();
     // Facts + related still preserved.
     expect(row.details?.era).toBe('Baroque');
+  });
+
+  it('replaceAlphaTex keeps a single alphatex media asset across re-saves', async () => {
+    const row = await rowFor('write-path-item');
+    await adapter.replaceAlphaTex(
+      'write-path-item',
+      'scores/write-path-item.alphatex',
+      'a.alphatex',
+    );
+    await adapter.replaceAlphaTex(
+      'write-path-item',
+      'scores/write-path-item.alphatex',
+      'a.alphatex',
+    );
+
+    const assets = await db.select().from(mediaAssets).where(eq(mediaAssets.contentId, row.id));
+    const alphatex = assets.filter((a) => a.kind === 'alphatex');
+    expect(alphatex).toHaveLength(1);
+    expect(alphatex[0]?.storageKey).toBe('scores/write-path-item.alphatex');
   });
 });

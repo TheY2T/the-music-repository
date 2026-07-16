@@ -3,10 +3,12 @@
 - **Status:** accepted; **Phases 1–4 shipped** (write-path completeness + `body_doc` storage; the
   `@TheY2T/tmr-content-serde` doc↔mdx package with a golden round-trip suite over the whole corpus; the
   TipTap block-editor island behind `admin.block-editor`, with the 11 tools as configurable node views;
-  and the live iframe preview behind `admin.block-editor-preview` — all browser-verified end-to-end:
-  create → persist → reload re-renders the embed, and typing updates the themed preview iframe live).
-  Phases 5–7 (revisions/autosave, scores/collections/help editors, cross-cutting) are planned — see
-  `~/.claude/plans/groovy-foraging-pizza.md`.
+  the live iframe preview behind `admin.block-editor-preview`; autosave + publish-snapshot revisions
+  with a restore panel behind `admin.content-revisions`; the block editor reused (minimal profile) for
+  **help topics** + **collection descriptions** with **dnd-kit** section reordering (keyboard-accessible,
+  localized announcements); a **standalone-score** alphaTex editor + live preview persisting the single
+  `alphatex` media asset; and SVG-rejecting media uploads. All browser-verified end-to-end. **Phases 1–7
+  complete.**
 - **Date:** 2026-07-16
 - **Builds on:** ADR 0028 (content embeds), ADR 0013 (RBAC), ADR 0018 (design system), ADR 0021 (themes),
   ADR 0027 (alphaTab scores), ADR 0006 (spec-first APIs).

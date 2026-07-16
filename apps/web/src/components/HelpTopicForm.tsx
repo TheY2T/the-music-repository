@@ -2,13 +2,24 @@ import type { HelpTopicWriteInput } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import { Button, Card, Field, Icon, Input, Textarea } from '@TheY2T/tmr-ui';
 import { type FormEvent, useEffect, useState } from 'react';
+import { BlockEditor } from '@/components/admin/block-editor/BlockEditor';
 import { getHelpTopic, helpAdminApi } from '@/lib/help-api';
 
 const emptyForm = { slug: '', term: '', body: '', linkSlug: '' };
 
-export default function HelpTopicForm({ slug, locale }: { slug?: string; locale: Locale }) {
+export default function HelpTopicForm({
+  slug,
+  locale,
+  blockEditor = false,
+}: {
+  slug?: string;
+  locale: Locale;
+  /** Use the minimal block editor for the body (ADR 0030) instead of the Markdown textarea. */
+  blockEditor?: boolean;
+}) {
   const isEdit = Boolean(slug);
   const [form, setForm] = useState({ ...emptyForm });
+  const [loaded, setLoaded] = useState(!isEdit);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -26,6 +37,7 @@ export default function HelpTopicForm({ slug, locale }: { slug?: string; locale:
           linkSlug: topic.linkSlug ?? '',
         });
       }
+      setLoaded(true);
     });
   }, [slug]);
 
@@ -102,14 +114,31 @@ export default function HelpTopicForm({ slug, locale }: { slug?: string; locale:
               onChange={(e) => set('term', e.target.value)}
             />
           </Field>
-          <Field label={t(locale, 'hform.bodyLabel')} htmlFor="hform-body">
-            <Textarea
-              id="hform-body"
-              className="h-32"
-              value={form.body}
-              onChange={(e) => set('body', e.target.value)}
-            />
-          </Field>
+          {blockEditor ? (
+            <div className="space-y-1.5">
+              <span className="text-sm font-medium">{t(locale, 'hform.bodyLabel')}</span>
+              {loaded ? (
+                <BlockEditor
+                  key={slug ?? 'new'}
+                  profile="minimal"
+                  locale={locale}
+                  initialDoc={null}
+                  initialBodyMdx={form.body}
+                  initialEmbeds={[]}
+                  onChange={(c) => set('body', c.bodyMdx)}
+                />
+              ) : null}
+            </div>
+          ) : (
+            <Field label={t(locale, 'hform.bodyLabel')} htmlFor="hform-body">
+              <Textarea
+                id="hform-body"
+                className="h-32"
+                value={form.body}
+                onChange={(e) => set('body', e.target.value)}
+              />
+            </Field>
+          )}
           <Field label={t(locale, 'hform.linkSlugLabel')} htmlFor="hform-linkSlug">
             <Input
               id="hform-linkSlug"

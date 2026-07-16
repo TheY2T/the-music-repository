@@ -38,12 +38,27 @@ real interactive tools, with a full-fidelity preview. It replaces the file-pipel
    `{ …, bodyDoc, bodyMdx, embeds }`. The adapter stores `body_doc` and overlays `embeds` onto the existing
    `details` (preserving facts + curated `related`, which the read view hides).
 
+## Beyond catalogue articles
+
+- **Help topics + collection descriptions** reuse `BlockEditor` in the **`minimal` profile** (prose +
+  basic marks, no interactive embeds, no tables), storing plain `body_mdx` (no `body_doc`).
+- **Collections** additionally get **dnd-kit** section reordering — a keyboard-accessible drag handle
+  (`grip-vertical`) per section, `verticalListSortingStrategy`, and localized screen-reader announcements
+  on the `DndContext`. dnd-kit is reserved for these non-prose sortable lists (the prose itself reorders
+  inside ProseMirror).
+- **Standalone scores** (`type: 'score'`): an alphaTex editor + live `AlphaTexScore` preview; saving PUTs
+  `/content/{slug}/score`, which writes the text to object storage under a stable per-slug key and
+  **replaces** the item's single `alphatex` media asset (`ScorePlayer` renders it on the detail page).
+- **Asset safety:** the media-upload use-case **rejects SVG** (`UnsafeMediaTypeError` → 400) since SVG can
+  embed scripts; raster images/audio/PDF/alphaTex are allowed.
+
 ## Flags
 
-- `admin.block-editor` — swaps the Markdown textarea for the editor.
-- `admin.block-editor-preview` — shows the side-by-side live iframe.
+- `admin.block-editor` — swaps the Markdown textarea for the editor (articles, help, collections).
+- `admin.block-editor-preview` — shows the side-by-side live iframe (articles).
+- `admin.content-revisions` — autosave + the version-history panel.
 
-Both sit under the existing `admin.cms` + editor/admin RBAC gate (`guardAdmin`).
+All sit under the existing `admin.cms` + editor/admin RBAC gate (`guardAdmin`).
 
 ## Testing
 

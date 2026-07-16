@@ -6,6 +6,7 @@ import type {
   CollectionWriteInput,
   ContentAdminList,
   ContentDetail,
+  ContentRevisionList,
   ContentWriteInput,
   MediaUploadRequest,
   MediaUploadTicket,
@@ -56,6 +57,18 @@ export const adminApi = {
       body: JSON.stringify(body),
     }),
   listTaxonomy: (dimension: string) => request<{ items: TaxonomyRef[] }>(`/taxonomy/${dimension}`),
+  setScore: (slug: string, tex: string) =>
+    request<ContentDetail>(`/content/${encodeURIComponent(slug)}/score`, {
+      method: 'PUT',
+      body: JSON.stringify({ tex }),
+    }),
+  listRevisions: (slug: string) =>
+    request<ContentRevisionList>(`/content/${encodeURIComponent(slug)}/revisions`),
+  restoreRevision: (slug: string, revisionId: string) =>
+    request<ContentDetail>(
+      `/content/${encodeURIComponent(slug)}/revisions/${encodeURIComponent(revisionId)}/restore`,
+      { method: 'POST' },
+    ),
 };
 
 /** Admin CMS for collections (Phase 2). */

@@ -33,6 +33,14 @@
       },
       "defaultVariant": "on"
     },
+    "admin.content-revisions": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "personalization.favorites": {
       "state": "ENABLED",
       "variants": {

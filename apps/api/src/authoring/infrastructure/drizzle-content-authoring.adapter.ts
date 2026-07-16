@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { desc, eq } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import { type ContentDetails, slugToLabel } from '../../catalogue/domain/content-item';
 import { ContentNotFoundError } from '../../catalogue/domain/errors/content-not-found.error';
 import { DATABASE, type Database } from '../../infrastructure/database/database.module';
@@ -225,6 +225,28 @@ export class DrizzleContentAuthoring extends ContentAuthoring {
       throw new ContentNotFoundError(slug);
     }
     return row.id;
+  }
+
+  async replaceAlphaTex(slug: string, storageKey: string, filename: string): Promise<void> {
+    const [content] = await this.db
+      .select({ id: contentItems.id })
+      .from(contentItems)
+      .where(eq(contentItems.slug, slug))
+      .limit(1);
+    if (!content) {
+      throw new ContentNotFoundError(slug);
+    }
+    await this.db
+      .delete(mediaAssets)
+      .where(and(eq(mediaAssets.contentId, content.id), eq(mediaAssets.kind, 'alphatex')));
+    await this.db.insert(mediaAssets).values({
+      contentId: content.id,
+      kind: 'alphatex',
+      storageKey,
+      filename,
+      mime: 'text/plain',
+      bytes: 0,
+    });
   }
 
   private async attachTaxonomy(contentId: string, data: ContentWriteData): Promise<void> {

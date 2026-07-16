@@ -11,12 +11,68 @@ import {
   Select,
   Textarea,
 } from '@TheY2T/tmr-ui';
-import { type FormEvent, useEffect, useState } from 'react';
+import {
+  closestCenter,
+  DndContext,
+  type DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { type FormEvent, type ReactNode, useEffect, useState } from 'react';
+import { BlockEditor } from '@/components/admin/block-editor/BlockEditor';
 import { collectionsAdminApi } from '@/lib/admin-api';
+
+let sectionIdCounter = 0;
+/** Stable local id for a section row (dnd-kit needs one; not persisted). */
+function nextSectionId(): string {
+  sectionIdCounter += 1;
+  return `sec-${sectionIdCounter}`;
+}
+
+/** A sortable wrapper giving its child a drag handle via render-prop; keyboard-accessible. */
+function SortableSection({
+  id,
+  children,
+}: {
+  id: string;
+  children: (handle: {
+    attributes: Record<string, unknown>;
+    listeners: Record<string, unknown>;
+  }) => ReactNode;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+  });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+  return (
+    <div ref={setNodeRef} style={style}>
+      {children({
+        attributes: attributes as unknown as Record<string, unknown>,
+        listeners: (listeners ?? {}) as unknown as Record<string, unknown>,
+      })}
+    </div>
+  );
+}
 
 const KINDS = ['course', 'path', 'syllabus', 'songlist'] as const;
 
 interface SectionForm {
+  /** Stable local id for drag-and-drop (not persisted; order comes from array position). */
+  id: string;
   title: string;
   description: string;
   /** newline-separated `slug` or `slug | curator note`. */
@@ -62,14 +118,28 @@ function parseItemLine(line: string): { contentSlug: string; curatorNote?: strin
   return { contentSlug, curatorNote: note || undefined };
 }
 
-export default function CollectionForm({ slug, locale }: { slug?: string; locale: Locale }) {
+export default function CollectionForm({
+  slug,
+  locale,
+  blockEditor = false,
+}: {
+  slug?: string;
+  locale: Locale;
+  /** Use the minimal block editor for the collection description (ADR 0030). */
+  blockEditor?: boolean;
+}) {
   const isEdit = Boolean(slug);
   const [form, setForm] = useState({ ...emptyForm });
   const [sections, setSections] = useState<SectionForm[]>([]);
+  const [loaded, setLoaded] = useState(!isEdit);
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   useEffect(() => {
     if (!slug) {
@@ -99,6 +169,7 @@ export default function CollectionForm({ slug, locale }: { slug?: string; locale
         });
         setSections(
           c.sections.map((s) => ({
+            id: nextSectionId(),
             title: s.title,
             description: s.description ?? '',
             items: s.items
@@ -107,9 +178,24 @@ export default function CollectionForm({ slug, locale }: { slug?: string; locale
           })),
         );
         setStatus(c.status);
+        setLoaded(true);
       })
-      .catch((e: Error) => setError(e.message));
+      .catch((e: Error) => {
+        setError(e.message);
+        setLoaded(true);
+      });
   }, [slug]);
+
+  function onSectionDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setSections((cur) => {
+        const from = cur.findIndex((s) => s.id === active.id);
+        const to = cur.findIndex((s) => s.id === over.id);
+        return from < 0 || to < 0 ? cur : arrayMove(cur, from, to);
+      });
+    }
+  }
 
   function set<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -275,14 +361,31 @@ export default function CollectionForm({ slug, locale }: { slug?: string; locale
               ))}
             </Select>
           </Field>
-          <Field label={t(locale, 'colform.body')} htmlFor="colform-body">
-            <Textarea
-              id="colform-body"
-              className="h-28"
-              value={form.bodyMdx}
-              onChange={(e) => set('bodyMdx', e.target.value)}
-            />
-          </Field>
+          {blockEditor ? (
+            <div className="space-y-1.5">
+              <span className="text-sm font-medium">{t(locale, 'colform.body')}</span>
+              {loaded ? (
+                <BlockEditor
+                  key={slug ?? 'new'}
+                  profile="minimal"
+                  locale={locale}
+                  initialDoc={null}
+                  initialBodyMdx={form.bodyMdx}
+                  initialEmbeds={[]}
+                  onChange={(c) => set('bodyMdx', c.bodyMdx)}
+                />
+              ) : null}
+            </div>
+          ) : (
+            <Field label={t(locale, 'colform.body')} htmlFor="colform-body">
+              <Textarea
+                id="colform-body"
+                className="h-28"
+                value={form.bodyMdx}
+                onChange={(e) => set('bodyMdx', e.target.value)}
+              />
+            </Field>
+          )}
         </Card>
 
         <Card className="space-y-4 p-5">
@@ -376,44 +479,82 @@ export default function CollectionForm({ slug, locale }: { slug?: string; locale
                 variant="outline"
                 size="sm"
                 onClick={() =>
-                  setSections((cur) => [...cur, { title: '', description: '', items: '' }])
+                  setSections((cur) => [
+                    ...cur,
+                    { id: nextSectionId(), title: '', description: '', items: '' },
+                  ])
                 }
               >
                 <Icon name="plus" className="size-4" />
                 {t(locale, 'colform.addSection')}
               </Button>
             </div>
-            {sections.map((section, index) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: sections are positional (index = order).
-              <Card key={index} className="space-y-3 border-dashed p-4">
-                <div className="flex items-center gap-2">
-                  <Input
-                    value={section.title}
-                    onChange={(e) => setSection(index, { title: e.target.value })}
-                    placeholder={t(locale, 'colform.sectionTitle')}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setSections((cur) => cur.filter((_, i) => i !== index))}
-                    aria-label={t(locale, 'colform.removeSection')}
-                    className="shrink-0 text-muted-foreground hover:text-destructive"
-                  >
-                    <Icon name="trash" className="size-4" />
-                  </button>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={onSectionDragEnd}
+              accessibility={{
+                announcements: {
+                  onDragStart: () => t(locale, 'colform.dndPicked'),
+                  onDragOver: () => t(locale, 'colform.dndMoved'),
+                  onDragEnd: () => t(locale, 'colform.dndDropped'),
+                  onDragCancel: () => t(locale, 'colform.dndCancelled'),
+                },
+              }}
+            >
+              <SortableContext
+                items={sections.map((s) => s.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="space-y-4">
+                  {sections.map((section, index) => (
+                    <SortableSection key={section.id} id={section.id}>
+                      {(handle) => (
+                        <Card className="space-y-3 border-dashed p-4">
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              aria-label={t(locale, 'colform.reorderSection')}
+                              className="shrink-0 cursor-grab text-muted-foreground hover:text-foreground"
+                              {...handle.attributes}
+                              {...handle.listeners}
+                            >
+                              <Icon name="grip-vertical" className="size-4" />
+                            </button>
+                            <Input
+                              value={section.title}
+                              onChange={(e) => setSection(index, { title: e.target.value })}
+                              placeholder={t(locale, 'colform.sectionTitle')}
+                            />
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setSections((cur) => cur.filter((_, i) => i !== index))
+                              }
+                              aria-label={t(locale, 'colform.removeSection')}
+                              className="shrink-0 text-muted-foreground hover:text-destructive"
+                            >
+                              <Icon name="trash" className="size-4" />
+                            </button>
+                          </div>
+                          <Input
+                            value={section.description}
+                            onChange={(e) => setSection(index, { description: e.target.value })}
+                            placeholder={t(locale, 'colform.sectionSummary')}
+                          />
+                          <Textarea
+                            className="h-24 font-mono text-sm"
+                            value={section.items}
+                            onChange={(e) => setSection(index, { items: e.target.value })}
+                            placeholder={t(locale, 'colform.sectionItemsHelp')}
+                          />
+                        </Card>
+                      )}
+                    </SortableSection>
+                  ))}
                 </div>
-                <Input
-                  value={section.description}
-                  onChange={(e) => setSection(index, { description: e.target.value })}
-                  placeholder={t(locale, 'colform.sectionSummary')}
-                />
-                <Textarea
-                  className="h-24 font-mono text-sm"
-                  value={section.items}
-                  onChange={(e) => setSection(index, { items: e.target.value })}
-                  placeholder={t(locale, 'colform.sectionItemsHelp')}
-                />
-              </Card>
-            ))}
+              </SortableContext>
+            </DndContext>
           </div>
         </Card>
 

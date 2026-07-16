@@ -9,6 +9,7 @@ declare namespace App {
       adminCms: boolean;
       blockEditor: boolean;
       blockEditorPreview: boolean;
+      contentRevisions: boolean;
       favorites: boolean;
       savedProgressions: boolean;
       collections: boolean;

@@ -387,6 +387,43 @@ op requestMediaUpload(@path slug: string, @body body: MediaUploadRequest): {
   @body body: MediaUploadTicket;
 };
 
+/** alphaTex source for a standalone score content item. */
+model ContentScoreInput {
+  tex: string;
+}
+
+/** Set (replace) a score item's alphaTex — stored as its single `alphatex` media asset. */
+@route("/content/{slug}/score")
+@tag("authoring")
+@put
+op setContentScore(@path slug: string, @body body: ContentScoreInput): ContentDetail;
+
+/** One saved content snapshot (written on publish). */
+model ContentRevisionSummary {
+  id: string;
+  title: string;
+  /** Better Auth user id of who published this snapshot, if known. */
+  authorId?: string;
+  createdAt: string;
+}
+
+/** Version history for a content item, newest first. */
+model ContentRevisionList {
+  items: ContentRevisionSummary[];
+}
+
+/** List a content item's saved revisions (newest first). */
+@route("/content/{slug}/revisions")
+@tag("authoring")
+@get
+op listContentRevisions(@path slug: string): ContentRevisionList;
+
+/** Restore a revision's snapshot onto the content item; returns the updated detail. */
+@route("/content/{slug}/revisions/{revisionId}/restore")
+@tag("authoring")
+@post
+op restoreContentRevision(@path slug: string, @path revisionId: string): ContentDetail;
+
 /** List taxonomy terms for a dimension (`genres` | `instruments` | `topics` | `tags`). */
 @route("/taxonomy/{dimension}")
 @tag("authoring")

@@ -3,9 +3,11 @@ import type { EmbedConfig, PMDoc } from '@TheY2T/tmr-content-serde';
 import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { Button, Card, Field, Icon, Input, Select, Textarea } from '@TheY2T/tmr-ui';
 import { marked } from 'marked';
-import { type FormEvent, useEffect, useMemo, useState } from 'react';
+import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BlockEditor, type BlockEditorChange } from '@/components/admin/block-editor/BlockEditor';
 import { PreviewPane } from '@/components/admin/block-editor/PreviewPane';
+import { RevisionsPanel } from '@/components/admin/RevisionsPanel';
+import AlphaTexScore from '@/components/score/AlphaTexScore';
 import { adminApi, uploadToTicket } from '@/lib/admin-api';
 
 const CONTENT_TYPES = [
@@ -85,6 +87,7 @@ export default function ContentForm({
   locale,
   blockEditor = false,
   preview = false,
+  revisions = false,
   interactive = false,
 }: {
   slug?: string;
@@ -93,6 +96,8 @@ export default function ContentForm({
   blockEditor?: boolean;
   /** When true (+ blockEditor), show the side-by-side live iframe preview. */
   preview?: boolean;
+  /** When true (+ edit mode), autosave drafts + show the version-history panel. */
+  revisions?: boolean;
   /** Whether embedded tools render interactively in the editor (mirrors learning.interactive-scores). */
   interactive?: boolean;
 }) {
@@ -113,6 +118,13 @@ export default function ContentForm({
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Bumped after a revision restore to remount the editor with the reloaded content.
+  const [reloadKey, setReloadKey] = useState(0);
+  // Standalone-score editor (type === 'score'): alphaTex source, loaded from the alphatex media asset.
+  const [scoreTex, setScoreTex] = useState('');
+  const [autosave, setAutosave] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const autosaveArmed = useRef(false);
+  const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load taxonomy suggestions + (edit) the existing item.
   useEffect(() => {
@@ -127,12 +139,9 @@ export default function ContentForm({
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    if (!slug) {
-      return;
-    }
+  const loadItem = useCallback((s: string) => {
     adminApi
-      .get(slug)
+      .get(s)
       .then((c) => {
         setForm({
           slug: c.slug,
@@ -156,9 +165,50 @@ export default function ContentForm({
         );
         setLoadedEmbeds((c.embeds ?? []) as EmbedConfig[]);
         setLoaded(true);
+        // Standalone score: pull the alphaTex text from its media asset so it can be edited.
+        const alphatex = c.media.find((m) => m.kind === 'alphatex');
+        if (alphatex) {
+          fetch(alphatex.url)
+            .then((r) => (r.ok ? r.text() : ''))
+            .then((tex) => setScoreTex(tex))
+            .catch(() => {});
+        }
       })
       .catch((e: Error) => setError(e.message));
-  }, [slug]);
+  }, []);
+
+  useEffect(() => {
+    if (slug) {
+      loadItem(slug);
+    }
+  }, [slug, loadItem]);
+
+  // Autosave: after the first (initial) editor emit, debounce a draft save on subsequent edits.
+  useEffect(() => {
+    if (!revisions || !blockEditor || !isEdit || !slug || !editorOut) {
+      return;
+    }
+    if (!autosaveArmed.current) {
+      autosaveArmed.current = true;
+      return;
+    }
+    setAutosave('saving');
+    if (autosaveTimer.current) {
+      clearTimeout(autosaveTimer.current);
+    }
+    autosaveTimer.current = setTimeout(() => {
+      adminApi
+        .update(slug, buildInput())
+        .then(() => setAutosave('saved'))
+        .catch(() => setAutosave('error'));
+    }, 2000);
+    return () => {
+      if (autosaveTimer.current) {
+        clearTimeout(autosaveTimer.current);
+      }
+    };
+    // biome-ignore lint/correctness/useExhaustiveDependencies: debounce keyed on the editor output only.
+  }, [editorOut]);
 
   const previewHtml = useMemo(
     () => marked.parse(form.bodyMdx || t(locale, 'cform.previewEmpty')) as string,
@@ -414,7 +464,7 @@ export default function ContentForm({
             <div className={preview ? 'grid gap-4 lg:grid-cols-2' : ''}>
               {loaded ? (
                 <BlockEditor
-                  key={slug ?? 'new'}
+                  key={`${slug ?? 'new'}-${reloadKey}`}
                   locale={locale}
                   interactive={interactive}
                   initialDoc={null}
@@ -502,6 +552,15 @@ export default function ContentForm({
               </Button>
             </>
           ) : null}
+          {revisions && isEdit && autosave !== 'idle' ? (
+            <span className="ml-auto self-center text-sm text-muted-foreground" aria-live="polite">
+              {autosave === 'saving'
+                ? t(locale, 'cform.autosaving')
+                : autosave === 'saved'
+                  ? t(locale, 'cform.autosaved')
+                  : t(locale, 'cform.autosaveError')}
+            </span>
+          ) : null}
         </div>
       </form>
 
@@ -542,6 +601,58 @@ export default function ContentForm({
             </ul>
           )}
         </Card>
+      ) : null}
+
+      {isEdit && slug && form.type === 'score' ? (
+        <Card className="space-y-3 p-5">
+          <h2 className="font-display text-lg font-semibold tracking-tight">
+            {t(locale, 'cform.scoreHeading')}
+          </h2>
+          <p className="text-sm text-muted-foreground">{t(locale, 'cform.scoreHelp')}</p>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Textarea
+              className="h-72 font-mono text-sm"
+              value={scoreTex}
+              onChange={(e) => setScoreTex(e.target.value)}
+              placeholder={'\\title "Etude"\n.\n:4 c d e f | g a b c5'}
+            />
+            <div className="rounded-lg border border-border bg-card p-2">
+              {scoreTex.trim() ? (
+                <AlphaTexScore tex={scoreTex} locale={locale} />
+              ) : (
+                <p className="p-4 text-sm text-muted-foreground">
+                  {t(locale, 'cform.scorePreviewEmpty')}
+                </p>
+              )}
+            </div>
+          </div>
+          <div>
+            <Button
+              type="button"
+              disabled={busy || !scoreTex.trim()}
+              onClick={() =>
+                act(() => adminApi.setScore(slug, scoreTex), t(locale, 'cform.scoreSaved'))
+              }
+            >
+              <Icon name="check" className="size-4" />
+              {t(locale, 'cform.scoreSave')}
+            </Button>
+          </div>
+        </Card>
+      ) : null}
+
+      {revisions && isEdit && slug ? (
+        <RevisionsPanel
+          slug={slug}
+          locale={locale}
+          onRestored={() => {
+            autosaveArmed.current = false;
+            setAutosave('idle');
+            setReloadKey((k) => k + 1);
+            loadItem(slug);
+            setNotice(t(locale, 'cform.revisionRestored'));
+          }}
+        />
       ) : null}
     </div>
   );

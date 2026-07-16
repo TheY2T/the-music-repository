@@ -2119,6 +2119,184 @@ export const PublishContentResponse = zod.object({
 }).describe('Full detail view of a catalogue item.')
 
 
+/**
+ * List a content item's saved revisions (newest first).
+ */
+export const ListContentRevisionsParams = zod.object({
+  "slug": zod.string()
+})
+
+export const ListContentRevisionsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "authorId": zod.string().optional().describe('Better Auth user id of who published this snapshot, if known.'),
+  "createdAt": zod.string()
+}).describe('One saved content snapshot (written on publish).'))
+}).describe('Version history for a content item, newest first.')
+
+
+/**
+ * Restore a revision's snapshot onto the content item; returns the updated detail.
+ */
+export const RestoreContentRevisionParams = zod.object({
+  "slug": zod.string(),
+  "revisionId": zod.string()
+})
+
+export const RestoreContentRevisionResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "bodyMdx": zod.string().optional(),
+  "source": zod.string().optional(),
+  "attribution": zod.string().optional(),
+  "license": zod.string().optional(),
+  "details": zod.object({
+  "key": zod.string().optional(),
+  "era": zod.string().optional(),
+  "form": zod.string().optional(),
+  "timeSignature": zod.string().optional(),
+  "composer": zod.string().optional(),
+  "composerDates": zod.string().optional(),
+  "composedYear": zod.string().optional()
+}).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
+  "embeds": zod.array(zod.object({
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "title": zod.string().optional().describe('Optional heading shown above the embed.'),
+  "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
+  "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
+  "scoreSlug": zod.string().optional().describe('`score`: reference an existing catalogue score by slug instead of inline `tex`.'),
+  "mode": zod.enum(['standard', 'tab']).optional().describe('`score`\/`scale-boxes`: engraving mode (piano-style `standard` vs guitar `tab`).'),
+  "tuning": zod.array(zod.number()).optional().describe('`score` (tab): open-string MIDI pitches so a pitched score renders as tablature.'),
+  "instrument": zod.string().optional().describe('Fretted\/keyboard instrument hint: `guitar` | `ukulele` | `bass` | `piano`.'),
+  "root": zod.string().optional().describe('`scale-boxes`\/`keyboard`: scale root note, e.g. `A`, `C#`.'),
+  "scale": zod.string().optional().describe('`scale-boxes`\/`keyboard`: scale id, e.g. `major`, `minor-pentatonic`, `blues`.'),
+  "key": zod.string().optional().describe('`progression`: key the Roman-numeral\/chord progression is in, e.g. `A`.'),
+  "chords": zod.array(zod.string()).optional().describe('`chord-diagrams`\/`progression`\/`chord-board`: chord symbols, e.g. `[\"C\",\"G\",\"Am\",\"F\"]`.'),
+  "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
+  "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
+  "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+}).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive tools to render below the prose (authored, from `details` JSONB).'),
+  "tags": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "media": zod.array(zod.object({
+  "id": zod.string(),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'alphatex']),
+  "url": zod.string(),
+  "filename": zod.string(),
+  "mime": zod.string(),
+  "license": zod.string().optional(),
+  "attribution": zod.string().optional(),
+  "sourceUrl": zod.string().optional().describe('Provenance URL of the engraving (source edition or transcription reference).')
+}).describe('A media file attached to a content item, with a ready-to-use (presigned) URL.')),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+}).describe('Full detail view of a catalogue item.')
+
+
+/**
+ * Set (replace) a score item's alphaTex — stored as its single `alphatex` media asset.
+ */
+export const SetContentScoreParams = zod.object({
+  "slug": zod.string()
+})
+
+export const SetContentScoreBody = zod.object({
+  "tex": zod.string()
+}).describe('alphaTex source for a standalone score content item.')
+
+export const SetContentScoreResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "bodyMdx": zod.string().optional(),
+  "source": zod.string().optional(),
+  "attribution": zod.string().optional(),
+  "license": zod.string().optional(),
+  "details": zod.object({
+  "key": zod.string().optional(),
+  "era": zod.string().optional(),
+  "form": zod.string().optional(),
+  "timeSignature": zod.string().optional(),
+  "composer": zod.string().optional(),
+  "composerDates": zod.string().optional(),
+  "composedYear": zod.string().optional()
+}).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
+  "embeds": zod.array(zod.object({
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "title": zod.string().optional().describe('Optional heading shown above the embed.'),
+  "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
+  "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
+  "scoreSlug": zod.string().optional().describe('`score`: reference an existing catalogue score by slug instead of inline `tex`.'),
+  "mode": zod.enum(['standard', 'tab']).optional().describe('`score`\/`scale-boxes`: engraving mode (piano-style `standard` vs guitar `tab`).'),
+  "tuning": zod.array(zod.number()).optional().describe('`score` (tab): open-string MIDI pitches so a pitched score renders as tablature.'),
+  "instrument": zod.string().optional().describe('Fretted\/keyboard instrument hint: `guitar` | `ukulele` | `bass` | `piano`.'),
+  "root": zod.string().optional().describe('`scale-boxes`\/`keyboard`: scale root note, e.g. `A`, `C#`.'),
+  "scale": zod.string().optional().describe('`scale-boxes`\/`keyboard`: scale id, e.g. `major`, `minor-pentatonic`, `blues`.'),
+  "key": zod.string().optional().describe('`progression`: key the Roman-numeral\/chord progression is in, e.g. `A`.'),
+  "chords": zod.array(zod.string()).optional().describe('`chord-diagrams`\/`progression`\/`chord-board`: chord symbols, e.g. `[\"C\",\"G\",\"Am\",\"F\"]`.'),
+  "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
+  "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
+  "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+}).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive tools to render below the prose (authored, from `details` JSONB).'),
+  "tags": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "media": zod.array(zod.object({
+  "id": zod.string(),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'alphatex']),
+  "url": zod.string(),
+  "filename": zod.string(),
+  "mime": zod.string(),
+  "license": zod.string().optional(),
+  "attribution": zod.string().optional(),
+  "sourceUrl": zod.string().optional().describe('Provenance URL of the engraving (source edition or transcription reference).')
+}).describe('A media file attached to a content item, with a ready-to-use (presigned) URL.')),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+}).describe('Full detail view of a catalogue item.')
+
+
 export const UnpublishContentParams = zod.object({
   "slug": zod.string()
 })

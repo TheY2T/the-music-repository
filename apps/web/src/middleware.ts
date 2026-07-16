@@ -109,6 +109,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.BlockEditorPreview,
     FlagDefaults[FlagKeys.BlockEditorPreview],
   );
+  const contentRevisions = await client.getBooleanValue(
+    FlagKeys.ContentRevisions,
+    FlagDefaults[FlagKeys.ContentRevisions],
+  );
   const favorites = await client.getBooleanValue(
     FlagKeys.Favorites,
     FlagDefaults[FlagKeys.Favorites],
@@ -382,6 +386,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     adminCms,
     blockEditor,
     blockEditorPreview,
+    contentRevisions,
     favorites,
     savedProgressions,
     toolPractice,
