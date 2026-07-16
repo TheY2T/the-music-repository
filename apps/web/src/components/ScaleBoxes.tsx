@@ -1,6 +1,8 @@
 import { Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import InstrumentLoading from '@/components/InstrumentLoading';
+import InstrumentPicker from '@/components/InstrumentPicker';
+import { useToolInstrument } from '@/lib/instrument-choice';
 import {
   FRET_MARKERS,
   pitchName,
@@ -10,7 +12,6 @@ import {
   scalePitchClasses,
 } from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
-import { useInstrumentReady } from '@/lib/use-instrument-ready';
 
 const FRET_COUNT = 15;
 const BOX_WIDTH = 4; // frets spanned by a position box
@@ -37,12 +38,13 @@ export default function ScaleBoxes({
 
   const inWindow = (fret: number) => showAll || (fret >= position && fret <= position + BOX_WIDTH);
 
-  const { ready } = useInstrumentReady();
+  const { instrument, setInstrument, ready } = useToolInstrument('guitar');
   if (!ready) return <InstrumentLoading />;
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-end gap-4">
+        <InstrumentPicker value={instrument} onChange={setInstrument} />
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Root</span>
           <Select

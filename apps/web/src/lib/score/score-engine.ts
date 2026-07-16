@@ -83,6 +83,12 @@ export interface ScoreEngine {
   loopWhole(): void;
   setMetronome(on: boolean): void;
   setCountIn(on: boolean): void;
+  /**
+   * Play through the shared sampled note service instead of alphaTab's built-in synth. Pass a GM
+   * instrument name to mute the synth and drive that sampled instrument from alphaTab's live MIDI
+   * events (keeping alphaTab's cursor + timing); pass `null` to restore the built-in synth.
+   */
+  setSampledInstrument(instrument: string | null): void;
   /** Open the browser print dialog for the whole score (print-to-PDF). */
   print(): void;
 

@@ -1,7 +1,9 @@
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import InstrumentLoading from '@/components/InstrumentLoading';
+import InstrumentPicker from '@/components/InstrumentPicker';
 import LevelToggle from '@/components/LevelToggle';
+import { useToolInstrument } from '@/lib/instrument-choice';
 import { isWithinLevel, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
 import {
   PROGRESSION_GENRES,
@@ -10,7 +12,6 @@ import {
   realizeProgression,
 } from '@/lib/progressions';
 import { playNote } from '@/lib/soundfont';
-import { useInstrumentReady } from '@/lib/use-instrument-ready';
 import { useLevel } from '@/lib/use-level';
 
 const CHORD_MIDI = 60; // voice chords around C4
@@ -34,12 +35,13 @@ export default function ProgressionGenerator() {
     });
   }
 
-  const { ready } = useInstrumentReady();
+  const { instrument, setInstrument, ready } = useToolInstrument('piano');
   if (!ready) return <InstrumentLoading />;
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end gap-3">
+        <InstrumentPicker value={instrument} onChange={setInstrument} />
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Key</span>
           <Select

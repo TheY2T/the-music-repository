@@ -8,7 +8,14 @@
  * + synth worklet) and is E2E-tested only.
  */
 import type { AlphaTabApi, model } from '@coderline/alphatab';
-import { playNote as sampledPlayNote } from '@/lib/soundfont';
+import { getAudioContext, scheduleClick } from '@/lib/audio';
+import {
+  loadInstrument,
+  releaseAll as releaseSampledAll,
+  noteOff as sampledNoteOff,
+  noteOn as sampledNoteOn,
+  playNote as sampledPlayNote,
+} from '@/lib/soundfont';
 import type {
   LoopSelection,
   ScoreEngine,
@@ -33,6 +40,9 @@ export class AlphaTabScoreEngine implements ScoreEngine {
   private barCount = 0;
   /** Hides alphaTab's ungated "rendered by alphaTab" footer as SVG partials are appended. */
   private brandingObserver: MutationObserver | null = null;
+  /** When set, notes are voiced by the shared sampled service instead of alphaTab's muted synth. */
+  private sampledInstrument: string | null = null;
+  private metronomeOn = false;
 
   private positionCb: ((ms: number, durationMs: number) => void) | null = null;
   private stateCb: ((playing: boolean) => void) | null = null;
@@ -82,6 +92,38 @@ export class AlphaTabScoreEngine implements ScoreEngine {
       this.stateCb?.(e.state === 1);
     });
     api.playerReady.on(() => this.readyCb?.());
+
+    // Sampled-instrument bridge: when a sampled instrument is selected, alphaTab's own synth is muted
+    // (masterVolume 0, in setSampledInstrument) and each note is voiced through the shared sampled note
+    // service off alphaTab's live MIDI events — keeping alphaTab's cursor + timing. The metronome click
+    // is bridged too (the muted synth can't sound it); count-in stays silent under sampled mode.
+    api.midiEventsPlayedFilter = [
+      at.midi.MidiEventType.NoteOn,
+      at.midi.MidiEventType.NoteOff,
+      at.midi.MidiEventType.AlphaTabMetronome,
+    ];
+    api.midiEventsPlayed.on((e) => {
+      if (!this.sampledInstrument) return;
+      for (const ev of e.events) {
+        if (ev.type === at.midi.MidiEventType.AlphaTabMetronome) {
+          if (this.metronomeOn) {
+            const ctx = getAudioContext();
+            if (ctx) scheduleClick(ctx.currentTime, false);
+          }
+          continue;
+        }
+        const note = ev as unknown as { channel: number; noteKey: number; noteVelocity: number };
+        if (note.channel === 9) continue; // percussion — a melodic instrument can't voice GM drums
+        if (ev.type === at.midi.MidiEventType.NoteOn && note.noteVelocity > 0) {
+          sampledNoteOn(note.noteKey, {
+            velocity: note.noteVelocity,
+            instrument: this.sampledInstrument,
+          });
+        } else {
+          sampledNoteOff(note.noteKey, { instrument: this.sampledInstrument });
+        }
+      }
+    });
     // alphaTab draws a "rendered by alphaTab" footer with no setting to disable it. The SVG partials
     // (incl. the footer) are appended asynchronously after renderFinished, so watch the container and
     // hide the annotation as soon as it lands — robust across the initial render + every re-render.
@@ -224,19 +266,28 @@ export class AlphaTabScoreEngine implements ScoreEngine {
     this.endedCb = cb;
   }
 
+  /** Release any sampled voices this score is holding (only when the sampled bridge is active), so a
+   * pause/stop/seek can't leave a note ringing forever (no NoteOff fires when playback is interrupted). */
+  private releaseSampled(): void {
+    if (this.sampledInstrument) releaseSampledAll();
+  }
+
   play(): void {
     this.api?.play();
   }
   pause(): void {
     this.api?.pause();
+    this.releaseSampled();
   }
   stop(): void {
     this.api?.stop();
+    this.releaseSampled();
   }
   seekMs(ms: number): void {
     if (this.api) {
       this.api.timePosition = ms;
       this.positionCb?.(ms, this.durationMs);
+      this.releaseSampled();
     }
   }
   seekTick(tick: number): void {
@@ -244,15 +295,30 @@ export class AlphaTabScoreEngine implements ScoreEngine {
     if (!api) return;
     api.tickPosition = tick;
     this.positionCb?.(api.timePosition, this.durationMs);
+    this.releaseSampled();
   }
   setTempoFactor(factor: number): void {
     if (this.api) this.api.playbackSpeed = factor;
   }
   setMetronome(on: boolean): void {
+    this.metronomeOn = on;
     if (this.api) this.api.metronomeVolume = on ? 1 : 0;
   }
   setCountIn(on: boolean): void {
     if (this.api) this.api.countInVolume = on ? 1 : 0;
+  }
+
+  setSampledInstrument(instrument: string | null): void {
+    this.sampledInstrument = instrument;
+    const api = this.api;
+    if (!api) return;
+    if (instrument) {
+      void loadInstrument(instrument); // warm the samples so the first notes don't fall back
+      api.masterVolume = 0; // mute alphaTab's synth — notes now come from the sampled service
+    } else {
+      this.releaseSampled();
+      api.masterVolume = 1;
+    }
   }
 
   /** Resolve a beat range (endpoint onset ticks, either order) to its start + end beats, or null. */
@@ -365,6 +431,7 @@ export class AlphaTabScoreEngine implements ScoreEngine {
   }
 
   destroy(): void {
+    this.releaseSampled();
     this.brandingObserver?.disconnect();
     this.brandingObserver = null;
     this.api?.destroy();

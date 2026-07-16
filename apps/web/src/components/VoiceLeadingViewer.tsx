@@ -1,11 +1,12 @@
 import { Button, cn, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import InstrumentLoading from '@/components/InstrumentLoading';
+import InstrumentPicker from '@/components/InstrumentPicker';
 import LevelToggle from '@/components/LevelToggle';
+import { useToolInstrument } from '@/lib/instrument-choice';
 import { keyLayout } from '@/lib/keyboard';
 import { CHORDS, chordsByLevel, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
-import { useInstrumentReady } from '@/lib/use-instrument-ready';
 import { useLevel } from '@/lib/use-level';
 import { voiceLead, voiceMoves } from '@/lib/voice-leading';
 
@@ -119,7 +120,7 @@ function Keyboard({ lit, roots, flats }: { lit: Set<number>; roots: Set<number>;
 
 export default function VoiceLeadingViewer() {
   const { level, setLevel } = useLevel();
-  const { ready } = useInstrumentReady();
+  const { instrument, setInstrument, ready } = useToolInstrument('piano');
   const [rootA, setRootA] = useState(0);
   const [qualA, setQualA] = useState('major');
   const [rootB, setRootB] = useState(5);
@@ -154,6 +155,7 @@ export default function VoiceLeadingViewer() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end gap-3">
+        <InstrumentPicker value={instrument} onChange={setInstrument} />
         <ChordSelect
           label="From chord"
           root={rootA}

@@ -1,9 +1,10 @@
 import { Chip, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import InstrumentLoading from '@/components/InstrumentLoading';
+import InstrumentPicker from '@/components/InstrumentPicker';
+import { useToolInstrument } from '@/lib/instrument-choice';
 import { intervalLabel, MODES, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
-import { useInstrumentReady } from '@/lib/use-instrument-ready';
 
 const ROOT_MIDI = 60;
 
@@ -18,27 +19,30 @@ export default function ModeExplorer() {
     });
   }
 
-  const { ready } = useInstrumentReady();
+  const { instrument, setInstrument, ready } = useToolInstrument('piano');
   if (!ready) return <InstrumentLoading />;
 
   return (
     <div className="space-y-6">
-      <label className="space-y-1 text-sm">
-        <span className="block font-medium" data-help="modes">
-          Root
-        </span>
-        <Select
-          value={root}
-          onChange={(e) => setRoot(Number(e.target.value))}
-          className="h-auto w-auto px-2 py-1"
-        >
-          {ROOT_CHOICES.map((pc) => (
-            <option key={pc} value={pc}>
-              {pitchName(pc)}
-            </option>
-          ))}
-        </Select>
-      </label>
+      <div className="flex flex-wrap items-end gap-3">
+        <InstrumentPicker value={instrument} onChange={setInstrument} />
+        <label className="space-y-1 text-sm">
+          <span className="block font-medium" data-help="modes">
+            Root
+          </span>
+          <Select
+            value={root}
+            onChange={(e) => setRoot(Number(e.target.value))}
+            className="h-auto w-auto px-2 py-1"
+          >
+            {ROOT_CHOICES.map((pc) => (
+              <option key={pc} value={pc}>
+                {pitchName(pc)}
+              </option>
+            ))}
+          </Select>
+        </label>
+      </div>
 
       <p className="text-xs text-muted-foreground">Ordered brightest → darkest.</p>
       <ul className="space-y-3">

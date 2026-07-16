@@ -120,6 +120,8 @@
   "score.loading": "加载乐谱…",
   "score.error": "无法渲染此乐谱。",
   "score.downloadPdf": "下载 PDF",
+  "score.instrument": "乐器",
+  "score.builtInSynth": "内置合成器",
   "score.creditLabel": "乐谱来源：",
   "score.tempo": "速度",
   "score.toStart": "回到开头",

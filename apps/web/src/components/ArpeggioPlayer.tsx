@@ -1,7 +1,10 @@
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
-import { playTone } from '@/lib/audio';
-import { CHORDS, midiToFrequency, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
+import InstrumentLoading from '@/components/InstrumentLoading';
+import InstrumentPicker from '@/components/InstrumentPicker';
+import { useToolInstrument } from '@/lib/instrument-choice';
+import { CHORDS, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
+import { playNote } from '@/lib/soundfont';
 
 const PATTERNS = [
   { key: 'up', label: 'Up' },
@@ -56,7 +59,7 @@ export default function ArpeggioPlayer() {
     const step = () => {
       const seq = midisRef.current;
       const note = seq[i % seq.length];
-      playTone(midiToFrequency(note), (60 / bpmRef.current) * 0.9);
+      playNote(note, (60 / bpmRef.current) * 0.9);
       setPos(i % seq.length);
       i += 1;
       timerRef.current = window.setTimeout(step, (60 / bpmRef.current / 2) * 1000);
@@ -68,9 +71,13 @@ export default function ArpeggioPlayer() {
     };
   }, [running]);
 
+  const { instrument, setInstrument, ready } = useToolInstrument('guitar');
+  if (!ready) return <InstrumentLoading />;
+
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end gap-4">
+        <InstrumentPicker value={instrument} onChange={setInstrument} />
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Root</span>
           <Select

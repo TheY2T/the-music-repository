@@ -1,7 +1,9 @@
 import { cn, SegmentedToggle, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import InstrumentLoading from '@/components/InstrumentLoading';
+import InstrumentPicker from '@/components/InstrumentPicker';
 import LevelToggle from '@/components/LevelToggle';
+import { useToolInstrument } from '@/lib/instrument-choice';
 import { keyLayout } from '@/lib/keyboard';
 import {
   CHORDS,
@@ -17,7 +19,6 @@ import {
   scalesByLevel,
 } from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
-import { useInstrumentReady } from '@/lib/use-instrument-ready';
 import { useLevel } from '@/lib/use-level';
 
 // Two-octave keyboard (C3–C5) + a 15-fret neck, both lit with the same pitch classes so learners can
@@ -56,12 +57,13 @@ export default function ScaleHeatmap() {
   const on = (midi: number) => pcs.has(((midi % 12) + 12) % 12);
   const isRoot = (midi: number) => ((midi % 12) + 12) % 12 === root;
 
-  const { ready } = useInstrumentReady();
+  const { instrument, setInstrument, ready } = useToolInstrument('piano');
   if (!ready) return <InstrumentLoading />;
 
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end gap-3">
+        <InstrumentPicker value={instrument} onChange={setInstrument} />
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Root</span>
           <Select

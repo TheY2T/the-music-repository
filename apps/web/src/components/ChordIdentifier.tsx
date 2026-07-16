@@ -1,9 +1,10 @@
 import { Icon } from '@TheY2T/tmr-ui';
 import { useCallback, useState } from 'react';
 import InstrumentLoading from '@/components/InstrumentLoading';
+import InstrumentPicker from '@/components/InstrumentPicker';
+import { useToolInstrument } from '@/lib/instrument-choice';
 import { identifyChords, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
-import { useInstrumentReady } from '@/lib/use-instrument-ready';
 import { useMidiInput } from '@/lib/use-midi-input';
 
 const ROOT_MIDI = 60;
@@ -54,11 +55,14 @@ export default function ChordIdentifier() {
     }
   }
 
-  const { ready } = useInstrumentReady();
+  const { instrument, setInstrument, ready } = useToolInstrument('piano');
   if (!ready) return <InstrumentLoading />;
 
   return (
     <div className="space-y-6">
+      <div className="flex flex-wrap items-end gap-3">
+        <InstrumentPicker value={instrument} onChange={setInstrument} />
+      </div>
       <div>
         <p className="mb-2 text-sm font-medium" data-help="chords">
           Pick the notes

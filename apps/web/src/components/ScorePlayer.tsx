@@ -7,12 +7,18 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   Icon,
+  Select,
 } from '@TheY2T/tmr-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { getInstrumentFor, setInstrumentPref } from '@/lib/instrument-choice';
 import { AlphaTabScoreEngine } from '@/lib/score/alphatab-engine';
 import { orderTicks } from '@/lib/score/loop-selection';
 import type { ScoreDisplayMode, ScoreEngine } from '@/lib/score/score-engine';
 import { useAlphaTabTheme } from '@/lib/score/use-alphatab-theme';
+import { SOUNDFONT_INSTRUMENTS } from '@/lib/soundfont';
+
+/** Sentinel picker value for "play alphaTab's built-in synth instead of a sampled instrument". */
+const BUILT_IN_SYNTH = 'synth';
 
 /**
  * Interactive score player shell (ADR 0027). alphaTab is the single engine — it renders + plays both
@@ -68,6 +74,12 @@ export default function ScorePlayer({
   const [metronome, setMetronome] = useState(false);
   const [countIn, setCountIn] = useState(false);
   const [barCount, setBarCount] = useState(0);
+  // Which instrument voices the score: a sampled instrument (default, matched to the piece + remembered
+  // per family) or alphaTab's built-in synth. Piano scores default to a piano sound, guitar to a guitar.
+  const instrumentFamily = mode === 'tab' ? 'guitar' : 'piano';
+  const [scoreInstrument, setScoreInstrument] = useState<string>(() =>
+    getInstrumentFor(instrumentFamily),
+  );
   // A loop = a beat range the user drags across the score (ticks drive the precise loop; bars are just
   // for the readout). `looping` = whether it's currently repeating.
   const [selection, setSelection] = useState<{
@@ -189,6 +201,22 @@ export default function ScorePlayer({
   useEffect(() => engineRef.current?.setTempoFactor(tempoFactor), [tempoFactor]);
   useEffect(() => engineRef.current?.setMetronome(metronome), [metronome]);
   useEffect(() => engineRef.current?.setCountIn(countIn), [countIn]);
+  // Route playback through the chosen sampled instrument (or back to the built-in synth). Re-applied
+  // whenever the player becomes ready (a fresh engine after a source/mode change starts on the synth).
+  useEffect(() => {
+    if (!playerReady) return;
+    engineRef.current?.setSampledInstrument(
+      scoreInstrument === BUILT_IN_SYNTH ? null : scoreInstrument,
+    );
+  }, [scoreInstrument, playerReady]);
+
+  const changeInstrument = useCallback(
+    (name: string) => {
+      setScoreInstrument(name);
+      if (name !== BUILT_IN_SYNTH) setInstrumentPref(instrumentFamily, name);
+    },
+    [instrumentFamily],
+  );
   // Re-theme notation glyphs when the aesthetic / dark-mode changes. The current resources are ALREADY
   // applied at load, so skip the first application once ready — calling api.render() again mid-way through
   // the initial paint clobbers it (leaves the score blank on heavier pages). Only re-apply on a genuine
@@ -447,13 +475,29 @@ export default function ScorePlayer({
             </>
           ) : null}
 
+          <label className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
+            <span>{t(locale, 'score.instrument')}</span>
+            <Select
+              value={scoreInstrument}
+              onChange={(e) => changeInstrument(e.target.value)}
+              className="h-auto w-auto px-2 py-1"
+              aria-label={t(locale, 'score.instrument')}
+            >
+              <option value={BUILT_IN_SYNTH}>{t(locale, 'score.builtInSynth')}</option>
+              {SOUNDFONT_INSTRUMENTS.map((inst) => (
+                <option key={inst.name} value={inst.name}>
+                  {inst.label}
+                </option>
+              ))}
+            </Select>
+          </label>
+
           <Button
             type="button"
             size="sm"
             variant="ghost"
             onClick={() => engineRef.current?.print()}
             disabled={status !== 'ready'}
-            className="ml-auto"
           >
             <Icon name="download" className="size-4" />
             {t(locale, 'score.downloadPdf')}

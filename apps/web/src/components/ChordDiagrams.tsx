@@ -8,16 +8,13 @@ import {
   TUNING_LOW_FIRST,
 } from '@TheY2T/tmr-ui/music';
 import { useEffect, useState } from 'react';
+import InstrumentLoading from '@/components/InstrumentLoading';
+import InstrumentPicker from '@/components/InstrumentPicker';
 import LevelToggle from '@/components/LevelToggle';
-import { playTone } from '@/lib/audio';
 import { tuningFor } from '@/lib/embeds';
-import {
-  CHORDS,
-  chordsByLevel,
-  midiToFrequency,
-  pitchName,
-  ROOT_CHOICES,
-} from '@/lib/music-theory';
+import { useToolInstrument } from '@/lib/instrument-choice';
+import { CHORDS, chordsByLevel, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
+import { playNote } from '@/lib/soundfont';
 import { useLevel } from '@/lib/use-level';
 
 // Chord-diagram DATA + rendering now live in @TheY2T/tmr-ui/music. Re-exported here so the ~6
@@ -45,10 +42,7 @@ export function strumChord(
     if (frets[i] < 0) {
       continue;
     }
-    window.setTimeout(
-      () => playTone(midiToFrequency(TUNING_LOW_FIRST[i] + frets[i]), duration),
-      delay,
-    );
+    window.setTimeout(() => playNote(TUNING_LOW_FIRST[i] + frets[i], duration), delay);
     delay += 22;
   }
 }
@@ -72,7 +66,7 @@ function strumShape(frets: number[], tuning: number[]): void {
   let delay = 0;
   frets.forEach((fret, i) => {
     if (fret < 0) return;
-    window.setTimeout(() => playTone(midiToFrequency(tuning[i] + fret), 1.1), delay);
+    window.setTimeout(() => playNote(tuning[i] + fret, 1.1), delay);
     delay += 22;
   });
 }
@@ -82,6 +76,14 @@ export default function ChordDiagrams() {
   const [instrument, setInstrument] = useState<Instrument>('guitar');
   const [root, setRoot] = useState(0);
   const [quality, setQuality] = useState('major');
+  // Sampled sound follows the fretted instrument's family (bass → bass, guitar/uke → guitar), and the
+  // "Sound" picker lets the user pick any sampled timbre within it. Sets the note-service default that
+  // strumChord/strumShape sound through.
+  const {
+    instrument: soundInstrument,
+    setInstrument: setSound,
+    ready,
+  } = useToolInstrument(instrument === 'bass' ? 'bass' : 'guitar');
 
   const tuning = tuningFor(instrument);
   // Qualities this instrument can voice, narrowed to the learner's level.
@@ -94,6 +96,8 @@ export default function ChordDiagrams() {
 
   const shapes = generateChordShapes(root, quality, instrument);
   const qualityName = CHORDS.find((c) => c.key === quality)?.name ?? quality;
+
+  if (!ready) return <InstrumentLoading />;
 
   return (
     <div className="space-y-5">
@@ -112,6 +116,7 @@ export default function ChordDiagrams() {
             ))}
           </Select>
         </label>
+        <InstrumentPicker label="Sound" value={soundInstrument} onChange={setSound} />
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Root</span>
           <Select

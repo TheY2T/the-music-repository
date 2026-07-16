@@ -2,10 +2,11 @@ import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { cn } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import InstrumentLoading from '@/components/InstrumentLoading';
+import InstrumentPicker from '@/components/InstrumentPicker';
 import { PixiCanvas } from '@/components/PixiCanvas';
 import { chordToMidi } from '@/lib/embeds';
+import { useToolInstrument } from '@/lib/instrument-choice';
 import { playNote } from '@/lib/soundfont';
-import { useInstrumentReady } from '@/lib/use-instrument-ready';
 
 /**
  * A board of tappable chord cards (symbol + optional Roman-numeral label) that sound the chord's tones
@@ -41,37 +42,42 @@ export default function ChordBoard({
     playChord(chords[i]);
   };
 
-  const { ready } = useInstrumentReady();
+  const { instrument, setInstrument, ready } = useToolInstrument('piano');
   if (!ready) return <InstrumentLoading />;
 
   return (
-    <PixiCanvas
-      ariaLabel={t(locale, 'embed.chordBoard')}
-      loader={loadScene}
-      sceneProps={{ items, active, onPress: press }}
-      containerClassName="h-28 w-full rounded-lg border border-border bg-card"
-      fallback={
-        <div className="flex flex-wrap gap-2">
-          {items.map((item, i) => (
-            <button
-              key={`${item.symbol}-${i}`}
-              type="button"
-              onClick={() => press(i)}
-              className={cn(
-                'flex min-w-16 flex-col items-center gap-0.5 rounded-lg border border-border p-2 transition-colors hover:bg-accent/15',
-                active === i && 'border-ring bg-accent/20',
-              )}
-            >
-              {item.label ? (
-                <span className="font-serif text-xs italic text-muted-foreground">
-                  {item.label}
-                </span>
-              ) : null}
-              <span className="font-semibold">{item.symbol}</span>
-            </button>
-          ))}
-        </div>
-      }
-    />
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-end gap-3">
+        <InstrumentPicker value={instrument} onChange={setInstrument} />
+      </div>
+      <PixiCanvas
+        ariaLabel={t(locale, 'embed.chordBoard')}
+        loader={loadScene}
+        sceneProps={{ items, active, onPress: press }}
+        containerClassName="h-28 w-full rounded-lg border border-border bg-card"
+        fallback={
+          <div className="flex flex-wrap gap-2">
+            {items.map((item, i) => (
+              <button
+                key={`${item.symbol}-${i}`}
+                type="button"
+                onClick={() => press(i)}
+                className={cn(
+                  'flex min-w-16 flex-col items-center gap-0.5 rounded-lg border border-border p-2 transition-colors hover:bg-accent/15',
+                  active === i && 'border-ring bg-accent/20',
+                )}
+              >
+                {item.label ? (
+                  <span className="font-serif text-xs italic text-muted-foreground">
+                    {item.label}
+                  </span>
+                ) : null}
+                <span className="font-semibold">{item.symbol}</span>
+              </button>
+            ))}
+          </div>
+        }
+      />
+    </div>
   );
 }

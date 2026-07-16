@@ -2,9 +2,10 @@ import { Button, Icon } from '@TheY2T/tmr-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import DrillFeedback from '@/components/DrillFeedback';
 import InstrumentLoading from '@/components/InstrumentLoading';
+import InstrumentPicker from '@/components/InstrumentPicker';
+import { useToolInstrument } from '@/lib/instrument-choice';
 import { INTERVAL_NAMES } from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
-import { useInstrumentReady } from '@/lib/use-instrument-ready';
 import { useMidiInput } from '@/lib/use-midi-input';
 
 interface Question {
@@ -96,13 +97,14 @@ export default function EarTrainer() {
 
   const isCorrect = answered !== null && answered === question.semitones;
 
-  const { ready } = useInstrumentReady();
+  const { instrument, setInstrument, ready } = useToolInstrument('piano');
   if (!ready) return <InstrumentLoading />;
 
   return (
     <div className="space-y-6">
       <DrillFeedback result={answered === null ? null : isCorrect ? 'correct' : 'wrong'} />
       <div className="flex flex-wrap items-center gap-4">
+        <InstrumentPicker value={instrument} onChange={setInstrument} />
         {!started ? (
           <Button type="button" onClick={start}>
             <Icon name="play" className="size-4" />

@@ -2,6 +2,9 @@ import { Icon, Select } from '@TheY2T/tmr-ui';
 import { ChordDiagram, generateCagedShapes } from '@TheY2T/tmr-ui/music';
 import { useState } from 'react';
 import { strumChord } from '@/components/ChordDiagrams';
+import InstrumentLoading from '@/components/InstrumentLoading';
+import InstrumentPicker from '@/components/InstrumentPicker';
+import { useToolInstrument } from '@/lib/instrument-choice';
 import { CHORDS, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
 
 // The qualities the CAGED system voices across the neck (major = all five shapes; minor / 7ths = the
@@ -15,12 +18,16 @@ const QUALITY_OPTIONS = CAGED_QUALITIES.map((key) => ({
 export default function CagedExplorer() {
   const [root, setRoot] = useState(0);
   const [quality, setQuality] = useState('major');
+  const { instrument, setInstrument, ready } = useToolInstrument('guitar');
   const shapes = generateCagedShapes(root, quality);
   const qualityName = CHORDS.find((c) => c.key === quality)?.name ?? quality;
+
+  if (!ready) return <InstrumentLoading />;
 
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end gap-3">
+        <InstrumentPicker value={instrument} onChange={setInstrument} />
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Root</span>
           <Select

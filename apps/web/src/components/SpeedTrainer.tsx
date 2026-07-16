@@ -1,10 +1,11 @@
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import InstrumentLoading from '@/components/InstrumentLoading';
+import InstrumentPicker from '@/components/InstrumentPicker';
 import LevelToggle from '@/components/LevelToggle';
+import { useToolInstrument } from '@/lib/instrument-choice';
 import { pitchName, ROOT_CHOICES, SCALES, scalesByLevel } from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
-import { useInstrumentReady } from '@/lib/use-instrument-ready';
 import { useLevel } from '@/lib/use-level';
 
 const BASE = 60; // C4
@@ -12,7 +13,7 @@ const NOTES_PER_BEAT = 2; // eighth notes
 
 export default function SpeedTrainer() {
   const { level, setLevel } = useLevel();
-  const { ready } = useInstrumentReady();
+  const { instrument, setInstrument, ready } = useToolInstrument('guitar');
   const [root, setRoot] = useState(0);
   const [scaleKey, setScaleKey] = useState('major');
   const [startBpm, setStartBpm] = useState(60);
@@ -111,6 +112,7 @@ export default function SpeedTrainer() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end gap-3">
+        <InstrumentPicker value={instrument} onChange={setInstrument} />
         <label className="space-y-1 text-sm">
           <span className="block font-medium">Root</span>
           <Select

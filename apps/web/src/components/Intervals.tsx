@@ -2,11 +2,12 @@ import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { cn } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import InstrumentLoading from '@/components/InstrumentLoading';
+import InstrumentPicker from '@/components/InstrumentPicker';
 import { PixiCanvas } from '@/components/PixiCanvas';
 import { noteNameToPitchClass } from '@/lib/embeds';
+import { useToolInstrument } from '@/lib/instrument-choice';
 import { pitchName } from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
-import { useInstrumentReady } from '@/lib/use-instrument-ready';
 
 /**
  * An interval reference: the twelve intervals above a root as tappable cards (short name + the note it
@@ -30,33 +31,38 @@ export default function Intervals({ root = 'C', locale }: { root?: string; local
     window.setTimeout(() => playNote(rootMidi + i, 0.8), 420);
   };
 
-  const { ready } = useInstrumentReady();
+  const { instrument, setInstrument, ready } = useToolInstrument('piano');
   if (!ready) return <InstrumentLoading />;
 
   return (
-    <PixiCanvas
-      ariaLabel={t(locale, 'embed.intervals')}
-      loader={loadScene}
-      sceneProps={{ items, active, onPress: press }}
-      containerClassName="h-28 w-full rounded-lg border border-border bg-card"
-      fallback={
-        <div className="flex flex-wrap gap-2">
-          {items.map((item, i) => (
-            <button
-              key={item.symbol}
-              type="button"
-              onClick={() => press(i)}
-              className={cn(
-                'flex min-w-14 flex-col items-center gap-0.5 rounded-lg border border-border p-2 transition-colors hover:bg-accent/15',
-                active === i && 'border-ring bg-accent/20',
-              )}
-            >
-              <span className="font-semibold">{item.symbol}</span>
-              <span className="text-xs text-muted-foreground">{item.label}</span>
-            </button>
-          ))}
-        </div>
-      }
-    />
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-end gap-3">
+        <InstrumentPicker value={instrument} onChange={setInstrument} />
+      </div>
+      <PixiCanvas
+        ariaLabel={t(locale, 'embed.intervals')}
+        loader={loadScene}
+        sceneProps={{ items, active, onPress: press }}
+        containerClassName="h-28 w-full rounded-lg border border-border bg-card"
+        fallback={
+          <div className="flex flex-wrap gap-2">
+            {items.map((item, i) => (
+              <button
+                key={item.symbol}
+                type="button"
+                onClick={() => press(i)}
+                className={cn(
+                  'flex min-w-14 flex-col items-center gap-0.5 rounded-lg border border-border p-2 transition-colors hover:bg-accent/15',
+                  active === i && 'border-ring bg-accent/20',
+                )}
+              >
+                <span className="font-semibold">{item.symbol}</span>
+                <span className="text-xs text-muted-foreground">{item.label}</span>
+              </button>
+            ))}
+          </div>
+        }
+      />
+    </div>
   );
 }

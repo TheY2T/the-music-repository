@@ -1,11 +1,12 @@
 import { cn, Select } from '@TheY2T/tmr-ui';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import InstrumentLoading from '@/components/InstrumentLoading';
+import InstrumentPicker from '@/components/InstrumentPicker';
 import LevelToggle from '@/components/LevelToggle';
 import { PixiCanvas } from '@/components/PixiCanvas';
-import { playTone } from '@/lib/audio';
+import { useToolInstrument } from '@/lib/instrument-choice';
 import {
   FRET_MARKERS,
-  midiToFrequency,
   pitchName,
   ROOT_CHOICES,
   SCALES,
@@ -14,6 +15,7 @@ import {
   scalePitchClasses,
   scalesByLevel,
 } from '@/lib/music-theory';
+import { playNote } from '@/lib/soundfont';
 import { useLevel } from '@/lib/use-level';
 
 const FRET_COUNT = 15;
@@ -24,6 +26,7 @@ const noteLabel = (midi: number, flats: boolean) =>
 
 export default function GuitarFretboard() {
   const { level, setLevel } = useLevel();
+  const { instrument, setInstrument, ready } = useToolInstrument('guitar');
   const [showLabels, setShowLabels] = useState(true);
   const [root, setRoot] = useState<number | null>(null);
   const [scaleKey, setScaleKey] = useState('minor-pentatonic');
@@ -47,7 +50,7 @@ export default function GuitarFretboard() {
 
   const play = useCallback(
     (midi: number) => {
-      playTone(midiToFrequency(midi));
+      playNote(midi, 0.8);
       setLastNote(noteLabel(midi, flats));
       setActive((prev) => new Set(prev).add(midi));
       const timers = releaseTimers.current;
@@ -129,9 +132,12 @@ export default function GuitarFretboard() {
     </div>
   );
 
+  if (!ready) return <InstrumentLoading />;
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-end gap-4">
+        <InstrumentPicker value={instrument} onChange={setInstrument} />
         <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"

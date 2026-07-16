@@ -120,6 +120,8 @@
   "score.loading": "Loading notation…",
   "score.error": "Could not render this score.",
   "score.downloadPdf": "Download PDF",
+  "score.instrument": "Instrument",
+  "score.builtInSynth": "Built-in synth",
   "score.creditLabel": "Score:",
   "score.tempo": "Tempo",
   "score.toStart": "To start",
