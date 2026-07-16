@@ -24,4 +24,8 @@ On the ukulele this is a rewarding step up from a strict three-chord song. You w
 ## How to play it
 It sits comfortably on ukulele in C or G major — in C, work with C, F, G7 plus a D7 that colours the verse. Use a gentle, swaying strum (a soft island or calypso pattern) rather than anything driving, and let the chorus open up warmly. Take care with the Hawaiian lyrics and their vowels, and keep the whole thing unhurried and heartfelt.
 
+```embeds
+[{ "tool": "chord-diagrams", "title": "The three ukulele chords", "caption": "Aloha ʻOe leans on C, F and G7 — the shapes to learn first. Tap a diagram to strum it.", "instrument": "ukulele", "chords": ["C", "F", "G7"] }]
+```
+
 ## If you like this

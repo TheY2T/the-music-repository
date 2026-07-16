@@ -24,5 +24,9 @@ Voicing a melody above a moving accompaniment (bringing out the top notes with t
 ## How to practise
 Learn the left-hand shapes first, silently, so barre changes feel secure before you add speed. Practise the melody notes alone to hear the tune, then re-introduce the accompaniment beneath it, kept deliberately quieter. Watch that your barre stays firm enough to avoid buzzes but relaxed enough to survive the whole piece without fatigue.
 
+```embeds
+[{"tool":"scale-boxes","title":"The B minor scale on the neck","caption":"The shapes behind the study — slide the box up the neck and click a note to hear it.","root":"B","scale":"natural-minor"}]
+```
+
 ## If you like this
 Explore more Segovia-edition Sor studies, Tárrega's *Lágrima*, or Carcassi's Op. 60 No. 7 in A minor.

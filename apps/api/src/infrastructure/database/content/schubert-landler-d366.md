@@ -24,5 +24,9 @@ This little dance builds a secure triple-time feel, the basic waltz/Ländler lef
 ## How to practise
 Feel the dance in one pulse per bar rather than counting three stiffly — a gentle lean on beat one keeps it lilting. Keep the left hand soft and springy so the tune stays on top. Because the strains repeat, use the repeats to add a little dynamic contrast (say it once plainly, once more warmly). Learn hands separately, then join slowly; there's very little here to trip you, so aim for musical grace rather than mere accuracy.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of B♭ major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"Bb","scale":"major","size":49}]
+```
+
 ## If you like this
 It pairs naturally with Chopin's *Waltz in A minor* (the dance grown up) and Schumann's gentle *Melody, Op. 68 No. 1*. Mozart's *Minuet in F* is another courtly-dance cousin.

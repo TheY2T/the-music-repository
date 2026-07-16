@@ -24,5 +24,9 @@ This piece builds a feel for Classical phrasing — shapely, balanced phrases wi
 ## How to practise
 Count the 3/4 with a light lift on beat one, as if you were stepping a dance rather than marching. Keep the left hand soft and secondary so the tune always sings above it. Shape each four-bar phrase, then relax at its cadence before the next begins. Watch the ornaments (small trills or turns) if your edition includes them — learn the notes plainly first, then add the decoration once the line flows. Practise the two halves separately, then link them.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of F major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"F","scale":"major","size":49}]
+```
+
 ## If you like this
 Compare it with the Baroque *Minuet in G* to hear how dance style changed between eras. When you're ready for more Mozart, his *Sonata K. 545* first movement is the natural next step.

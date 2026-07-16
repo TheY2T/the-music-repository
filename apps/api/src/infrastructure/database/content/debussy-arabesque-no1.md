@@ -24,5 +24,9 @@ This is a classic study in arpeggios and in coordinating cross-rhythms between t
 ## How to practise
 Practise hands separately first, especially the arpeggio patterns, aiming for a light, even touch. To master the two-against-three, count slowly and feel where the notes line up and where they don't; play it under tempo until the swing feels natural. Keep the wrists loose and let the pedal wash the harmonies together, clearing it whenever the sound thickens.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of E major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"E","scale":"major","size":49}]
+```
+
 ## If you like this
 Move on to Debussy's *Clair de Lune* for his most famous impressionist masterpiece, or try Satie's *Gymnopédie No. 1* for a calmer corner of the same French world.

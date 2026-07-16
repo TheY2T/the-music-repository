@@ -24,5 +24,9 @@ This is a masterclass in expression through the simplest means: controlling soft
 ## How to practise
 The left-hand chords are the piece — practise them alone until they are perfectly even, soft, and connected, listening to the one note that moves in each change. Keep the right-hand melody legato and give it a slight rise and fall so it doesn't sound flat. Plan your single climax so the long build has somewhere to go, then relax completely for the ending. Move the pedal with each chord change to keep the harmony clean. Take it genuinely slowly and let silence do some of the work.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of E minor","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"E","scale":"natural-minor","size":49}]
+```
+
 ## If you like this
 Chopin's *Nocturne Op. 9 No. 2* offers the same singing lyricism with more ornament, while the *Waltz in A minor* shares its wistful minor-key mood. Beethoven's *Für Elise* is a gentler companion.

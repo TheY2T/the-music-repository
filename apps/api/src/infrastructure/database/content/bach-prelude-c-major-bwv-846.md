@@ -24,5 +24,9 @@ This is a superb study in evenness, control, and voicing within a broken-chord t
 ## How to practise
 First, block each bar into its solid chord so you can see and hear the harmony — play the chords in sequence before you unfold them. Then aim for perfect evenness: no note louder than its neighbours, the pulse absolutely steady. Keep the top notes very slightly present so a faint melodic thread emerges from the pattern. Use gentle finger legato and a little pedal to bind each chord without blurring into the next. Slow and serene wins here; speed would spoil it.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of C major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"C","scale":"major","size":49}]
+```
+
 ## If you like this
 For more Bach counterpoint, move to *Invention No. 1, BWV 772* (also in C major). If it's the singing, arpeggiated calm you love, Chopin's *Nocturne Op. 9 No. 2* carries that feeling into the Romantic era.

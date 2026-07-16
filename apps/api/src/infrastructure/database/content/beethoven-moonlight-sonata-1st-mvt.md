@@ -24,5 +24,9 @@ This movement teaches control of a quiet, unbroken triplet accompaniment, three-
 ## How to practise
 Practise the right hand's triplets alone until they are perfectly even and genuinely soft — they are the shimmering backdrop and must never bump. Then add the melody on top, voicing it slightly stronger so it sings through. Keep the bass warm and connected. Change the pedal cleanly with each harmony so the sound glows but never blurs. Choose a tempo that flows in two, and let dynamics stay within a narrow, intimate range. Above all, patience: the power here is in restraint.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of C♯ minor","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"C#","scale":"natural-minor","size":49}]
+```
+
 ## If you like this
 For Beethoven in a lighter minor-key mood, try *Für Elise*. If it's the singing, arpeggiated calm that draws you, Chopin's *Nocturne Op. 9 No. 2* and Bach's *Prelude in C major* explore the same territory.

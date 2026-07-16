@@ -24,5 +24,9 @@ This piece is a wonderful first taste of Baroque style: even, independent hands,
 ## How to practise
 Learn hands separately first — the left hand's quarter-note patterns are easy to underestimate, so make them smooth and unhurried. Keep the tempo moderate and danceable; resist rushing the running eighth notes in the right hand. Aim for a light, slightly detached touch rather than heavy legato — Baroque keyboard music breathes best with a little air between notes. Shape each phrase toward its high point, then ease off. Once hands are secure separately, join them slowly and only speed up when the coordination feels effortless.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of G major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"G","scale":"major","size":49}]
+```
+
 ## If you like this
 Try Bach's *Prelude in C major, BWV 846* for flowing broken chords, or step up to the two-voice discipline of *Invention No. 1, BWV 772*. Mozart's *Minuet in F, K. 2* offers the same dance in a Classical accent.

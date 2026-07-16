@@ -24,5 +24,9 @@ You'll practise voicing a melody above a soft accompaniment, keeping a steady wa
 ## How to practise
 Keep the left hand quiet and even; let the bass notes ring under the chords. Bring the right-hand melody out gently on top. Use the sustain pedal to blend each bar, changing it cleanly with the harmony so the sound never turns muddy. Above all, resist the urge to speed up — the beauty lives in patience and calm.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of D major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"D","scale":"major","size":49}]
+```
+
 ## If you like this
 Try Satie's *Gnossienne No. 1* for more of his hypnotic, modal world, or Debussy's *Clair de Lune* for the fuller flowering of French impressionism.

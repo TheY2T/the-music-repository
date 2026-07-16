@@ -24,5 +24,9 @@ A continuous, glimmering top melody that seems to hang in the air, supported by 
 ## How to practise
 Practise tremolo slowly and evenly long before attempting speed — an uneven fast tremolo is worse than a slow clean one. Use a metronome and focus on four perfectly equal notes per beat. Keep the thumb's bass line calm and independent. Isolate difficult bars and the section shifts. Build tempo gradually over weeks; patience here is everything.
 
+```embeds
+[{"tool":"scale-boxes","title":"The A minor scale on the neck","caption":"The shapes behind the study — slide the box up the neck and click a note to hear it.","root":"A","scale":"natural-minor"}]
+```
+
 ## If you like this
 Build up through Tárrega's *Lágrima* and *Adelita* first, and explore other tremolo works once the technique is secure.

@@ -24,5 +24,9 @@ This is a lovely study in "singing" at the piano: bringing out a smooth melodic 
 ## How to practise
 Learn the accompaniment first and keep it quiet and even — it should support, never compete. Then shape the melody on top, phrasing it as a singer would breathe. Change the pedal cleanly with each harmony so the chords stay clear. Take it slowly and expressively; the beauty is in the calm, unhurried flow.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of B♭ major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"Bb","scale":"major","size":49}]
+```
+
 ## If you like this
 Try the gentle simplicity of Beethoven's *Ode to Joy*, or move toward the impressionists with Satie's *Gymnopédie No. 1* and Debussy's *Clair de Lune*.

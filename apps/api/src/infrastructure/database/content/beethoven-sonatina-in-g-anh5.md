@@ -24,5 +24,9 @@ It develops core Classical fundamentals: even scale and arpeggio figures, clean 
 ## How to practise
 Keep the tempo genuinely *moderate* — the Italian marking is a promise, not a challenge to go fast. Work the right-hand runs slowly for evenness, and keep the left-hand accompaniment light and supportive. Point up the phrase endings by easing gently into each cadence rather than bumping it. Practise hands separately where the two lines move at different speeds, then combine slowly. The Romanze rewards a warm, singing tone, so save some patience for it.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of G major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"G","scale":"major","size":49}]
+```
+
 ## If you like this
 It sits naturally beside the *Clementi Op. 36 No. 1* and *Kuhlau Op. 20 No. 1* sonatinas. When these feel comfortable, Mozart's *Sonata K. 545* is the fuller version of the same idea.

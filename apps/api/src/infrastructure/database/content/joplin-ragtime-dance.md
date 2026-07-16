@@ -24,5 +24,9 @@ This piece teaches rhythmic drive and confidence: you have to keep an unshakeabl
 ## How to practise
 Lock in a steady pulse first — tap your foot or use a metronome so the rhythm is rock solid before the notes thin out in the stop-time section. Learn the strains one at a time and keep the left hand even. Have fun with the heel-stamp (or a firm foot-tap): it's meant to be played with a grin. And keep the tempo dignified — as Joplin always insisted, ragtime is never right played fast.
 
+```embeds
+[{"tool":"circle-of-fifths","title":"Where this key sits","caption":"B-flat major (opening), moving to E-flat major on the circle of fifths — click a key to hear its tonic and see its signature."}]
+```
+
 ## If you like this
 Try Joplin's *The Entertainer* and *Maple Leaf Rag*, or the sunnier *Pineapple Rag*.

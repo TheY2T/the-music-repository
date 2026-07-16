@@ -42,6 +42,10 @@ The pattern is a rising-and-falling figure that skips one note, so the hand sits
 - **Rushing the turn.** The note where the figure changes direction (finger 5) is where sloppiness
   creeps in — give it the same clarity as the rest.
 
+```embeds
+[{ "tool": "keyboard", "title": "The notes of C major", "caption": "The exercise runs up and down C major — all white keys. Click to hear the pattern.", "root": "C", "scale": "major", "size": 49 }]
+```
+
 ## How to progress
 
 Ramp the metronome up a few clicks only once every note is clean — Hanon suggests eventually reaching

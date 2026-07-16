@@ -24,5 +24,9 @@ You'll master the Alberti bass — quiet, even, and perfectly steady so it never
 ## How to practise
 Give the Alberti bass its own dedicated practice: keep it soft, level, and relaxed, rotating gently from the wrist rather than jabbing each note. Drill the scale passages slowly with clean fingering until they run like beads. Balance the hands so the right-hand tune always floats above the accompaniment. Keep a strict, moderate tempo — rushing exposes every unevenness. Learn it in sections (first theme, transition, second theme) and only assemble the whole once each part is secure.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of C major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"C","scale":"major","size":49}]
+```
+
 ## If you like this
 For the same Classical form at a gentler size, try the *Clementi Sonatina Op. 36 No. 1* or the *Kuhlau Sonatina Op. 20 No. 1*. To hear where Mozart began, revisit his childhood *Minuet in F, K. 2*.

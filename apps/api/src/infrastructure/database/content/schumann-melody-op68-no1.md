@@ -24,5 +24,9 @@ This piece develops a legato singing tone, balance between a melody and a soft a
 ## How to practise
 Play the right-hand melody on its own first and shape it like a sung line, breathing at the phrase ends. Then bring in the left hand softly so it never competes. Aim for smooth, connected legato — join each note to the next with the fingers, keeping the hand relaxed. Keep a steady, easy tempo; this is not a piece to rush. Listen constantly to your tone, since evenness and warmth are the whole goal here.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of C major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"C","scale":"major","size":49}]
+```
+
 ## If you like this
 Explore more of the *Album for the Young* — the lively *Wild Horseman* is a favourite next step. Burgmüller's *La Candeur* offers the same gentle, singing character, and Schubert's *Ländler* is a friendly dance in a similar spirit.

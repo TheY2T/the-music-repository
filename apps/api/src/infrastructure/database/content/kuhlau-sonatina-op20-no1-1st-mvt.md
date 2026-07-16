@@ -24,5 +24,9 @@ Expect a real polish of scale and arpeggio fluency, finger evenness at speed, cl
 ## How to practise
 Isolate the fast scale and arpeggio figures and practise them slowly with steady fingering, gradually increasing speed only when they're perfectly even. Keep the left hand light so the right-hand brilliance carries. Mind the articulation markings — the crispness is what makes it sparkle. Set a tempo you can hold all the way through rather than one that's fast only in the easy bars. Work in sections and hands-separately on the trickiest runs, then assemble patiently.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of C major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"C","scale":"major","size":49}]
+```
+
 ## If you like this
 The *Clementi Op. 36 No. 1* is its close cousin (and a touch easier). When these feel secure, Mozart's *Sonata K. 545* opens the door to the full Classical sonata.

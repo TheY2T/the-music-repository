@@ -40,6 +40,10 @@ The piece stays in C major, in common time (`4/4`), with both hands anchored ove
 - **Collapsing fingers.** Keep a rounded hand; a flattening 4th or 5th finger loses control.
 - **Losing the pulse when hands combine.** Drop back to a tempo where both hands stay effortless.
 
+```embeds
+[{ "tool": "keyboard", "title": "The notes of C major", "caption": "This study lives entirely in C major — its five-finger shapes on the keys. Click to hear them.", "root": "C", "scale": "major", "size": 49 }]
+```
+
 ## How to progress
 
 Only nudge the tempo up once the study is even and relaxed, then move on to Op. 599 No. 2 and beyond.

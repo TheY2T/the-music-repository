@@ -24,4 +24,8 @@ This is a song of soaring lines. The melody is famous for its wide range and its
 ## How to play it
 It is commonly played in E-flat or C major; choose the key that keeps the high climax comfortable to sing. Because of the range and the passing harmonies, this sits a step above a three-chord song — expect to move through more chords and to voice-lead them smoothly. Pianists should use the pedal to sustain the melody; guitarists can fingerpick or strum broadly. Save your fullest dynamic and tone for that final rising phrase.
 
+```embeds
+[{ "tool": "keyboard", "title": "The notes of E♭ major", "caption": "The key the melody lives in — click through the E♭ major scale to hear its colour.", "root": "Eb", "scale": "major", "size": 49 }]
+```
+
 ## If you like this

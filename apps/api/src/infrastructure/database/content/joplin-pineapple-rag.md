@@ -24,5 +24,9 @@ You'll strengthen the core ragtime skill of keeping an even left hand under a sy
 ## How to practise
 Learn the left-hand accompaniment until it runs on autopilot, then add the syncopated right hand slowly, one strain at a time. Pay attention when the key shifts to E-flat — new sharps and flats to keep track of. Keep the tempo moderate and swinging; Joplin's rule holds here too: never play ragtime fast. Aim for a relaxed groove rather than a race.
 
+```embeds
+[{"tool":"circle-of-fifths","title":"Where this key sits","caption":"B-flat major (opening), moving to E-flat major on the circle of fifths — click a key to hear its tonic and see its signature."}]
+```
+
 ## If you like this
 Try the mighty *Maple Leaf Rag* or the cheerful *The Entertainer*, and hear Joplin's more theatrical side in *The Ragtime Dance*.

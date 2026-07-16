@@ -24,5 +24,9 @@ The opening builds a light, controlled right hand, smooth hand-crossing between 
 ## How to practise
 The famous two-note oscillation should be light and even, played mostly from the fingers with a relaxed wrist — never hammered. Keep the tempo gentle and flowing; the piece loses its spell if driven hard. Balance the hands so the melody sings and the broken-chord accompaniment stays hushed underneath. Learn the left-hand arpeggiated chords securely so they can drop to a whisper. Practise slowly for evenness before letting it flow, and mind the pedal so it colours without smearing.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of A minor","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"A","scale":"natural-minor","size":49}]
+```
+
 ## If you like this
 For more brooding minor-key Beethoven, the *Moonlight Sonata* first movement is the natural companion. Chopin's *Prelude in E minor* and *Waltz in A minor* share this piece's tender, melancholy voice.

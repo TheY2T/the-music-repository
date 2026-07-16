@@ -24,5 +24,9 @@ This is an advanced study in right-hand agility and evenness — those cascading
 ## How to practise
 Take the fast right-hand passages slowly and evenly, building speed only once every note is clean; a metronome helps enormously. Keep the left-hand accompaniment quiet and mechanical so the sparkling right hand can shine. Learn one strain at a time. And even though the notes tumble, hold to Joplin's ragtime creed — never play it fast; a controlled, moderate tempo keeps every note clear.
 
+```embeds
+[{"tool":"circle-of-fifths","title":"Where this key sits","caption":"D-flat major on the circle of fifths — click a key to hear its tonic and see its signature."}]
+```
+
 ## If you like this
 Hear the other classic-rag masters: Joplin's *Maple Leaf Rag* and *The Entertainer*, and Joseph Lamb's richly harmonised *American Beauty Rag*.

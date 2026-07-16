@@ -78,7 +78,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "aloha-oe-ukulele": {
-    "bodyMdx": "## About this song\n\"Aloha ʻOe\" (\"Farewell to Thee\") is the most famous composition of Queen Liliʻuokalani (1838–1917), the last sovereign monarch of the Kingdom of Hawaiʻi and an accomplished composer. She wrote it around 1878 — a surviving manuscript note in her hand reads \"Composed at Maunawili 1878\" — reportedly inspired by a tender farewell embrace she witnessed at the Boyd ranch in Maunawili, on the windward side of Oʻahu. It began as a *mele hoʻoipoipo*, a love song about parting. After the overthrow of the Hawaiian monarchy in 1893, however, \"Aloha ʻOe\" took on far deeper meaning for Hawaiians as a symbol of loss and enduring connection to the land and the nation. It is a treasured piece of Hawaiian heritage and should be approached with that cultural weight in mind.\n\n## What to listen for\nThe song pairs a flowing verse with its instantly recognisable chorus (\"Aloha ʻoe, aloha ʻoe...\"). The melody is graceful and lyrical, with the gentle sway characteristic of Hawaiian song, set in an easygoing 4/4. Harmonically it is warm and clear, moving through the primary chords with the sweet, resolving cadences typical of the *hapa haole* / island style.\n\n## What you'll learn\nOn the ukulele this is a rewarding step up from a strict three-chord song. You will practise smooth chord changes across a verse and chorus, a relaxed island strum, and phrasing a singable melody with feeling. It is also a lovely introduction to the Hawaiian song tradition and its pronunciation.\n\n## How to play it\nIt sits comfortably on ukulele in C or G major — in C, work with C, F, G7 plus a D7 that colours the verse. Use a gentle, swaying strum (a soft island or calypso pattern) rather than anything driving, and let the chorus open up warmly. Take care with the Hawaiian lyrics and their vowels, and keep the whole thing unhurried and heartfelt.\n\n## If you like this",
+    "bodyMdx": "## About this song\n\"Aloha ʻOe\" (\"Farewell to Thee\") is the most famous composition of Queen Liliʻuokalani (1838–1917), the last sovereign monarch of the Kingdom of Hawaiʻi and an accomplished composer. She wrote it around 1878 — a surviving manuscript note in her hand reads \"Composed at Maunawili 1878\" — reportedly inspired by a tender farewell embrace she witnessed at the Boyd ranch in Maunawili, on the windward side of Oʻahu. It began as a *mele hoʻoipoipo*, a love song about parting. After the overthrow of the Hawaiian monarchy in 1893, however, \"Aloha ʻOe\" took on far deeper meaning for Hawaiians as a symbol of loss and enduring connection to the land and the nation. It is a treasured piece of Hawaiian heritage and should be approached with that cultural weight in mind.\n\n## What to listen for\nThe song pairs a flowing verse with its instantly recognisable chorus (\"Aloha ʻoe, aloha ʻoe...\"). The melody is graceful and lyrical, with the gentle sway characteristic of Hawaiian song, set in an easygoing 4/4. Harmonically it is warm and clear, moving through the primary chords with the sweet, resolving cadences typical of the *hapa haole* / island style.\n\n## What you'll learn\nOn the ukulele this is a rewarding step up from a strict three-chord song. You will practise smooth chord changes across a verse and chorus, a relaxed island strum, and phrasing a singable melody with feeling. It is also a lovely introduction to the Hawaiian song tradition and its pronunciation.\n\n## How to play it\nIt sits comfortably on ukulele in C or G major — in C, work with C, F, G7 plus a D7 that colours the verse. Use a gentle, swaying strum (a soft island or calypso pattern) rather than anything driving, and let the chorus open up warmly. Take care with the Hawaiian lyrics and their vowels, and keep the whole thing unhurried and heartfelt.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this",
     "details": {
       "key": "C major",
       "era": "Folk",
@@ -91,6 +91,19 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "danny-boy",
         "shenandoah",
         "amazing-grace-trad"
+      ],
+      "embeds": [
+        {
+          "tool": "chord-diagrams",
+          "title": "The three ukulele chords",
+          "caption": "Aloha ʻOe leans on C, F and G7 — the shapes to learn first. Tap a diagram to strum it.",
+          "instrument": "ukulele",
+          "chords": [
+            "C",
+            "F",
+            "G7"
+          ]
+        }
       ]
     },
     "extraTags": [
@@ -139,7 +152,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "bach-invention-no1-bwv772": {
-    "bodyMdx": "## About this piece\nBach wrote his fifteen two-part Inventions as teaching pieces — first for his own children and pupils, gathered in a fair copy around 1723. In his preface he set out exactly what they were for: to help players achieve a \"cantabile\" (singing) style of playing and, crucially, to learn to handle two independent voices at once. Invention No. 1 in C major opens the set and is one of the most-taught pieces in all of keyboard music. It packs an astonishing amount of craft into barely two minutes.\n\n## What to listen for\nEverything grows from a single short idea — a rising, turning figure heard in the very first bar. Bach passes this motif back and forth between the hands, turns it upside down (inversion), and threads it through different keys, always returning home to C major. There is no \"melody plus accompaniment\" here: both hands carry equal, conversational lines. Listen for the moment one hand states the subject while the other answers or comments — that dialogue is the whole point.\n\n## What you'll learn\nThis is the classic training ground for two-voice counterpoint and true hand independence — each hand phrasing, articulating, and shaping on its own. You'll sharpen even fingerwork, motif recognition, and the ability to bring out whichever voice currently \"has the tune.\"\n\n## How to practise\nHands separately, always, and for longer than feels necessary — you must know each line as a complete melody in its own right. Sing or hum one hand while you play the other to test your independence. Take it slowly and keep the two voices balanced in volume so neither drowns the other; when the subject enters, lean into it slightly. Watch the crossing points where the hands come close together on the keyboard. Build tempo only once both lines are clean on their own and together.\n\n## If you like this\nPair it with the serene *Prelude in C major, BWV 846* — the same key, a gentler challenge. For a lighter Baroque dance, the *Minuet in G* is a good stepping stone downward.",
+    "bodyMdx": "## About this piece\nBach wrote his fifteen two-part Inventions as teaching pieces — first for his own children and pupils, gathered in a fair copy around 1723. In his preface he set out exactly what they were for: to help players achieve a \"cantabile\" (singing) style of playing and, crucially, to learn to handle two independent voices at once. Invention No. 1 in C major opens the set and is one of the most-taught pieces in all of keyboard music. It packs an astonishing amount of craft into barely two minutes.\n\n## What to listen for\nEverything grows from a single short idea — a rising, turning figure heard in the very first bar. Bach passes this motif back and forth between the hands, turns it upside down (inversion), and threads it through different keys, always returning home to C major. There is no \"melody plus accompaniment\" here: both hands carry equal, conversational lines. Listen for the moment one hand states the subject while the other answers or comments — that dialogue is the whole point.\n\n## What you'll learn\nThis is the classic training ground for two-voice counterpoint and true hand independence — each hand phrasing, articulating, and shaping on its own. You'll sharpen even fingerwork, motif recognition, and the ability to bring out whichever voice currently \"has the tune.\"\n\n## How to practise\nHands separately, always, and for longer than feels necessary — you must know each line as a complete melody in its own right. Sing or hum one hand while you play the other to test your independence. Take it slowly and keep the two voices balanced in volume so neither drowns the other; when the subject enters, lean into it slightly. Watch the crossing points where the hands come close together on the keyboard. Build tempo only once both lines are clean on their own and together.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nPair it with the serene *Prelude in C major, BWV 846* — the same key, a gentler challenge. For a lighter Baroque dance, the *Minuet in G* is a good stepping stone downward.",
     "details": {
       "key": "C major",
       "era": "Baroque",
@@ -152,6 +165,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "bach-prelude-c-major-bwv-846",
         "bach-minuet-in-g",
         "mozart-sonata-k545-1st-mvt"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of C major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "C",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -160,7 +183,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "bach-minuet-in-g": {
-    "bodyMdx": "## About this piece\nAlmost every pianist meets this cheerful little dance sooner or later. It comes from the *Notebook for Anna Magdalena Bach* — a home album Johann Sebastian Bach kept for his second wife around 1725, filled with pieces for the family to play and study. For generations it was published as \"Bach's Minuet in G,\" but modern scholarship has shown it was actually written by Christian Petzold, a Dresden organist Bach admired; the Bachs simply copied it into their notebook because they liked it. So the catalogue number BWV Anh. 114 marks it as an \"appendix\" work associated with Bach rather than composed by him. None of that dims its charm: it is a small, perfectly balanced piece of the late Baroque.\n\n## What to listen for\nIt is a minuet — a courtly dance in a graceful, moderate 3/4, one gentle pulse per bar. The key is G major, bright and open. Listen for the clear two-part texture: a singing right-hand tune over a supportive, walking left hand. The form is simple binary, two repeated halves; the first travels to the dominant (D major) and the second finds its way home. You may recognise the tune — it was borrowed for the 1960s pop song \"A Lover's Concerto.\"\n\n## What you'll learn\nThis piece is a wonderful first taste of Baroque style: even, independent hands, clean articulation, and phrasing that breathes at the ends of four-bar units. You'll practise shaping a melodic line, keeping a steady dance pulse, and coordinating two voices that move at different speeds.\n\n## How to practise\nLearn hands separately first — the left hand's quarter-note patterns are easy to underestimate, so make them smooth and unhurried. Keep the tempo moderate and danceable; resist rushing the running eighth notes in the right hand. Aim for a light, slightly detached touch rather than heavy legato — Baroque keyboard music breathes best with a little air between notes. Shape each phrase toward its high point, then ease off. Once hands are secure separately, join them slowly and only speed up when the coordination feels effortless.\n\n## If you like this\nTry Bach's *Prelude in C major, BWV 846* for flowing broken chords, or step up to the two-voice discipline of *Invention No. 1, BWV 772*. Mozart's *Minuet in F, K. 2* offers the same dance in a Classical accent.",
+    "bodyMdx": "## About this piece\nAlmost every pianist meets this cheerful little dance sooner or later. It comes from the *Notebook for Anna Magdalena Bach* — a home album Johann Sebastian Bach kept for his second wife around 1725, filled with pieces for the family to play and study. For generations it was published as \"Bach's Minuet in G,\" but modern scholarship has shown it was actually written by Christian Petzold, a Dresden organist Bach admired; the Bachs simply copied it into their notebook because they liked it. So the catalogue number BWV Anh. 114 marks it as an \"appendix\" work associated with Bach rather than composed by him. None of that dims its charm: it is a small, perfectly balanced piece of the late Baroque.\n\n## What to listen for\nIt is a minuet — a courtly dance in a graceful, moderate 3/4, one gentle pulse per bar. The key is G major, bright and open. Listen for the clear two-part texture: a singing right-hand tune over a supportive, walking left hand. The form is simple binary, two repeated halves; the first travels to the dominant (D major) and the second finds its way home. You may recognise the tune — it was borrowed for the 1960s pop song \"A Lover's Concerto.\"\n\n## What you'll learn\nThis piece is a wonderful first taste of Baroque style: even, independent hands, clean articulation, and phrasing that breathes at the ends of four-bar units. You'll practise shaping a melodic line, keeping a steady dance pulse, and coordinating two voices that move at different speeds.\n\n## How to practise\nLearn hands separately first — the left hand's quarter-note patterns are easy to underestimate, so make them smooth and unhurried. Keep the tempo moderate and danceable; resist rushing the running eighth notes in the right hand. Aim for a light, slightly detached touch rather than heavy legato — Baroque keyboard music breathes best with a little air between notes. Shape each phrase toward its high point, then ease off. Once hands are secure separately, join them slowly and only speed up when the coordination feels effortless.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nTry Bach's *Prelude in C major, BWV 846* for flowing broken chords, or step up to the two-voice discipline of *Invention No. 1, BWV 772*. Mozart's *Minuet in F, K. 2* offers the same dance in a Classical accent.",
     "details": {
       "key": "G major",
       "era": "Baroque",
@@ -173,6 +196,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "bach-invention-no1-bwv772",
         "bach-prelude-c-major-bwv-846",
         "mozart-minuet-in-f-k2"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of G major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "G",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -181,7 +214,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "bach-prelude-c-major-bwv-846": {
-    "bodyMdx": "## About this piece\nThis is the very first piece in *The Well-Tempered Clavier* (Book 1, 1722), Bach's monumental cycle of preludes and fugues in all 24 major and minor keys — a demonstration that a well-tuned keyboard could play convincingly in every key. The C major prelude opens the whole collection and has become one of the most famous pieces ever written for keyboard. It is deceptively simple: no tune, no fast fingerwork, just a slow procession of broken chords. Charles Gounod later laid a soaring vocal melody over it to create the \"Ave Maria\" familiar from weddings, which tells you how beautifully self-sufficient Bach's harmony already is.\n\n## What to listen for\nThe whole piece is one continuous stream of gently rolling arpeggios in a steady 4/4. Each bar (with its repeat) is a single chord spread out note by note. The magic is entirely harmonic: listen to how the chords lean, resolve, and drift through mild tensions before settling home to C major. There is a long dominant pedal near the end where the bass holds firm while the harmony strains above it — the calm before the final cadence.\n\n## What you'll learn\nThis is a superb study in evenness, control, and voicing within a broken-chord texture. You'll develop a relaxed, rotating hand motion, learn to hear harmony as it unfolds, and practise sustaining a mood over a long, unbroken line.\n\n## How to practise\nFirst, block each bar into its solid chord so you can see and hear the harmony — play the chords in sequence before you unfold them. Then aim for perfect evenness: no note louder than its neighbours, the pulse absolutely steady. Keep the top notes very slightly present so a faint melodic thread emerges from the pattern. Use gentle finger legato and a little pedal to bind each chord without blurring into the next. Slow and serene wins here; speed would spoil it.\n\n## If you like this\nFor more Bach counterpoint, move to *Invention No. 1, BWV 772* (also in C major). If it's the singing, arpeggiated calm you love, Chopin's *Nocturne Op. 9 No. 2* carries that feeling into the Romantic era.",
+    "bodyMdx": "## About this piece\nThis is the very first piece in *The Well-Tempered Clavier* (Book 1, 1722), Bach's monumental cycle of preludes and fugues in all 24 major and minor keys — a demonstration that a well-tuned keyboard could play convincingly in every key. The C major prelude opens the whole collection and has become one of the most famous pieces ever written for keyboard. It is deceptively simple: no tune, no fast fingerwork, just a slow procession of broken chords. Charles Gounod later laid a soaring vocal melody over it to create the \"Ave Maria\" familiar from weddings, which tells you how beautifully self-sufficient Bach's harmony already is.\n\n## What to listen for\nThe whole piece is one continuous stream of gently rolling arpeggios in a steady 4/4. Each bar (with its repeat) is a single chord spread out note by note. The magic is entirely harmonic: listen to how the chords lean, resolve, and drift through mild tensions before settling home to C major. There is a long dominant pedal near the end where the bass holds firm while the harmony strains above it — the calm before the final cadence.\n\n## What you'll learn\nThis is a superb study in evenness, control, and voicing within a broken-chord texture. You'll develop a relaxed, rotating hand motion, learn to hear harmony as it unfolds, and practise sustaining a mood over a long, unbroken line.\n\n## How to practise\nFirst, block each bar into its solid chord so you can see and hear the harmony — play the chords in sequence before you unfold them. Then aim for perfect evenness: no note louder than its neighbours, the pulse absolutely steady. Keep the top notes very slightly present so a faint melodic thread emerges from the pattern. Use gentle finger legato and a little pedal to bind each chord without blurring into the next. Slow and serene wins here; speed would spoil it.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nFor more Bach counterpoint, move to *Invention No. 1, BWV 772* (also in C major). If it's the singing, arpeggiated calm you love, Chopin's *Nocturne Op. 9 No. 2* carries that feeling into the Romantic era.",
     "details": {
       "key": "C major",
       "era": "Baroque",
@@ -194,6 +227,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "bach-invention-no1-bwv772",
         "bach-minuet-in-g",
         "chopin-nocturne-op9-no2"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of C major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "C",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -321,7 +364,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "beethoven-fur-elise-opening": {
-    "bodyMdx": "## About this piece\nPerhaps the most recognisable tune in all of piano music, *Für Elise* is a bagatelle — a short \"trifle\" — that Beethoven wrote in 1810 but never published; it surfaced only in 1867, forty years after his death. Even the title is a small mystery: the manuscript's dedication is hard to read, and \"Elise\" may be a misreading of \"Therese,\" a woman Beethoven knew. What survives is this haunting, gentle piece whose opening section everyone knows by ear long before they can play it.\n\n## What to listen for\nThe famous opening theme rocks between two adjacent notes (E and D-sharp) before curling down into a wistful melody in A minor, all in a lilting 3/8. The full piece alternates this refrain with contrasting episodes, rondo-fashion; the opening you'll study here is the recurring heart of it. Notice the delicacy of the marking *Poco moto* (\"a little motion\") — this is quiet, intimate music, not a showpiece.\n\n## What you'll learn\nThe opening builds a light, controlled right hand, smooth hand-crossing between the melody and its rolling accompaniment, and sensitive dynamic shading. It's an ideal study in playing softly and evenly, and in shaping a melody that must sound effortless.\n\n## How to practise\nThe famous two-note oscillation should be light and even, played mostly from the fingers with a relaxed wrist — never hammered. Keep the tempo gentle and flowing; the piece loses its spell if driven hard. Balance the hands so the melody sings and the broken-chord accompaniment stays hushed underneath. Learn the left-hand arpeggiated chords securely so they can drop to a whisper. Practise slowly for evenness before letting it flow, and mind the pedal so it colours without smearing.\n\n## If you like this\nFor more brooding minor-key Beethoven, the *Moonlight Sonata* first movement is the natural companion. Chopin's *Prelude in E minor* and *Waltz in A minor* share this piece's tender, melancholy voice.",
+    "bodyMdx": "## About this piece\nPerhaps the most recognisable tune in all of piano music, *Für Elise* is a bagatelle — a short \"trifle\" — that Beethoven wrote in 1810 but never published; it surfaced only in 1867, forty years after his death. Even the title is a small mystery: the manuscript's dedication is hard to read, and \"Elise\" may be a misreading of \"Therese,\" a woman Beethoven knew. What survives is this haunting, gentle piece whose opening section everyone knows by ear long before they can play it.\n\n## What to listen for\nThe famous opening theme rocks between two adjacent notes (E and D-sharp) before curling down into a wistful melody in A minor, all in a lilting 3/8. The full piece alternates this refrain with contrasting episodes, rondo-fashion; the opening you'll study here is the recurring heart of it. Notice the delicacy of the marking *Poco moto* (\"a little motion\") — this is quiet, intimate music, not a showpiece.\n\n## What you'll learn\nThe opening builds a light, controlled right hand, smooth hand-crossing between the melody and its rolling accompaniment, and sensitive dynamic shading. It's an ideal study in playing softly and evenly, and in shaping a melody that must sound effortless.\n\n## How to practise\nThe famous two-note oscillation should be light and even, played mostly from the fingers with a relaxed wrist — never hammered. Keep the tempo gentle and flowing; the piece loses its spell if driven hard. Balance the hands so the melody sings and the broken-chord accompaniment stays hushed underneath. Learn the left-hand arpeggiated chords securely so they can drop to a whisper. Practise slowly for evenness before letting it flow, and mind the pedal so it colours without smearing.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nFor more brooding minor-key Beethoven, the *Moonlight Sonata* first movement is the natural companion. Chopin's *Prelude in E minor* and *Waltz in A minor* share this piece's tender, melancholy voice.",
     "details": {
       "key": "A minor",
       "era": "Classical",
@@ -334,6 +377,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "beethoven-moonlight-sonata-1st-mvt",
         "chopin-prelude-e-minor-op28-no4",
         "chopin-waltz-a-minor-b150"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of A minor",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "A",
+          "scale": "natural-minor",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -342,7 +395,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "beethoven-moonlight-sonata-1st-mvt": {
-    "bodyMdx": "## About this piece\nBeethoven finished this sonata in 1801 and published it in 1802 with the subtitle *Sonata quasi una fantasia* — \"sonata in the manner of a fantasy\" — and dedicated it to his young pupil Countess Giulietta Guicciardi. The nickname \"Moonlight\" came later, from a critic who compared the first movement to moonlight on Lake Lucerne; Beethoven never used it. The movement's hushed, hypnotic stillness broke the mould: instead of a lively opening Allegro, the sonata begins with this slow, dreamlike Adagio in C-sharp minor. It remains one of the most beloved pieces ever written.\n\n## What to listen for\nThree things unfold at once: a steady stream of rising broken-chord triplets, a solemn dotted-rhythm melody above them, and deep bass notes anchoring the harmony below. Beethoven marked it *Adagio sostenuto*, but in *alla breve* — two slow pulses per bar, not four — a reminder to keep it flowing rather than funereal. The mood is grave and searching, never breaking into display. It stays soft almost throughout.\n\n## What you'll learn\nThis movement teaches control of a quiet, unbroken triplet accompaniment, three-layer voicing (melody, triplets, bass) within the hands, careful pedalling for atmosphere, and the art of sustaining a mood over several minutes without a single loud moment.\n\n## How to practise\nPractise the right hand's triplets alone until they are perfectly even and genuinely soft — they are the shimmering backdrop and must never bump. Then add the melody on top, voicing it slightly stronger so it sings through. Keep the bass warm and connected. Change the pedal cleanly with each harmony so the sound glows but never blurs. Choose a tempo that flows in two, and let dynamics stay within a narrow, intimate range. Above all, patience: the power here is in restraint.\n\n## If you like this\nFor Beethoven in a lighter minor-key mood, try *Für Elise*. If it's the singing, arpeggiated calm that draws you, Chopin's *Nocturne Op. 9 No. 2* and Bach's *Prelude in C major* explore the same territory.",
+    "bodyMdx": "## About this piece\nBeethoven finished this sonata in 1801 and published it in 1802 with the subtitle *Sonata quasi una fantasia* — \"sonata in the manner of a fantasy\" — and dedicated it to his young pupil Countess Giulietta Guicciardi. The nickname \"Moonlight\" came later, from a critic who compared the first movement to moonlight on Lake Lucerne; Beethoven never used it. The movement's hushed, hypnotic stillness broke the mould: instead of a lively opening Allegro, the sonata begins with this slow, dreamlike Adagio in C-sharp minor. It remains one of the most beloved pieces ever written.\n\n## What to listen for\nThree things unfold at once: a steady stream of rising broken-chord triplets, a solemn dotted-rhythm melody above them, and deep bass notes anchoring the harmony below. Beethoven marked it *Adagio sostenuto*, but in *alla breve* — two slow pulses per bar, not four — a reminder to keep it flowing rather than funereal. The mood is grave and searching, never breaking into display. It stays soft almost throughout.\n\n## What you'll learn\nThis movement teaches control of a quiet, unbroken triplet accompaniment, three-layer voicing (melody, triplets, bass) within the hands, careful pedalling for atmosphere, and the art of sustaining a mood over several minutes without a single loud moment.\n\n## How to practise\nPractise the right hand's triplets alone until they are perfectly even and genuinely soft — they are the shimmering backdrop and must never bump. Then add the melody on top, voicing it slightly stronger so it sings through. Keep the bass warm and connected. Change the pedal cleanly with each harmony so the sound glows but never blurs. Choose a tempo that flows in two, and let dynamics stay within a narrow, intimate range. Above all, patience: the power here is in restraint.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nFor Beethoven in a lighter minor-key mood, try *Für Elise*. If it's the singing, arpeggiated calm that draws you, Chopin's *Nocturne Op. 9 No. 2* and Bach's *Prelude in C major* explore the same territory.",
     "details": {
       "key": "C-sharp minor",
       "era": "Classical",
@@ -355,6 +408,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "beethoven-fur-elise-opening",
         "chopin-nocturne-op9-no2",
         "bach-prelude-c-major-bwv-846"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of C♯ minor",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "C#",
+          "scale": "natural-minor",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -363,7 +426,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "beethoven-ode-to-joy": {
-    "bodyMdx": "## About this piece\nThis is a gentle, simplified arrangement of one of the most famous tunes in all of music — the \"Ode to Joy\" melody from the finale of Beethoven's Ninth Symphony, completed in 1824. In the symphony, this theme grows into a mighty choral setting of Friedrich Schiller's poem celebrating joy and the brotherhood of humanity; it was later adopted as the anthem of Europe. Beethoven wrote the Ninth after he had gone almost completely deaf, which makes its message of joy all the more moving. Here, stripped back to its bare melody, it becomes a perfect first tune for a beginner.\n\n## What to listen for\nNotice how simple and singable the melody is: it moves mostly by step, one neighbouring note to the next, rarely leaping around. That step-by-step motion is exactly what makes it so easy to remember and so satisfying to play. Listen for how the tune rises gently, comes back down to rest, and then repeats — a beautifully balanced shape that Beethoven built into something enormous.\n\n## What you'll learn\nThis is an ideal early sight-reading and melody piece. You'll practise reading notes that step up and down the staff, keeping a steady four-beat count, and playing a smooth, connected (legato) line. It's a confidence-builder: a world-famous tune you can play early in your journey.\n\n## How to practise\nStart slowly with the right hand alone, naming the notes as you go and keeping an even pulse — counting \"1-2-3-4\" out loud helps. Aim for a smooth, connected sound, moving gently from note to note. Once the melody feels comfortable, try singing along; if your arrangement includes a simple left-hand part, add it only after the tune is secure.\n\n## If you like this\nWhen you're ready for something a little richer, try Schubert's *Ave Maria*, or explore the calm beauty of Satie's *Gymnopédie No. 1*.",
+    "bodyMdx": "## About this piece\nThis is a gentle, simplified arrangement of one of the most famous tunes in all of music — the \"Ode to Joy\" melody from the finale of Beethoven's Ninth Symphony, completed in 1824. In the symphony, this theme grows into a mighty choral setting of Friedrich Schiller's poem celebrating joy and the brotherhood of humanity; it was later adopted as the anthem of Europe. Beethoven wrote the Ninth after he had gone almost completely deaf, which makes its message of joy all the more moving. Here, stripped back to its bare melody, it becomes a perfect first tune for a beginner.\n\n## What to listen for\nNotice how simple and singable the melody is: it moves mostly by step, one neighbouring note to the next, rarely leaping around. That step-by-step motion is exactly what makes it so easy to remember and so satisfying to play. Listen for how the tune rises gently, comes back down to rest, and then repeats — a beautifully balanced shape that Beethoven built into something enormous.\n\n## What you'll learn\nThis is an ideal early sight-reading and melody piece. You'll practise reading notes that step up and down the staff, keeping a steady four-beat count, and playing a smooth, connected (legato) line. It's a confidence-builder: a world-famous tune you can play early in your journey.\n\n## How to practise\nStart slowly with the right hand alone, naming the notes as you go and keeping an even pulse — counting \"1-2-3-4\" out loud helps. Aim for a smooth, connected sound, moving gently from note to note. Once the melody feels comfortable, try singing along; if your arrangement includes a simple left-hand part, add it only after the tune is secure.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nWhen you're ready for something a little richer, try Schubert's *Ave Maria*, or explore the calm beauty of Satie's *Gymnopédie No. 1*.",
     "details": {
       "key": "C major (simple arrangement; the original theme is in D major)",
       "era": "Classical",
@@ -375,6 +438,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
       "related": [
         "schubert-ave-maria",
         "satie-gymnopedie-no1"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of C major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "C",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -383,7 +456,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "beethoven-sonatina-in-g-anh5": {
-    "bodyMdx": "## About this piece\nThis sunny little sonatina in G major is one of a pair (the other in F) published as WoO Anh. 5 and long sold as \"Beethoven's easy sonatinas.\" In truth, scholars doubt Beethoven wrote them at all — they appeared in print after his death and their real author is unknown, which is why catalogues file them as *doubtful* works attached to his name. Whoever composed them had a gift for tuneful, teachable music: these two sonatinas have introduced countless pianists to Classical style, and their popularity is entirely earned.\n\n## What to listen for\nThe first movement is a cheerful Moderato in G major with a clear, singable theme and the tidy proportions of a miniature sonata form. The whole piece is a two-movement design: this bright opening is followed by a gentle *Romanze*, a songful slow movement. Listen for the balanced phrasing, the neat cadences that round off each idea, and the good-humoured, unfussy character throughout.\n\n## What you'll learn\nIt develops core Classical fundamentals: even scale and arpeggio figures, clean articulation, balanced hands, and shapely phrasing. Because the writing is transparent, it also trains reliable, unhurried fingerwork and a sense of the small-scale sonata layout.\n\n## How to practise\nKeep the tempo genuinely *moderate* — the Italian marking is a promise, not a challenge to go fast. Work the right-hand runs slowly for evenness, and keep the left-hand accompaniment light and supportive. Point up the phrase endings by easing gently into each cadence rather than bumping it. Practise hands separately where the two lines move at different speeds, then combine slowly. The Romanze rewards a warm, singing tone, so save some patience for it.\n\n## If you like this\nIt sits naturally beside the *Clementi Op. 36 No. 1* and *Kuhlau Op. 20 No. 1* sonatinas. When these feel comfortable, Mozart's *Sonata K. 545* is the fuller version of the same idea.",
+    "bodyMdx": "## About this piece\nThis sunny little sonatina in G major is one of a pair (the other in F) published as WoO Anh. 5 and long sold as \"Beethoven's easy sonatinas.\" In truth, scholars doubt Beethoven wrote them at all — they appeared in print after his death and their real author is unknown, which is why catalogues file them as *doubtful* works attached to his name. Whoever composed them had a gift for tuneful, teachable music: these two sonatinas have introduced countless pianists to Classical style, and their popularity is entirely earned.\n\n## What to listen for\nThe first movement is a cheerful Moderato in G major with a clear, singable theme and the tidy proportions of a miniature sonata form. The whole piece is a two-movement design: this bright opening is followed by a gentle *Romanze*, a songful slow movement. Listen for the balanced phrasing, the neat cadences that round off each idea, and the good-humoured, unfussy character throughout.\n\n## What you'll learn\nIt develops core Classical fundamentals: even scale and arpeggio figures, clean articulation, balanced hands, and shapely phrasing. Because the writing is transparent, it also trains reliable, unhurried fingerwork and a sense of the small-scale sonata layout.\n\n## How to practise\nKeep the tempo genuinely *moderate* — the Italian marking is a promise, not a challenge to go fast. Work the right-hand runs slowly for evenness, and keep the left-hand accompaniment light and supportive. Point up the phrase endings by easing gently into each cadence rather than bumping it. Practise hands separately where the two lines move at different speeds, then combine slowly. The Romanze rewards a warm, singing tone, so save some patience for it.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nIt sits naturally beside the *Clementi Op. 36 No. 1* and *Kuhlau Op. 20 No. 1* sonatinas. When these feel comfortable, Mozart's *Sonata K. 545* is the fuller version of the same idea.",
     "details": {
       "key": "G major",
       "era": "Classical",
@@ -395,6 +468,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "clementi-sonatina-op36-no1-1st-mvt",
         "kuhlau-sonatina-op20-no1-1st-mvt",
         "mozart-sonata-k545-1st-mvt"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of G major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "G",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -447,7 +530,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "burgmuller-arabesque-op100-no2": {
-    "bodyMdx": "## About this piece\nFriedrich Burgmüller settled in Paris and made his name writing salon music and, most famously, his *25 Easy and Progressive Studies, Op. 100* (published around 1851). Unlike dry finger exercises, each study is a genuine little character piece with an evocative title — so students learn technique while playing real music. The *Arabesque*, No. 2, is the runaway favourite of the set: bright, quick, and instantly appealing, it's the piece that makes young pianists feel like performers for the first time.\n\n## What to listen for\nIt's in A minor with a brisk, light 2/4 pulse. The signature sound is a rippling stream of right-hand sixteenth notes answered by crisp little staccato chords — fast and airy, never heavy. The form is a rounded binary: the sparkling A-minor idea, a brighter middle section that slips into the relative major (C major), and then a return of the opening. Listen for the constant to-and-fro between flowing runs and punctuating chords.\n\n## What you'll learn\nThis study builds finger fluency and evenness in running sixteenth notes, light staccato chord playing, quick coordination between a flowing hand and a punctuating hand, and clear phrasing at a lively tempo. It's a superb confidence piece for early-intermediate players.\n\n## How to practise\nPractise the sixteenth-note runs slowly and evenly first — aim for a light, \"pearly\" touch from the fingertips rather than force. Keep the staccato chords crisp and short so they answer the runs cleanly. Coordinate the hands slowly at the hand-off points before adding speed. Feel the 2/4 in a quick, buoyant two, and keep the whole thing light — brilliance here comes from clarity, not volume. Note where the middle section brightens into major and shape that contrast. Build tempo gradually with a metronome.\n\n## If you like this\nIts companion *La Candeur* opens the same Op. 100 set with a gentler mood. For similar sparkle and energy, Schumann's *Wild Horseman* is a great match; the *Clementi Sonatina* rewards the same clean fingerwork.",
+    "bodyMdx": "## About this piece\nFriedrich Burgmüller settled in Paris and made his name writing salon music and, most famously, his *25 Easy and Progressive Studies, Op. 100* (published around 1851). Unlike dry finger exercises, each study is a genuine little character piece with an evocative title — so students learn technique while playing real music. The *Arabesque*, No. 2, is the runaway favourite of the set: bright, quick, and instantly appealing, it's the piece that makes young pianists feel like performers for the first time.\n\n## What to listen for\nIt's in A minor with a brisk, light 2/4 pulse. The signature sound is a rippling stream of right-hand sixteenth notes answered by crisp little staccato chords — fast and airy, never heavy. The form is a rounded binary: the sparkling A-minor idea, a brighter middle section that slips into the relative major (C major), and then a return of the opening. Listen for the constant to-and-fro between flowing runs and punctuating chords.\n\n## What you'll learn\nThis study builds finger fluency and evenness in running sixteenth notes, light staccato chord playing, quick coordination between a flowing hand and a punctuating hand, and clear phrasing at a lively tempo. It's a superb confidence piece for early-intermediate players.\n\n## How to practise\nPractise the sixteenth-note runs slowly and evenly first — aim for a light, \"pearly\" touch from the fingertips rather than force. Keep the staccato chords crisp and short so they answer the runs cleanly. Coordinate the hands slowly at the hand-off points before adding speed. Feel the 2/4 in a quick, buoyant two, and keep the whole thing light — brilliance here comes from clarity, not volume. Note where the middle section brightens into major and shape that contrast. Build tempo gradually with a metronome.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nIts companion *La Candeur* opens the same Op. 100 set with a gentler mood. For similar sparkle and energy, Schumann's *Wild Horseman* is a great match; the *Clementi Sonatina* rewards the same clean fingerwork.",
     "details": {
       "key": "A minor",
       "era": "Romantic",
@@ -460,6 +543,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "burgmuller-la-candeur-op100-no1",
         "schumann-the-wild-horseman-op68",
         "clementi-sonatina-op36-no1-1st-mvt"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of A minor",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "A",
+          "scale": "natural-minor",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -468,7 +561,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "burgmuller-la-candeur-op100-no1": {
-    "bodyMdx": "## About this piece\n*La Candeur* — \"Candour\" or \"Frankness\" — opens Friedrich Burgmüller's beloved *25 Easy and Progressive Studies, Op. 100* (published around 1851). Its title sets the tone: this is open, honest, unaffected music, the perfect first study of the set. Like all of Op. 100, it wraps a specific technical lesson inside a genuinely musical miniature, which is why teachers have reached for it for well over a century. Where the more famous *Arabesque* dazzles, *La Candeur* soothes.\n\n## What to listen for\nIt's in warm C major at a flowing, moderate pace. The right hand spins an even, continuous line of notes — a smooth, unbroken melodic stream — over calm, supportive left-hand harmony. There are no sudden tricks or contrasts; the pleasure is in the serene evenness and the gentle rise and fall of the line. It sounds simple and sincere, exactly as the title promises.\n\n## What you'll learn\nThis study develops evenness and control in a flowing right-hand line, a smooth legato touch, balance between a busy melody hand and a quiet accompaniment hand, and steady, unhurried phrasing. It's ideal early training in tone control and keeping a line singing.\n\n## How to practise\nFocus first on the right hand: play the running line slowly and listen for perfect evenness — no note louder or longer than its neighbours. Keep the wrist relaxed and let the fingers do the work. Bring in the left hand softly so the melody always sings above it. Choose a calm, steady tempo and hold it; the beauty here is smoothness, not speed. Shape the long line gently toward its high points and ease back at the phrase ends. A little pedal can warm the tone without blurring it.\n\n## If you like this\nMove on to its sparkling sibling, the *Arabesque, Op. 100 No. 2*. For the same gentle, singing character, Schumann's *Melody, Op. 68 No. 1* is a lovely companion, as is Bach's flowing *Prelude in C major*.",
+    "bodyMdx": "## About this piece\n*La Candeur* — \"Candour\" or \"Frankness\" — opens Friedrich Burgmüller's beloved *25 Easy and Progressive Studies, Op. 100* (published around 1851). Its title sets the tone: this is open, honest, unaffected music, the perfect first study of the set. Like all of Op. 100, it wraps a specific technical lesson inside a genuinely musical miniature, which is why teachers have reached for it for well over a century. Where the more famous *Arabesque* dazzles, *La Candeur* soothes.\n\n## What to listen for\nIt's in warm C major at a flowing, moderate pace. The right hand spins an even, continuous line of notes — a smooth, unbroken melodic stream — over calm, supportive left-hand harmony. There are no sudden tricks or contrasts; the pleasure is in the serene evenness and the gentle rise and fall of the line. It sounds simple and sincere, exactly as the title promises.\n\n## What you'll learn\nThis study develops evenness and control in a flowing right-hand line, a smooth legato touch, balance between a busy melody hand and a quiet accompaniment hand, and steady, unhurried phrasing. It's ideal early training in tone control and keeping a line singing.\n\n## How to practise\nFocus first on the right hand: play the running line slowly and listen for perfect evenness — no note louder or longer than its neighbours. Keep the wrist relaxed and let the fingers do the work. Bring in the left hand softly so the melody always sings above it. Choose a calm, steady tempo and hold it; the beauty here is smoothness, not speed. Shape the long line gently toward its high points and ease back at the phrase ends. A little pedal can warm the tone without blurring it.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nMove on to its sparkling sibling, the *Arabesque, Op. 100 No. 2*. For the same gentle, singing character, Schumann's *Melody, Op. 68 No. 1* is a lovely companion, as is Bach's flowing *Prelude in C major*.",
     "details": {
       "key": "C major",
       "era": "Romantic",
@@ -481,6 +574,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "burgmuller-arabesque-op100-no2",
         "schumann-melody-op68-no1",
         "bach-prelude-c-major-bwv-846"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of C major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "C",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -515,7 +618,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "carcassi-guitar-study-op60-no1": {
-    "bodyMdx": "## About this piece\nMatteo Carcassi (1792–1853) was an Italian guitarist who made his career in Paris, and his *25 Studi melodici progressivi*, Op. 60 — composed around 1836 — is one of the most important pedagogical collections in the entire guitar literature. Nearly every classical guitarist meets these studies at some point. No. 1 in C major is the gateway: a flowing, sixteenth-note arpeggio study that trains the right hand to spin an even, continuous ripple of notes while the left hand moves through comfortable first-position chords.\n\n## What to listen for\nAn unbroken stream of arpeggiated notes with the underlying chord changes gliding beneath. When played well it should sound effortless and smooth, like water — no bumps as the hand crosses strings, and a bass note that anchors each new harmony.\n\n## What you'll learn\nRight-hand arpeggio patterns with **p–i–m–a** coordination, string crossing without accents, and keeping a relaxed, repeating hand shape at speed. You'll also drill smooth left-hand chord transitions so the arpeggio never stops to wait for the fingers.\n\n## How to practise\nBlock the arpeggio into its underlying chords first — play each bar as a single strummed chord to memorise the left-hand shapes. Then unfold the pattern slowly with a metronome, prioritising evenness over speed. If notes clip short, check that left-hand fingers stay down for the whole chord. Increase tempo only when the ripple is perfectly even.\n\n## If you like this\nProgress to Carcassi's Op. 60 No. 7 in A minor, revisit Sor's Op. 60 studies, or reach toward Sor's Op. 35 No. 22.",
+    "bodyMdx": "## About this piece\nMatteo Carcassi (1792–1853) was an Italian guitarist who made his career in Paris, and his *25 Studi melodici progressivi*, Op. 60 — composed around 1836 — is one of the most important pedagogical collections in the entire guitar literature. Nearly every classical guitarist meets these studies at some point. No. 1 in C major is the gateway: a flowing, sixteenth-note arpeggio study that trains the right hand to spin an even, continuous ripple of notes while the left hand moves through comfortable first-position chords.\n\n## What to listen for\nAn unbroken stream of arpeggiated notes with the underlying chord changes gliding beneath. When played well it should sound effortless and smooth, like water — no bumps as the hand crosses strings, and a bass note that anchors each new harmony.\n\n## What you'll learn\nRight-hand arpeggio patterns with **p–i–m–a** coordination, string crossing without accents, and keeping a relaxed, repeating hand shape at speed. You'll also drill smooth left-hand chord transitions so the arpeggio never stops to wait for the fingers.\n\n## How to practise\nBlock the arpeggio into its underlying chords first — play each bar as a single strummed chord to memorise the left-hand shapes. Then unfold the pattern slowly with a metronome, prioritising evenness over speed. If notes clip short, check that left-hand fingers stay down for the whole chord. Increase tempo only when the ripple is perfectly even.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nProgress to Carcassi's Op. 60 No. 7 in A minor, revisit Sor's Op. 60 studies, or reach toward Sor's Op. 35 No. 22.",
     "details": {
       "key": "C major",
       "era": "Classical",
@@ -529,6 +632,15 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "sor-study-op60-no1",
         "sor-study-op35-no22",
         "carulli-andante-op241"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The C major scale on the neck",
+          "caption": "The shapes behind the study — slide the box up the neck and click a note to hear it.",
+          "root": "C",
+          "scale": "major"
+        }
       ]
     },
     "extraTags": [
@@ -537,7 +649,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "carcassi-study-op60-no7": {
-    "bodyMdx": "## About this piece\nThis is the seventh of Matteo Carcassi's *25 Melodic Progressive Studies*, Op. 60 (c. 1836), and one of the most frequently performed of the set. Where No. 1 stays bright and open in C major, No. 7 turns to A minor and adds real expressive weight — it feels like a small concert piece rather than an exercise. Carcassi (1792–1853) had a gift for wrapping serious technical goals in genuinely appealing music, and this study is a favourite recital opener for intermediate players.\n\n## What to listen for\nContinuous arpeggios in A minor with a melodic thread woven through the top of the pattern. The minor key gives it a darker, more searching quality, and the harmony travels further afield than the earlier studies, so you'll hear moments of tension resolving as the chords shift.\n\n## What you'll learn\nSustained right-hand arpeggio fluency at a faster clip, string crossing across all six strings, and bringing out a melody hidden within an arpeggio. The left hand must manage quicker chord changes and occasional position shifts while keeping every note ringing.\n\n## How to practise\nAs with No. 1, block each bar into its chord to map the left hand, then unspool the arpeggio slowly. Isolate any bar with a position shift and practise just the move between the two shapes until it's silent and reliable. Keep the right-hand motion small and economical; speed comes from relaxation, not effort. Shape the phrases so the piece sings rather than merely runs.\n\n## If you like this\nReturn to Carcassi's Op. 60 No. 1, then aim for Sor's Op. 35 No. 22 or Tárrega's *Lágrima* for lyrical Romantic playing.",
+    "bodyMdx": "## About this piece\nThis is the seventh of Matteo Carcassi's *25 Melodic Progressive Studies*, Op. 60 (c. 1836), and one of the most frequently performed of the set. Where No. 1 stays bright and open in C major, No. 7 turns to A minor and adds real expressive weight — it feels like a small concert piece rather than an exercise. Carcassi (1792–1853) had a gift for wrapping serious technical goals in genuinely appealing music, and this study is a favourite recital opener for intermediate players.\n\n## What to listen for\nContinuous arpeggios in A minor with a melodic thread woven through the top of the pattern. The minor key gives it a darker, more searching quality, and the harmony travels further afield than the earlier studies, so you'll hear moments of tension resolving as the chords shift.\n\n## What you'll learn\nSustained right-hand arpeggio fluency at a faster clip, string crossing across all six strings, and bringing out a melody hidden within an arpeggio. The left hand must manage quicker chord changes and occasional position shifts while keeping every note ringing.\n\n## How to practise\nAs with No. 1, block each bar into its chord to map the left hand, then unspool the arpeggio slowly. Isolate any bar with a position shift and practise just the move between the two shapes until it's silent and reliable. Keep the right-hand motion small and economical; speed comes from relaxation, not effort. Shape the phrases so the piece sings rather than merely runs.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nReturn to Carcassi's Op. 60 No. 1, then aim for Sor's Op. 35 No. 22 or Tárrega's *Lágrima* for lyrical Romantic playing.",
     "details": {
       "key": "A minor",
       "era": "Classical",
@@ -551,6 +663,15 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "sor-study-op35-no22",
         "tarrega-lagrima",
         "carulli-guitar-study"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The A minor scale on the neck",
+          "caption": "The shapes behind the study — slide the box up the neck and click a note to hear it.",
+          "root": "A",
+          "scale": "natural-minor"
+        }
       ]
     },
     "extraTags": [
@@ -559,7 +680,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "carulli-andante-op241": {
-    "bodyMdx": "## About this piece\nFerdinando Carulli (1770–1841) was born in Naples in the same year as Beethoven and became one of the most celebrated guitar teachers of his day in Paris. His Op. 241, *École de guitare* (c. 1825), is a late revision of his famous method, packed with short, graceful pieces designed to build technique through music that's pleasant to play. This Andante in C is a typical example: a clear, singable melody set over a simple accompaniment, ideal for a developing player who wants a real \"piece\" rather than a dry exercise.\n\n## What to listen for\nA calm, walking tempo (that's what *andante* means) and a well-shaped melody in bright C major. The accompaniment stays out of the way, letting the tune lead. Listen for balanced phrasing and gentle cadences that give the music a settled, unhurried feel.\n\n## What you'll learn\nTwo-voice playing — thumb (**p**) on the bass and accompaniment, fingers (**i–m–a**) on the melody — plus even tone, controlled dynamics, and clean first-position reading. It's excellent for learning to make a melody sing while a quieter part supports it.\n\n## How to practise\nPlay the melody line on its own until it feels vocal, then add the accompaniment softly beneath it. Keep a steady andante pulse — resist rushing the easier bars. Aim for a warm, rounded tone and let notes ring their full value. Practise the cadences especially, easing slightly into each phrase-ending so the music breathes.\n\n## If you like this\nTry more pieces from Carulli's Op. 241, the Sor Op. 60 studies, or Carcassi's Op. 60 No. 1.\n\n<!-- Note: Op. 241 contains many short pieces (several Andantes/Andantinos in different keys). Seed labels this \"Andante in C\"; treated here as a representative C-major Andante from the set. -->",
+    "bodyMdx": "## About this piece\nFerdinando Carulli (1770–1841) was born in Naples in the same year as Beethoven and became one of the most celebrated guitar teachers of his day in Paris. His Op. 241, *École de guitare* (c. 1825), is a late revision of his famous method, packed with short, graceful pieces designed to build technique through music that's pleasant to play. This Andante in C is a typical example: a clear, singable melody set over a simple accompaniment, ideal for a developing player who wants a real \"piece\" rather than a dry exercise.\n\n## What to listen for\nA calm, walking tempo (that's what *andante* means) and a well-shaped melody in bright C major. The accompaniment stays out of the way, letting the tune lead. Listen for balanced phrasing and gentle cadences that give the music a settled, unhurried feel.\n\n## What you'll learn\nTwo-voice playing — thumb (**p**) on the bass and accompaniment, fingers (**i–m–a**) on the melody — plus even tone, controlled dynamics, and clean first-position reading. It's excellent for learning to make a melody sing while a quieter part supports it.\n\n## How to practise\nPlay the melody line on its own until it feels vocal, then add the accompaniment softly beneath it. Keep a steady andante pulse — resist rushing the easier bars. Aim for a warm, rounded tone and let notes ring their full value. Practise the cadences especially, easing slightly into each phrase-ending so the music breathes.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nTry more pieces from Carulli's Op. 241, the Sor Op. 60 studies, or Carcassi's Op. 60 No. 1.\n\n<!-- Note: Op. 241 contains many short pieces (several Andantes/Andantinos in different keys). Seed labels this \"Andante in C\"; treated here as a representative C-major Andante from the set. -->",
     "details": {
       "key": "C major",
       "era": "Classical",
@@ -573,6 +694,15 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "sor-study-op60-no1",
         "carcassi-guitar-study-op60-no1",
         "sor-study-op35-no22"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The C major scale on the neck",
+          "caption": "The shapes behind the study — slide the box up the neck and click a note to hear it.",
+          "root": "C",
+          "scale": "major"
+        }
       ]
     },
     "extraTags": [
@@ -580,7 +710,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "carulli-guitar-study": {
-    "bodyMdx": "## About this piece\nFerdinando Carulli (1770–1841) wrote an enormous quantity of teaching material for the guitar — methods, studies, and short pieces that guitarists still open on their first day of lessons. This short study in A minor develops arpeggio technique, the single most important right-hand skill in early classical-guitar playing. Carulli's studies are prized because they are short, tuneful, and technically focused: each one drills one clear idea without overstaying its welcome.\n\n## What to listen for\nA repeating arpeggio pattern rolling under a simple melodic line, coloured by the gentle sadness of A minor. Because the piece is compact, you'll hear the same textural idea returning — that repetition is the point, giving the right hand a stable shape to master.\n\n## What you'll learn\nRight-hand arpeggios with **p–i–m–a** coordination, keeping a repeating hand shape even and relaxed, and holding left-hand chords down so every note sustains. A minor uses friendly first-position shapes (Am, E, Dm), making it a good bridge between chord-strumming and true fingerstyle.\n\n## How to practise\nBlock each bar into its chord first so the left hand knows where to go, then add the arpeggio slowly. Keep right-hand motion minimal — the fingers should barely move. Use a metronome and prize evenness over speed. Let the top notes come out a touch to suggest a melody.\n\n## If you like this\nTry Carulli's Andante in C, Op. 241, then Carcassi's Op. 60 studies for longer arpeggio pieces.\n\n<!-- Note: seed lists this as a generic \"Guitar Study in A minor\" attributed to Carulli (IMSLP), without a specific opus. Details above describe a representative Carulli A-minor arpeggio study; opus/exact year unconfirmed. -->",
+    "bodyMdx": "## About this piece\nFerdinando Carulli (1770–1841) wrote an enormous quantity of teaching material for the guitar — methods, studies, and short pieces that guitarists still open on their first day of lessons. This short study in A minor develops arpeggio technique, the single most important right-hand skill in early classical-guitar playing. Carulli's studies are prized because they are short, tuneful, and technically focused: each one drills one clear idea without overstaying its welcome.\n\n## What to listen for\nA repeating arpeggio pattern rolling under a simple melodic line, coloured by the gentle sadness of A minor. Because the piece is compact, you'll hear the same textural idea returning — that repetition is the point, giving the right hand a stable shape to master.\n\n## What you'll learn\nRight-hand arpeggios with **p–i–m–a** coordination, keeping a repeating hand shape even and relaxed, and holding left-hand chords down so every note sustains. A minor uses friendly first-position shapes (Am, E, Dm), making it a good bridge between chord-strumming and true fingerstyle.\n\n## How to practise\nBlock each bar into its chord first so the left hand knows where to go, then add the arpeggio slowly. Keep right-hand motion minimal — the fingers should barely move. Use a metronome and prize evenness over speed. Let the top notes come out a touch to suggest a melody.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nTry Carulli's Andante in C, Op. 241, then Carcassi's Op. 60 studies for longer arpeggio pieces.\n\n<!-- Note: seed lists this as a generic \"Guitar Study in A minor\" attributed to Carulli (IMSLP), without a specific opus. Details above describe a representative Carulli A-minor arpeggio study; opus/exact year unconfirmed. -->",
     "details": {
       "key": "A minor",
       "era": "Classical",
@@ -594,6 +724,15 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "carcassi-study-op60-no7",
         "sor-study-op60-no1",
         "carcassi-guitar-study-op60-no1"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The A minor scale on the neck",
+          "caption": "The shapes behind the study — slide the box up the neck and click a note to hear it.",
+          "root": "A",
+          "scale": "natural-minor"
+        }
       ]
     },
     "extraTags": [
@@ -601,7 +740,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "chopin-nocturne-op9-no2": {
-    "bodyMdx": "## About this piece\nThis is *the* nocturne — the one most people picture when they hear the word. Chopin wrote it as a young man around 1830–31 and published it in 1832 as the second of his Op. 9 set. The nocturne (literally \"night piece\") was a form pioneered by the Irish composer John Field, but Chopin transformed it into something far richer: a right-hand melody that sings like an opera singer, over a rocking, harp-like left hand. Its warmth and grace have made it one of the best-loved pieces in the piano repertoire.\n\n## What to listen for\nThe key is a mellow E-flat major, the metre a gently swaying 12/8 (four groups of three). The left hand rocks between a bass note and softly spread chords, setting up a rhythmic hammock. Above it, the right hand unfurls a long, ornate melody — and crucially, Chopin varies it each time it returns, decorating it with runs, turns, and delicate filigree, exactly as a great singer would embellish a repeated aria. Listen for those decorations and for the tender, singing tone throughout.\n\n## What you'll learn\nThis nocturne develops a true *cantabile* (singing) touch, the coordination of a flowing melody against a steady wide-spanning left hand, and the execution of ornamental runs that must sound free and effortless. It's also a study in rubato and in pacing a long lyrical line.\n\n## How to practise\nSet the left hand first — it must be soft, even, and reliable, since it holds everything together while the melody floats free. Learn the ornamental runs slowly, counting how they fit against the beat before you let them flow \"out of time.\" Voice the melody so it always rises above the accompaniment, and shape each phrase like a breath. Use rubato tastefully — expressive give-and-take over a steady underlying pulse. Change the pedal with each harmony. This one rewards patience and a beautiful tone above all.\n\n## If you like this\nFor more of Chopin's intimate voice, the *Prelude in E minor* and *Waltz in A minor* are natural companions. Beethoven's *Moonlight Sonata* first movement shares the same nocturnal, singing calm.",
+    "bodyMdx": "## About this piece\nThis is *the* nocturne — the one most people picture when they hear the word. Chopin wrote it as a young man around 1830–31 and published it in 1832 as the second of his Op. 9 set. The nocturne (literally \"night piece\") was a form pioneered by the Irish composer John Field, but Chopin transformed it into something far richer: a right-hand melody that sings like an opera singer, over a rocking, harp-like left hand. Its warmth and grace have made it one of the best-loved pieces in the piano repertoire.\n\n## What to listen for\nThe key is a mellow E-flat major, the metre a gently swaying 12/8 (four groups of three). The left hand rocks between a bass note and softly spread chords, setting up a rhythmic hammock. Above it, the right hand unfurls a long, ornate melody — and crucially, Chopin varies it each time it returns, decorating it with runs, turns, and delicate filigree, exactly as a great singer would embellish a repeated aria. Listen for those decorations and for the tender, singing tone throughout.\n\n## What you'll learn\nThis nocturne develops a true *cantabile* (singing) touch, the coordination of a flowing melody against a steady wide-spanning left hand, and the execution of ornamental runs that must sound free and effortless. It's also a study in rubato and in pacing a long lyrical line.\n\n## How to practise\nSet the left hand first — it must be soft, even, and reliable, since it holds everything together while the melody floats free. Learn the ornamental runs slowly, counting how they fit against the beat before you let them flow \"out of time.\" Voice the melody so it always rises above the accompaniment, and shape each phrase like a breath. Use rubato tastefully — expressive give-and-take over a steady underlying pulse. Change the pedal with each harmony. This one rewards patience and a beautiful tone above all.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nFor more of Chopin's intimate voice, the *Prelude in E minor* and *Waltz in A minor* are natural companions. Beethoven's *Moonlight Sonata* first movement shares the same nocturnal, singing calm.",
     "details": {
       "key": "E-flat major",
       "era": "Romantic",
@@ -614,6 +753,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "chopin-prelude-e-minor-op28-no4",
         "chopin-waltz-a-minor-b150",
         "beethoven-moonlight-sonata-1st-mvt"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of E♭ major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "Eb",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -622,7 +771,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "chopin-prelude-e-minor-op28-no4": {
-    "bodyMdx": "## About this piece\nChopin's *24 Preludes, Op. 28* — one in every key — were largely completed during the winter of 1838–39, much of it while he was staying (and ailing) on the island of Majorca with the writer George Sand. The set was published in 1839. This one, No. 4 in E minor, is among the most famous and the most quietly devastating. It was reportedly played at Chopin's own funeral in 1849. On the page it looks almost bare, but it is one of the most expressive short pieces ever written.\n\n## What to listen for\nThe right hand simply holds a slow, aching melody of repeated and slowly falling notes. All the drama is underneath: the left hand plays soft, throbbing chords that shift downward by tiny steps, one voice at a time, so the harmony seems to sink and darken continuously. That slow chromatic descent creates a feeling of suspended grief. A single surge of intensity near the end breaks the stillness before the piece fades to a hushed close. It is marked *Largo* — very slow.\n\n## What you'll learn\nThis is a masterclass in expression through the simplest means: controlling soft, evenly voiced repeated chords, hearing and shaping chromatic voice-leading, and shaping a long melodic line with subtle timing and dynamics. It teaches that emotion comes from control, not speed.\n\n## How to practise\nThe left-hand chords are the piece — practise them alone until they are perfectly even, soft, and connected, listening to the one note that moves in each change. Keep the right-hand melody legato and give it a slight rise and fall so it doesn't sound flat. Plan your single climax so the long build has somewhere to go, then relax completely for the ending. Move the pedal with each chord change to keep the harmony clean. Take it genuinely slowly and let silence do some of the work.\n\n## If you like this\nChopin's *Nocturne Op. 9 No. 2* offers the same singing lyricism with more ornament, while the *Waltz in A minor* shares its wistful minor-key mood. Beethoven's *Für Elise* is a gentler companion.",
+    "bodyMdx": "## About this piece\nChopin's *24 Preludes, Op. 28* — one in every key — were largely completed during the winter of 1838–39, much of it while he was staying (and ailing) on the island of Majorca with the writer George Sand. The set was published in 1839. This one, No. 4 in E minor, is among the most famous and the most quietly devastating. It was reportedly played at Chopin's own funeral in 1849. On the page it looks almost bare, but it is one of the most expressive short pieces ever written.\n\n## What to listen for\nThe right hand simply holds a slow, aching melody of repeated and slowly falling notes. All the drama is underneath: the left hand plays soft, throbbing chords that shift downward by tiny steps, one voice at a time, so the harmony seems to sink and darken continuously. That slow chromatic descent creates a feeling of suspended grief. A single surge of intensity near the end breaks the stillness before the piece fades to a hushed close. It is marked *Largo* — very slow.\n\n## What you'll learn\nThis is a masterclass in expression through the simplest means: controlling soft, evenly voiced repeated chords, hearing and shaping chromatic voice-leading, and shaping a long melodic line with subtle timing and dynamics. It teaches that emotion comes from control, not speed.\n\n## How to practise\nThe left-hand chords are the piece — practise them alone until they are perfectly even, soft, and connected, listening to the one note that moves in each change. Keep the right-hand melody legato and give it a slight rise and fall so it doesn't sound flat. Plan your single climax so the long build has somewhere to go, then relax completely for the ending. Move the pedal with each chord change to keep the harmony clean. Take it genuinely slowly and let silence do some of the work.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nChopin's *Nocturne Op. 9 No. 2* offers the same singing lyricism with more ornament, while the *Waltz in A minor* shares its wistful minor-key mood. Beethoven's *Für Elise* is a gentler companion.",
     "details": {
       "key": "E minor",
       "era": "Romantic",
@@ -635,6 +784,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "chopin-nocturne-op9-no2",
         "chopin-waltz-a-minor-b150",
         "beethoven-fur-elise-opening"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of E minor",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "E",
+          "scale": "natural-minor",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -643,7 +802,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "chopin-waltz-a-minor-b150": {
-    "bodyMdx": "## About this piece\nChopin published only a handful of waltzes in his lifetime, but several more survive in manuscript and appeared after his death. This gentle waltz in A minor (catalogued B. 150) is one of them — its exact date of composition is uncertain, and it was published posthumously. It has since become one of the most-loved doors into Chopin's world, because it is genuinely playable by developing pianists while still sounding unmistakably like him: wistful, elegant, and quietly heartfelt. (Note: the precise year of composition isn't firmly established, so we describe it only as a late, posthumous work.)\n\n## What to listen for\nIt is a true waltz in a lilting 3/4 — a strong beat one in the left hand, then two lighter chords. The key of A minor lends it a bittersweet, faraway quality. The form is a simple, satisfying loop of ideas: a plaintive opening melody, a warmer contrasting section that brightens toward the major, and a return home. Listen for the subtle push and pull of *rubato* — the flexible timing that lets the tune breathe over a steady dance pulse.\n\n## What you'll learn\nThis waltz teaches the essential Chopin left-hand waltz pattern (bass note, then chord, chord), a singing legato melody, graceful phrasing, and the beginnings of *rubato* — bending the melody's timing while the accompaniment keeps its poise.\n\n## How to practise\nMaster the left hand first: the leap from bass note up to the chords should be smooth and quiet, landing softly on beat one. Keep the melody legato and shaped, always louder than the accompaniment. Introduce rubato gently — borrow a little time on expressive notes and give it back — but keep the underlying pulse steady so it never sags. Use light pedal, changing with the harmony. Learn the sections separately, then string them into one flowing narrative.\n\n## If you like this\nStay with Chopin's introspective side in the *Prelude in E minor* and the singing *Nocturne Op. 9 No. 2*. For the dance's simpler ancestor, try Schubert's *Ländler, D. 366*.",
+    "bodyMdx": "## About this piece\nChopin published only a handful of waltzes in his lifetime, but several more survive in manuscript and appeared after his death. This gentle waltz in A minor (catalogued B. 150) is one of them — its exact date of composition is uncertain, and it was published posthumously. It has since become one of the most-loved doors into Chopin's world, because it is genuinely playable by developing pianists while still sounding unmistakably like him: wistful, elegant, and quietly heartfelt. (Note: the precise year of composition isn't firmly established, so we describe it only as a late, posthumous work.)\n\n## What to listen for\nIt is a true waltz in a lilting 3/4 — a strong beat one in the left hand, then two lighter chords. The key of A minor lends it a bittersweet, faraway quality. The form is a simple, satisfying loop of ideas: a plaintive opening melody, a warmer contrasting section that brightens toward the major, and a return home. Listen for the subtle push and pull of *rubato* — the flexible timing that lets the tune breathe over a steady dance pulse.\n\n## What you'll learn\nThis waltz teaches the essential Chopin left-hand waltz pattern (bass note, then chord, chord), a singing legato melody, graceful phrasing, and the beginnings of *rubato* — bending the melody's timing while the accompaniment keeps its poise.\n\n## How to practise\nMaster the left hand first: the leap from bass note up to the chords should be smooth and quiet, landing softly on beat one. Keep the melody legato and shaped, always louder than the accompaniment. Introduce rubato gently — borrow a little time on expressive notes and give it back — but keep the underlying pulse steady so it never sags. Use light pedal, changing with the harmony. Learn the sections separately, then string them into one flowing narrative.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nStay with Chopin's introspective side in the *Prelude in E minor* and the singing *Nocturne Op. 9 No. 2*. For the dance's simpler ancestor, try Schubert's *Ländler, D. 366*.",
     "details": {
       "key": "A minor",
       "era": "Romantic",
@@ -656,6 +815,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "chopin-prelude-e-minor-op28-no4",
         "chopin-nocturne-op9-no2",
         "schubert-landler-d366"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of A minor",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "A",
+          "scale": "natural-minor",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -707,7 +876,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     "extraTags": []
   },
   "clementi-sonatina-op36-no1-1st-mvt": {
-    "bodyMdx": "## About this piece\nIf any single piece could be called \"the student sonatina,\" this is it. Muzio Clementi — an Italian-born composer, pianist, teacher, and even piano manufacturer who spent his career in London — published his *Six Sonatinas, Op. 36* in 1797 expressly as progressive teaching material, and they have never left the piano bench since. The first movement of No. 1 in C major is where countless pianists first meet Classical sonata form on their own terms. It is crisp, cheerful, and beautifully proportioned. (The tempo is marked *Spiritoso* — \"spirited\" — in the original; some editions title it simply *Allegro*.)\n\n## What to listen for\nThis is a compact sonata-form movement in bright C major. A bold opening theme built on scales and confident chords gives way to a lighter second idea in the dominant, G major; a brief development toys with the material before the recapitulation brings everything home. Listen for the tidy question-and-answer phrasing and the clean contrast between the assertive first theme and the more graceful second.\n\n## What you'll learn\nThis movement is a workout in even, fluent scale runs, clear articulation (the mix of detached and connected notes that defines Classical style), balanced hands, and an introduction to sonata form's map of themes and keys. It builds real fingerwork discipline.\n\n## How to practise\nDrill the scale passages slowly and evenly with sensible fingering — they are the heart of the piece and must run smoothly. Observe the articulation carefully: Classical music lives on the difference between crisp staccato and smooth legato. Keep a steady, spirited-but-controlled tempo; don't let the fast runs drag or bolt. Learn it by section (first theme, transition, second theme, development, recap) so you understand the form, then join them. Hands separately first wherever the runs get tricky.\n\n## If you like this\nThe *Kuhlau Sonatina Op. 20 No. 1* is the natural next step up. Mozart's *Sonata K. 545* is the full-scale version of the same idea, and the *Beethoven Sonatina in G* sits comfortably alongside.",
+    "bodyMdx": "## About this piece\nIf any single piece could be called \"the student sonatina,\" this is it. Muzio Clementi — an Italian-born composer, pianist, teacher, and even piano manufacturer who spent his career in London — published his *Six Sonatinas, Op. 36* in 1797 expressly as progressive teaching material, and they have never left the piano bench since. The first movement of No. 1 in C major is where countless pianists first meet Classical sonata form on their own terms. It is crisp, cheerful, and beautifully proportioned. (The tempo is marked *Spiritoso* — \"spirited\" — in the original; some editions title it simply *Allegro*.)\n\n## What to listen for\nThis is a compact sonata-form movement in bright C major. A bold opening theme built on scales and confident chords gives way to a lighter second idea in the dominant, G major; a brief development toys with the material before the recapitulation brings everything home. Listen for the tidy question-and-answer phrasing and the clean contrast between the assertive first theme and the more graceful second.\n\n## What you'll learn\nThis movement is a workout in even, fluent scale runs, clear articulation (the mix of detached and connected notes that defines Classical style), balanced hands, and an introduction to sonata form's map of themes and keys. It builds real fingerwork discipline.\n\n## How to practise\nDrill the scale passages slowly and evenly with sensible fingering — they are the heart of the piece and must run smoothly. Observe the articulation carefully: Classical music lives on the difference between crisp staccato and smooth legato. Keep a steady, spirited-but-controlled tempo; don't let the fast runs drag or bolt. Learn it by section (first theme, transition, second theme, development, recap) so you understand the form, then join them. Hands separately first wherever the runs get tricky.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nThe *Kuhlau Sonatina Op. 20 No. 1* is the natural next step up. Mozart's *Sonata K. 545* is the full-scale version of the same idea, and the *Beethoven Sonatina in G* sits comfortably alongside.",
     "details": {
       "key": "C major",
       "era": "Classical",
@@ -720,6 +889,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "kuhlau-sonatina-op20-no1-1st-mvt",
         "mozart-sonata-k545-1st-mvt",
         "beethoven-sonatina-in-g-anh5"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of C major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "C",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -728,7 +907,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "czerny-op-599-no-1": {
-    "bodyMdx": "## Goal\n\nCarl Czerny — a pupil of Beethoven and teacher of Liszt — wrote his *Practical Method for Beginners*,\nOp. 599, as a graded set of 100 short studies. **No. 1 is the very first**, and it does one job well:\nit settles a beginner into a **five-finger position** and builds **evenness, legato, and a quiet\nhand** before anything harder arrives. If your scales feel lumpy, this study smooths them out.\n\n## How to do it\n\nThe piece stays in C major, in common time (`4/4`), with both hands anchored over the five white keys\n`C D E F G`.\n\n1. **Set the five-finger position:** right-hand thumb on `C`, finger 5 on `G`; left hand mirrors it an\n   octave below (finger 5 on `C`, thumb on `G`). Fingers rest lightly on their keys — no reaching.\n2. **Right hand carries the melody** in steady quarter notes, walking up and down the five-finger\n   shape (`C D E F G` and back). Keep fingers `1 2 3 4 5` over their own keys the whole time.\n3. **Left hand supports** with longer, held notes underneath — let them ring cleanly without thumping.\n4. **Count out loud** \"1 2 3 4\" for every bar so the pulse never sags.\n5. **Play legato:** each finger presses only as the previous one releases, so notes connect with no\n   gap and no overlap. Aim for a gentle *Allegro*, but start far slower — around ♩ = 66.\n6. Hands separately first, then hands together once each is secure.\n\n## Common mistakes\n\n- **Bumpy quarter notes.** Uneven volume usually means the hand is tense — lighten the touch and slow\n  down.\n- **Collapsing fingers.** Keep a rounded hand; a flattening 4th or 5th finger loses control.\n- **Losing the pulse when hands combine.** Drop back to a tempo where both hands stay effortless.\n\n## How to progress\n\nOnly nudge the tempo up once the study is even and relaxed, then move on to Op. 599 No. 2 and beyond.\nReinforce the five-finger control with [Hanon Exercise No. 1](/hanon-virtuoso-pianist-no-1), and take\nthe same steadiness into the [C Major Scale — Two Octaves](/c-major-scale-two-octaves). Practise to a\nclick from [/tools/metronome](/tools/metronome).",
+    "bodyMdx": "## Goal\n\nCarl Czerny — a pupil of Beethoven and teacher of Liszt — wrote his *Practical Method for Beginners*,\nOp. 599, as a graded set of 100 short studies. **No. 1 is the very first**, and it does one job well:\nit settles a beginner into a **five-finger position** and builds **evenness, legato, and a quiet\nhand** before anything harder arrives. If your scales feel lumpy, this study smooths them out.\n\n## How to do it\n\nThe piece stays in C major, in common time (`4/4`), with both hands anchored over the five white keys\n`C D E F G`.\n\n1. **Set the five-finger position:** right-hand thumb on `C`, finger 5 on `G`; left hand mirrors it an\n   octave below (finger 5 on `C`, thumb on `G`). Fingers rest lightly on their keys — no reaching.\n2. **Right hand carries the melody** in steady quarter notes, walking up and down the five-finger\n   shape (`C D E F G` and back). Keep fingers `1 2 3 4 5` over their own keys the whole time.\n3. **Left hand supports** with longer, held notes underneath — let them ring cleanly without thumping.\n4. **Count out loud** \"1 2 3 4\" for every bar so the pulse never sags.\n5. **Play legato:** each finger presses only as the previous one releases, so notes connect with no\n   gap and no overlap. Aim for a gentle *Allegro*, but start far slower — around ♩ = 66.\n6. Hands separately first, then hands together once each is secure.\n\n## Common mistakes\n\n- **Bumpy quarter notes.** Uneven volume usually means the hand is tense — lighten the touch and slow\n  down.\n- **Collapsing fingers.** Keep a rounded hand; a flattening 4th or 5th finger loses control.\n- **Losing the pulse when hands combine.** Drop back to a tempo where both hands stay effortless.\n\n<div data-tmr-embed=\"0\"></div>\n\n## How to progress\n\nOnly nudge the tempo up once the study is even and relaxed, then move on to Op. 599 No. 2 and beyond.\nReinforce the five-finger control with [Hanon Exercise No. 1](/hanon-virtuoso-pianist-no-1), and take\nthe same steadiness into the [C Major Scale — Two Octaves](/c-major-scale-two-octaves). Practise to a\nclick from [/tools/metronome](/tools/metronome).",
     "details": {
       "key": "C major",
       "era": "Classical",
@@ -739,6 +918,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
       "related": [
         "hanon-virtuoso-pianist-no-1",
         "c-major-scale-two-octaves"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of C major",
+          "caption": "This study lives entirely in C major — its five-finger shapes on the keys. Click to hear them.",
+          "root": "C",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -748,7 +937,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "danny-boy": {
-    "bodyMdx": "## About this song\n\"Danny Boy\" pairs one of Ireland's most famous melodies with an English lawyer's lyric. The tune is the \"Londonderry Air,\" collected in the mid-19th century by Jane Ross of Limavady, County Londonderry, and published in George Petrie's 1855 *The Ancient Music of Ireland*. The words came later: the English lawyer and prolific lyricist Frederic Weatherly (1848–1929) wrote \"Danny Boy\" in 1910 for a different tune, then reworked it in 1913 to fit the \"Londonderry Air\" after his sister-in-law sent him a copy of the melody. The song's tender farewell — a parent or lover bidding goodbye to a young man going away — struck a deep chord, and it became one of the most popular ballads of the century, adopted with special affection by the Irish diaspora.\n\n## What to listen for\nThis is a song of soaring lines. The melody is famous for its wide range and its long climactic phrase near the end (\"but come ye back\"), which climbs high before resolving. It follows a classic AABA shape over a broad 4/4, and its harmony is richer than a typical folk tune, with passing chords that lend a bittersweet colour.\n\n## What you'll learn\n\"Danny Boy\" is a study in long-line phrasing, breath and dynamic control, and pacing toward a single emotional peak. You will practise sustaining and shaping notes across a wide range, and building intensity gradually rather than all at once.\n\n## How to play it\nIt is commonly played in E-flat or C major; choose the key that keeps the high climax comfortable to sing. Because of the range and the passing harmonies, this sits a step above a three-chord song — expect to move through more chords and to voice-lead them smoothly. Pianists should use the pedal to sustain the melody; guitarists can fingerpick or strum broadly. Save your fullest dynamic and tone for that final rising phrase.\n\n## If you like this",
+    "bodyMdx": "## About this song\n\"Danny Boy\" pairs one of Ireland's most famous melodies with an English lawyer's lyric. The tune is the \"Londonderry Air,\" collected in the mid-19th century by Jane Ross of Limavady, County Londonderry, and published in George Petrie's 1855 *The Ancient Music of Ireland*. The words came later: the English lawyer and prolific lyricist Frederic Weatherly (1848–1929) wrote \"Danny Boy\" in 1910 for a different tune, then reworked it in 1913 to fit the \"Londonderry Air\" after his sister-in-law sent him a copy of the melody. The song's tender farewell — a parent or lover bidding goodbye to a young man going away — struck a deep chord, and it became one of the most popular ballads of the century, adopted with special affection by the Irish diaspora.\n\n## What to listen for\nThis is a song of soaring lines. The melody is famous for its wide range and its long climactic phrase near the end (\"but come ye back\"), which climbs high before resolving. It follows a classic AABA shape over a broad 4/4, and its harmony is richer than a typical folk tune, with passing chords that lend a bittersweet colour.\n\n## What you'll learn\n\"Danny Boy\" is a study in long-line phrasing, breath and dynamic control, and pacing toward a single emotional peak. You will practise sustaining and shaping notes across a wide range, and building intensity gradually rather than all at once.\n\n## How to play it\nIt is commonly played in E-flat or C major; choose the key that keeps the high climax comfortable to sing. Because of the range and the passing harmonies, this sits a step above a three-chord song — expect to move through more chords and to voice-lead them smoothly. Pianists should use the pedal to sustain the melody; guitarists can fingerpick or strum broadly. Save your fullest dynamic and tone for that final rising phrase.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this",
     "details": {
       "key": "E-flat major",
       "era": "Folk",
@@ -761,6 +950,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "shenandoah",
         "amazing-grace-trad",
         "aloha-oe-ukulele"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of E♭ major",
+          "caption": "The key the melody lives in — click through the E♭ major scale to hear its colour.",
+          "root": "Eb",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -771,7 +970,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "debussy-arabesque-no1": {
-    "bodyMdx": "## About this piece\nThe *Première Arabesque* comes from Debussy's *Deux arabesques* (L. 66), written while the composer was still in his twenties, between about 1888 and 1891. It is early Debussy — the shimmering, colour-drenched style that would define impressionism is already peeking through. An \"arabesque\" originally means a flowing, ornamental line in art, and that's exactly what the music offers: graceful ribbons of notes that curl and unwind. In E major, it is bright, fresh, and endlessly graceful — one of the most-loved gateways into Debussy's piano world.\n\n## What to listen for\nThe opening is built on rippling arpeggios that rise and fall like water. The most delicious detail is the cross-rhythm: the right hand often plays groups of three notes against the left hand's two (or vice versa), so the two hands seem to gently pull apart and flow back together. This \"three against two\" gives the piece its floating, weightless swing. Listen too for the more song-like middle section, which grows warmer and more flowing before the opening ribbons return.\n\n## What you'll learn\nThis is a classic study in arpeggios and in coordinating cross-rhythms between the hands — a skill that unlocks huge amounts of romantic and impressionist repertoire. You'll also work on evenness, since those flowing figures need to sound smooth and unhurried rather than lumpy.\n\n## How to practise\nPractise hands separately first, especially the arpeggio patterns, aiming for a light, even touch. To master the two-against-three, count slowly and feel where the notes line up and where they don't; play it under tempo until the swing feels natural. Keep the wrists loose and let the pedal wash the harmonies together, clearing it whenever the sound thickens.\n\n## If you like this\nMove on to Debussy's *Clair de Lune* for his most famous impressionist masterpiece, or try Satie's *Gymnopédie No. 1* for a calmer corner of the same French world.",
+    "bodyMdx": "## About this piece\nThe *Première Arabesque* comes from Debussy's *Deux arabesques* (L. 66), written while the composer was still in his twenties, between about 1888 and 1891. It is early Debussy — the shimmering, colour-drenched style that would define impressionism is already peeking through. An \"arabesque\" originally means a flowing, ornamental line in art, and that's exactly what the music offers: graceful ribbons of notes that curl and unwind. In E major, it is bright, fresh, and endlessly graceful — one of the most-loved gateways into Debussy's piano world.\n\n## What to listen for\nThe opening is built on rippling arpeggios that rise and fall like water. The most delicious detail is the cross-rhythm: the right hand often plays groups of three notes against the left hand's two (or vice versa), so the two hands seem to gently pull apart and flow back together. This \"three against two\" gives the piece its floating, weightless swing. Listen too for the more song-like middle section, which grows warmer and more flowing before the opening ribbons return.\n\n## What you'll learn\nThis is a classic study in arpeggios and in coordinating cross-rhythms between the hands — a skill that unlocks huge amounts of romantic and impressionist repertoire. You'll also work on evenness, since those flowing figures need to sound smooth and unhurried rather than lumpy.\n\n## How to practise\nPractise hands separately first, especially the arpeggio patterns, aiming for a light, even touch. To master the two-against-three, count slowly and feel where the notes line up and where they don't; play it under tempo until the swing feels natural. Keep the wrists loose and let the pedal wash the harmonies together, clearing it whenever the sound thickens.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nMove on to Debussy's *Clair de Lune* for his most famous impressionist masterpiece, or try Satie's *Gymnopédie No. 1* for a calmer corner of the same French world.",
     "details": {
       "key": "E major",
       "era": "Impressionist",
@@ -784,6 +983,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "debussy-clair-de-lune",
         "satie-gymnopedie-no1",
         "satie-gnossienne-no1"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of E major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "E",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -792,7 +1001,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "debussy-clair-de-lune": {
-    "bodyMdx": "## About this piece\n\"Clair de Lune\" — French for \"moonlight\" — is the third and by far the most famous movement of Debussy's *Suite bergamasque* (L. 75). Debussy began the suite around 1890 but heavily revised it before publishing in 1905, so what we play is the work of a mature master. The title comes from a poem by Paul Verlaine, and the music captures its dreamy, moonlit mood perfectly. In D-flat major and marked *andante très expressif*, it is one of the most beloved pieces of music ever written — luminous, tender, and quietly magical.\n\n## What to listen for\nThe opening melody floats in gentle, uneven groups, played mostly *pianissimo*, as if lit only by moonlight. Notice how Debussy layers voices so a melody sings out over softly murmuring inner notes. A more flowing middle section brings rippling arpeggios and a rising wave of warmth before the music settles back into stillness. The whole piece breathes — it swells and recedes rather than marching in strict time.\n\n## What you'll learn\nThis is an advanced study in tone colour, voicing, and pedalling. You'll learn to draw many dynamic shades out of a quiet touch, to bring a melody out of a texture with the same hand playing other notes, and to use the pedal as a painter uses light.\n\n## How to practise\nWork slowly and in small sections; the *9/8* metre feels natural once you stop counting rigidly and let it flow. Practise voicing — play the melody notes a little louder than the accompaniment within the same hand. Change the pedal cleanly on each harmony so the sound stays clear. Keep everything softer than feels comfortable; the magic is in restraint.\n\n## If you like this\nTry Debussy's *Première Arabesque* for an easier taste of the same style, or Satie's *Gymnopédie No. 1* for another quiet, moonlit mood.",
+    "bodyMdx": "## About this piece\n\"Clair de Lune\" — French for \"moonlight\" — is the third and by far the most famous movement of Debussy's *Suite bergamasque* (L. 75). Debussy began the suite around 1890 but heavily revised it before publishing in 1905, so what we play is the work of a mature master. The title comes from a poem by Paul Verlaine, and the music captures its dreamy, moonlit mood perfectly. In D-flat major and marked *andante très expressif*, it is one of the most beloved pieces of music ever written — luminous, tender, and quietly magical.\n\n## What to listen for\nThe opening melody floats in gentle, uneven groups, played mostly *pianissimo*, as if lit only by moonlight. Notice how Debussy layers voices so a melody sings out over softly murmuring inner notes. A more flowing middle section brings rippling arpeggios and a rising wave of warmth before the music settles back into stillness. The whole piece breathes — it swells and recedes rather than marching in strict time.\n\n## What you'll learn\nThis is an advanced study in tone colour, voicing, and pedalling. You'll learn to draw many dynamic shades out of a quiet touch, to bring a melody out of a texture with the same hand playing other notes, and to use the pedal as a painter uses light.\n\n## How to practise\nWork slowly and in small sections; the *9/8* metre feels natural once you stop counting rigidly and let it flow. Practise voicing — play the melody notes a little louder than the accompaniment within the same hand. Change the pedal cleanly on each harmony so the sound stays clear. Keep everything softer than feels comfortable; the magic is in restraint.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nTry Debussy's *Première Arabesque* for an easier taste of the same style, or Satie's *Gymnopédie No. 1* for another quiet, moonlit mood.",
     "details": {
       "key": "D-flat major",
       "era": "Impressionist",
@@ -805,6 +1014,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "debussy-arabesque-no1",
         "satie-gymnopedie-no1",
         "satie-gnossienne-no1"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of D♭ major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "Db",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -935,7 +1154,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "hanon-virtuoso-pianist-no-1": {
-    "bodyMdx": "## Goal\n\nExercise No. 1 opens Charles-Louis Hanon's *The Virtuoso Pianist* (1873), the most famous\nfinger-drill collection ever written. Its single aim is **finger independence and evenness** — training\neach finger, especially the weaker 4th and 5th, to strike with equal weight and timing. Master it and\nscales, arpeggios, and passagework all feel steadier.\n\n## How to do it\n\nThe pattern is a rising-and-falling figure that skips one note, so the hand sits over a **sixth**\n(`C` to `A`), not a fifth. Both hands play in parallel, two octaves apart.\n\n1. **Right-hand ascending figure:** `C E F G A G F E` with fingers `1 2 3 4 5 4 3 2`. Notice the thumb\n   jumps a third (`C`→`E`); fingers `2-3-4-5` then step by seconds.\n2. **Shift up one scale step and repeat:** `D F G A B A G F`, same `1 2 3 4 5 4 3 2` fingering. Keep\n   climbing (`E G A B C…`) up two octaves.\n3. **Left hand plays the identical shape** two octaves lower, perfectly together.\n4. At the top, reverse the pattern and descend back to the start.\n5. **Tempo:** begin around ♩ = 60 with a metronome. Lift each finger high and play *forte* with a\n   firm, even touch. Hold the wrist quiet and level.\n6. Repeat the whole exercise 2–3 times without stopping.\n\n## Common mistakes\n\n- **Uneven 4th/5th fingers.** They tend to sound weak or late. Slow down until every note is equal in\n  volume, or the drill reinforces the imbalance.\n- **Tension.** A clenched wrist or raised shoulders means you are pushing too fast or too hard. Shake\n  the hand out and drop the tempo.\n- **Rushing the turn.** The note where the figure changes direction (finger 5) is where sloppiness\n  creeps in — give it the same clarity as the rest.\n\n## How to progress\n\nRamp the metronome up a few clicks only once every note is clean — Hanon suggests eventually reaching\n♩ = 108 or faster. Then continue to Exercises 2 and 3, which extend the same idea. Practise with a\nsteady click from [/tools/metronome](/tools/metronome), and pair this with the\n[C Major Scale — Two Octaves](/c-major-scale-two-octaves) to apply your evenness to real scales.",
+    "bodyMdx": "## Goal\n\nExercise No. 1 opens Charles-Louis Hanon's *The Virtuoso Pianist* (1873), the most famous\nfinger-drill collection ever written. Its single aim is **finger independence and evenness** — training\neach finger, especially the weaker 4th and 5th, to strike with equal weight and timing. Master it and\nscales, arpeggios, and passagework all feel steadier.\n\n## How to do it\n\nThe pattern is a rising-and-falling figure that skips one note, so the hand sits over a **sixth**\n(`C` to `A`), not a fifth. Both hands play in parallel, two octaves apart.\n\n1. **Right-hand ascending figure:** `C E F G A G F E` with fingers `1 2 3 4 5 4 3 2`. Notice the thumb\n   jumps a third (`C`→`E`); fingers `2-3-4-5` then step by seconds.\n2. **Shift up one scale step and repeat:** `D F G A B A G F`, same `1 2 3 4 5 4 3 2` fingering. Keep\n   climbing (`E G A B C…`) up two octaves.\n3. **Left hand plays the identical shape** two octaves lower, perfectly together.\n4. At the top, reverse the pattern and descend back to the start.\n5. **Tempo:** begin around ♩ = 60 with a metronome. Lift each finger high and play *forte* with a\n   firm, even touch. Hold the wrist quiet and level.\n6. Repeat the whole exercise 2–3 times without stopping.\n\n## Common mistakes\n\n- **Uneven 4th/5th fingers.** They tend to sound weak or late. Slow down until every note is equal in\n  volume, or the drill reinforces the imbalance.\n- **Tension.** A clenched wrist or raised shoulders means you are pushing too fast or too hard. Shake\n  the hand out and drop the tempo.\n- **Rushing the turn.** The note where the figure changes direction (finger 5) is where sloppiness\n  creeps in — give it the same clarity as the rest.\n\n<div data-tmr-embed=\"0\"></div>\n\n## How to progress\n\nRamp the metronome up a few clicks only once every note is clean — Hanon suggests eventually reaching\n♩ = 108 or faster. Then continue to Exercises 2 and 3, which extend the same idea. Practise with a\nsteady click from [/tools/metronome](/tools/metronome), and pair this with the\n[C Major Scale — Two Octaves](/c-major-scale-two-octaves) to apply your evenness to real scales.",
     "details": {
       "key": "C major",
       "era": "Classical",
@@ -947,6 +1166,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "czerny-op-599-no-1",
         "c-major-scale-two-octaves",
         "chromatic-scale-exercise"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of C major",
+          "caption": "The exercise runs up and down C major — all white keys. Click to hear the pattern.",
+          "root": "C",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -1015,7 +1244,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "joplin-maple-leaf-rag": {
-    "bodyMdx": "## About this piece\nThe \"Maple Leaf Rag\" is the piece that launched the ragtime craze. Published in 1899 and named after the Maple Leaf Club in Sedalia, Missouri, it became the first instrumental sheet-music hit to sell in the hundreds of thousands, and it made Scott Joplin's name. Every rag that came after it lived in its shadow — even Joplin's own. If you want to understand where ragtime, and later jazz, came from, this is the foundation stone.\n\n## What to listen for\nFrom the very first bar the left hand drives a steady \"stride\" bass — low note, chord, low note, chord — that never lets up, while the right hand fires off crackling syncopated figures on top. Listen for the bold, striding energy and the way each strain has its own character, moving through the classic ragtime march form (roughly AABBACCDD). Notice the rich, warm sound of A-flat major, a key Joplin clearly loved.\n\n## What you'll learn\nThis is a serious workout in rhythmic independence and left-hand stamina. The striding bass demands accurate leaps and a steady pulse, while the right hand's syncopations sit right on top of it. Master this and you have real ragtime technique under your fingers.\n\n## How to practise\nBuild the left-hand stride slowly and securely — accuracy of the leaps matters more than speed. Practise one strain at a time, hands separately before together. Keep the pulse even and unhurried: as Joplin himself insisted, \"It is never right to play ragtime fast.\" A confident, moderate tempo lets every syncopation ring clearly.\n\n## If you like this\nMove on to Joplin's *Pineapple Rag* or the ever-popular *The Entertainer*, and hear how his followers built on him in James Scott's *Frog Legs Rag* and Joseph Lamb's *American Beauty Rag*.",
+    "bodyMdx": "## About this piece\nThe \"Maple Leaf Rag\" is the piece that launched the ragtime craze. Published in 1899 and named after the Maple Leaf Club in Sedalia, Missouri, it became the first instrumental sheet-music hit to sell in the hundreds of thousands, and it made Scott Joplin's name. Every rag that came after it lived in its shadow — even Joplin's own. If you want to understand where ragtime, and later jazz, came from, this is the foundation stone.\n\n## What to listen for\nFrom the very first bar the left hand drives a steady \"stride\" bass — low note, chord, low note, chord — that never lets up, while the right hand fires off crackling syncopated figures on top. Listen for the bold, striding energy and the way each strain has its own character, moving through the classic ragtime march form (roughly AABBACCDD). Notice the rich, warm sound of A-flat major, a key Joplin clearly loved.\n\n## What you'll learn\nThis is a serious workout in rhythmic independence and left-hand stamina. The striding bass demands accurate leaps and a steady pulse, while the right hand's syncopations sit right on top of it. Master this and you have real ragtime technique under your fingers.\n\n## How to practise\nBuild the left-hand stride slowly and securely — accuracy of the leaps matters more than speed. Practise one strain at a time, hands separately before together. Keep the pulse even and unhurried: as Joplin himself insisted, \"It is never right to play ragtime fast.\" A confident, moderate tempo lets every syncopation ring clearly.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nMove on to Joplin's *Pineapple Rag* or the ever-popular *The Entertainer*, and hear how his followers built on him in James Scott's *Frog Legs Rag* and Joseph Lamb's *American Beauty Rag*.",
     "details": {
       "key": "A-flat major",
       "era": "Ragtime",
@@ -1028,6 +1257,13 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "joplin-the-entertainer",
         "joplin-pineapple-rag",
         "scott-frog-legs-rag"
+      ],
+      "embeds": [
+        {
+          "tool": "circle-of-fifths",
+          "title": "Where this key sits",
+          "caption": "A-flat major on the circle of fifths — click a key to hear its tonic and see its signature."
+        }
       ]
     },
     "extraTags": [
@@ -1036,7 +1272,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "joplin-pineapple-rag": {
-    "bodyMdx": "## About this piece\nPublished in 1908 (its original title spelled \"Pine Apple Rag\"), this is Joplin from his mature middle period — tuneful, relaxed, and full of easy charm. By this point Joplin had left Missouri for New York and was writing rags of real polish. The \"Pineapple\" is one of his most singable: where the *Maple Leaf* strides and the *Entertainer* skips, this one saunters, with an especially catchy second strain that lodges in your head for days.\n\n## What to listen for\nAs in all classic rags, the left hand keeps a steady \"oom-pah\" pulse while the right hand syncopates over the top. Listen for how the music brightens as it moves from the opening in B-flat major into E-flat major for the middle strains. The second strain in particular has a warm, swinging lilt — this is ragtime at its most good-natured and melodic.\n\n## What you'll learn\nYou'll strengthen the core ragtime skill of keeping an even left hand under a syncopated right hand, and you'll get practice handling a change of key partway through a piece. The singable strains also make it a good study in bringing out a melody warmly rather than hammering it.\n\n## How to practise\nLearn the left-hand accompaniment until it runs on autopilot, then add the syncopated right hand slowly, one strain at a time. Pay attention when the key shifts to E-flat — new sharps and flats to keep track of. Keep the tempo moderate and swinging; Joplin's rule holds here too: never play ragtime fast. Aim for a relaxed groove rather than a race.\n\n## If you like this\nTry the mighty *Maple Leaf Rag* or the cheerful *The Entertainer*, and hear Joplin's more theatrical side in *The Ragtime Dance*.",
+    "bodyMdx": "## About this piece\nPublished in 1908 (its original title spelled \"Pine Apple Rag\"), this is Joplin from his mature middle period — tuneful, relaxed, and full of easy charm. By this point Joplin had left Missouri for New York and was writing rags of real polish. The \"Pineapple\" is one of his most singable: where the *Maple Leaf* strides and the *Entertainer* skips, this one saunters, with an especially catchy second strain that lodges in your head for days.\n\n## What to listen for\nAs in all classic rags, the left hand keeps a steady \"oom-pah\" pulse while the right hand syncopates over the top. Listen for how the music brightens as it moves from the opening in B-flat major into E-flat major for the middle strains. The second strain in particular has a warm, swinging lilt — this is ragtime at its most good-natured and melodic.\n\n## What you'll learn\nYou'll strengthen the core ragtime skill of keeping an even left hand under a syncopated right hand, and you'll get practice handling a change of key partway through a piece. The singable strains also make it a good study in bringing out a melody warmly rather than hammering it.\n\n## How to practise\nLearn the left-hand accompaniment until it runs on autopilot, then add the syncopated right hand slowly, one strain at a time. Pay attention when the key shifts to E-flat — new sharps and flats to keep track of. Keep the tempo moderate and swinging; Joplin's rule holds here too: never play ragtime fast. Aim for a relaxed groove rather than a race.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nTry the mighty *Maple Leaf Rag* or the cheerful *The Entertainer*, and hear Joplin's more theatrical side in *The Ragtime Dance*.",
     "details": {
       "key": "B-flat major (opening), moving to E-flat major",
       "era": "Ragtime",
@@ -1049,6 +1285,13 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "joplin-maple-leaf-rag",
         "joplin-the-entertainer",
         "joplin-ragtime-dance"
+      ],
+      "embeds": [
+        {
+          "tool": "circle-of-fifths",
+          "title": "Where this key sits",
+          "caption": "B-flat major (opening), moving to E-flat major on the circle of fifths — click a key to hear its tonic and see its signature."
+        }
       ]
     },
     "extraTags": [
@@ -1057,7 +1300,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "joplin-ragtime-dance": {
-    "bodyMdx": "## About this piece\n\"The Ragtime Dance\" has an unusual history. Joplin first published it in 1902 as an ambitious song-and-dance number, complete with a narrator calling out the steps — but it sold poorly. Four years later, in 1906, he distilled it into the shorter piano solo we play today, subtitled \"A Stop-Time Two Step.\" It is one of his most energetic and theatrical pieces, bursting with the spirit of the social dances of his day.\n\n## What to listen for\nAlongside the usual driving ragtime syncopation, the famous feature here is \"stop-time.\" In one section the piano suddenly thins out and the player is instructed to stamp a heel on the floor in time with the beat, so the rhythm keeps going even when the notes drop away. It's a thrilling, foot-stomping effect that makes the dance feel physically present. Listen too for the shift from the opening in B-flat major up into E-flat major.\n\n## What you'll learn\nThis piece teaches rhythmic drive and confidence: you have to keep an unshakeable internal pulse, especially through the stop-time passages where the texture gets sparse. It's a great study in feeling the beat in your body rather than just reading it.\n\n## How to practise\nLock in a steady pulse first — tap your foot or use a metronome so the rhythm is rock solid before the notes thin out in the stop-time section. Learn the strains one at a time and keep the left hand even. Have fun with the heel-stamp (or a firm foot-tap): it's meant to be played with a grin. And keep the tempo dignified — as Joplin always insisted, ragtime is never right played fast.\n\n## If you like this\nTry Joplin's *The Entertainer* and *Maple Leaf Rag*, or the sunnier *Pineapple Rag*.",
+    "bodyMdx": "## About this piece\n\"The Ragtime Dance\" has an unusual history. Joplin first published it in 1902 as an ambitious song-and-dance number, complete with a narrator calling out the steps — but it sold poorly. Four years later, in 1906, he distilled it into the shorter piano solo we play today, subtitled \"A Stop-Time Two Step.\" It is one of his most energetic and theatrical pieces, bursting with the spirit of the social dances of his day.\n\n## What to listen for\nAlongside the usual driving ragtime syncopation, the famous feature here is \"stop-time.\" In one section the piano suddenly thins out and the player is instructed to stamp a heel on the floor in time with the beat, so the rhythm keeps going even when the notes drop away. It's a thrilling, foot-stomping effect that makes the dance feel physically present. Listen too for the shift from the opening in B-flat major up into E-flat major.\n\n## What you'll learn\nThis piece teaches rhythmic drive and confidence: you have to keep an unshakeable internal pulse, especially through the stop-time passages where the texture gets sparse. It's a great study in feeling the beat in your body rather than just reading it.\n\n## How to practise\nLock in a steady pulse first — tap your foot or use a metronome so the rhythm is rock solid before the notes thin out in the stop-time section. Learn the strains one at a time and keep the left hand even. Have fun with the heel-stamp (or a firm foot-tap): it's meant to be played with a grin. And keep the tempo dignified — as Joplin always insisted, ragtime is never right played fast.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nTry Joplin's *The Entertainer* and *Maple Leaf Rag*, or the sunnier *Pineapple Rag*.",
     "details": {
       "key": "B-flat major (opening), moving to E-flat major",
       "era": "Ragtime",
@@ -1070,6 +1313,13 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "joplin-the-entertainer",
         "joplin-maple-leaf-rag",
         "joplin-pineapple-rag"
+      ],
+      "embeds": [
+        {
+          "tool": "circle-of-fifths",
+          "title": "Where this key sits",
+          "caption": "B-flat major (opening), moving to E-flat major on the circle of fifths — click a key to hear its tonic and see its signature."
+        }
       ]
     },
     "extraTags": [
@@ -1078,7 +1328,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "joplin-solace": {
-    "bodyMdx": "## About this piece\n\"Solace — A Mexican Serenade,\" published in 1909, is a piece apart in Joplin's output. Instead of the striding, syncopated energy of his rags, it drifts along on a gentle, swaying habanera rhythm — the same lilting \"tango\" feel found in Latin American dance music of the era. Many listeners know it from the film *The Sting*, where its tenderness offered a soft contrast to Joplin's bouncier numbers. It is one of his most lyrical, songful creations, closer to a love song than a dance.\n\n## What to listen for\nRather than the usual \"oom-pah,\" the left hand rocks in the habanera pattern — a long note followed by shorter ones that gives the music its gentle, swaying sway. Above it the right hand sings a warm, unhurried melody. Listen for how relaxed and romantic the whole thing feels: this is ragtime's more tender, reflective face, glowing in A-flat major.\n\n## What you'll learn\nYou'll get comfortable with the habanera rhythm, a building block of Latin, blues, and jazz styles alike. It's also an excellent study in playing lyrically — shaping a singing melody over a soft, dance-like accompaniment.\n\n## How to practise\nLearn the habanera left-hand pattern first and let it settle into a gentle groove; keep it quiet so the melody can sing over the top. Bring out the right-hand tune warmly and give the phrases room to breathe. This is a piece that rewards patience — take Joplin's advice and never play it fast; a slow, tender tempo is exactly right here.\n\n## If you like this\nExplore Joplin's more famous rags such as *The Entertainer*, or hear the same habanera \"Spanish tinge\" in W. C. Handy's *St. Louis Blues*.",
+    "bodyMdx": "## About this piece\n\"Solace — A Mexican Serenade,\" published in 1909, is a piece apart in Joplin's output. Instead of the striding, syncopated energy of his rags, it drifts along on a gentle, swaying habanera rhythm — the same lilting \"tango\" feel found in Latin American dance music of the era. Many listeners know it from the film *The Sting*, where its tenderness offered a soft contrast to Joplin's bouncier numbers. It is one of his most lyrical, songful creations, closer to a love song than a dance.\n\n## What to listen for\nRather than the usual \"oom-pah,\" the left hand rocks in the habanera pattern — a long note followed by shorter ones that gives the music its gentle, swaying sway. Above it the right hand sings a warm, unhurried melody. Listen for how relaxed and romantic the whole thing feels: this is ragtime's more tender, reflective face, glowing in A-flat major.\n\n## What you'll learn\nYou'll get comfortable with the habanera rhythm, a building block of Latin, blues, and jazz styles alike. It's also an excellent study in playing lyrically — shaping a singing melody over a soft, dance-like accompaniment.\n\n## How to practise\nLearn the habanera left-hand pattern first and let it settle into a gentle groove; keep it quiet so the melody can sing over the top. Bring out the right-hand tune warmly and give the phrases room to breathe. This is a piece that rewards patience — take Joplin's advice and never play it fast; a slow, tender tempo is exactly right here.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nExplore Joplin's more famous rags such as *The Entertainer*, or hear the same habanera \"Spanish tinge\" in W. C. Handy's *St. Louis Blues*.",
     "details": {
       "key": "A-flat major",
       "era": "Ragtime",
@@ -1091,6 +1341,13 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "joplin-the-entertainer",
         "joplin-pineapple-rag",
         "handy-st-louis-blues"
+      ],
+      "embeds": [
+        {
+          "tool": "circle-of-fifths",
+          "title": "Where this key sits",
+          "caption": "A-flat major on the circle of fifths — click a key to hear its tonic and see its signature."
+        }
       ]
     },
     "extraTags": [
@@ -1099,7 +1356,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "joplin-the-entertainer": {
-    "bodyMdx": "## About this piece\n\"The Entertainer\" is probably the single most recognisable piece of ragtime ever written. Scott Joplin — the \"King of Ragtime\" — published it in 1902 with the subtitle \"A Rag Time Two Step.\" For decades it was a period curiosity, until it was used in the 1973 film *The Sting* and became a worldwide hit all over again. Joplin was a serious, classically-minded composer who wanted ragtime respected as art music, and this cheerful, elegant rag shows exactly why it deserves to be.\n\n## What to listen for\nRagtime's signature sound is syncopation: the right-hand melody deliberately lands *between* the beats, tugging playfully against a steady left hand. Listen to how the left hand keeps a rock-solid \"oom-pah\" — a low bass note followed by a mid-range chord — like a marching band, while the tune skips and dances above it. Like a march, the piece is built from several distinct sections (strains), each with its own tune, and Joplin moves through them in a set order.\n\n## What you'll learn\nThis is a wonderful study in hand independence and rhythm: the left hand must stay steady and even while the right hand syncopates against it. You'll also sharpen your sense of steady pulse and get comfortable reading in 2/4.\n\n## How to practise\nMaster the left-hand \"oom-pah\" first until it is automatic — it is the engine of the whole piece. Then add the right hand slowly, counting carefully so the syncopations land accurately. Learn one strain at a time. And heed Joplin's own famous advice printed on his rags: \"Do not play this piece fast. It is never right to play ragtime fast.\" A relaxed, dignified tempo sounds far better than a rushed one.\n\n## If you like this\nTry Joplin's landmark *Maple Leaf Rag*, or explore the wider ragtime family with James Scott's *Frog Legs Rag*.",
+    "bodyMdx": "## About this piece\n\"The Entertainer\" is probably the single most recognisable piece of ragtime ever written. Scott Joplin — the \"King of Ragtime\" — published it in 1902 with the subtitle \"A Rag Time Two Step.\" For decades it was a period curiosity, until it was used in the 1973 film *The Sting* and became a worldwide hit all over again. Joplin was a serious, classically-minded composer who wanted ragtime respected as art music, and this cheerful, elegant rag shows exactly why it deserves to be.\n\n## What to listen for\nRagtime's signature sound is syncopation: the right-hand melody deliberately lands *between* the beats, tugging playfully against a steady left hand. Listen to how the left hand keeps a rock-solid \"oom-pah\" — a low bass note followed by a mid-range chord — like a marching band, while the tune skips and dances above it. Like a march, the piece is built from several distinct sections (strains), each with its own tune, and Joplin moves through them in a set order.\n\n## What you'll learn\nThis is a wonderful study in hand independence and rhythm: the left hand must stay steady and even while the right hand syncopates against it. You'll also sharpen your sense of steady pulse and get comfortable reading in 2/4.\n\n## How to practise\nMaster the left-hand \"oom-pah\" first until it is automatic — it is the engine of the whole piece. Then add the right hand slowly, counting carefully so the syncopations land accurately. Learn one strain at a time. And heed Joplin's own famous advice printed on his rags: \"Do not play this piece fast. It is never right to play ragtime fast.\" A relaxed, dignified tempo sounds far better than a rushed one.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nTry Joplin's landmark *Maple Leaf Rag*, or explore the wider ragtime family with James Scott's *Frog Legs Rag*.",
     "details": {
       "key": "C major",
       "era": "Ragtime",
@@ -1112,6 +1369,13 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "joplin-maple-leaf-rag",
         "joplin-pineapple-rag",
         "scott-frog-legs-rag"
+      ],
+      "embeds": [
+        {
+          "tool": "circle-of-fifths",
+          "title": "Where this key sits",
+          "caption": "C major on the circle of fifths — click a key to hear its tonic and see its signature."
+        }
       ]
     },
     "extraTags": [
@@ -1120,7 +1384,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "kuhlau-sonatina-op20-no1-1st-mvt": {
-    "bodyMdx": "## About this piece\nFriedrich Kuhlau was a German-born composer who fled Napoleon's occupation of Hamburg and settled in Copenhagen, where he became a central figure in Danish music. Today he's remembered by flautists for his flute works and by pianists everywhere for his teaching sonatinas — especially the sets Op. 20 and Op. 55, which sit on the shelf right beside Clementi's. The first movement of Op. 20 No. 1 in C major is a bright, idiomatic Allegro: a little more brilliant and pianistic than the average student piece, and genuinely fun to play once it's under the fingers.\n\n## What to listen for\nIt's a Classical sonata-form movement in sunny C major, sparkling with running scale and arpeggio figures. A lively first theme leads, via a busy transition, to a contrasting idea in the dominant, G major; a short development stirs the material before the recapitulation returns home. Kuhlau writes gratefully for the hands — the passagework glitters and sits well, so it sounds harder than it is once learned.\n\n## What you'll learn\nExpect a real polish of scale and arpeggio fluency, finger evenness at speed, clean Classical articulation, and hand coordination in quick passagework. It also reinforces the sonata-form roadmap and the discipline of keeping a steady tempo through brilliant runs.\n\n## How to practise\nIsolate the fast scale and arpeggio figures and practise them slowly with steady fingering, gradually increasing speed only when they're perfectly even. Keep the left hand light so the right-hand brilliance carries. Mind the articulation markings — the crispness is what makes it sparkle. Set a tempo you can hold all the way through rather than one that's fast only in the easy bars. Work in sections and hands-separately on the trickiest runs, then assemble patiently.\n\n## If you like this\nThe *Clementi Op. 36 No. 1* is its close cousin (and a touch easier). When these feel secure, Mozart's *Sonata K. 545* opens the door to the full Classical sonata.",
+    "bodyMdx": "## About this piece\nFriedrich Kuhlau was a German-born composer who fled Napoleon's occupation of Hamburg and settled in Copenhagen, where he became a central figure in Danish music. Today he's remembered by flautists for his flute works and by pianists everywhere for his teaching sonatinas — especially the sets Op. 20 and Op. 55, which sit on the shelf right beside Clementi's. The first movement of Op. 20 No. 1 in C major is a bright, idiomatic Allegro: a little more brilliant and pianistic than the average student piece, and genuinely fun to play once it's under the fingers.\n\n## What to listen for\nIt's a Classical sonata-form movement in sunny C major, sparkling with running scale and arpeggio figures. A lively first theme leads, via a busy transition, to a contrasting idea in the dominant, G major; a short development stirs the material before the recapitulation returns home. Kuhlau writes gratefully for the hands — the passagework glitters and sits well, so it sounds harder than it is once learned.\n\n## What you'll learn\nExpect a real polish of scale and arpeggio fluency, finger evenness at speed, clean Classical articulation, and hand coordination in quick passagework. It also reinforces the sonata-form roadmap and the discipline of keeping a steady tempo through brilliant runs.\n\n## How to practise\nIsolate the fast scale and arpeggio figures and practise them slowly with steady fingering, gradually increasing speed only when they're perfectly even. Keep the left hand light so the right-hand brilliance carries. Mind the articulation markings — the crispness is what makes it sparkle. Set a tempo you can hold all the way through rather than one that's fast only in the easy bars. Work in sections and hands-separately on the trickiest runs, then assemble patiently.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nThe *Clementi Op. 36 No. 1* is its close cousin (and a touch easier). When these feel secure, Mozart's *Sonata K. 545* opens the door to the full Classical sonata.",
     "details": {
       "key": "C major",
       "era": "Classical",
@@ -1133,6 +1397,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "clementi-sonatina-op36-no1-1st-mvt",
         "mozart-sonata-k545-1st-mvt",
         "beethoven-sonatina-in-g-anh5"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of C major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "C",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -1141,7 +1415,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "lamb-american-beauty-rag": {
-    "bodyMdx": "## About this piece\nJoseph Lamb was the third great master of classic ragtime, alongside Scott Joplin and James Scott — and, remarkably, the only one of the three who was neither African American nor a professional performer. He was a Joplin admirer discovered by the publisher John Stark, who issued \"American Beauty Rag\" in 1913 under the subtitle \"A Rag of Class.\" Lamb himself called it a \"heavy\" rag: it blends Joplin's dignity with Scott's brilliance into something rich, full-textured, and ambitious.\n\n## What to listen for\nThis is one of the most harmonically lush rags ever written. Over the steady \"oom-pah\" left hand, Lamb fills the right hand with thick chords and full-bodied melodies rather than thin single lines, so the sound is warm and orchestral. Listen for the sweep and grandeur of the strains as they unfold in E-flat major — it feels less like a dance-hall tune and more like a concert piece.\n\n## What you'll learn\nThe dense, chord-rich writing makes this an advanced study in playing full textures cleanly: you'll work on voicing chords, managing wide hand shapes, and keeping the syncopation crisp even when both hands are busy. It stretches technique and musicianship together.\n\n## How to practise\nBreak it into strains and work slowly, giving special attention to the thick right-hand chords — practise them blocked and then in rhythm. Keep the left-hand bass steady and controlled beneath the fuller right hand. Because the texture is heavy, a moderate, unhurried tempo (true to Joplin's ragtime rule) actually sounds best and keeps every voice audible.\n\n## If you like this\nCompare it with James Scott's cascading *Frog Legs Rag* and Joplin's foundational *Maple Leaf Rag* to hear the three classic-rag masters side by side.",
+    "bodyMdx": "## About this piece\nJoseph Lamb was the third great master of classic ragtime, alongside Scott Joplin and James Scott — and, remarkably, the only one of the three who was neither African American nor a professional performer. He was a Joplin admirer discovered by the publisher John Stark, who issued \"American Beauty Rag\" in 1913 under the subtitle \"A Rag of Class.\" Lamb himself called it a \"heavy\" rag: it blends Joplin's dignity with Scott's brilliance into something rich, full-textured, and ambitious.\n\n## What to listen for\nThis is one of the most harmonically lush rags ever written. Over the steady \"oom-pah\" left hand, Lamb fills the right hand with thick chords and full-bodied melodies rather than thin single lines, so the sound is warm and orchestral. Listen for the sweep and grandeur of the strains as they unfold in E-flat major — it feels less like a dance-hall tune and more like a concert piece.\n\n## What you'll learn\nThe dense, chord-rich writing makes this an advanced study in playing full textures cleanly: you'll work on voicing chords, managing wide hand shapes, and keeping the syncopation crisp even when both hands are busy. It stretches technique and musicianship together.\n\n## How to practise\nBreak it into strains and work slowly, giving special attention to the thick right-hand chords — practise them blocked and then in rhythm. Keep the left-hand bass steady and controlled beneath the fuller right hand. Because the texture is heavy, a moderate, unhurried tempo (true to Joplin's ragtime rule) actually sounds best and keeps every voice audible.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nCompare it with James Scott's cascading *Frog Legs Rag* and Joplin's foundational *Maple Leaf Rag* to hear the three classic-rag masters side by side.",
     "details": {
       "key": "E-flat major",
       "era": "Ragtime",
@@ -1154,6 +1428,13 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "scott-frog-legs-rag",
         "joplin-maple-leaf-rag",
         "joplin-the-entertainer"
+      ],
+      "embeds": [
+        {
+          "tool": "circle-of-fifths",
+          "title": "Where this key sits",
+          "caption": "E-flat major on the circle of fifths — click a key to hear its tonic and see its signature."
+        }
       ]
     },
     "extraTags": [
@@ -1209,7 +1490,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "mozart-minuet-in-f-k2": {
-    "bodyMdx": "## About this piece\nHere is Mozart the child prodigy. He wrote this little minuet in early 1762, when he was just six years old, in Salzburg; his father Leopold preserved it in the family notebook. It carries the catalogue number K. 2 — one of the earliest entries in the whole Köchel catalogue of Mozart's works. As a window into how one of history's greatest composers began, it is irresistible, and it remains a gentle, genuinely elegant first Classical piece.\n\n## What to listen for\nA minuet is a graceful court dance in 3/4, and this one is short, poised, and tuneful in the sunny key of F major. It falls into a neat binary shape — two repeated sections — with clear four-bar phrases that answer one another like question and reply. The texture is light: a clean melody in the right hand over a simple, dancing left-hand accompaniment. Notice how tidily everything balances; even a six-year-old Mozart had an instinct for symmetry.\n\n## What you'll learn\nThis piece builds a feel for Classical phrasing — shapely, balanced phrases with clear beginnings and endings — plus a steady dance pulse and light, articulate touch. It's also excellent early training in playing a graceful melody over a quiet accompaniment.\n\n## How to practise\nCount the 3/4 with a light lift on beat one, as if you were stepping a dance rather than marching. Keep the left hand soft and secondary so the tune always sings above it. Shape each four-bar phrase, then relax at its cadence before the next begins. Watch the ornaments (small trills or turns) if your edition includes them — learn the notes plainly first, then add the decoration once the line flows. Practise the two halves separately, then link them.\n\n## If you like this\nCompare it with the Baroque *Minuet in G* to hear how dance style changed between eras. When you're ready for more Mozart, his *Sonata K. 545* first movement is the natural next step.",
+    "bodyMdx": "## About this piece\nHere is Mozart the child prodigy. He wrote this little minuet in early 1762, when he was just six years old, in Salzburg; his father Leopold preserved it in the family notebook. It carries the catalogue number K. 2 — one of the earliest entries in the whole Köchel catalogue of Mozart's works. As a window into how one of history's greatest composers began, it is irresistible, and it remains a gentle, genuinely elegant first Classical piece.\n\n## What to listen for\nA minuet is a graceful court dance in 3/4, and this one is short, poised, and tuneful in the sunny key of F major. It falls into a neat binary shape — two repeated sections — with clear four-bar phrases that answer one another like question and reply. The texture is light: a clean melody in the right hand over a simple, dancing left-hand accompaniment. Notice how tidily everything balances; even a six-year-old Mozart had an instinct for symmetry.\n\n## What you'll learn\nThis piece builds a feel for Classical phrasing — shapely, balanced phrases with clear beginnings and endings — plus a steady dance pulse and light, articulate touch. It's also excellent early training in playing a graceful melody over a quiet accompaniment.\n\n## How to practise\nCount the 3/4 with a light lift on beat one, as if you were stepping a dance rather than marching. Keep the left hand soft and secondary so the tune always sings above it. Shape each four-bar phrase, then relax at its cadence before the next begins. Watch the ornaments (small trills or turns) if your edition includes them — learn the notes plainly first, then add the decoration once the line flows. Practise the two halves separately, then link them.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nCompare it with the Baroque *Minuet in G* to hear how dance style changed between eras. When you're ready for more Mozart, his *Sonata K. 545* first movement is the natural next step.",
     "details": {
       "key": "F major",
       "era": "Classical",
@@ -1222,6 +1503,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "bach-minuet-in-g",
         "mozart-sonata-k545-1st-mvt",
         "clementi-sonatina-op36-no1-1st-mvt"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of F major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "F",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -1230,7 +1521,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "mozart-sonata-k545-1st-mvt": {
-    "bodyMdx": "## About this piece\nMozart himself entered this sonata in his catalogue in 1788 as a work \"for beginners,\" and it has been known ever since as the *Sonata facile* (\"easy sonata\") — though every pianist learns that \"easy\" Mozart is a friendly fiction. The first movement, an Allegro in C major, is a model of Classical clarity and one of the most recognisable pieces in the whole repertoire. Nothing is hidden here: the textures are transparent, so every note counts, and that very cleanness is what makes it a rite of passage.\n\n## What to listen for\nThis is textbook sonata-allegro form. A bright, symmetrical first theme opens in C major; a scampering scale passage carries you to a second theme in the dominant, G major. A short development wanders through other keys before the recapitulation brings the themes back — famously, Mozart returns the first theme in F major before steering home. Underneath much of it runs the *Alberti bass*: a broken-chord left-hand pattern (low–high–middle–high) that gives the music its gentle, murmuring motor.\n\n## What you'll learn\nYou'll master the Alberti bass — quiet, even, and perfectly steady so it never competes with the melody — plus fluent C and G major scale runs, balanced two-hand coordination, and the elegant phrasing that Classical style demands. It's a complete lesson in control and clarity.\n\n## How to practise\nGive the Alberti bass its own dedicated practice: keep it soft, level, and relaxed, rotating gently from the wrist rather than jabbing each note. Drill the scale passages slowly with clean fingering until they run like beads. Balance the hands so the right-hand tune always floats above the accompaniment. Keep a strict, moderate tempo — rushing exposes every unevenness. Learn it in sections (first theme, transition, second theme) and only assemble the whole once each part is secure.\n\n## If you like this\nFor the same Classical form at a gentler size, try the *Clementi Sonatina Op. 36 No. 1* or the *Kuhlau Sonatina Op. 20 No. 1*. To hear where Mozart began, revisit his childhood *Minuet in F, K. 2*.",
+    "bodyMdx": "## About this piece\nMozart himself entered this sonata in his catalogue in 1788 as a work \"for beginners,\" and it has been known ever since as the *Sonata facile* (\"easy sonata\") — though every pianist learns that \"easy\" Mozart is a friendly fiction. The first movement, an Allegro in C major, is a model of Classical clarity and one of the most recognisable pieces in the whole repertoire. Nothing is hidden here: the textures are transparent, so every note counts, and that very cleanness is what makes it a rite of passage.\n\n## What to listen for\nThis is textbook sonata-allegro form. A bright, symmetrical first theme opens in C major; a scampering scale passage carries you to a second theme in the dominant, G major. A short development wanders through other keys before the recapitulation brings the themes back — famously, Mozart returns the first theme in F major before steering home. Underneath much of it runs the *Alberti bass*: a broken-chord left-hand pattern (low–high–middle–high) that gives the music its gentle, murmuring motor.\n\n## What you'll learn\nYou'll master the Alberti bass — quiet, even, and perfectly steady so it never competes with the melody — plus fluent C and G major scale runs, balanced two-hand coordination, and the elegant phrasing that Classical style demands. It's a complete lesson in control and clarity.\n\n## How to practise\nGive the Alberti bass its own dedicated practice: keep it soft, level, and relaxed, rotating gently from the wrist rather than jabbing each note. Drill the scale passages slowly with clean fingering until they run like beads. Balance the hands so the right-hand tune always floats above the accompaniment. Keep a strict, moderate tempo — rushing exposes every unevenness. Learn it in sections (first theme, transition, second theme) and only assemble the whole once each part is secure.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nFor the same Classical form at a gentler size, try the *Clementi Sonatina Op. 36 No. 1* or the *Kuhlau Sonatina Op. 20 No. 1*. To hear where Mozart began, revisit his childhood *Minuet in F, K. 2*.",
     "details": {
       "key": "C major",
       "era": "Classical",
@@ -1243,6 +1534,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "clementi-sonatina-op36-no1-1st-mvt",
         "kuhlau-sonatina-op20-no1-1st-mvt",
         "mozart-minuet-in-f-k2"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of C major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "C",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -1590,7 +1891,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "satie-gnossienne-no1": {
-    "bodyMdx": "## About this piece\nIf the *Gymnopédies* made Satie famous, the *Gnossiennes* show just how far ahead of his time he was. Composed around 1890, the first *Gnossienne* is one of his most beguiling creations. Satie invented the word \"Gnossienne\" himself — it may nod to the ancient Cretan palace of Knossos — for a set of pieces that ignore the ordinary rules of classical music. There are no bar lines and no time signature at all; instead, Satie scattered strange, poetic instructions through the score in French (\"very shiny,\" \"question yourself,\" \"wonder about yourself\"). The result is hypnotic, exotic, and a touch mysterious.\n\n## What to listen for\nA steady, swaying left-hand accompaniment holds everything together while the right hand winds a snake-charmer melody above it, full of decorative turns and unusual scale colours. The tune leans on modal and minor sounds rather than a bright major key, which gives it that faintly Middle-Eastern or Eastern-European flavour. Notice how the same melodic idea returns, slightly changed each time, like a thought you keep circling back to.\n\n## What you'll learn\nBecause there are no bar lines, you get to feel rhythm as flow rather than counting. This is a superb piece for developing rubato — the art of gently stretching and easing the tempo for expression — and for shaping an ornamented melodic line over a calm accompaniment.\n\n## How to practise\nStart by learning the repeating left-hand pattern until it is completely secure and quiet; it is your anchor. Then float the right hand on top, giving the little ornaments time to speak rather than rushing them. Read Satie's written directions and let them colour your mood. Keep the pedal light and change it with the harmony.\n\n## If you like this\nExplore Satie's *Gymnopédie No. 1* for a gentler cousin, or step into Debussy's *Première Arabesque* and *Clair de Lune* for related impressionist atmospheres.",
+    "bodyMdx": "## About this piece\nIf the *Gymnopédies* made Satie famous, the *Gnossiennes* show just how far ahead of his time he was. Composed around 1890, the first *Gnossienne* is one of his most beguiling creations. Satie invented the word \"Gnossienne\" himself — it may nod to the ancient Cretan palace of Knossos — for a set of pieces that ignore the ordinary rules of classical music. There are no bar lines and no time signature at all; instead, Satie scattered strange, poetic instructions through the score in French (\"very shiny,\" \"question yourself,\" \"wonder about yourself\"). The result is hypnotic, exotic, and a touch mysterious.\n\n## What to listen for\nA steady, swaying left-hand accompaniment holds everything together while the right hand winds a snake-charmer melody above it, full of decorative turns and unusual scale colours. The tune leans on modal and minor sounds rather than a bright major key, which gives it that faintly Middle-Eastern or Eastern-European flavour. Notice how the same melodic idea returns, slightly changed each time, like a thought you keep circling back to.\n\n## What you'll learn\nBecause there are no bar lines, you get to feel rhythm as flow rather than counting. This is a superb piece for developing rubato — the art of gently stretching and easing the tempo for expression — and for shaping an ornamented melodic line over a calm accompaniment.\n\n## How to practise\nStart by learning the repeating left-hand pattern until it is completely secure and quiet; it is your anchor. Then float the right hand on top, giving the little ornaments time to speak rather than rushing them. Read Satie's written directions and let them colour your mood. Keep the pedal light and change it with the harmony.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nExplore Satie's *Gymnopédie No. 1* for a gentler cousin, or step into Debussy's *Première Arabesque* and *Clair de Lune* for related impressionist atmospheres.",
     "details": {
       "key": "F minor (modal)",
       "era": "Impressionist",
@@ -1603,6 +1904,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "satie-gymnopedie-no1",
         "debussy-clair-de-lune",
         "debussy-arabesque-no1"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of F minor",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "F",
+          "scale": "natural-minor",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -1611,7 +1922,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "satie-gymnopedie-no1": {
-    "bodyMdx": "## About this piece\nErik Satie published his three *Gymnopédies* in 1888, and this first one has quietly become the most famous. Satie was a young, unconventional figure in Paris — years before Debussy and Ravel made \"impressionism\" a household word — and these pieces already sound like nobody else's. The odd title borrows an ancient Greek word for a festival dance, but don't picture anything energetic: the music barely moves, and that stillness is the whole point. It is spare, tender, and just a little melancholy, marked *lent et douloureux* (\"slow and sorrowful\"). Once you have heard it, you never forget it.\n\n## What to listen for\nThe magic is in the left hand. It keeps a gentle, rocking three-beat pattern — a low bass note, then a soft chord — while the right hand sings a long, unhurried melody above it. Listen to how the harmony drifts between two rich seventh chords rather than resolving in the usual way; that floating, unresolved colour is why the piece feels like a dream. Nothing is in a hurry, and every note is given room to breathe.\n\n## What you'll learn\nYou'll practise voicing a melody above a soft accompaniment, keeping a steady waltz-like pulse in one hand while shaping a singing line in the other. It's a wonderful study in playing slowly and musically — harder than it looks, because there is nowhere to hide.\n\n## How to practise\nKeep the left hand quiet and even; let the bass notes ring under the chords. Bring the right-hand melody out gently on top. Use the sustain pedal to blend each bar, changing it cleanly with the harmony so the sound never turns muddy. Above all, resist the urge to speed up — the beauty lives in patience and calm.\n\n## If you like this\nTry Satie's *Gnossienne No. 1* for more of his hypnotic, modal world, or Debussy's *Clair de Lune* for the fuller flowering of French impressionism.",
+    "bodyMdx": "## About this piece\nErik Satie published his three *Gymnopédies* in 1888, and this first one has quietly become the most famous. Satie was a young, unconventional figure in Paris — years before Debussy and Ravel made \"impressionism\" a household word — and these pieces already sound like nobody else's. The odd title borrows an ancient Greek word for a festival dance, but don't picture anything energetic: the music barely moves, and that stillness is the whole point. It is spare, tender, and just a little melancholy, marked *lent et douloureux* (\"slow and sorrowful\"). Once you have heard it, you never forget it.\n\n## What to listen for\nThe magic is in the left hand. It keeps a gentle, rocking three-beat pattern — a low bass note, then a soft chord — while the right hand sings a long, unhurried melody above it. Listen to how the harmony drifts between two rich seventh chords rather than resolving in the usual way; that floating, unresolved colour is why the piece feels like a dream. Nothing is in a hurry, and every note is given room to breathe.\n\n## What you'll learn\nYou'll practise voicing a melody above a soft accompaniment, keeping a steady waltz-like pulse in one hand while shaping a singing line in the other. It's a wonderful study in playing slowly and musically — harder than it looks, because there is nowhere to hide.\n\n## How to practise\nKeep the left hand quiet and even; let the bass notes ring under the chords. Bring the right-hand melody out gently on top. Use the sustain pedal to blend each bar, changing it cleanly with the harmony so the sound never turns muddy. Above all, resist the urge to speed up — the beauty lives in patience and calm.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nTry Satie's *Gnossienne No. 1* for more of his hypnotic, modal world, or Debussy's *Clair de Lune* for the fuller flowering of French impressionism.",
     "details": {
       "key": "D major",
       "era": "Impressionist",
@@ -1624,6 +1935,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "satie-gnossienne-no1",
         "debussy-clair-de-lune",
         "debussy-arabesque-no1"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of D major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "D",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -1632,7 +1953,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "scarborough-fair": {
-    "bodyMdx": "## About this piece\n\"Scarborough Fair\" is a traditional Northern English ballad (Roud 12), related to the older Scottish \"The Elfin Knight\" (Child Ballad #2), which has been traced back to around 1670. It has **no single composer** — it circulated for centuries with many tunes and verses before settling into the version popularised in the 20th century (famously by Simon & Garfunkel). Its most distinctive feature is its **Dorian mode**, giving it that unmistakable haunting, ancient quality. The refrain \"parsley, sage, rosemary and thyme\" is its signature.\n\n## What to listen for\nThe Dorian sound — a minor scale with one brightened note (a raised sixth) — which makes the melody feel neither fully sad nor fully happy, but suspended in an old, mysterious place. The lilting triple time and the returning herb refrain give it a spellbound, incantatory feel.\n\n## What you'll learn\nPlaying in a **mode** rather than a standard major/minor key, fingerstyle melody-and-accompaniment, and shaping long, calm phrases. It's an excellent piece for hearing how a single altered note can transform a scale's character.\n\n## Chords, keys and approach\nOften played in **E Dorian** (chords like **Em – D – G – Em**, with the D and G giving the modal colour) or transposed to A minor / D Dorian to suit a voice. Best suited to gentle **fingerpicking** — a soft, rolling arpeggio under the melody — though a light arpeggiated strum works too. Keep it quiet and unhurried.\n\n## How to practise\nPlay the melody alone first and let the Dorian raised sixth register in your ear. Add a simple arpeggiated accompaniment beneath it. Keep the pulse steady and the touch soft. Resist \"fixing\" the modal notes — they define the song.\n\n## If you like this\nTry *Greensleeves*, another modal English tune, or *House of the Rising Sun*.",
+    "bodyMdx": "## About this piece\n\"Scarborough Fair\" is a traditional Northern English ballad (Roud 12), related to the older Scottish \"The Elfin Knight\" (Child Ballad #2), which has been traced back to around 1670. It has **no single composer** — it circulated for centuries with many tunes and verses before settling into the version popularised in the 20th century (famously by Simon & Garfunkel). Its most distinctive feature is its **Dorian mode**, giving it that unmistakable haunting, ancient quality. The refrain \"parsley, sage, rosemary and thyme\" is its signature.\n\n## What to listen for\nThe Dorian sound — a minor scale with one brightened note (a raised sixth) — which makes the melody feel neither fully sad nor fully happy, but suspended in an old, mysterious place. The lilting triple time and the returning herb refrain give it a spellbound, incantatory feel.\n\n## What you'll learn\nPlaying in a **mode** rather than a standard major/minor key, fingerstyle melody-and-accompaniment, and shaping long, calm phrases. It's an excellent piece for hearing how a single altered note can transform a scale's character.\n\n## Chords, keys and approach\nOften played in **E Dorian** (chords like **Em – D – G – Em**, with the D and G giving the modal colour) or transposed to A minor / D Dorian to suit a voice. Best suited to gentle **fingerpicking** — a soft, rolling arpeggio under the melody — though a light arpeggiated strum works too. Keep it quiet and unhurried.\n\n## How to practise\nPlay the melody alone first and let the Dorian raised sixth register in your ear. Add a simple arpeggiated accompaniment beneath it. Keep the pulse steady and the touch soft. Resist \"fixing\" the modal notes — they define the song.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nTry *Greensleeves*, another modal English tune, or *House of the Rising Sun*.",
     "details": {
       "key": "E Dorian (commonly played in A minor / D Dorian too)",
       "era": "Traditional",
@@ -1645,6 +1966,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "house-of-the-rising-sun",
         "wildwood-flower",
         "frankie-and-johnny"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The Dorian mode",
+          "caption": "The tune is modal — E Dorian (a minor scale with a raised 6th). Click through it to hear that bittersweet colour.",
+          "root": "E",
+          "scale": "dorian",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -1652,7 +1983,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "schubert-ave-maria": {
-    "bodyMdx": "## About this piece\nSchubert's \"Ave Maria\" is one of the most cherished melodies ever written, though its origins may surprise you. Composed in 1825, it is really \"Ellens dritter Gesang\" (Ellen's Third Song), D. 839 — a setting of words from Sir Walter Scott's poem *The Lady of the Lake*, in which the young heroine Ellen sings a prayer to the Virgin Mary. Only later did the familiar Latin \"Ave Maria\" text get fitted to Schubert's tune, and the association stuck so firmly that the song is now sung at weddings and services the world over. Schubert wrote more than 600 songs in his short life; this is among the most beloved of them all. Here it is arranged for solo piano.\n\n## What to listen for\nAbove all, listen for the serene, arching vocal melody, now sung by the pianist's hands instead of a voice. Underneath it flows a steady, rocking accompaniment of gently repeated chords that creates a calm, prayerful atmosphere. Notice how the melody rises to tender high points and then settles again — Schubert's gift for pure, singing melody is on full display.\n\n## What you'll learn\nThis is a lovely study in \"singing\" at the piano: bringing out a smooth melodic line over a soft, flowing accompaniment. You'll practise balancing the hands so the tune stands out, keeping a steady pulse in the accompaniment, and using the pedal to warm the sound.\n\n## How to practise\nLearn the accompaniment first and keep it quiet and even — it should support, never compete. Then shape the melody on top, phrasing it as a singer would breathe. Change the pedal cleanly with each harmony so the chords stay clear. Take it slowly and expressively; the beauty is in the calm, unhurried flow.\n\n## If you like this\nTry the gentle simplicity of Beethoven's *Ode to Joy*, or move toward the impressionists with Satie's *Gymnopédie No. 1* and Debussy's *Clair de Lune*.",
+    "bodyMdx": "## About this piece\nSchubert's \"Ave Maria\" is one of the most cherished melodies ever written, though its origins may surprise you. Composed in 1825, it is really \"Ellens dritter Gesang\" (Ellen's Third Song), D. 839 — a setting of words from Sir Walter Scott's poem *The Lady of the Lake*, in which the young heroine Ellen sings a prayer to the Virgin Mary. Only later did the familiar Latin \"Ave Maria\" text get fitted to Schubert's tune, and the association stuck so firmly that the song is now sung at weddings and services the world over. Schubert wrote more than 600 songs in his short life; this is among the most beloved of them all. Here it is arranged for solo piano.\n\n## What to listen for\nAbove all, listen for the serene, arching vocal melody, now sung by the pianist's hands instead of a voice. Underneath it flows a steady, rocking accompaniment of gently repeated chords that creates a calm, prayerful atmosphere. Notice how the melody rises to tender high points and then settles again — Schubert's gift for pure, singing melody is on full display.\n\n## What you'll learn\nThis is a lovely study in \"singing\" at the piano: bringing out a smooth melodic line over a soft, flowing accompaniment. You'll practise balancing the hands so the tune stands out, keeping a steady pulse in the accompaniment, and using the pedal to warm the sound.\n\n## How to practise\nLearn the accompaniment first and keep it quiet and even — it should support, never compete. Then shape the melody on top, phrasing it as a singer would breathe. Change the pedal cleanly with each harmony so the chords stay clear. Take it slowly and expressively; the beauty is in the calm, unhurried flow.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nTry the gentle simplicity of Beethoven's *Ode to Joy*, or move toward the impressionists with Satie's *Gymnopédie No. 1* and Debussy's *Clair de Lune*.",
     "details": {
       "key": "B-flat major (original song key; piano arrangements vary)",
       "era": "Romantic",
@@ -1665,6 +1996,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "beethoven-ode-to-joy",
         "satie-gymnopedie-no1",
         "debussy-clair-de-lune"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of B♭ major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "Bb",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -1673,7 +2014,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "schubert-landler-d366": {
-    "bodyMdx": "## About this piece\nFranz Schubert wrote hundreds of short dances for piano — Ländler, waltzes, German dances, écossaises — the kind of music that filled Viennese homes and evenings among friends (the famous \"Schubertiades\"). D. 366 is a set of seventeen Ländler, and this brief B-flat major dance is a friendly first taste of them. The Ländler is a slow Austrian country dance in triple time, the rustic ancestor of the waltz. These pieces were never meant to be grand; they are warm, tuneful, and utterly charming — Schubert at his most companionable. (Individual dances in the set carry different keys; this one is in B-flat major.)\n\n## What to listen for\nListen for the easy lilt of 3/4 at a relaxed, dancing tempo — heavier on beat one, lighter after. The B-flat major key gives it a gentle, sunny glow. The shape is tiny and clear: short repeated strains, a melody in the right hand over a simple bass-and-chords accompaniment. There's a homely, slightly nostalgic sweetness to it that is pure Schubert.\n\n## What you'll learn\nThis little dance builds a secure triple-time feel, the basic waltz/Ländler left-hand pattern, tidy phrasing of short strains, and a light, singing right-hand touch. It's an ideal, low-pressure introduction to Romantic-era style.\n\n## How to practise\nFeel the dance in one pulse per bar rather than counting three stiffly — a gentle lean on beat one keeps it lilting. Keep the left hand soft and springy so the tune stays on top. Because the strains repeat, use the repeats to add a little dynamic contrast (say it once plainly, once more warmly). Learn hands separately, then join slowly; there's very little here to trip you, so aim for musical grace rather than mere accuracy.\n\n## If you like this\nIt pairs naturally with Chopin's *Waltz in A minor* (the dance grown up) and Schumann's gentle *Melody, Op. 68 No. 1*. Mozart's *Minuet in F* is another courtly-dance cousin.",
+    "bodyMdx": "## About this piece\nFranz Schubert wrote hundreds of short dances for piano — Ländler, waltzes, German dances, écossaises — the kind of music that filled Viennese homes and evenings among friends (the famous \"Schubertiades\"). D. 366 is a set of seventeen Ländler, and this brief B-flat major dance is a friendly first taste of them. The Ländler is a slow Austrian country dance in triple time, the rustic ancestor of the waltz. These pieces were never meant to be grand; they are warm, tuneful, and utterly charming — Schubert at his most companionable. (Individual dances in the set carry different keys; this one is in B-flat major.)\n\n## What to listen for\nListen for the easy lilt of 3/4 at a relaxed, dancing tempo — heavier on beat one, lighter after. The B-flat major key gives it a gentle, sunny glow. The shape is tiny and clear: short repeated strains, a melody in the right hand over a simple bass-and-chords accompaniment. There's a homely, slightly nostalgic sweetness to it that is pure Schubert.\n\n## What you'll learn\nThis little dance builds a secure triple-time feel, the basic waltz/Ländler left-hand pattern, tidy phrasing of short strains, and a light, singing right-hand touch. It's an ideal, low-pressure introduction to Romantic-era style.\n\n## How to practise\nFeel the dance in one pulse per bar rather than counting three stiffly — a gentle lean on beat one keeps it lilting. Keep the left hand soft and springy so the tune stays on top. Because the strains repeat, use the repeats to add a little dynamic contrast (say it once plainly, once more warmly). Learn hands separately, then join slowly; there's very little here to trip you, so aim for musical grace rather than mere accuracy.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nIt pairs naturally with Chopin's *Waltz in A minor* (the dance grown up) and Schumann's gentle *Melody, Op. 68 No. 1*. Mozart's *Minuet in F* is another courtly-dance cousin.",
     "details": {
       "key": "B-flat major",
       "era": "Romantic",
@@ -1686,6 +2027,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "chopin-waltz-a-minor-b150",
         "schumann-melody-op68-no1",
         "mozart-minuet-in-f-k2"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of B♭ major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "Bb",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -1694,7 +2045,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "schumann-melody-op68-no1": {
-    "bodyMdx": "## About this piece\nIn 1848 Robert Schumann wrote his *Album for the Young* (*Album für die Jugend*, Op. 68), a collection of 43 short pieces, partly as a birthday gift for his eldest daughter. He arranged them roughly from easiest to hardest, and *Melodie* (Melody) opens the whole album — the gentlest possible welcome. It's a small, tender piece, but written by a great composer with real care, so it teaches good habits from the very first note. Generations of beginners have started their Romantic-era journey right here.\n\n## What to listen for\nJust what the title promises: a simple, flowing melody in warm C major, in an unhurried 4/4. The right hand carries the tune while the left hand supplies quiet, supportive harmony, often in flowing lines of its own. The form is short and symmetrical, built from balanced phrases that answer one another. There's nothing flashy — the beauty is in the calm, singing line and its gentle rise and fall.\n\n## What you'll learn\nThis piece develops a legato singing tone, balance between a melody and a soft accompaniment, and clear phrasing — hearing where a musical sentence begins, peaks, and ends. It's also excellent gentle sight-reading practice in an easy key.\n\n## How to practise\nPlay the right-hand melody on its own first and shape it like a sung line, breathing at the phrase ends. Then bring in the left hand softly so it never competes. Aim for smooth, connected legato — join each note to the next with the fingers, keeping the hand relaxed. Keep a steady, easy tempo; this is not a piece to rush. Listen constantly to your tone, since evenness and warmth are the whole goal here.\n\n## If you like this\nExplore more of the *Album for the Young* — the lively *Wild Horseman* is a favourite next step. Burgmüller's *La Candeur* offers the same gentle, singing character, and Schubert's *Ländler* is a friendly dance in a similar spirit.",
+    "bodyMdx": "## About this piece\nIn 1848 Robert Schumann wrote his *Album for the Young* (*Album für die Jugend*, Op. 68), a collection of 43 short pieces, partly as a birthday gift for his eldest daughter. He arranged them roughly from easiest to hardest, and *Melodie* (Melody) opens the whole album — the gentlest possible welcome. It's a small, tender piece, but written by a great composer with real care, so it teaches good habits from the very first note. Generations of beginners have started their Romantic-era journey right here.\n\n## What to listen for\nJust what the title promises: a simple, flowing melody in warm C major, in an unhurried 4/4. The right hand carries the tune while the left hand supplies quiet, supportive harmony, often in flowing lines of its own. The form is short and symmetrical, built from balanced phrases that answer one another. There's nothing flashy — the beauty is in the calm, singing line and its gentle rise and fall.\n\n## What you'll learn\nThis piece develops a legato singing tone, balance between a melody and a soft accompaniment, and clear phrasing — hearing where a musical sentence begins, peaks, and ends. It's also excellent gentle sight-reading practice in an easy key.\n\n## How to practise\nPlay the right-hand melody on its own first and shape it like a sung line, breathing at the phrase ends. Then bring in the left hand softly so it never competes. Aim for smooth, connected legato — join each note to the next with the fingers, keeping the hand relaxed. Keep a steady, easy tempo; this is not a piece to rush. Listen constantly to your tone, since evenness and warmth are the whole goal here.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nExplore more of the *Album for the Young* — the lively *Wild Horseman* is a favourite next step. Burgmüller's *La Candeur* offers the same gentle, singing character, and Schubert's *Ländler* is a friendly dance in a similar spirit.",
     "details": {
       "key": "C major",
       "era": "Romantic",
@@ -1707,6 +2058,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "schumann-the-wild-horseman-op68",
         "schubert-landler-d366",
         "burgmuller-la-candeur-op100-no1"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of C major",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "C",
+          "scale": "major",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -1715,7 +2076,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "schumann-the-wild-horseman-op68": {
-    "bodyMdx": "## About this piece\n*The Wild Horseman* (*Wilder Reiter*) is No. 8 from Schumann's 1848 *Album for the Young*, and it's a perennial favourite because it does exactly what it says: it gallops. Where the album's opening *Melody* was calm and singing, this one is all energy and mischief — a picture in sound of a young rider tearing across the countryside. It's short, exciting, and hugely rewarding for a beginner, giving a real sense of drama with modest technical means.\n\n## What to listen for\nThe galloping feel comes from its bouncy 6/8 metre and crisp, detached (staccato) chords tossed between the hands. It's in A minor and built as a neat ternary form (ABA): a boisterous outer section in the minor, a brighter middle section that leaps into the major with the theme handed to the left hand, then the wild opening returns. Listen for the hands \"passing the horse\" back and forth and for the sudden dynamic surprises.\n\n## What you'll learn\nThis piece teaches crisp staccato touch, quick and accurate hand-to-hand coordination, a strong sense of the 6/8 gallop rhythm, and playful dynamic contrast (loud outbursts against quieter moments). It's a great confidence-builder in rhythmic drive.\n\n## How to practise\nKeep the chords light and bouncy — staccato comes from a quick release, not a hard press. Practise the hand-swapping slowly so each chord lands cleanly on the beat before you speed up. Feel the 6/8 in two big pulses per bar to get the gallop, not six stiff beats. Bring out the dynamic contrasts boldly; the drama is half the fun. Learn the three sections separately, noting how the middle jumps to major, then assemble. Only chase the exciting tempo once it's rock-solid slow.\n\n## If you like this\nStay in the *Album for the Young* with the gentle *Melody, Op. 68 No. 1* for contrast. For more sparkling energy, Burgmüller's *Arabesque* is a perfect next challenge; Schubert's *Ländler* keeps the dance feeling.",
+    "bodyMdx": "## About this piece\n*The Wild Horseman* (*Wilder Reiter*) is No. 8 from Schumann's 1848 *Album for the Young*, and it's a perennial favourite because it does exactly what it says: it gallops. Where the album's opening *Melody* was calm and singing, this one is all energy and mischief — a picture in sound of a young rider tearing across the countryside. It's short, exciting, and hugely rewarding for a beginner, giving a real sense of drama with modest technical means.\n\n## What to listen for\nThe galloping feel comes from its bouncy 6/8 metre and crisp, detached (staccato) chords tossed between the hands. It's in A minor and built as a neat ternary form (ABA): a boisterous outer section in the minor, a brighter middle section that leaps into the major with the theme handed to the left hand, then the wild opening returns. Listen for the hands \"passing the horse\" back and forth and for the sudden dynamic surprises.\n\n## What you'll learn\nThis piece teaches crisp staccato touch, quick and accurate hand-to-hand coordination, a strong sense of the 6/8 gallop rhythm, and playful dynamic contrast (loud outbursts against quieter moments). It's a great confidence-builder in rhythmic drive.\n\n## How to practise\nKeep the chords light and bouncy — staccato comes from a quick release, not a hard press. Practise the hand-swapping slowly so each chord lands cleanly on the beat before you speed up. Feel the 6/8 in two big pulses per bar to get the gallop, not six stiff beats. Bring out the dynamic contrasts boldly; the drama is half the fun. Learn the three sections separately, noting how the middle jumps to major, then assemble. Only chase the exciting tempo once it's rock-solid slow.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nStay in the *Album for the Young* with the gentle *Melody, Op. 68 No. 1* for contrast. For more sparkling energy, Burgmüller's *Arabesque* is a perfect next challenge; Schubert's *Ländler* keeps the dance feeling.",
     "details": {
       "key": "A minor",
       "era": "Romantic",
@@ -1728,6 +2089,16 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "schumann-melody-op68-no1",
         "burgmuller-arabesque-op100-no2",
         "schubert-landler-d366"
+      ],
+      "embeds": [
+        {
+          "tool": "keyboard",
+          "title": "The notes of A minor",
+          "caption": "The scale this piece lives in — click the keys, or play along with your QWERTY keys.",
+          "root": "A",
+          "scale": "natural-minor",
+          "size": 49
+        }
       ]
     },
     "extraTags": [
@@ -1736,7 +2107,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "scott-frog-legs-rag": {
-    "bodyMdx": "## About this piece\n\"Frog Legs Rag\" (1906) was James Scott's breakthrough. Scott was, along with Joplin and Joseph Lamb, one of the three great masters of \"classic\" ragtime, and this was his first big success — published by John Stark, Joplin's own publisher, it reportedly sold better than any Stark rag except the *Maple Leaf* itself. Scott had a brilliant, cascading style all his own, and this piece shows it off: bright, busy, and dazzling, full of tumbling right-hand runs.\n\n## What to listen for\nWhere Joplin often strides with dignity, Scott sparkles and cascades. Listen for the busy, rippling right-hand figures that pour downward like a waterfall, over a steady \"oom-pah\" left hand. The piece moves through several contrasting strains in the classic ragtime march form, each with its own bright idea, and the whole thing glitters in the warm key of D-flat major.\n\n## What you'll learn\nThis is an advanced study in right-hand agility and evenness — those cascading runs demand clean, quick fingers — combined with the ragtime staple of keeping a rock-steady left hand underneath. It's a real test of coordination and control.\n\n## How to practise\nTake the fast right-hand passages slowly and evenly, building speed only once every note is clean; a metronome helps enormously. Keep the left-hand accompaniment quiet and mechanical so the sparkling right hand can shine. Learn one strain at a time. And even though the notes tumble, hold to Joplin's ragtime creed — never play it fast; a controlled, moderate tempo keeps every note clear.\n\n## If you like this\nHear the other classic-rag masters: Joplin's *Maple Leaf Rag* and *The Entertainer*, and Joseph Lamb's richly harmonised *American Beauty Rag*.",
+    "bodyMdx": "## About this piece\n\"Frog Legs Rag\" (1906) was James Scott's breakthrough. Scott was, along with Joplin and Joseph Lamb, one of the three great masters of \"classic\" ragtime, and this was his first big success — published by John Stark, Joplin's own publisher, it reportedly sold better than any Stark rag except the *Maple Leaf* itself. Scott had a brilliant, cascading style all his own, and this piece shows it off: bright, busy, and dazzling, full of tumbling right-hand runs.\n\n## What to listen for\nWhere Joplin often strides with dignity, Scott sparkles and cascades. Listen for the busy, rippling right-hand figures that pour downward like a waterfall, over a steady \"oom-pah\" left hand. The piece moves through several contrasting strains in the classic ragtime march form, each with its own bright idea, and the whole thing glitters in the warm key of D-flat major.\n\n## What you'll learn\nThis is an advanced study in right-hand agility and evenness — those cascading runs demand clean, quick fingers — combined with the ragtime staple of keeping a rock-steady left hand underneath. It's a real test of coordination and control.\n\n## How to practise\nTake the fast right-hand passages slowly and evenly, building speed only once every note is clean; a metronome helps enormously. Keep the left-hand accompaniment quiet and mechanical so the sparkling right hand can shine. Learn one strain at a time. And even though the notes tumble, hold to Joplin's ragtime creed — never play it fast; a controlled, moderate tempo keeps every note clear.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nHear the other classic-rag masters: Joplin's *Maple Leaf Rag* and *The Entertainer*, and Joseph Lamb's richly harmonised *American Beauty Rag*.",
     "details": {
       "key": "D-flat major",
       "era": "Ragtime",
@@ -1749,6 +2120,13 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "joplin-maple-leaf-rag",
         "lamb-american-beauty-rag",
         "joplin-the-entertainer"
+      ],
+      "embeds": [
+        {
+          "tool": "circle-of-fifths",
+          "title": "Where this key sits",
+          "caption": "D-flat major on the circle of fifths — click a key to hear its tonic and see its signature."
+        }
       ]
     },
     "extraTags": [
@@ -1794,7 +2172,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "simple-gifts": {
-    "bodyMdx": "## About this song\n\"Simple Gifts\" is a Shaker song written in 1848 by Elder Joseph Brackett (1797–1882) of the Shaker community at Alfred, Maine. Contrary to how it is often sung today, Brackett wrote it not as a slow hymn but as a lively **dancing song** for worship — the Shakers danced as part of their devotion, and the words describe the very movements: \"to bow and to bend we shan't be ashamed, to turn, turn will be our delight.\" The song was little known outside Shaker circles until Aaron Copland borrowed its melody for his 1944 ballet score *Appalachian Spring* (and again in his *Old American Songs*), which made the tune famous worldwide. The English songwriter Sydney Carter later adapted it for the 1963 hymn \"Lord of the Dance.\"\n\n## What to listen for\nThe melody is clean, bright, and eminently singable, moving mostly by step within a major scale. It falls into a short verse (\"'Tis the gift to be simple...\") answered by a contrasting \"turning\" section (\"When true simplicity is gained...\") that lifts higher before coming home — a simple AABA-like arch. Traditionally it dances along in a brisk 2/4; the harmony is diatonic and rests on the primary chords.\n\n## What you'll learn\nThis is a fine study in clarity and rhythmic lift. You will practise a crisp, dancing pulse, phrasing a tune in two contrasting halves, and keeping a light, buoyant touch rather than a heavy one — remembering it was written to move to.\n\n## How to play it\nIn F major, lean on F, B-flat, and C7; it sits equally well in G or A for singers and works beautifully on ukulele. Keep the tempo lively and the articulation light and detached rather than legato, to honour its origins as a dance. Pianists can add a simple left-hand oom-pah; ukulele and guitar players can strum a bright, even 2/4.\n\n## If you like this",
+    "bodyMdx": "## About this song\n\"Simple Gifts\" is a Shaker song written in 1848 by Elder Joseph Brackett (1797–1882) of the Shaker community at Alfred, Maine. Contrary to how it is often sung today, Brackett wrote it not as a slow hymn but as a lively **dancing song** for worship — the Shakers danced as part of their devotion, and the words describe the very movements: \"to bow and to bend we shan't be ashamed, to turn, turn will be our delight.\" The song was little known outside Shaker circles until Aaron Copland borrowed its melody for his 1944 ballet score *Appalachian Spring* (and again in his *Old American Songs*), which made the tune famous worldwide. The English songwriter Sydney Carter later adapted it for the 1963 hymn \"Lord of the Dance.\"\n\n## What to listen for\nThe melody is clean, bright, and eminently singable, moving mostly by step within a major scale. It falls into a short verse (\"'Tis the gift to be simple...\") answered by a contrasting \"turning\" section (\"When true simplicity is gained...\") that lifts higher before coming home — a simple AABA-like arch. Traditionally it dances along in a brisk 2/4; the harmony is diatonic and rests on the primary chords.\n\n## What you'll learn\nThis is a fine study in clarity and rhythmic lift. You will practise a crisp, dancing pulse, phrasing a tune in two contrasting halves, and keeping a light, buoyant touch rather than a heavy one — remembering it was written to move to.\n\n## How to play it\nIn F major, lean on F, B-flat, and C7; it sits equally well in G or A for singers and works beautifully on ukulele. Keep the tempo lively and the articulation light and detached rather than legato, to honour its origins as a dance. Pianists can add a simple left-hand oom-pah; ukulele and guitar players can strum a bright, even 2/4.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this",
     "details": {
       "key": "F major",
       "era": "Traditional",
@@ -1807,6 +2185,21 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "amazing-grace-trad",
         "shenandoah",
         "when-the-saints-go-marching-in"
+      ],
+      "embeds": [
+        {
+          "tool": "progression",
+          "title": "The Shaker-tune chords",
+          "caption": "A plain I–IV–V in F under the melody. Play it through, one bar per chord.",
+          "key": "F",
+          "chords": [
+            "F",
+            "Bb",
+            "F",
+            "C7",
+            "F"
+          ]
+        }
       ]
     },
     "extraTags": [
@@ -1818,7 +2211,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "sor-study-op35-no22": {
-    "bodyMdx": "## About this piece\nThis is one of the most loved pieces Fernando Sor (1778–1839) ever wrote — a lyrical study in B minor from his Op. 35 set. It is far better known by the number Andrés Segovia gave it: **Study No. 5** in his 1945 anthology *Twenty Studies for the Guitar*. Segovia's edition made a handful of Sor's studies household names among guitarists, and this melancholy, song-like piece is the crown of that collection. Despite its emotional depth it stays technically within reach of a committed intermediate player.\n\n## What to listen for\nA clear melody floating on top of a rolling arpeggio accompaniment — the hallmark of the Romantic-era \"singing study.\" The music is in rounded binary form and, unusually for a minor-key piece, never really escapes the pull of home; the tonic B minor keeps drawing it back, which is part of its wistful character.\n\n## What you'll learn\nVoicing a melody above a moving accompaniment (bringing out the top notes with the **a** or **m** finger while **p–i–m** keep the arpeggio soft), plus barre chords — mainly F# and Bm shapes — held smoothly while the right hand keeps flowing. It's an excellent study in tone control and legato phrasing.\n\n## How to practise\nLearn the left-hand shapes first, silently, so barre changes feel secure before you add speed. Practise the melody notes alone to hear the tune, then re-introduce the accompaniment beneath it, kept deliberately quieter. Watch that your barre stays firm enough to avoid buzzes but relaxed enough to survive the whole piece without fatigue.\n\n## If you like this\nExplore more Segovia-edition Sor studies, Tárrega's *Lágrima*, or Carcassi's Op. 60 No. 7 in A minor.",
+    "bodyMdx": "## About this piece\nThis is one of the most loved pieces Fernando Sor (1778–1839) ever wrote — a lyrical study in B minor from his Op. 35 set. It is far better known by the number Andrés Segovia gave it: **Study No. 5** in his 1945 anthology *Twenty Studies for the Guitar*. Segovia's edition made a handful of Sor's studies household names among guitarists, and this melancholy, song-like piece is the crown of that collection. Despite its emotional depth it stays technically within reach of a committed intermediate player.\n\n## What to listen for\nA clear melody floating on top of a rolling arpeggio accompaniment — the hallmark of the Romantic-era \"singing study.\" The music is in rounded binary form and, unusually for a minor-key piece, never really escapes the pull of home; the tonic B minor keeps drawing it back, which is part of its wistful character.\n\n## What you'll learn\nVoicing a melody above a moving accompaniment (bringing out the top notes with the **a** or **m** finger while **p–i–m** keep the arpeggio soft), plus barre chords — mainly F# and Bm shapes — held smoothly while the right hand keeps flowing. It's an excellent study in tone control and legato phrasing.\n\n## How to practise\nLearn the left-hand shapes first, silently, so barre changes feel secure before you add speed. Practise the melody notes alone to hear the tune, then re-introduce the accompaniment beneath it, kept deliberately quieter. Watch that your barre stays firm enough to avoid buzzes but relaxed enough to survive the whole piece without fatigue.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nExplore more Segovia-edition Sor studies, Tárrega's *Lágrima*, or Carcassi's Op. 60 No. 7 in A minor.",
     "details": {
       "key": "B minor",
       "era": "Classical",
@@ -1832,6 +2225,15 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "tarrega-lagrima",
         "carcassi-study-op60-no7",
         "tarrega-adelita"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The B minor scale on the neck",
+          "caption": "The shapes behind the study — slide the box up the neck and click a note to hear it.",
+          "root": "B",
+          "scale": "natural-minor"
+        }
       ]
     },
     "extraTags": [
@@ -1840,7 +2242,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "sor-study-op60-no1": {
-    "bodyMdx": "## About this piece\nFernando Sor (1778–1839) was a Spanish guitarist-composer whose studies remain the backbone of classical-guitar teaching almost two centuries after they were written. This piece opens his *Introduction à l'étude de la guitare*, Op. 60 — published in Paris around 1836–37 with the full title \"Introduction to the study of the guitar in 25 progressive lessons.\" As the very first lesson, No. 1 in C major is deliberately gentle: it sits in first position, uses open strings freely, and asks nothing that a careful beginner can't manage after a few weeks with the instrument. Sor's genius was that even his simplest exercises sound like real music, not finger drills.\n\n## What to listen for\nA clear, singing top-line melody carried over quiet, supporting lower notes. The key of C major keeps the mood bright and open. Listen for the sense of phrases that breathe — small musical sentences that rise and settle, much like speaking a line and pausing.\n\n## What you'll learn\nFoundational right-hand alternation (typically **i–m** free strokes) and simple two-voice playing, where the thumb (**p**) handles bass notes while the fingers voice the melody. You'll practise keeping a steady pulse, reading in first position, and letting notes ring cleanly without buzzing.\n\n## How to practise\nBegin very slowly and count aloud. Name each note as you read it — this doubles as sight-reading practice. Keep your left-hand fingers close to the strings and press just behind the frets. Aim for an even tone between thumb and fingers so no voice overpowers the other. Once secure, add gentle dynamic shaping to bring the melody forward.\n\n## If you like this\nMove on to other lessons in Op. 60, then Carcassi's Op. 60 No. 1 for a first taste of continuous arpeggios, or Sor's celebrated Op. 35 No. 22 as an intermediate goal.",
+    "bodyMdx": "## About this piece\nFernando Sor (1778–1839) was a Spanish guitarist-composer whose studies remain the backbone of classical-guitar teaching almost two centuries after they were written. This piece opens his *Introduction à l'étude de la guitare*, Op. 60 — published in Paris around 1836–37 with the full title \"Introduction to the study of the guitar in 25 progressive lessons.\" As the very first lesson, No. 1 in C major is deliberately gentle: it sits in first position, uses open strings freely, and asks nothing that a careful beginner can't manage after a few weeks with the instrument. Sor's genius was that even his simplest exercises sound like real music, not finger drills.\n\n## What to listen for\nA clear, singing top-line melody carried over quiet, supporting lower notes. The key of C major keeps the mood bright and open. Listen for the sense of phrases that breathe — small musical sentences that rise and settle, much like speaking a line and pausing.\n\n## What you'll learn\nFoundational right-hand alternation (typically **i–m** free strokes) and simple two-voice playing, where the thumb (**p**) handles bass notes while the fingers voice the melody. You'll practise keeping a steady pulse, reading in first position, and letting notes ring cleanly without buzzing.\n\n## How to practise\nBegin very slowly and count aloud. Name each note as you read it — this doubles as sight-reading practice. Keep your left-hand fingers close to the strings and press just behind the frets. Aim for an even tone between thumb and fingers so no voice overpowers the other. Once secure, add gentle dynamic shaping to bring the melody forward.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nMove on to other lessons in Op. 60, then Carcassi's Op. 60 No. 1 for a first taste of continuous arpeggios, or Sor's celebrated Op. 35 No. 22 as an intermediate goal.",
     "details": {
       "key": "C major",
       "era": "Classical",
@@ -1854,6 +2256,15 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "carcassi-guitar-study-op60-no1",
         "carulli-guitar-study",
         "carulli-andante-op241"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The C major scale on the neck",
+          "caption": "The shapes behind the study — slide the box up the neck and click a note to hear it.",
+          "root": "C",
+          "scale": "major"
+        }
       ]
     },
     "extraTags": [
@@ -1899,7 +2310,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "tarrega-adelita": {
-    "bodyMdx": "## About this piece\n*Adelita* is a short mazurka by Francisco Tárrega (1852–1909), one of a handful of intimate salon miniatures he wrote that have become cornerstones of the guitar repertoire alongside *Lágrima* and *Recuerdos de la Alhambra*. A mazurka is a Polish dance in triple time, and Tárrega uses its lilting rhythm to frame a wistful, elegant little character piece. It's compact but demands genuine musical maturity to shape well.\n\n## What to listen for\nThe mazurka's characteristic 3/4 swing, often with a gentle emphasis on the second or third beat rather than the first — this \"leaning\" feel is what makes it dance. The opening section is in E minor, brooding and expressive; a contrasting middle section brightens to E major before the minor mood returns. Rubato and dynamic shading are central to its charm.\n\n## What you'll learn\nExpressive rubato and phrasing over a dance rhythm, dynamic shaping (crescendo and diminuendo within short phrases), and controlled melody-over-accompaniment texture. You'll also refine tone colour — Tárrega's music rewards playing near the bridge or over the fingerboard to change the mood.\n\n## How to practise\nEstablish the mazurka pulse first by tapping or counting \"ONE-two-three\" with the lean on the right beat, so the rhythm dances rather than marches. Learn the notes securely before adding rubato — expressive timing only works from a solid foundation. Contrast the two sections deliberately in colour and dynamics. Record yourself to check that your phrases truly breathe.\n\n## If you like this\nPair it with Tárrega's *Lágrima*, then work toward *Recuerdos de la Alhambra* for tremolo.",
+    "bodyMdx": "## About this piece\n*Adelita* is a short mazurka by Francisco Tárrega (1852–1909), one of a handful of intimate salon miniatures he wrote that have become cornerstones of the guitar repertoire alongside *Lágrima* and *Recuerdos de la Alhambra*. A mazurka is a Polish dance in triple time, and Tárrega uses its lilting rhythm to frame a wistful, elegant little character piece. It's compact but demands genuine musical maturity to shape well.\n\n## What to listen for\nThe mazurka's characteristic 3/4 swing, often with a gentle emphasis on the second or third beat rather than the first — this \"leaning\" feel is what makes it dance. The opening section is in E minor, brooding and expressive; a contrasting middle section brightens to E major before the minor mood returns. Rubato and dynamic shading are central to its charm.\n\n## What you'll learn\nExpressive rubato and phrasing over a dance rhythm, dynamic shaping (crescendo and diminuendo within short phrases), and controlled melody-over-accompaniment texture. You'll also refine tone colour — Tárrega's music rewards playing near the bridge or over the fingerboard to change the mood.\n\n## How to practise\nEstablish the mazurka pulse first by tapping or counting \"ONE-two-three\" with the lean on the right beat, so the rhythm dances rather than marches. Learn the notes securely before adding rubato — expressive timing only works from a solid foundation. Contrast the two sections deliberately in colour and dynamics. Record yourself to check that your phrases truly breathe.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nPair it with Tárrega's *Lágrima*, then work toward *Recuerdos de la Alhambra* for tremolo.",
     "details": {
       "key": "E minor (B section in E major)",
       "era": "Romantic",
@@ -1913,6 +2324,15 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "tarrega-recuerdos-de-la-alhambra",
         "sor-study-op35-no22",
         "carcassi-study-op60-no7"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The E minor scale on the neck",
+          "caption": "The shapes behind the study — slide the box up the neck and click a note to hear it.",
+          "root": "E",
+          "scale": "natural-minor"
+        }
       ]
     },
     "extraTags": [
@@ -1921,7 +2341,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "tarrega-lagrima": {
-    "bodyMdx": "## About this piece\n*Lágrima* — Spanish for \"teardrop\" — is one of the best-loved short pieces by Francisco Tárrega (1852–1909), often called \"the father of the modern classical guitar.\" In under two minutes it captures a complete emotional arc, which is why it's a rite of passage for guitarists stepping into the Romantic repertoire. It's brief, deeply expressive, and technically approachable, making it a perfect first \"real\" recital piece.\n\n## What to listen for\nA tender opening melody in E major, warm and consoling, followed by a middle section that turns to the parallel key of E minor — the same home note, but suddenly clouded and grieving. Then the bright opening returns. That shift from major to minor and back is the whole story of the piece: a smile, a tear, and a smile again.\n\n## What you'll learn\nSinging melody notes over sustained lower voices, smooth position shifts up the neck, and expressive tone control. You'll work on rest strokes (*apoyando*) to make the melody sing out, subtle rubato (gentle push-and-pull of tempo), and clean legato so the phrases feel unbroken.\n\n## How to practise\nLearn the two sections separately — they have different characters. Play the melody alone first to internalise its shape, then add the accompaniment softly. Take the position shifts slowly, moving with a light, guided left hand so you land accurately without a scrape. Once secure, add expressive timing: let phrase-ends relax rather than click along mechanically.\n\n## If you like this\nContinue with Tárrega's *Adelita*, then set your sights on his tremolo masterpiece *Recuerdos de la Alhambra*.",
+    "bodyMdx": "## About this piece\n*Lágrima* — Spanish for \"teardrop\" — is one of the best-loved short pieces by Francisco Tárrega (1852–1909), often called \"the father of the modern classical guitar.\" In under two minutes it captures a complete emotional arc, which is why it's a rite of passage for guitarists stepping into the Romantic repertoire. It's brief, deeply expressive, and technically approachable, making it a perfect first \"real\" recital piece.\n\n## What to listen for\nA tender opening melody in E major, warm and consoling, followed by a middle section that turns to the parallel key of E minor — the same home note, but suddenly clouded and grieving. Then the bright opening returns. That shift from major to minor and back is the whole story of the piece: a smile, a tear, and a smile again.\n\n## What you'll learn\nSinging melody notes over sustained lower voices, smooth position shifts up the neck, and expressive tone control. You'll work on rest strokes (*apoyando*) to make the melody sing out, subtle rubato (gentle push-and-pull of tempo), and clean legato so the phrases feel unbroken.\n\n## How to practise\nLearn the two sections separately — they have different characters. Play the melody alone first to internalise its shape, then add the accompaniment softly. Take the position shifts slowly, moving with a light, guided left hand so you land accurately without a scrape. Once secure, add expressive timing: let phrase-ends relax rather than click along mechanically.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nContinue with Tárrega's *Adelita*, then set your sights on his tremolo masterpiece *Recuerdos de la Alhambra*.",
     "details": {
       "key": "E major (B section in E minor)",
       "era": "Romantic",
@@ -1935,6 +2355,15 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "tarrega-recuerdos-de-la-alhambra",
         "sor-study-op35-no22",
         "carcassi-study-op60-no7"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The E major scale on the neck",
+          "caption": "The shapes behind the study — slide the box up the neck and click a note to hear it.",
+          "root": "E",
+          "scale": "major"
+        }
       ]
     },
     "extraTags": [
@@ -1943,7 +2372,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "tarrega-recuerdos-de-la-alhambra": {
-    "bodyMdx": "## About this piece\n*Recuerdos de la Alhambra* (\"Memories of the Alhambra\") is the most famous tremolo piece ever written for guitar, composed by Francisco Tárrega (1852–1909) in Málaga around 1899 and named for the Moorish palace in Granada. Its rapid repeated melody notes create the illusion of a sustained singing line shimmering above a flowing bass — an effect that sounds like far more than one instrument. It is a genuine advanced piece and a lifelong technical goal for many guitarists.\n\n## What to listen for\nA continuous, glimmering top melody that seems to hang in the air, supported by a rolling arpeggiated bass. The A section is in A minor, dark and yearning; the B section moves to the radiant relative-major key of A major before the minor returns. The magic is that the melody never seems to stop, even though it's actually a fast repetition of single notes.\n\n## What you'll learn\n**Tremolo technique** — the signature right-hand pattern **p–a–m–i**, where the thumb plays the bass and the ring, middle, and index fingers rapidly repeat a melody note. This is one of the guitar's hardest skills: it demands perfect evenness, independence between thumb and fingers, and stamina.\n\n## How to practise\nPractise tremolo slowly and evenly long before attempting speed — an uneven fast tremolo is worse than a slow clean one. Use a metronome and focus on four perfectly equal notes per beat. Keep the thumb's bass line calm and independent. Isolate difficult bars and the section shifts. Build tempo gradually over weeks; patience here is everything.\n\n## If you like this\nBuild up through Tárrega's *Lágrima* and *Adelita* first, and explore other tremolo works once the technique is secure.",
+    "bodyMdx": "## About this piece\n*Recuerdos de la Alhambra* (\"Memories of the Alhambra\") is the most famous tremolo piece ever written for guitar, composed by Francisco Tárrega (1852–1909) in Málaga around 1899 and named for the Moorish palace in Granada. Its rapid repeated melody notes create the illusion of a sustained singing line shimmering above a flowing bass — an effect that sounds like far more than one instrument. It is a genuine advanced piece and a lifelong technical goal for many guitarists.\n\n## What to listen for\nA continuous, glimmering top melody that seems to hang in the air, supported by a rolling arpeggiated bass. The A section is in A minor, dark and yearning; the B section moves to the radiant relative-major key of A major before the minor returns. The magic is that the melody never seems to stop, even though it's actually a fast repetition of single notes.\n\n## What you'll learn\n**Tremolo technique** — the signature right-hand pattern **p–a–m–i**, where the thumb plays the bass and the ring, middle, and index fingers rapidly repeat a melody note. This is one of the guitar's hardest skills: it demands perfect evenness, independence between thumb and fingers, and stamina.\n\n## How to practise\nPractise tremolo slowly and evenly long before attempting speed — an uneven fast tremolo is worse than a slow clean one. Use a metronome and focus on four perfectly equal notes per beat. Keep the thumb's bass line calm and independent. Isolate difficult bars and the section shifts. Build tempo gradually over weeks; patience here is everything.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nBuild up through Tárrega's *Lágrima* and *Adelita* first, and explore other tremolo works once the technique is secure.",
     "details": {
       "key": "A minor (B section in A major)",
       "era": "Romantic",
@@ -1957,6 +2386,15 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "tarrega-adelita",
         "sor-study-op35-no22",
         "carcassi-study-op60-no7"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The A minor scale on the neck",
+          "caption": "The shapes behind the study — slide the box up the neck and click a note to hear it.",
+          "root": "A",
+          "scale": "natural-minor"
+        }
       ]
     },
     "extraTags": [

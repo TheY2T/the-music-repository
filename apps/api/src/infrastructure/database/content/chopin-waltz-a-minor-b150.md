@@ -24,5 +24,9 @@ This waltz teaches the essential Chopin left-hand waltz pattern (bass note, then
 ## How to practise
 Master the left hand first: the leap from bass note up to the chords should be smooth and quiet, landing softly on beat one. Keep the melody legato and shaped, always louder than the accompaniment. Introduce rubato gently — borrow a little time on expressive notes and give it back — but keep the underlying pulse steady so it never sags. Use light pedal, changing with the harmony. Learn the sections separately, then string them into one flowing narrative.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of A minor","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"A","scale":"natural-minor","size":49}]
+```
+
 ## If you like this
 Stay with Chopin's introspective side in the *Prelude in E minor* and the singing *Nocturne Op. 9 No. 2*. For the dance's simpler ancestor, try Schubert's *Ländler, D. 366*.

@@ -24,5 +24,9 @@ Singing melody notes over sustained lower voices, smooth position shifts up the 
 ## How to practise
 Learn the two sections separately — they have different characters. Play the melody alone first to internalise its shape, then add the accompaniment softly. Take the position shifts slowly, moving with a light, guided left hand so you land accurately without a scrape. Once secure, add expressive timing: let phrase-ends relax rather than click along mechanically.
 
+```embeds
+[{"tool":"scale-boxes","title":"The E major scale on the neck","caption":"The shapes behind the study — slide the box up the neck and click a note to hear it.","root":"E","scale":"major"}]
+```
+
 ## If you like this
 Continue with Tárrega's *Adelita*, then set your sights on his tremolo masterpiece *Recuerdos de la Alhambra*.

@@ -24,5 +24,9 @@ This nocturne develops a true *cantabile* (singing) touch, the coordination of a
 ## How to practise
 Set the left hand first — it must be soft, even, and reliable, since it holds everything together while the melody floats free. Learn the ornamental runs slowly, counting how they fit against the beat before you let them flow "out of time." Voice the melody so it always rises above the accompaniment, and shape each phrase like a breath. Use rubato tastefully — expressive give-and-take over a steady underlying pulse. Change the pedal with each harmony. This one rewards patience and a beautiful tone above all.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of E♭ major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"Eb","scale":"major","size":49}]
+```
+
 ## If you like this
 For more of Chopin's intimate voice, the *Prelude in E minor* and *Waltz in A minor* are natural companions. Beethoven's *Moonlight Sonata* first movement shares the same nocturnal, singing calm.

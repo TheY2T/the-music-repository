@@ -24,5 +24,9 @@ This is a serious workout in rhythmic independence and left-hand stamina. The st
 ## How to practise
 Build the left-hand stride slowly and securely — accuracy of the leaps matters more than speed. Practise one strain at a time, hands separately before together. Keep the pulse even and unhurried: as Joplin himself insisted, "It is never right to play ragtime fast." A confident, moderate tempo lets every syncopation ring clearly.
 
+```embeds
+[{"tool":"circle-of-fifths","title":"Where this key sits","caption":"A-flat major on the circle of fifths — click a key to hear its tonic and see its signature."}]
+```
+
 ## If you like this
 Move on to Joplin's *Pineapple Rag* or the ever-popular *The Entertainer*, and hear how his followers built on him in James Scott's *Frog Legs Rag* and Joseph Lamb's *American Beauty Rag*.

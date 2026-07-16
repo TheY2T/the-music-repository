@@ -24,5 +24,9 @@ This is an ideal early sight-reading and melody piece. You'll practise reading n
 ## How to practise
 Start slowly with the right hand alone, naming the notes as you go and keeping an even pulse — counting "1-2-3-4" out loud helps. Aim for a smooth, connected sound, moving gently from note to note. Once the melody feels comfortable, try singing along; if your arrangement includes a simple left-hand part, add it only after the tune is secure.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of C major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"C","scale":"major","size":49}]
+```
+
 ## If you like this
 When you're ready for something a little richer, try Schubert's *Ave Maria*, or explore the calm beauty of Satie's *Gymnopédie No. 1*.

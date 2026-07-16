@@ -24,6 +24,10 @@ Right-hand arpeggios with **p–i–m–a** coordination, keeping a repeating ha
 ## How to practise
 Block each bar into its chord first so the left hand knows where to go, then add the arpeggio slowly. Keep right-hand motion minimal — the fingers should barely move. Use a metronome and prize evenness over speed. Let the top notes come out a touch to suggest a melody.
 
+```embeds
+[{"tool":"scale-boxes","title":"The A minor scale on the neck","caption":"The shapes behind the study — slide the box up the neck and click a note to hear it.","root":"A","scale":"natural-minor"}]
+```
+
 ## If you like this
 Try Carulli's Andante in C, Op. 241, then Carcassi's Op. 60 studies for longer arpeggio pieces.
 

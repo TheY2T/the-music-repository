@@ -24,6 +24,10 @@ Two-voice playing — thumb (**p**) on the bass and accompaniment, fingers (**i�
 ## How to practise
 Play the melody line on its own until it feels vocal, then add the accompaniment softly beneath it. Keep a steady andante pulse — resist rushing the easier bars. Aim for a warm, rounded tone and let notes ring their full value. Practise the cadences especially, easing slightly into each phrase-ending so the music breathes.
 
+```embeds
+[{"tool":"scale-boxes","title":"The C major scale on the neck","caption":"The shapes behind the study — slide the box up the neck and click a note to hear it.","root":"C","scale":"major"}]
+```
+
 ## If you like this
 Try more pieces from Carulli's Op. 241, the Sor Op. 60 studies, or Carcassi's Op. 60 No. 1.
 

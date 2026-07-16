@@ -24,5 +24,9 @@ This piece teaches crisp staccato touch, quick and accurate hand-to-hand coordin
 ## How to practise
 Keep the chords light and bouncy — staccato comes from a quick release, not a hard press. Practise the hand-swapping slowly so each chord lands cleanly on the beat before you speed up. Feel the 6/8 in two big pulses per bar to get the gallop, not six stiff beats. Bring out the dynamic contrasts boldly; the drama is half the fun. Learn the three sections separately, noting how the middle jumps to major, then assemble. Only chase the exciting tempo once it's rock-solid slow.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of A minor","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"A","scale":"natural-minor","size":49}]
+```
+
 ## If you like this
 Stay in the *Album for the Young* with the gentle *Melody, Op. 68 No. 1* for contrast. For more sparkling energy, Burgmüller's *Arabesque* is a perfect next challenge; Schubert's *Ländler* keeps the dance feeling.

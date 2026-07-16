@@ -24,5 +24,9 @@ The dense, chord-rich writing makes this an advanced study in playing full textu
 ## How to practise
 Break it into strains and work slowly, giving special attention to the thick right-hand chords — practise them blocked and then in rhythm. Keep the left-hand bass steady and controlled beneath the fuller right hand. Because the texture is heavy, a moderate, unhurried tempo (true to Joplin's ragtime rule) actually sounds best and keeps every voice audible.
 
+```embeds
+[{"tool":"circle-of-fifths","title":"Where this key sits","caption":"E-flat major on the circle of fifths — click a key to hear its tonic and see its signature."}]
+```
+
 ## If you like this
 Compare it with James Scott's cascading *Frog Legs Rag* and Joplin's foundational *Maple Leaf Rag* to hear the three classic-rag masters side by side.

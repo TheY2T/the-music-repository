@@ -24,5 +24,9 @@ Foundational right-hand alternation (typically **i–m** free strokes) and simpl
 ## How to practise
 Begin very slowly and count aloud. Name each note as you read it — this doubles as sight-reading practice. Keep your left-hand fingers close to the strings and press just behind the frets. Aim for an even tone between thumb and fingers so no voice overpowers the other. Once secure, add gentle dynamic shaping to bring the melody forward.
 
+```embeds
+[{"tool":"scale-boxes","title":"The C major scale on the neck","caption":"The shapes behind the study — slide the box up the neck and click a note to hear it.","root":"C","scale":"major"}]
+```
+
 ## If you like this
 Move on to other lessons in Op. 60, then Carcassi's Op. 60 No. 1 for a first taste of continuous arpeggios, or Sor's celebrated Op. 35 No. 22 as an intermediate goal.

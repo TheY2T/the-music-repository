@@ -24,5 +24,9 @@ This study develops evenness and control in a flowing right-hand line, a smooth 
 ## How to practise
 Focus first on the right hand: play the running line slowly and listen for perfect evenness — no note louder or longer than its neighbours. Keep the wrist relaxed and let the fingers do the work. Bring in the left hand softly so the melody always sings above it. Choose a calm, steady tempo and hold it; the beauty here is smoothness, not speed. Shape the long line gently toward its high points and ease back at the phrase ends. A little pedal can warm the tone without blurring it.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of C major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"C","scale":"major","size":49}]
+```
+
 ## If you like this
 Move on to its sparkling sibling, the *Arabesque, Op. 100 No. 2*. For the same gentle, singing character, Schumann's *Melody, Op. 68 No. 1* is a lovely companion, as is Bach's flowing *Prelude in C major*.

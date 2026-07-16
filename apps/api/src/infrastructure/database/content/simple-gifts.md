@@ -24,4 +24,8 @@ This is a fine study in clarity and rhythmic lift. You will practise a crisp, da
 ## How to play it
 In F major, lean on F, B-flat, and C7; it sits equally well in G or A for singers and works beautifully on ukulele. Keep the tempo lively and the articulation light and detached rather than legato, to honour its origins as a dance. Pianists can add a simple left-hand oom-pah; ukulele and guitar players can strum a bright, even 2/4.
 
+```embeds
+[{ "tool": "progression", "title": "The Shaker-tune chords", "caption": "A plain I–IV–V in F under the melody. Play it through, one bar per chord.", "key": "F", "chords": ["F", "Bb", "F", "C7", "F"] }]
+```
+
 ## If you like this

@@ -24,5 +24,9 @@ This is an advanced study in tone colour, voicing, and pedalling. You'll learn t
 ## How to practise
 Work slowly and in small sections; the *9/8* metre feels natural once you stop counting rigidly and let it flow. Practise voicing — play the melody notes a little louder than the accompaniment within the same hand. Change the pedal cleanly on each harmony so the sound stays clear. Keep everything softer than feels comfortable; the magic is in restraint.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of D♭ major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"Db","scale":"major","size":49}]
+```
+
 ## If you like this
 Try Debussy's *Première Arabesque* for an easier taste of the same style, or Satie's *Gymnopédie No. 1* for another quiet, moonlit mood.

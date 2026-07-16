@@ -24,5 +24,9 @@ This movement is a workout in even, fluent scale runs, clear articulation (the m
 ## How to practise
 Drill the scale passages slowly and evenly with sensible fingering — they are the heart of the piece and must run smoothly. Observe the articulation carefully: Classical music lives on the difference between crisp staccato and smooth legato. Keep a steady, spirited-but-controlled tempo; don't let the fast runs drag or bolt. Learn it by section (first theme, transition, second theme, development, recap) so you understand the form, then join them. Hands separately first wherever the runs get tricky.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of C major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"C","scale":"major","size":49}]
+```
+
 ## If you like this
 The *Kuhlau Sonatina Op. 20 No. 1* is the natural next step up. Mozart's *Sonata K. 545* is the full-scale version of the same idea, and the *Beethoven Sonatina in G* sits comfortably alongside.

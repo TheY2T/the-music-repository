@@ -24,5 +24,9 @@ This is a wonderful study in hand independence and rhythm: the left hand must st
 ## How to practise
 Master the left-hand "oom-pah" first until it is automatic — it is the engine of the whole piece. Then add the right hand slowly, counting carefully so the syncopations land accurately. Learn one strain at a time. And heed Joplin's own famous advice printed on his rags: "Do not play this piece fast. It is never right to play ragtime fast." A relaxed, dignified tempo sounds far better than a rushed one.
 
+```embeds
+[{"tool":"circle-of-fifths","title":"Where this key sits","caption":"C major on the circle of fifths — click a key to hear its tonic and see its signature."}]
+```
+
 ## If you like this
 Try Joplin's landmark *Maple Leaf Rag*, or explore the wider ragtime family with James Scott's *Frog Legs Rag*.

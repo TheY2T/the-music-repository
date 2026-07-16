@@ -24,5 +24,9 @@ This study builds finger fluency and evenness in running sixteenth notes, light 
 ## How to practise
 Practise the sixteenth-note runs slowly and evenly first — aim for a light, "pearly" touch from the fingertips rather than force. Keep the staccato chords crisp and short so they answer the runs cleanly. Coordinate the hands slowly at the hand-off points before adding speed. Feel the 2/4 in a quick, buoyant two, and keep the whole thing light — brilliance here comes from clarity, not volume. Note where the middle section brightens into major and shape that contrast. Build tempo gradually with a metronome.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of A minor","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"A","scale":"natural-minor","size":49}]
+```
+
 ## If you like this
 Its companion *La Candeur* opens the same Op. 100 set with a gentler mood. For similar sparkle and energy, Schumann's *Wild Horseman* is a great match; the *Clementi Sonatina* rewards the same clean fingerwork.

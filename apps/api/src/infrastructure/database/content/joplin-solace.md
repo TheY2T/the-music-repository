@@ -24,5 +24,9 @@ You'll get comfortable with the habanera rhythm, a building block of Latin, blue
 ## How to practise
 Learn the habanera left-hand pattern first and let it settle into a gentle groove; keep it quiet so the melody can sing over the top. Bring out the right-hand tune warmly and give the phrases room to breathe. This is a piece that rewards patience — take Joplin's advice and never play it fast; a slow, tender tempo is exactly right here.
 
+```embeds
+[{"tool":"circle-of-fifths","title":"Where this key sits","caption":"A-flat major on the circle of fifths — click a key to hear its tonic and see its signature."}]
+```
+
 ## If you like this
 Explore Joplin's more famous rags such as *The Entertainer*, or hear the same habanera "Spanish tinge" in W. C. Handy's *St. Louis Blues*.

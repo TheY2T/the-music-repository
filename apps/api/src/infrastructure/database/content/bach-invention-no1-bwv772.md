@@ -24,5 +24,9 @@ This is the classic training ground for two-voice counterpoint and true hand ind
 ## How to practise
 Hands separately, always, and for longer than feels necessary — you must know each line as a complete melody in its own right. Sing or hum one hand while you play the other to test your independence. Take it slowly and keep the two voices balanced in volume so neither drowns the other; when the subject enters, lean into it slightly. Watch the crossing points where the hands come close together on the keyboard. Build tempo only once both lines are clean on their own and together.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of C major","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"C","scale":"major","size":49}]
+```
+
 ## If you like this
 Pair it with the serene *Prelude in C major, BWV 846* — the same key, a gentler challenge. For a lighter Baroque dance, the *Minuet in G* is a good stepping stone downward.

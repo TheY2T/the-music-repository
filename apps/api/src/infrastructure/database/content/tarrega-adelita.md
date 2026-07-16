@@ -24,5 +24,9 @@ Expressive rubato and phrasing over a dance rhythm, dynamic shaping (crescendo a
 ## How to practise
 Establish the mazurka pulse first by tapping or counting "ONE-two-three" with the lean on the right beat, so the rhythm dances rather than marches. Learn the notes securely before adding rubato — expressive timing only works from a solid foundation. Contrast the two sections deliberately in colour and dynamics. Record yourself to check that your phrases truly breathe.
 
+```embeds
+[{"tool":"scale-boxes","title":"The E minor scale on the neck","caption":"The shapes behind the study — slide the box up the neck and click a note to hear it.","root":"E","scale":"natural-minor"}]
+```
+
 ## If you like this
 Pair it with Tárrega's *Lágrima*, then work toward *Recuerdos de la Alhambra* for tremolo.

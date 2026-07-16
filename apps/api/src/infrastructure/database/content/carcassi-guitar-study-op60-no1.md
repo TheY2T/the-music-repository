@@ -24,5 +24,9 @@ Right-hand arpeggio patterns with **p–i–m–a** coordination, string crossin
 ## How to practise
 Block the arpeggio into its underlying chords first — play each bar as a single strummed chord to memorise the left-hand shapes. Then unfold the pattern slowly with a metronome, prioritising evenness over speed. If notes clip short, check that left-hand fingers stay down for the whole chord. Increase tempo only when the ripple is perfectly even.
 
+```embeds
+[{"tool":"scale-boxes","title":"The C major scale on the neck","caption":"The shapes behind the study — slide the box up the neck and click a note to hear it.","root":"C","scale":"major"}]
+```
+
 ## If you like this
 Progress to Carcassi's Op. 60 No. 7 in A minor, revisit Sor's Op. 60 studies, or reach toward Sor's Op. 35 No. 22.

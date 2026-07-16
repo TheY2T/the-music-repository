@@ -24,5 +24,9 @@ Because there are no bar lines, you get to feel rhythm as flow rather than count
 ## How to practise
 Start by learning the repeating left-hand pattern until it is completely secure and quiet; it is your anchor. Then float the right hand on top, giving the little ornaments time to speak rather than rushing them. Read Satie's written directions and let them colour your mood. Keep the pedal light and change it with the harmony.
 
+```embeds
+[{"tool":"keyboard","title":"The notes of F minor","caption":"The scale this piece lives in — click the keys, or play along with your QWERTY keys.","root":"F","scale":"natural-minor","size":49}]
+```
+
 ## If you like this
 Explore Satie's *Gymnopédie No. 1* for a gentler cousin, or step into Debussy's *Première Arabesque* and *Clair de Lune* for related impressionist atmospheres.

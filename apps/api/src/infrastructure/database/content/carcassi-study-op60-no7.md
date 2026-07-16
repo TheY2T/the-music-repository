@@ -24,5 +24,9 @@ Sustained right-hand arpeggio fluency at a faster clip, string crossing across a
 ## How to practise
 As with No. 1, block each bar into its chord to map the left hand, then unspool the arpeggio slowly. Isolate any bar with a position shift and practise just the move between the two shapes until it's silent and reliable. Keep the right-hand motion small and economical; speed comes from relaxation, not effort. Shape the phrases so the piece sings rather than merely runs.
 
+```embeds
+[{"tool":"scale-boxes","title":"The A minor scale on the neck","caption":"The shapes behind the study — slide the box up the neck and click a note to hear it.","root":"A","scale":"natural-minor"}]
+```
+
 ## If you like this
 Return to Carcassi's Op. 60 No. 1, then aim for Sor's Op. 35 No. 22 or Tárrega's *Lágrima* for lyrical Romantic playing.

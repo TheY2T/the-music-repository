@@ -27,5 +27,9 @@ Often played in **E Dorian** (chords like **Em – D – G – Em**, with the D 
 ## How to practise
 Play the melody alone first and let the Dorian raised sixth register in your ear. Add a simple arpeggiated accompaniment beneath it. Keep the pulse steady and the touch soft. Resist "fixing" the modal notes — they define the song.
 
+```embeds
+[{ "tool": "keyboard", "title": "The Dorian mode", "caption": "The tune is modal — E Dorian (a minor scale with a raised 6th). Click through it to hear that bittersweet colour.", "root": "E", "scale": "dorian", "size": 49 }]
+```
+
 ## If you like this
 Try *Greensleeves*, another modal English tune, or *House of the Rising Sun*.
