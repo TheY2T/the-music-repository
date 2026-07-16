@@ -58,6 +58,7 @@ declare namespace App {
       toolImprovise: boolean;
       toolProgressionGen: boolean;
       toolFretGame: boolean;
+      toolScaleMap: boolean;
       toolBassline: boolean;
       toolMelodicDictation: boolean;
       toolRhythmDictation: boolean;

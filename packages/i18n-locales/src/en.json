@@ -431,6 +431,8 @@
   "tool.progression-generator.summary": "Common chord progressions by style, in any key.",
   "tool.fret-game.title": "Fretboard note game",
   "tool.fret-game.summary": "A 60-second sprint: find the named note on the neck.",
+  "tool.scale-map.title": "Piano & guitar map",
+  "tool.scale-map.summary": "See a scale or chord lit on the keyboard and the neck at once.",
   "myfav.loading": "Loading…",
   "myfav.emptyBefore": "No favorites yet. Browse the",
   "myfav.catalogue": "catalogue",

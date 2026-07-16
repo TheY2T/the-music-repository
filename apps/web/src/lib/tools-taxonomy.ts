@@ -24,6 +24,7 @@ const CATEGORY_BY_SLUG: Record<string, ToolCategory> = {
   'scale-boxes': 'keyboard-fretboard',
   voicings: 'keyboard-fretboard',
   soundfont: 'keyboard-fretboard',
+  'scale-map': 'keyboard-fretboard',
   // Theory & Harmony
   'circle-of-fifths': 'theory-harmony',
   'scale-explorer': 'theory-harmony',
@@ -132,6 +133,7 @@ export const TOOL_ICON: Record<string, string> = {
   'practice-room': 'gauge',
   score: 'book-open',
   soundfont: 'volume',
+  'scale-map': 'layout-grid',
 };
 
 /** Case-insensitive substring match of a query over a tool's title + summary. */

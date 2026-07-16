@@ -431,6 +431,8 @@
   "tool.progression-generator.summary": "按风格生成常见和弦进行，可转到任意调。",
   "tool.fret-game.title": "指板音名游戏",
   "tool.fret-game.summary": "60 秒挑战：在指板上找到指定音符。",
+  "tool.scale-map.title": "钢琴与吉他对照图",
+  "tool.scale-map.summary": "在键盘和指板上同时看到一个音阶或和弦。",
   "myfav.loading": "加载中…",
   "myfav.emptyBefore": "还没有收藏。浏览",
   "myfav.catalogue": "曲库",
