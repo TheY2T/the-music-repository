@@ -24,4 +24,8 @@ This is a wonderful study in legato phrasing and expressive shaping. You will pr
 ## How to play it
 In D major, lean on D, G, A (add A7) with an optional Bm or Em for warmth; the song also sits well in F for singers. Pianists can voice the melody over sustained or slowly-arpeggiated chords, using the sustain pedal to blend. Guitarists suit it to fingerpicking or slow strums; take it broadly, breathe between phrases, and let each long note bloom before moving on.
 
+```embeds
+[{ "tool": "progression", "title": "The chords behind the river song", "caption": "A broad I–IV–V in D under the long, rolling melody. Play it slowly and let each chord ring.", "key": "D", "chords": ["D", "G", "D", "A7", "D"] }]
+```
+
 ## If you like this

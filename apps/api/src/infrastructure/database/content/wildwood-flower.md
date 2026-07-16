@@ -27,5 +27,9 @@ Most commonly played in **C major** (also G). The core chords are simple: **C, F
 ## How to practise
 Learn the melody as single notes first, slowly, until it's memorised. Separately practise the chord strums. Then combine: thumb (or pick) plays melody notes, brush the chord in the gaps. Start well under tempo with a metronome and speed up only when the two parts lock together cleanly.
 
+```embeds
+[{ "tool": "progression", "title": "The Carter-family chords", "caption": "A plain I–IV–V in C — the backbone of the tune and a thousand other folk songs. Play it through.", "key": "C", "chords": ["C", "C", "F", "C", "G7", "C"] }]
+```
+
 ## If you like this
 Explore more traditional American tunes like *Frankie and Johnny* and *House of the Rising Sun*.

@@ -27,5 +27,9 @@ Commonly played in **A minor** or **E minor**. A typical progression runs **Am �
 ## How to practise
 Learn the melody on its own until it truly sings. Add the accompaniment softly beneath it, keeping the 6/8 pulse smooth and rocking. Take the phrase-ends gently rather than clipping them. Enjoy the modal notes rather than "correcting" them — they're the point.
 
+```embeds
+[{ "tool": "progression", "title": "The Greensleeves changes", "caption": "The minor-key climb and its bright answer — Am–G–Am–E7, then C–G–Am–E7. Play it through in 6/8.", "key": "Am", "chords": ["Am", "G", "Am", "E7", "C", "G", "Am", "E7"] }]
+```
+
 ## If you like this
 Try *Scarborough Fair* for another modal English ballad, or *House of the Rising Sun*.

@@ -813,7 +813,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "frankie-and-johnny": {
-    "bodyMdx": "## About this piece\n\"Frankie and Johnny\" is a traditional American blues ballad — a murder ballad, in fact. It's widely believed to stem from a real 1899 shooting in St. Louis, where a woman named Frankie Baker shot her boyfriend Allen (Albert) Britt; she was acquitted on grounds of self-defence. Street singers were performing versions within weeks, early sheet music appeared in 1904, and the familiar \"Frankie and Johnny\" title was fixed in 1912 (Albert became \"Johnny\" because it sang better). With so many hands shaping it, it's genuinely **traditional** — hundreds of verses and variants exist. It's a superb vehicle for learning **12-bar blues** phrasing.\n\n## What to listen for\nA rolling, storytelling verse structure over a classic 12-bar blues chord cycle, usually capped by the refrain \"He was her man, but he done her wrong.\" Each verse advances the tale, so the same musical frame carries an ever-changing lyric — great for feeling how blues form supports narrative.\n\n## What you'll learn\nThe **12-bar blues** progression, chord changes between I, IV and V, and simple, groove-based accompaniment. It's ideal for internalising blues form and steady rhythmic strumming or comping.\n\n## Chords, keys and approach\nPlay it in any comfortable singing key; **C major** is common (I = C, IV = F, V = G7), as are G and A. Follow a standard 12-bar pattern. Approach it with a relaxed **strum** or blues shuffle, or fingerpick a simple alternating-bass pattern. Emphasise the storytelling — the accompaniment serves the words.\n\n## How to practise\nMemorise the 12-bar chord map first and strum it in time until the changes are automatic. Then sing (or hum) verses over it so the phrasing feels conversational. Try adding a light shuffle feel or a bass-strum fingerpicking pattern once the changes are secure.\n\n## If you like this\nTry *House of the Rising Sun* for another traditional narrative song, or *Wildwood Flower*.",
+    "bodyMdx": "## About this piece\n\"Frankie and Johnny\" is a traditional American blues ballad — a murder ballad, in fact. It's widely believed to stem from a real 1899 shooting in St. Louis, where a woman named Frankie Baker shot her boyfriend Allen (Albert) Britt; she was acquitted on grounds of self-defence. Street singers were performing versions within weeks, early sheet music appeared in 1904, and the familiar \"Frankie and Johnny\" title was fixed in 1912 (Albert became \"Johnny\" because it sang better). With so many hands shaping it, it's genuinely **traditional** — hundreds of verses and variants exist. It's a superb vehicle for learning **12-bar blues** phrasing.\n\n## What to listen for\nA rolling, storytelling verse structure over a classic 12-bar blues chord cycle, usually capped by the refrain \"He was her man, but he done her wrong.\" Each verse advances the tale, so the same musical frame carries an ever-changing lyric — great for feeling how blues form supports narrative.\n\n## What you'll learn\nThe **12-bar blues** progression, chord changes between I, IV and V, and simple, groove-based accompaniment. It's ideal for internalising blues form and steady rhythmic strumming or comping.\n\n## Chords, keys and approach\nPlay it in any comfortable singing key; **C major** is common (I = C, IV = F, V = G7), as are G and A. Follow a standard 12-bar pattern. Approach it with a relaxed **strum** or blues shuffle, or fingerpick a simple alternating-bass pattern. Emphasise the storytelling — the accompaniment serves the words.\n\n## How to practise\nMemorise the 12-bar chord map first and strum it in time until the changes are automatic. Then sing (or hum) verses over it so the phrasing feels conversational. Try adding a light shuffle feel or a bass-strum fingerpicking pattern once the changes are secure.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nTry *House of the Rising Sun* for another traditional narrative song, or *Wildwood Flower*.",
     "details": {
       "key": "C major (any singable key)",
       "era": "Traditional",
@@ -826,6 +826,28 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "wildwood-flower",
         "greensleeves-trad",
         "scarborough-fair"
+      ],
+      "embeds": [
+        {
+          "tool": "progression",
+          "title": "The twelve-bar blues in C",
+          "caption": "Frankie and Johnny rides a standard twelve-bar blues — I7–IV7–V7. Play it round until the form is in your ear.",
+          "key": "C",
+          "chords": [
+            "C7",
+            "F7",
+            "C7",
+            "C7",
+            "F7",
+            "F7",
+            "C7",
+            "C7",
+            "G7",
+            "F7",
+            "C7",
+            "G7"
+          ]
+        }
       ]
     },
     "extraTags": [
@@ -833,7 +855,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "greensleeves-trad": {
-    "bodyMdx": "## About this piece\n\"Greensleeves\" is one of the most enduring melodies in the English language, an **anonymous** tune registered in London in 1580. A popular legend claims King Henry VIII wrote it for Anne Boleyn — but this is a **myth**: the piece is built on Italian Renaissance forms (a ground-bass style) that reached England only after Henry's death. Its true author is unknown, so it is genuinely traditional. Centuries of arrangers have adopted it, and it's a wonderful introduction to modal, Renaissance-flavoured fingerstyle playing.\n\n## What to listen for\nThe gently rocking 6/8 lilt and the bittersweet, \"old\" sound of its mode. The melody hovers between minor and modal (often Dorian) colours, which is why some notes sound slightly unexpected to modern ears — that antique flavour is the whole appeal. It's built over a repeating bass pattern that gives it a hypnotic, circling feel.\n\n## What you'll learn\nFingerstyle melody-with-accompaniment, arpeggiated chords in 6/8, and a first encounter with **modal** harmony. You'll practise voicing a clear melody over quieter supporting notes and shaping long, flowing phrases.\n\n## Chords, keys and approach\nCommonly played in **A minor** or **E minor**. A typical progression runs **Am – G – Am – E** for the verse and **C – G – Am – E** for the \"Alas, my love\" refrain (chords vary by arrangement and mode). Best played **fingerstyle**, letting the thumb carry the bass while the fingers pick the melody; a gentle arpeggiated strum also works.\n\n## How to practise\nLearn the melody on its own until it truly sings. Add the accompaniment softly beneath it, keeping the 6/8 pulse smooth and rocking. Take the phrase-ends gently rather than clipping them. Enjoy the modal notes rather than \"correcting\" them — they're the point.\n\n## If you like this\nTry *Scarborough Fair* for another modal English ballad, or *House of the Rising Sun*.",
+    "bodyMdx": "## About this piece\n\"Greensleeves\" is one of the most enduring melodies in the English language, an **anonymous** tune registered in London in 1580. A popular legend claims King Henry VIII wrote it for Anne Boleyn — but this is a **myth**: the piece is built on Italian Renaissance forms (a ground-bass style) that reached England only after Henry's death. Its true author is unknown, so it is genuinely traditional. Centuries of arrangers have adopted it, and it's a wonderful introduction to modal, Renaissance-flavoured fingerstyle playing.\n\n## What to listen for\nThe gently rocking 6/8 lilt and the bittersweet, \"old\" sound of its mode. The melody hovers between minor and modal (often Dorian) colours, which is why some notes sound slightly unexpected to modern ears — that antique flavour is the whole appeal. It's built over a repeating bass pattern that gives it a hypnotic, circling feel.\n\n## What you'll learn\nFingerstyle melody-with-accompaniment, arpeggiated chords in 6/8, and a first encounter with **modal** harmony. You'll practise voicing a clear melody over quieter supporting notes and shaping long, flowing phrases.\n\n## Chords, keys and approach\nCommonly played in **A minor** or **E minor**. A typical progression runs **Am – G – Am – E** for the verse and **C – G – Am – E** for the \"Alas, my love\" refrain (chords vary by arrangement and mode). Best played **fingerstyle**, letting the thumb carry the bass while the fingers pick the melody; a gentle arpeggiated strum also works.\n\n## How to practise\nLearn the melody on its own until it truly sings. Add the accompaniment softly beneath it, keeping the 6/8 pulse smooth and rocking. Take the phrase-ends gently rather than clipping them. Enjoy the modal notes rather than \"correcting\" them — they're the point.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nTry *Scarborough Fair* for another modal English ballad, or *House of the Rising Sun*.",
     "details": {
       "key": "A minor / Dorian (also played in E minor)",
       "era": "Traditional",
@@ -846,6 +868,24 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "house-of-the-rising-sun",
         "wildwood-flower",
         "frankie-and-johnny"
+      ],
+      "embeds": [
+        {
+          "tool": "progression",
+          "title": "The Greensleeves changes",
+          "caption": "The minor-key climb and its bright answer — Am–G–Am–E7, then C–G–Am–E7. Play it through in 6/8.",
+          "key": "Am",
+          "chords": [
+            "Am",
+            "G",
+            "Am",
+            "E7",
+            "C",
+            "G",
+            "Am",
+            "E7"
+          ]
+        }
       ]
     },
     "extraTags": [
@@ -1717,7 +1757,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "shenandoah": {
-    "bodyMdx": "## About this song\n\"Shenandoah\" (also known as \"Oh Shenandoah\") is a traditional American folk song dating to the early 19th century. Like most folk songs its exact origin can't be pinned down, but it is widely believed to have grown among American and Canadian voyageurs and fur traders paddling down the Missouri River, and versions were also sung by flatboatmen on the great rivers. By the mid-1800s it had been taken up as a sea shanty — a work song used to coordinate hauling the anchor or ropes — and carried around the world by sailors. Its meaning is as fluid as its history: some hear a longing for the Shenandoah River and valley, while a widely-told version tells of a river trader courting Sally, the daughter of an Oswego chief named Shenandoah. Whatever the reading, its mood is one of distance, farewell, and yearning for home.\n\n## What to listen for\n\"Shenandoah\" is prized for its broad, gently rolling melodic line. Sung in a relaxed 4/4, its long phrases swell and fall like the river it evokes, with wide, singable leaps that reward a legato, connected touch. The harmony is warm and diatonic; in D major it moves comfortably through the primary chords with the occasional gentle turn to a minor or a IV chord for colour.\n\n## What you'll learn\nThis is a wonderful study in legato phrasing and expressive shaping. You will practise carrying a melody smoothly across bar lines, controlling dynamics to follow the natural rise and fall of each line, and pacing a slow tune without letting it drag.\n\n## How to play it\nIn D major, lean on D, G, A (add A7) with an optional Bm or Em for warmth; the song also sits well in F for singers. Pianists can voice the melody over sustained or slowly-arpeggiated chords, using the sustain pedal to blend. Guitarists suit it to fingerpicking or slow strums; take it broadly, breathe between phrases, and let each long note bloom before moving on.\n\n## If you like this",
+    "bodyMdx": "## About this song\n\"Shenandoah\" (also known as \"Oh Shenandoah\") is a traditional American folk song dating to the early 19th century. Like most folk songs its exact origin can't be pinned down, but it is widely believed to have grown among American and Canadian voyageurs and fur traders paddling down the Missouri River, and versions were also sung by flatboatmen on the great rivers. By the mid-1800s it had been taken up as a sea shanty — a work song used to coordinate hauling the anchor or ropes — and carried around the world by sailors. Its meaning is as fluid as its history: some hear a longing for the Shenandoah River and valley, while a widely-told version tells of a river trader courting Sally, the daughter of an Oswego chief named Shenandoah. Whatever the reading, its mood is one of distance, farewell, and yearning for home.\n\n## What to listen for\n\"Shenandoah\" is prized for its broad, gently rolling melodic line. Sung in a relaxed 4/4, its long phrases swell and fall like the river it evokes, with wide, singable leaps that reward a legato, connected touch. The harmony is warm and diatonic; in D major it moves comfortably through the primary chords with the occasional gentle turn to a minor or a IV chord for colour.\n\n## What you'll learn\nThis is a wonderful study in legato phrasing and expressive shaping. You will practise carrying a melody smoothly across bar lines, controlling dynamics to follow the natural rise and fall of each line, and pacing a slow tune without letting it drag.\n\n## How to play it\nIn D major, lean on D, G, A (add A7) with an optional Bm or Em for warmth; the song also sits well in F for singers. Pianists can voice the melody over sustained or slowly-arpeggiated chords, using the sustain pedal to blend. Guitarists suit it to fingerpicking or slow strums; take it broadly, breathe between phrases, and let each long note bloom before moving on.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this",
     "details": {
       "key": "D major",
       "era": "Folk",
@@ -1729,6 +1769,21 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "amazing-grace-trad",
         "simple-gifts",
         "swing-low-sweet-chariot"
+      ],
+      "embeds": [
+        {
+          "tool": "progression",
+          "title": "The chords behind the river song",
+          "caption": "A broad I–IV–V in D under the long, rolling melody. Play it slowly and let each chord ring.",
+          "key": "D",
+          "chords": [
+            "D",
+            "G",
+            "D",
+            "A7",
+            "D"
+          ]
+        }
       ]
     },
     "extraTags": [
@@ -2181,7 +2236,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "wildwood-flower": {
-    "bodyMdx": "## About this piece\n\"Wildwood Flower\" is an Appalachian classic and a rite of passage for country and flatpicking guitarists. It descends from an 1860 parlour song, \"I'll Twine 'Mid the Ringlets\" (lyrics attributed to Maud Irving, music to Joseph Philbrick Webster), which entered Southern oral tradition and mutated over decades. The Carter Family's landmark 1928 recording — with Maybelle Carter's iconic guitar picking — made it a foundation stone of American folk and country music. Because it passed through so many hands it's rightly called **traditional**, with no single living composer.\n\n## What to listen for\nMaybelle Carter's \"thumb-lead\" style: the melody picked out on the bass strings by the thumb while the fingers brush chords in between. This became known as the \"Carter scratch\" and defined how generations play the tune. The mood is bright, tuneful, and gently rolling.\n\n## What you'll learn\nThe essential country-guitar technique of playing **melody and rhythm at once** — thumb picks the tune on the lower strings, fingers strum the chords on the off-beats. It builds thumb independence, alternating bass, and clean single-note picking.\n\n## Chords, keys and approach\nMost commonly played in **C major** (also G). The core chords are simple: **C, F, G7** (and G). Approach it either as a **flatpicked** melody (single notes with a pick) or in the **Carter-scratch fingerstyle** — the classic way. Keep a steady, moderate tempo; the tune should feel relaxed and singable.\n\n## How to practise\nLearn the melody as single notes first, slowly, until it's memorised. Separately practise the chord strums. Then combine: thumb (or pick) plays melody notes, brush the chord in the gaps. Start well under tempo with a metronome and speed up only when the two parts lock together cleanly.\n\n## If you like this\nExplore more traditional American tunes like *Frankie and Johnny* and *House of the Rising Sun*.",
+    "bodyMdx": "## About this piece\n\"Wildwood Flower\" is an Appalachian classic and a rite of passage for country and flatpicking guitarists. It descends from an 1860 parlour song, \"I'll Twine 'Mid the Ringlets\" (lyrics attributed to Maud Irving, music to Joseph Philbrick Webster), which entered Southern oral tradition and mutated over decades. The Carter Family's landmark 1928 recording — with Maybelle Carter's iconic guitar picking — made it a foundation stone of American folk and country music. Because it passed through so many hands it's rightly called **traditional**, with no single living composer.\n\n## What to listen for\nMaybelle Carter's \"thumb-lead\" style: the melody picked out on the bass strings by the thumb while the fingers brush chords in between. This became known as the \"Carter scratch\" and defined how generations play the tune. The mood is bright, tuneful, and gently rolling.\n\n## What you'll learn\nThe essential country-guitar technique of playing **melody and rhythm at once** — thumb picks the tune on the lower strings, fingers strum the chords on the off-beats. It builds thumb independence, alternating bass, and clean single-note picking.\n\n## Chords, keys and approach\nMost commonly played in **C major** (also G). The core chords are simple: **C, F, G7** (and G). Approach it either as a **flatpicked** melody (single notes with a pick) or in the **Carter-scratch fingerstyle** — the classic way. Keep a steady, moderate tempo; the tune should feel relaxed and singable.\n\n## How to practise\nLearn the melody as single notes first, slowly, until it's memorised. Separately practise the chord strums. Then combine: thumb (or pick) plays melody notes, brush the chord in the gaps. Start well under tempo with a metronome and speed up only when the two parts lock together cleanly.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nExplore more traditional American tunes like *Frankie and Johnny* and *House of the Rising Sun*.",
     "details": {
       "key": "C major",
       "era": "Traditional",
@@ -2194,6 +2249,22 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "frankie-and-johnny",
         "scarborough-fair",
         "greensleeves-trad"
+      ],
+      "embeds": [
+        {
+          "tool": "progression",
+          "title": "The Carter-family chords",
+          "caption": "A plain I–IV–V in C — the backbone of the tune and a thousand other folk songs. Play it through.",
+          "key": "C",
+          "chords": [
+            "C",
+            "C",
+            "F",
+            "C",
+            "G7",
+            "C"
+          ]
+        }
       ]
     },
     "extraTags": [

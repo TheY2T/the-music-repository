@@ -27,5 +27,9 @@ Play it in any comfortable singing key; **C major** is common (I = C, IV = F, V 
 ## How to practise
 Memorise the 12-bar chord map first and strum it in time until the changes are automatic. Then sing (or hum) verses over it so the phrasing feels conversational. Try adding a light shuffle feel or a bass-strum fingerpicking pattern once the changes are secure.
 
+```embeds
+[{ "tool": "progression", "title": "The twelve-bar blues in C", "caption": "Frankie and Johnny rides a standard twelve-bar blues — I7–IV7–V7. Play it round until the form is in your ear.", "key": "C", "chords": ["C7", "F7", "C7", "C7", "F7", "F7", "C7", "C7", "G7", "F7", "C7", "G7"] }]
+```
+
 ## If you like this
 Try *House of the Rising Sun* for another traditional narrative song, or *Wildwood Flower*.
