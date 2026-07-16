@@ -13,8 +13,9 @@ out a prioritized plan to **(1) deepen** existing tools, **(2) consolidate** ove
 > dictionary, bass clef + key signatures for the reading tools, the Beginner→Expert level selector
 > (X1), and consolidations C1 + C5 (C2/C3/C4/C6 deliberately kept separate — see §3). The tuner's mic
 > pitch-detection was already shipped. **Expansion started:** the **improvise guide** (§6,
-> `/tools/improvise` — which scales fit a chord) and a widened instrument menu (§5, 10→36 GM voices)
-> are shipped; the rest of §5/§6 remains open backlog. The whole workspace `pnpm lint` is now green too
+> `/tools/improvise` — scales that fit a chord), the **progression generator** (`/tools/progression-generator`),
+> the **fretboard note game** (`/tools/fret-game`) and a widened instrument menu (§5, 10→36 GM voices)
+> are shipped. The rest of §5/§6 remains open backlog. The whole workspace `pnpm lint` is green too
 > (pre-existing api + icon.tsx errors fixed).
 
 > **Design principle threaded throughout — Level tiers.** Every tool should expose a
@@ -136,8 +137,8 @@ only **25 of 83 articles use live embeds**.
 
 | Tool | What | Effort | Notes |
 |---|---|---|---|
-| **Fretboard/keyboard note-trainer game** | Timed "find the note / interval / triad" game with scoring & streaks | M | Reuses fret-quiz + scoring |
-| **Chord-progression generator** | Genre/mood → suggested progression (pop/jazz/blues templates) → open in analyzer/band | M | Uses expanded harmony tables |
+| ✅ **DONE (2026-07-15) Fretboard note game** (`/tools/fret-game`) | 60-second timed find-the-note sprint with score/streak + saved best; level-tiered (beginner naturals+labels → advanced all-12 hidden) | M | Shipped |
+| ✅ **DONE (2026-07-15) Chord-progression generator** (`/tools/progression-generator`) | Genre/style templates (pop/folk/blues/jazz/classical) → progression in any key, level-tiered, playable (`progressions.ts`) | M | Shipped |
 | ✅ **DONE (2026-07-15) Improvisation / scale-over-chord guide** (`/tools/improvise`) | Pick a chord → every scale that contains its tones (`scalesForChord`), level-tiered, chord+scale playable together | M–L | Shipped |
 | **Song/lead-sheet builder** | Compose a lead sheet (chords + melody) from tools, save/share (reuse saved-progressions backend) | L | Extends analyzer's save feature |
 | **Rhythm reading game** | Tap/clap along to generated rhythms with timing scoring (mic or key input) | M | Extends rhythm + dictation |
