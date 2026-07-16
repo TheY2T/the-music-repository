@@ -15,7 +15,7 @@ out a prioritized plan to **(1) deepen** existing tools, **(2) consolidate** ove
 > pitch-detection was already shipped. **Expansion started:** the **improvise guide** (§6,
 > `/tools/improvise`), the **progression generator** (`/tools/progression-generator`), the **fretboard
 > note game** (`/tools/fret-game`), the **note-reading game** (`/tools/staff-game`), the **piano & guitar
-> map** (`/tools/scale-map`), the **rhythm tap game** (`/tools/rhythm-game`), a widened instrument menu
+> map** (`/tools/scale-map`), the **rhythm tap game** (`/tools/rhythm-game`), the **voice-leading viewer** (`/tools/voice-leading`), the **speed trainer** (`/tools/speed-trainer`), a widened instrument menu
 > (§5, 10→36 GM voices) and **live embeds on every catalogue article** (§5, density 25→**83/83**) are
 > shipped. Remaining §5/§6 is genre/difficulty content + heavier tools (practice planner). Workspace
 > `pnpm lint` green.
