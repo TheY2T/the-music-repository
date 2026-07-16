@@ -427,6 +427,8 @@
   "tool.soundfont.summary": "用真实的 General-MIDI 乐器采样演奏键盘。",
   "tool.improvise.title": "即兴指南",
   "tool.improvise.summary": "选择一个和弦，查看适合的音阶——独奏的安全之选。",
+  "tool.progression-generator.title": "和弦进行生成器",
+  "tool.progression-generator.summary": "按风格生成常见和弦进行，可转到任意调。",
   "myfav.loading": "加载中…",
   "myfav.emptyBefore": "还没有收藏。浏览",
   "myfav.catalogue": "曲库",

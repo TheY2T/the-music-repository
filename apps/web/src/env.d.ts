@@ -56,6 +56,7 @@ declare namespace App {
       toolAnalyzer: boolean;
       toolTransposer: boolean;
       toolImprovise: boolean;
+      toolProgressionGen: boolean;
       toolBassline: boolean;
       toolMelodicDictation: boolean;
       toolRhythmDictation: boolean;
