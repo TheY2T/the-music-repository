@@ -1,0 +1,20 @@
+---
+import ContentPreview from '@/components/admin/block-editor/ContentPreview.tsx';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { guardAdmin } from '@/lib/admin-guard';
+import { t } from '@TheY2T/tmr-i18n';
+
+// Draft preview surface for the block editor (ADR 0030). Gated by guardAdmin (admin.cms + editor role);
+// it renders no DB data — the editor pushes the live document in via postMessage. `[slug]` only keys the
+// iframe (a per-item URL) so switching items reloads a fresh frame.
+const redirect = guardAdmin(Astro);
+if (redirect) {
+  return redirect;
+}
+const locale = Astro.locals.locale;
+const interactive = Astro.locals.flags.interactiveScores;
+---
+
+<BaseLayout title={`${t(locale, 'blockEditor.previewTitle')} — ${t(locale, 'site.name')}`}>
+  <ContentPreview client:only="react" locale={locale} interactive={interactive} />
+</BaseLayout>

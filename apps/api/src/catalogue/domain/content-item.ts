@@ -57,6 +57,15 @@ export interface ContentEmbed {
   tempo?: number;
 }
 
+/**
+ * The block editor's canonical document — TipTap/ProseMirror JSON, stored verbatim in `body_doc`. The
+ * core treats it as **opaque**: persisted and returned unchanged, never interpreted server-side (the
+ * public render path reads the derived `bodyMdx` + `details.embeds`, never this). Typed as an open
+ * record so the domain carries no ProseMirror dependency and the generated write DTO flows straight
+ * through. See ADR "Editor storage".
+ */
+export type ProseMirrorDoc = Record<string, unknown>;
+
 /** Structured facts stored on a content item (JSONB `details`). `related` = curated "if you like
  * this" slugs (served via the related endpoint, not shown in the Details panel). `embeds` = authored
  * interactive-tool embeds (served on the detail view, not in the Details facts panel). */
@@ -101,6 +110,8 @@ export interface ContentItem {
   attribution: string | null;
   license: string | null;
   details: ContentDetails | null;
+  /** Canonical block-editor document; null for file-authored/legacy items. Editor-only, never rendered. */
+  bodyDoc: ProseMirrorDoc | null;
   createdAt: Date;
   updatedAt: Date;
   genres: TaxonomyRef[];

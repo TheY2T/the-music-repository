@@ -36,6 +36,18 @@ catalog:
   # --- Admin CMS (Slice 2b): markdown preview ---
   marked: ^15.0.7
 
+  # --- Block editor (ADR 0030): TipTap / ProseMirror. Pinned as a group so the pm bundle stays single. ---
+  "@tiptap/core": ^2.11.5
+  "@tiptap/react": ^2.11.5
+  "@tiptap/pm": ^2.11.5
+  "@tiptap/starter-kit": ^2.11.5
+  "@tiptap/extension-link": ^2.11.5
+  "@tiptap/extension-placeholder": ^2.11.5
+  "@tiptap/extension-table": ^2.11.5
+  "@tiptap/extension-table-row": ^2.11.5
+  "@tiptap/extension-table-header": ^2.11.5
+  "@tiptap/extension-table-cell": ^2.11.5
+
   # --- Feature flags (OpenFeature + flagd) ---
   "@openfeature/server-sdk": ^1.22.0
   "@openfeature/flagd-provider": ^0.16.0

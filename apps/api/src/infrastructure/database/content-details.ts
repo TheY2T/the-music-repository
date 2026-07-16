@@ -3,14 +3,16 @@
  * (`catalogue/domain/content-item.ts`); re-exported here so the schema, seed, and generated
  * `seed-content.ts` share one definition.
  */
-export type { ContentDetails } from '../../catalogue/domain/content-item';
+export type { ContentDetails, ProseMirrorDoc } from '../../catalogue/domain/content-item';
 
-import type { ContentDetails } from '../../catalogue/domain/content-item';
+import type { ContentDetails, ProseMirrorDoc } from '../../catalogue/domain/content-item';
 
 /** One item's enriched content, applied by the seed on top of the base metadata in seed-data.ts. */
 export interface SeedContentExtra {
   bodyMdx: string;
   details: ContentDetails;
+  /** Canonical block-editor document derived from `bodyMdx` at build time (DB-first, ADR 0030). */
+  bodyDoc: ProseMirrorDoc;
   /** Suggested tag slugs; the seed attaches only those present in its TAGS vocabulary. */
   extraTags: string[];
 }

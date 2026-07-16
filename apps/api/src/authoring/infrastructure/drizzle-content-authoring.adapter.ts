@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { desc, eq } from 'drizzle-orm';
-import { slugToLabel } from '../../catalogue/domain/content-item';
+import { type ContentDetails, slugToLabel } from '../../catalogue/domain/content-item';
 import { ContentNotFoundError } from '../../catalogue/domain/errors/content-not-found.error';
 import { DATABASE, type Database } from '../../infrastructure/database/database.module';
 import {
@@ -21,6 +21,77 @@ import {
   type ContentWriteData,
   type MediaRowInput,
 } from '../application/ports/content-authoring.port';
+
+const FACT_KEYS = [
+  'key',
+  'era',
+  'form',
+  'timeSignature',
+  'composer',
+  'composerDates',
+  'composedYear',
+] as const;
+
+/** True when the payload carries any part of `details` (facts, related, or embeds). */
+function hasDetails(data: ContentWriteData): boolean {
+  return data.details !== undefined || data.related !== undefined || data.embeds !== undefined;
+}
+
+/** Drop an empty object to null so the column clears rather than storing `{}`. */
+function nonEmpty(details: ContentDetails): ContentDetails | null {
+  return Object.keys(details).length > 0 ? details : null;
+}
+
+/**
+ * Build the `details` JSONB for a **create** from the write payload's facts + `related` + `embeds` (the
+ * top-level `embeds`/`related` write fields mirror the read view; `details` is where they live).
+ */
+function mergeDetails(data: ContentWriteData): ContentDetails | null {
+  const merged: ContentDetails = { ...(data.details ?? {}) };
+  if (data.related !== undefined) {
+    merged.related = data.related;
+  }
+  if (data.embeds !== undefined) {
+    merged.embeds = data.embeds;
+  }
+  return nonEmpty(merged);
+}
+
+/**
+ * Overlay the provided `details` parts onto the **existing** stored `details` for an update. Only the
+ * parts the payload carries are changed — so a client that edits embeds (the block editor) but has no
+ * facts/`related` UI preserves them, rather than clobbering fields the read view (which hides `related`)
+ * never surfaced. An empty `related`/`embeds` array explicitly clears that part.
+ */
+function overlayDetails(
+  existing: ContentDetails | null,
+  data: ContentWriteData,
+): ContentDetails | null {
+  const merged: ContentDetails = { ...(existing ?? {}) };
+  if (data.details) {
+    for (const key of FACT_KEYS) {
+      const value = data.details[key];
+      if (value !== undefined) {
+        merged[key] = value;
+      }
+    }
+  }
+  if (data.related !== undefined) {
+    if (data.related.length) {
+      merged.related = data.related;
+    } else {
+      delete merged.related;
+    }
+  }
+  if (data.embeds !== undefined) {
+    if (data.embeds.length) {
+      merged.embeds = data.embeds;
+    } else {
+      delete merged.embeds;
+    }
+  }
+  return nonEmpty(merged);
+}
 
 @Injectable()
 export class DrizzleContentAuthoring extends ContentAuthoring {
@@ -60,11 +131,14 @@ export class DrizzleContentAuthoring extends ContentAuthoring {
         bodyMdx: data.bodyMdx ?? null,
         type: data.type,
         visibility: data.visibility ?? 'public',
+        tier: data.tier ?? null,
         status: 'draft',
         difficulty: data.difficulty ?? null,
         source: data.source ?? null,
         attribution: data.attribution ?? null,
         license: data.license ?? null,
+        details: mergeDetails(data),
+        bodyDoc: data.bodyDoc ?? null,
       })
       .returning({ id: contentItems.id });
     if (row) {
@@ -73,20 +147,37 @@ export class DrizzleContentAuthoring extends ContentAuthoring {
   }
 
   async update(slug: string, data: ContentWriteData): Promise<void> {
+    // `details`/`tier`/`bodyDoc` are only written when the payload carries them, so a client that omits
+    // them (e.g. a partial edit) preserves the existing values rather than clearing them.
+    const set: Partial<typeof contentItems.$inferInsert> = {
+      title: data.title,
+      summary: data.summary ?? null,
+      bodyMdx: data.bodyMdx ?? null,
+      type: data.type,
+      visibility: data.visibility ?? 'public',
+      difficulty: data.difficulty ?? null,
+      source: data.source ?? null,
+      attribution: data.attribution ?? null,
+      license: data.license ?? null,
+      updatedAt: new Date(),
+    };
+    if (data.tier !== undefined) {
+      set.tier = data.tier;
+    }
+    if (data.bodyDoc !== undefined) {
+      set.bodyDoc = data.bodyDoc ?? null;
+    }
+    if (hasDetails(data)) {
+      const [existing] = await this.db
+        .select({ details: contentItems.details })
+        .from(contentItems)
+        .where(eq(contentItems.slug, slug))
+        .limit(1);
+      set.details = overlayDetails(existing?.details ?? null, data);
+    }
     const [row] = await this.db
       .update(contentItems)
-      .set({
-        title: data.title,
-        summary: data.summary ?? null,
-        bodyMdx: data.bodyMdx ?? null,
-        type: data.type,
-        visibility: data.visibility ?? 'public',
-        difficulty: data.difficulty ?? null,
-        source: data.source ?? null,
-        attribution: data.attribution ?? null,
-        license: data.license ?? null,
-        updatedAt: new Date(),
-      })
+      .set(set)
       .where(eq(contentItems.slug, slug))
       .returning({ id: contentItems.id });
     if (!row) {

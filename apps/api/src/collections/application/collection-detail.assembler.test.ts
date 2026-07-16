@@ -20,6 +20,7 @@ function content(slug: string, status = 'published'): ContentItem {
     attribution: null,
     license: null,
     details: null,
+    bodyDoc: null,
     genres: [],
     instruments: [],
     topics: [],

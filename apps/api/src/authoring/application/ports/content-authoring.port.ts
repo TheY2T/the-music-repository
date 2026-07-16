@@ -1,3 +1,9 @@
+import type {
+  ContentDetails,
+  ContentEmbed,
+  ProseMirrorDoc,
+} from '../../../catalogue/domain/content-item';
+
 /** Write-side data for a content item (taxonomy given as slug arrays). */
 export interface ContentWriteData {
   slug: string;
@@ -6,6 +12,8 @@ export interface ContentWriteData {
   bodyMdx?: string | null;
   type: string;
   visibility?: string;
+  /** Premium plan that unlocks the item (`premium`/`pro`); null clears it. */
+  tier?: string | null;
   difficulty?: number | null;
   source?: string | null;
   attribution?: string | null;
@@ -14,6 +22,14 @@ export interface ContentWriteData {
   instruments: string[];
   topics: string[];
   tags: string[];
+  /** Structured facts (key/era/form/composer/…). Merged with `related`/`embeds` into `details` JSONB. */
+  details?: ContentDetails | null;
+  /** Curated "if you like this" slugs → `details.related`. */
+  related?: string[];
+  /** Preconfigured interactive-tool embeds → `details.embeds`. */
+  embeds?: ContentEmbed[];
+  /** Canonical block-editor document, stored verbatim in `body_doc`. */
+  bodyDoc?: ProseMirrorDoc | null;
 }
 
 /** Admin list row (any status). */

@@ -18,6 +18,12 @@ const locale = Astro.locals.locale;
     back={{ href: localizedPath(locale, '/admin'), label: t(locale, 'common.backContent') }}
     maxWidth="max-w-5xl"
   >
-    <ContentForm client:load locale={locale} />
+    <ContentForm
+      client:load
+      locale={locale}
+      blockEditor={Astro.locals.flags.blockEditor}
+      preview={Astro.locals.flags.blockEditorPreview}
+      interactive={Astro.locals.flags.interactiveScores}
+    />
   </PageShell>
 </BaseLayout>

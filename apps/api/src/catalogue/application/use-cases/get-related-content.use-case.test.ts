@@ -20,6 +20,7 @@ function item(slug: string, over: Partial<ContentItem> = {}): ContentItem {
     attribution: null,
     license: null,
     details: null,
+    bodyDoc: null,
     createdAt: now,
     updatedAt: now,
     genres: [],

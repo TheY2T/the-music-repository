@@ -23,6 +23,7 @@
     "db:seed:auth": "node dist/infrastructure/database/seed-auth.js"
   },
   "dependencies": {
+    "@TheY2T/tmr-content-serde": "workspace:*",
     "@TheY2T/tmr-contracts": "workspace:*",
     "@TheY2T/tmr-errors": "workspace:*",
     "@TheY2T/tmr-flags": "workspace:*",
@@ -64,6 +65,7 @@
     "@types/supertest": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "drizzle-kit": "catalog:",
+    "marked": "catalog:",
     "eslint": "catalog:",
     "supertest": "catalog:",
     "testcontainers": "catalog:",

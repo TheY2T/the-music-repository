@@ -23,6 +23,10 @@ export const FlagKeys = {
   AuthEnabled: 'auth.enabled',
   /** Slice 2b — gates the admin authoring CMS (`/admin` content management). */
   AdminCms: 'admin.cms',
+  /** WYSIWYG block editor (ADR 0030) — swaps the Markdown textarea for the TipTap editor in the CMS. */
+  BlockEditor: 'admin.block-editor',
+  /** Block editor live preview (ADR 0030) — side-by-side iframe rendering the real page components. */
+  BlockEditorPreview: 'admin.block-editor-preview',
   /** Slice 2c — gates favorites (heart toggles + My favorites page). */
   Favorites: 'personalization.favorites',
   /** Phase 5 backlog — gates cloud-synced saved chord progressions (chord analyzer). */
@@ -174,6 +178,8 @@ export const FlagDefaults = {
   [FlagKeys.DemoNewBanner]: false,
   [FlagKeys.AuthEnabled]: true,
   [FlagKeys.AdminCms]: true,
+  [FlagKeys.BlockEditor]: true,
+  [FlagKeys.BlockEditorPreview]: true,
   [FlagKeys.Favorites]: true,
   [FlagKeys.SavedProgressions]: true,
   [FlagKeys.Collections]: true,

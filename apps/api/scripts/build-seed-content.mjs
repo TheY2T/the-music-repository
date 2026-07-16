@@ -8,6 +8,9 @@
 //
 // Each source file is YAML-ish frontmatter (simple `key: value` + `[a, b]` arrays) + a Markdown body.
 
+// Canonical embed-tool list + the doc serializer live in @TheY2T/tmr-content-serde (single source of
+// truth; ADR 0030). Requires the package to be built (`pnpm build` / turbo `^build`).
+import { EMBED_TOOLS as EMBED_TOOL_LIST, mdxToDoc } from '@TheY2T/tmr-content-serde';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -36,19 +39,7 @@ function parseArray(raw) {
     .filter(Boolean);
 }
 
-const EMBED_TOOLS = new Set([
-  'score',
-  'keyboard',
-  'scale-boxes',
-  'chord-diagrams',
-  'progression',
-  'circle-of-fifths',
-  'strum',
-  'rhythm',
-  'chord-board',
-  'intervals',
-  'fingering',
-]);
+const EMBED_TOOLS = new Set(EMBED_TOOL_LIST);
 
 /**
  * Extract every fenced ```embeds block (each a JSON array of ContentEmbed) from a body. Each block is
@@ -132,13 +123,19 @@ for (const file of files) {
 
   const extraTags = fm.suggestedTags ? parseArray(fm.suggestedTags) : [];
 
-  entries.push({ slug, bodyMdx: body, details, extraTags });
+  // Canonical block-editor document, derived from the marked-up body + embeds (DB-first, ADR 0030).
+  const bodyDoc = mdxToDoc(body, embeds);
+
+  entries.push({ slug, bodyMdx: body, details, bodyDoc, extraTags });
 }
 
 entries.sort((a, b) => a.slug.localeCompare(b.slug));
 
 const record = Object.fromEntries(
-  entries.map((e) => [e.slug, { bodyMdx: e.bodyMdx, details: e.details, extraTags: e.extraTags }]),
+  entries.map((e) => [
+    e.slug,
+    { bodyMdx: e.bodyMdx, details: e.details, bodyDoc: e.bodyDoc, extraTags: e.extraTags },
+  ]),
 );
 
 const header = `/**

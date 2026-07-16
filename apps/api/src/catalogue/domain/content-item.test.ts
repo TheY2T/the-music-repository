@@ -25,6 +25,7 @@ function makeItem(overrides: Partial<ContentItem> = {}): ContentItem {
     attribution: null,
     license: null,
     details: null,
+    bodyDoc: null,
     createdAt: now,
     updatedAt: now,
     genres: [],

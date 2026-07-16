@@ -101,6 +101,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagDefaults[FlagKeys.AuthEnabled],
   );
   const adminCms = await client.getBooleanValue(FlagKeys.AdminCms, FlagDefaults[FlagKeys.AdminCms]);
+  const blockEditor = await client.getBooleanValue(
+    FlagKeys.BlockEditor,
+    FlagDefaults[FlagKeys.BlockEditor],
+  );
+  const blockEditorPreview = await client.getBooleanValue(
+    FlagKeys.BlockEditorPreview,
+    FlagDefaults[FlagKeys.BlockEditorPreview],
+  );
   const favorites = await client.getBooleanValue(
     FlagKeys.Favorites,
     FlagDefaults[FlagKeys.Favorites],
@@ -372,6 +380,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
     demoNewBanner,
     authEnabled,
     adminCms,
+    blockEditor,
+    blockEditorPreview,
     favorites,
     savedProgressions,
     toolPractice,

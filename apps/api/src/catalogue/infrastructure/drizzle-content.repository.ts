@@ -103,6 +103,7 @@ export class DrizzleContentRepository extends ContentRepository {
       attribution: row.attribution,
       license: row.license,
       details: row.details ?? null,
+      bodyDoc: row.bodyDoc ?? null,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
       genres: genreRefs,

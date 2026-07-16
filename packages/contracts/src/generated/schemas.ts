@@ -1697,6 +1697,7 @@ export const CreateContentBody = zod.object({
   "bodyMdx": zod.string().optional(),
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "visibility": zod.enum(['public', 'authed', 'premium']).optional(),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
   "difficulty": zod.number().optional(),
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
@@ -1704,7 +1705,38 @@ export const CreateContentBody = zod.object({
   "genres": zod.array(zod.string()),
   "instruments": zod.array(zod.string()),
   "topics": zod.array(zod.string()),
-  "tags": zod.array(zod.string())
+  "tags": zod.array(zod.string()),
+  "details": zod.object({
+  "key": zod.string().optional(),
+  "era": zod.string().optional(),
+  "form": zod.string().optional(),
+  "timeSignature": zod.string().optional(),
+  "composer": zod.string().optional(),
+  "composerDates": zod.string().optional(),
+  "composedYear": zod.string().optional()
+}).describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.').optional().describe('Structured facts (key\/era\/form\/composer\/…) stored in the `details` JSONB.'),
+  "related": zod.array(zod.string()).optional().describe('Curated \"if you like this\" slugs, merged into `details.related`.'),
+  "embeds": zod.array(zod.object({
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "title": zod.string().optional().describe('Optional heading shown above the embed.'),
+  "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
+  "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
+  "scoreSlug": zod.string().optional().describe('`score`: reference an existing catalogue score by slug instead of inline `tex`.'),
+  "mode": zod.enum(['standard', 'tab']).optional().describe('`score`\/`scale-boxes`: engraving mode (piano-style `standard` vs guitar `tab`).'),
+  "tuning": zod.array(zod.number()).optional().describe('`score` (tab): open-string MIDI pitches so a pitched score renders as tablature.'),
+  "instrument": zod.string().optional().describe('Fretted\/keyboard instrument hint: `guitar` | `ukulele` | `bass` | `piano`.'),
+  "root": zod.string().optional().describe('`scale-boxes`\/`keyboard`: scale root note, e.g. `A`, `C#`.'),
+  "scale": zod.string().optional().describe('`scale-boxes`\/`keyboard`: scale id, e.g. `major`, `minor-pentatonic`, `blues`.'),
+  "key": zod.string().optional().describe('`progression`: key the Roman-numeral\/chord progression is in, e.g. `A`.'),
+  "chords": zod.array(zod.string()).optional().describe('`chord-diagrams`\/`progression`\/`chord-board`: chord symbols, e.g. `[\"C\",\"G\",\"Am\",\"F\"]`.'),
+  "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
+  "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
+  "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+}).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive-tool embeds, merged into `details.embeds`.'),
+  "bodyDoc": zod.looseObject({
+
+}).optional().describe('Canonical block-editor document (TipTap\/ProseMirror JSON). Opaque — stored + returned verbatim,\nnever interpreted server-side; `bodyMdx`\/`embeds` are the derived render fields.')
 }).describe('Create\/replace payload for a content item. Taxonomy is given as slug arrays.')
 
 export const CreateContentResponse = zod.object({
@@ -1870,6 +1902,7 @@ export const UpdateContentBody = zod.object({
   "bodyMdx": zod.string().optional(),
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
   "visibility": zod.enum(['public', 'authed', 'premium']).optional(),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
   "difficulty": zod.number().optional(),
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
@@ -1877,7 +1910,38 @@ export const UpdateContentBody = zod.object({
   "genres": zod.array(zod.string()),
   "instruments": zod.array(zod.string()),
   "topics": zod.array(zod.string()),
-  "tags": zod.array(zod.string())
+  "tags": zod.array(zod.string()),
+  "details": zod.object({
+  "key": zod.string().optional(),
+  "era": zod.string().optional(),
+  "form": zod.string().optional(),
+  "timeSignature": zod.string().optional(),
+  "composer": zod.string().optional(),
+  "composerDates": zod.string().optional(),
+  "composedYear": zod.string().optional()
+}).describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.').optional().describe('Structured facts (key\/era\/form\/composer\/…) stored in the `details` JSONB.'),
+  "related": zod.array(zod.string()).optional().describe('Curated \"if you like this\" slugs, merged into `details.related`.'),
+  "embeds": zod.array(zod.object({
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "title": zod.string().optional().describe('Optional heading shown above the embed.'),
+  "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
+  "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
+  "scoreSlug": zod.string().optional().describe('`score`: reference an existing catalogue score by slug instead of inline `tex`.'),
+  "mode": zod.enum(['standard', 'tab']).optional().describe('`score`\/`scale-boxes`: engraving mode (piano-style `standard` vs guitar `tab`).'),
+  "tuning": zod.array(zod.number()).optional().describe('`score` (tab): open-string MIDI pitches so a pitched score renders as tablature.'),
+  "instrument": zod.string().optional().describe('Fretted\/keyboard instrument hint: `guitar` | `ukulele` | `bass` | `piano`.'),
+  "root": zod.string().optional().describe('`scale-boxes`\/`keyboard`: scale root note, e.g. `A`, `C#`.'),
+  "scale": zod.string().optional().describe('`scale-boxes`\/`keyboard`: scale id, e.g. `major`, `minor-pentatonic`, `blues`.'),
+  "key": zod.string().optional().describe('`progression`: key the Roman-numeral\/chord progression is in, e.g. `A`.'),
+  "chords": zod.array(zod.string()).optional().describe('`chord-diagrams`\/`progression`\/`chord-board`: chord symbols, e.g. `[\"C\",\"G\",\"Am\",\"F\"]`.'),
+  "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
+  "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
+  "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+}).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive-tool embeds, merged into `details.embeds`.'),
+  "bodyDoc": zod.looseObject({
+
+}).optional().describe('Canonical block-editor document (TipTap\/ProseMirror JSON). Opaque — stored + returned verbatim,\nnever interpreted server-side; `bodyMdx`\/`embeds` are the derived render fields.')
 }).describe('Create\/replace payload for a content item. Taxonomy is given as slug arrays.')
 
 export const UpdateContentResponse = zod.object({

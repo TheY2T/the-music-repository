@@ -11,7 +11,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { user } from '../../auth/auth-schema';
-import type { CollectionFacets, ContentDetails } from './content-details';
+import type { CollectionFacets, ContentDetails, ProseMirrorDoc } from './content-details';
 
 /**
  * Catalogue schema (Phase 1). The repository core: content items + taxonomy + media assets.
@@ -33,6 +33,9 @@ export const contentItems = pgTable('content_items', {
   license: text('license'),
   /** Structured facts (key/era/form/composer/…) + curated related slugs — see content-details.ts. */
   details: jsonb('details').$type<ContentDetails>(),
+  /** Canonical block-editor document (TipTap/ProseMirror JSON); bodyMdx + details.embeds are derived
+   * from it on save. Editor-only — the public render path never reads this. Null for file-authored items. */
+  bodyDoc: jsonb('body_doc').$type<ProseMirrorDoc>(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });

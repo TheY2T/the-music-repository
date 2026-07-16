@@ -270,6 +270,8 @@ model ContentWriteInput {
   bodyMdx?: string;
   type: ContentType;
   visibility?: Visibility;
+  /** For premium items: which plan unlocks it — "premium" or "pro". */
+  tier?: string;
   difficulty?: int32;
   source?: string;
   attribution?: string;
@@ -278,6 +280,15 @@ model ContentWriteInput {
   instruments: string[];
   topics: string[];
   tags: string[];
+  /** Structured facts (key/era/form/composer/…) stored in the `details` JSONB. */
+  details?: ContentDetails;
+  /** Curated "if you like this" slugs, merged into `details.related`. */
+  related?: string[];
+  /** Preconfigured interactive-tool embeds, merged into `details.embeds`. */
+  embeds?: ContentEmbed[];
+  /** Canonical block-editor document (TipTap/ProseMirror JSON). Opaque — stored + returned verbatim,
+   * never interpreted server-side; `bodyMdx`/`embeds` are the derived render fields. */
+  bodyDoc?: Record<unknown>;
 }
 
 /** Admin list row (any status). */

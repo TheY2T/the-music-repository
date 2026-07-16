@@ -17,6 +17,22 @@
       },
       "defaultVariant": "on"
     },
+    "admin.block-editor": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
+    "admin.block-editor-preview": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "personalization.favorites": {
       "state": "ENABLED",
       "variants": {

@@ -4210,6 +4210,10 @@
               "premium"
             ]
           },
+          "tier": {
+            "type": "string",
+            "description": "For premium items: which plan unlocks it — \"premium\" or \"pro\"."
+          },
           "difficulty": {
             "type": "integer",
             "format": "int32"
@@ -4246,6 +4250,33 @@
             "items": {
               "type": "string"
             }
+          },
+          "details": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ContentDetails"
+              }
+            ],
+            "description": "Structured facts (key/era/form/composer/…) stored in the `details` JSONB."
+          },
+          "related": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Curated \"if you like this\" slugs, merged into `details.related`."
+          },
+          "embeds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentEmbed"
+            },
+            "description": "Preconfigured interactive-tool embeds, merged into `details.embeds`."
+          },
+          "bodyDoc": {
+            "type": "object",
+            "unevaluatedProperties": {},
+            "description": "Canonical block-editor document (TipTap/ProseMirror JSON). Opaque — stored + returned verbatim,\nnever interpreted server-side; `bodyMdx`/`embeds` are the derived render fields."
           }
         },
         "description": "Create/replace payload for a content item. Taxonomy is given as slug arrays."

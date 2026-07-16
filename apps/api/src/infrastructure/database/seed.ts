@@ -49,6 +49,8 @@ async function main(): Promise<void> {
     const details = extra?.details
       ? { ...extra.details, ...(extra.details.era ? { era: normalizeEra(extra.details.era) } : {}) }
       : null;
+    // Canonical block-editor document derived from the authored Markdown (DB-first authoring, ADR 0030).
+    const bodyDoc = extra?.bodyDoc ?? null;
     const tagSlugs = [...new Set([...item.tags, ...(extra?.extraTags ?? [])])];
 
     const [row] = await db
@@ -59,6 +61,7 @@ async function main(): Promise<void> {
         summary: item.summary,
         bodyMdx,
         details,
+        bodyDoc,
         type: item.type,
         visibility: item.visibility ?? 'public',
         tier: item.tier ?? null,
@@ -75,6 +78,7 @@ async function main(): Promise<void> {
           summary: item.summary,
           bodyMdx,
           details,
+          bodyDoc,
           type: item.type,
           visibility: item.visibility ?? 'public',
           tier: item.tier ?? null,

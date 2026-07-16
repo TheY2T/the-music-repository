@@ -1,8 +1,11 @@
 import type { ContentWriteInput, MediaUploadRequestKind } from '@TheY2T/tmr-api-client';
+import type { EmbedConfig, PMDoc } from '@TheY2T/tmr-content-serde';
 import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { Button, Card, Field, Icon, Input, Select, Textarea } from '@TheY2T/tmr-ui';
 import { marked } from 'marked';
 import { type FormEvent, useEffect, useMemo, useState } from 'react';
+import { BlockEditor, type BlockEditorChange } from '@/components/admin/block-editor/BlockEditor';
+import { PreviewPane } from '@/components/admin/block-editor/PreviewPane';
 import { adminApi, uploadToTicket } from '@/lib/admin-api';
 
 const CONTENT_TYPES = [
@@ -58,6 +61,7 @@ const emptyForm = {
   bodyMdx: '',
   type: 'lesson' as ContentWriteInput['type'],
   visibility: 'public' as ContentWriteInput['visibility'],
+  tier: '',
   difficulty: '',
   source: '',
   attribution: '',
@@ -76,10 +80,30 @@ function toSlugs(value: string): string[] {
     .filter(Boolean);
 }
 
-export default function ContentForm({ slug, locale }: { slug?: string; locale: Locale }) {
+export default function ContentForm({
+  slug,
+  locale,
+  blockEditor = false,
+  preview = false,
+  interactive = false,
+}: {
+  slug?: string;
+  locale: Locale;
+  /** When true, use the WYSIWYG block editor for the body instead of the Markdown textarea (ADR 0030). */
+  blockEditor?: boolean;
+  /** When true (+ blockEditor), show the side-by-side live iframe preview. */
+  preview?: boolean;
+  /** Whether embedded tools render interactively in the editor (mirrors learning.interactive-scores). */
+  interactive?: boolean;
+}) {
   const isEdit = Boolean(slug);
   const [form, setForm] = useState({ ...emptyForm });
   const [media, setMedia] = useState<MediaRow[]>([]);
+  // Block-editor state: the body doc is ready to mount once loaded (immediately for new items), and its
+  // latest derived output (body_mdx + embeds + body_doc) is captured here for the save payload.
+  const [loaded, setLoaded] = useState(!isEdit);
+  const [loadedEmbeds, setLoadedEmbeds] = useState<EmbedConfig[]>([]);
+  const [editorOut, setEditorOut] = useState<BlockEditorChange | null>(null);
   const [options, setOptions] = useState<Record<Dim, string[]>>({
     genres: [],
     instruments: [],
@@ -117,6 +141,7 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
           bodyMdx: c.bodyMdx ?? '',
           type: c.type,
           visibility: c.visibility,
+          tier: c.tier ?? '',
           difficulty: c.difficulty != null ? String(c.difficulty) : '',
           source: c.source ?? '',
           attribution: c.attribution ?? '',
@@ -129,6 +154,8 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
         setMedia(
           c.media.map((m) => ({ id: m.id, filename: m.filename, kind: m.kind, url: m.url })),
         );
+        setLoadedEmbeds((c.embeds ?? []) as EmbedConfig[]);
+        setLoaded(true);
       })
       .catch((e: Error) => setError(e.message));
   }, [slug]);
@@ -144,13 +171,17 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
 
   function buildInput(): ContentWriteInput {
     const difficulty = form.difficulty.trim() ? Number(form.difficulty) : undefined;
+    // Block editor: persist the canonical doc + its derived body_mdx/embeds. Legacy textarea: raw body.
+    const useEditor = blockEditor && editorOut !== null;
+    const bodyMdx = useEditor ? editorOut.bodyMdx : form.bodyMdx;
     return {
       slug: form.slug.trim(),
       title: form.title.trim(),
       summary: form.summary.trim() || undefined,
-      bodyMdx: form.bodyMdx || undefined,
+      bodyMdx: bodyMdx || undefined,
       type: form.type,
       visibility: form.visibility,
+      tier: form.visibility === 'premium' ? form.tier.trim() || undefined : undefined,
       difficulty: Number.isFinite(difficulty) ? difficulty : undefined,
       source: form.source.trim() || undefined,
       attribution: form.attribution.trim() || undefined,
@@ -159,6 +190,13 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
       instruments: toSlugs(form.instruments),
       topics: toSlugs(form.topics),
       tags: toSlugs(form.tags),
+      // Cast at the serde↔DTO boundary: both describe the same ContentEmbed / ProseMirror shapes.
+      ...(useEditor
+        ? {
+            embeds: editorOut.embeds as ContentWriteInput['embeds'],
+            bodyDoc: editorOut.doc as unknown as ContentWriteInput['bodyDoc'],
+          }
+        : {}),
     };
   }
 
@@ -311,6 +349,18 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
               </Select>
             </Field>
           </div>
+          {form.visibility === 'premium' ? (
+            <Field label={t(locale, 'cform.tier')} htmlFor="cform-tier">
+              <Select
+                id="cform-tier"
+                value={form.tier}
+                onChange={(e) => set('tier', e.target.value)}
+              >
+                <option value="premium">{t(locale, 'cform.tierPremium')}</option>
+                <option value="pro">{t(locale, 'cform.tierPro')}</option>
+              </Select>
+            </Field>
+          ) : null}
           <Field label={t(locale, 'cform.difficulty')} htmlFor="cform-difficulty">
             <Input
               id="cform-difficulty"
@@ -358,24 +408,55 @@ export default function ContentForm({ slug, locale }: { slug?: string; locale: L
           </div>
         </Card>
 
-        <Card className="flex flex-col gap-3 p-5">
-          <Field label={t(locale, 'cform.body')} htmlFor="cform-body">
-            <Textarea
-              id="cform-body"
-              className="h-64 font-mono"
-              value={form.bodyMdx}
-              onChange={(e) => set('bodyMdx', e.target.value)}
-            />
-          </Field>
-          <div className="space-y-1.5">
-            <span className="text-sm font-medium">{t(locale, 'cform.preview')}</span>
-            {/* biome-ignore lint/security/noDangerouslySetInnerHtml: admin-authored markdown preview. */}
-            <div
-              className="prose prose-sm max-w-none rounded-md border border-border bg-muted/20 p-3 dark:prose-invert"
-              dangerouslySetInnerHTML={{ __html: previewHtml }}
-            />
+        {blockEditor ? (
+          <div className="md:col-span-2 space-y-1.5">
+            <span className="text-sm font-medium">{t(locale, 'cform.bodyEditor')}</span>
+            <div className={preview ? 'grid gap-4 lg:grid-cols-2' : ''}>
+              {loaded ? (
+                <BlockEditor
+                  key={slug ?? 'new'}
+                  locale={locale}
+                  interactive={interactive}
+                  initialDoc={null}
+                  initialBodyMdx={form.bodyMdx}
+                  initialEmbeds={loadedEmbeds}
+                  onChange={setEditorOut}
+                />
+              ) : null}
+              {preview ? (
+                <PreviewPane
+                  slug={slug ?? 'new'}
+                  locale={locale}
+                  payload={{
+                    title: form.title,
+                    summary: form.summary || undefined,
+                    bodyMdx: editorOut?.bodyMdx ?? '',
+                    embeds: editorOut?.embeds ?? [],
+                  }}
+                />
+              ) : null}
+            </div>
           </div>
-        </Card>
+        ) : (
+          <Card className="flex flex-col gap-3 p-5">
+            <Field label={t(locale, 'cform.body')} htmlFor="cform-body">
+              <Textarea
+                id="cform-body"
+                className="h-64 font-mono"
+                value={form.bodyMdx}
+                onChange={(e) => set('bodyMdx', e.target.value)}
+              />
+            </Field>
+            <div className="space-y-1.5">
+              <span className="text-sm font-medium">{t(locale, 'cform.preview')}</span>
+              {/* biome-ignore lint/security/noDangerouslySetInnerHtml: admin-authored markdown preview. */}
+              <div
+                className="prose prose-sm max-w-none rounded-md border border-border bg-muted/20 p-3 dark:prose-invert"
+                dangerouslySetInnerHTML={{ __html: previewHtml }}
+              />
+            </div>
+          </Card>
+        )}
 
         <div className="md:col-span-2 flex flex-wrap gap-3">
           <Button type="submit" disabled={busy}>

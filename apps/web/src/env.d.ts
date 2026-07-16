@@ -7,6 +7,8 @@ declare namespace App {
       demoNewBanner: boolean;
       authEnabled: boolean;
       adminCms: boolean;
+      blockEditor: boolean;
+      blockEditorPreview: boolean;
       favorites: boolean;
       savedProgressions: boolean;
       collections: boolean;
