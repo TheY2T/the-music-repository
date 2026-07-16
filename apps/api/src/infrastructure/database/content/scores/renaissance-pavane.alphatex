@@ -1,0 +1,12 @@
+\title "Pavane (Renaissance Style)" \tempo 80
+.
+\track "Guitar"
+  \staff{tabs score} \tuning (E4 B3 G3 D3 A2 E2)
+  :2 (D3 A3 D4) :4 F4 E4 |
+  :2 (A2 E3 A3) :4 D4 C4 |
+  :2 (Bb2 F3 Bb3) :4 A4 G4 |
+  :2 (A2 E3 A3) A4 |
+  :2 (D3 A3 D4) :4 F4 A4 |
+  :2 (C3 G3 C4) :4 E4 G4 |
+  :2 (Bb2 F3 Bb3) :4 A4 F4 |
+  :1 (D3 A3 D4 F4) |

@@ -3,7 +3,7 @@
  * Source: src/infrastructure/database/content/collections/*.md
  * Regenerate: pnpm --filter @TheY2T/tmr-api collections:build
  *
- * Fully-authored collections (19): metadata, rich description, outcomes, and chaptered
+ * Fully-authored collections (21): metadata, rich description, outcomes, and chaptered
  * sections with per-item curator notes. Applied by the seed (seed.ts).
  */
 import type { SeedCollectionDoc } from './content-details';
@@ -566,6 +566,218 @@ export const SEED_COLLECTIONS: SeedCollectionDoc[] = [
             "curatorNote": "A beginner favourite — melody on the low strings. skills: [melody]",
             "focusSkills": [
               "melody"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "guitar-styles-workshop",
+    "title": "Guitar Styles Workshop",
+    "kind": "path",
+    "summary": "Riffs and comping across blues, rock, metal and jazz — the rhythm-guitar vocabulary of every style.",
+    "bodyMdx": "Every style of popular music has its own rhythm-guitar signature — the shuffle in the blues, the power\nchord in rock, the gallop in metal, the smooth four-note voicing in jazz. This workshop puts one clear\nétude behind each, so you build a versatile right hand and a feel for what makes each style tick.",
+    "curatorName": "The Music Repository",
+    "curatorBio": "A tour through the signature rhythm-guitar techniques of the popular styles.",
+    "featured": true,
+    "difficultyMin": 2,
+    "difficultyMax": 5,
+    "estMinutes": 210,
+    "accent": "hybrid",
+    "tags": [
+      "guitar",
+      "blues",
+      "rock",
+      "jazz",
+      "cc-by-sa"
+    ],
+    "facets": {
+      "era": [
+        "Modern"
+      ],
+      "genre": [
+        "blues",
+        "rock",
+        "jazz"
+      ],
+      "technique": [
+        "comping",
+        "riffs",
+        "palm-muting"
+      ],
+      "mood": [
+        "energetic"
+      ]
+    },
+    "outcomes": [
+      "Play a 12-bar blues shuffle with a swing feel",
+      "Drive a rock riff with clean power chords and palm muting",
+      "Comp a jazz ii–V–I with smooth voice leading"
+    ],
+    "sections": [
+      {
+        "title": "The Blues",
+        "description": null,
+        "items": [
+          {
+            "contentSlug": "blues-shuffle-in-e",
+            "curatorNote": "The boogie shuffle is the foundation of blues rhythm guitar. skills: [rhythm, comping]",
+            "focusSkills": [
+              "rhythm",
+              "comping"
+            ]
+          },
+          {
+            "contentSlug": "12-bar-blues-in-a",
+            "curatorNote": "The form itself — loop it until the changes are automatic. skills: [form]",
+            "focusSkills": [
+              "form"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Rock & Metal",
+        "description": null,
+        "items": [
+          {
+            "contentSlug": "rock-power-chord-riff",
+            "curatorNote": "Start here — two-finger power chords and down-picking. skills: [riffs]",
+            "focusSkills": [
+              "riffs"
+            ]
+          },
+          {
+            "contentSlug": "metal-gallop-riff",
+            "curatorNote": "Then add the palm-muted gallop for a heavier edge. skills: [palm-muting, rhythm]",
+            "focusSkills": [
+              "palm-muting",
+              "rhythm"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Jazz Comping",
+        "description": null,
+        "items": [
+          {
+            "contentSlug": "jazz-ii-v-i-comping",
+            "curatorNote": "Compact voicings that connect with minimal hand movement. skills: [comping]",
+            "focusSkills": [
+              "comping"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "guitar-technique-etudes",
+    "title": "Guitar Technique Études",
+    "kind": "path",
+    "summary": "Short fingerstyle études — arpeggios, Travis picking, Spanish cadences and a first melody — to build a well-rounded right hand.",
+    "bodyMdx": "Technique on the guitar is built one small piece at a time. These short études each isolate a single\nskill — a steady arpeggio, an alternating fingerpicking bass, a Spanish cadence, a singing melody — so\nyou can master it in miniature before meeting it in the full repertoire. They span from a one-line first\ntune to intermediate fingerstyle.",
+    "curatorName": "The Music Repository",
+    "curatorBio": "A graded set of miniatures for developing classical and fingerstyle technique.",
+    "featured": false,
+    "difficultyMin": 1,
+    "difficultyMax": 4,
+    "estMinutes": 200,
+    "accent": "heritage",
+    "tags": [
+      "guitar",
+      "fingerstyle",
+      "arpeggios",
+      "cc-by-sa"
+    ],
+    "facets": {
+      "era": [
+        "Classical",
+        "Modern"
+      ],
+      "genre": [
+        "classical",
+        "folk"
+      ],
+      "technique": [
+        "arpeggios",
+        "fingerstyle",
+        "travis-picking"
+      ],
+      "mood": [
+        "reflective"
+      ]
+    },
+    "outcomes": [
+      "Play an even, flowing right-hand arpeggio",
+      "Keep an independent alternating-bass thumb while the fingers play melody",
+      "Shape a two-voice texture and a Spanish (Phrygian) cadence"
+    ],
+    "sections": [
+      {
+        "title": "A First Melody",
+        "description": null,
+        "items": [
+          {
+            "contentSlug": "ode-to-joy-for-guitar",
+            "curatorNote": "A single-line tune to get comfortable reading and playing in position. skills: [sight-reading]",
+            "focusSkills": [
+              "sight-reading"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Arpeggios",
+        "description": null,
+        "items": [
+          {
+            "contentSlug": "classical-arpeggio-study-am",
+            "curatorNote": "A gentle Sor/Carcassi-style ripple in A minor. skills: [arpeggios]",
+            "focusSkills": [
+              "arpeggios"
+            ]
+          },
+          {
+            "contentSlug": "carcassi-guitar-study-op60-no1",
+            "curatorNote": "The classic study to graduate to next. skills: [arpeggios]",
+            "focusSkills": [
+              "arpeggios"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Fingerstyle",
+        "description": null,
+        "items": [
+          {
+            "contentSlug": "folk-travis-picking-study",
+            "curatorNote": "Thumb independence — the key fingerstyle skill. skills: [travis-picking]",
+            "focusSkills": [
+              "travis-picking"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Spanish & Early Styles",
+        "description": null,
+        "items": [
+          {
+            "contentSlug": "spanish-andalusian-study",
+            "curatorNote": "Arpeggios over the flamenco Andalusian cadence. skills: [arpeggios]",
+            "focusSkills": [
+              "arpeggios"
+            ]
+          },
+          {
+            "contentSlug": "renaissance-pavane",
+            "curatorNote": "A stately two-voice miniature in a Renaissance style. skills: [fingerstyle]",
+            "focusSkills": [
+              "fingerstyle"
             ]
           }
         ]

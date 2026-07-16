@@ -3,7 +3,7 @@
  * Source: src/infrastructure/database/content/*.md
  * Regenerate: pnpm --filter @TheY2T/tmr-api content:build
  *
- * Enriched catalogue content authored via research (83 items): the Markdown body
+ * Enriched catalogue content authored via research (92 items): the Markdown body
  * (rendered on the detail page), structured facts (`details`), and suggested tags. Applied by the
  * seed on top of the base metadata in seed-data.ts.
  */
@@ -529,6 +529,35 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
       "improvisation"
     ]
   },
+  "blues-shuffle-in-e": {
+    "bodyMdx": "## About this piece\nThe shuffle is the engine room of the blues. This original étude puts the classic \"boogie\" pattern under your fingers: a rocking two-note figure on the bottom strings that walks from the root up to the sixth and seventh of each chord. It runs a standard 12-bar blues in E — four bars of E, two of A, two of E, then the V–IV–I–V turnaround — so once it's in your hands you can play rhythm behind almost any blues jam.\n\n## What to listen for\nThe *swing*. Written as straight eighth notes, a shuffle is played long-short, long-short — like a gentle gallop rather than an even march. The bass figure should feel relaxed and hypnotic, driving the groove without rushing.\n\n## What you'll learn\nA movable boogie shape you can slide between the E, A and B chords, steady alternate-picking or down-picking on the low strings, and the shape of the 12-bar form itself — the single most useful progression in popular music.\n\n## How to practise\nStart slowly with a metronome set to a swing feel (or count \"1-and-a 2-and-a\"). Keep your fretting hand anchored so the reach to the 4th and 5th frets stays comfortable. Palm-mute lightly with the picking hand for that tight, percussive blues chug, then open up as you speed up.\n\n<div data-tmr-embed=\"0\"></div>",
+    "details": {
+      "key": "E major / blues",
+      "era": "Contemporary",
+      "form": "12-bar blues (shuffle)",
+      "timeSignature": "4/4",
+      "composer": "The Music Repository",
+      "composedYear": "original étude",
+      "related": [
+        "12-bar-blues-in-a",
+        "house-of-the-rising-sun",
+        "rock-power-chord-riff"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The E blues scale for soloing",
+          "caption": "Solo over the shuffle with these shapes — slide the box up the neck and click a note to hear it.",
+          "root": "E",
+          "scale": "blues"
+        }
+      ]
+    },
+    "extraTags": [
+      "cc-by-sa",
+      "beginner"
+    ]
+  },
   "burgmuller-arabesque-op100-no2": {
     "bodyMdx": "## About this piece\nFriedrich Burgmüller settled in Paris and made his name writing salon music and, most famously, his *25 Easy and Progressive Studies, Op. 100* (published around 1851). Unlike dry finger exercises, each study is a genuine little character piece with an evocative title — so students learn technique while playing real music. The *Arabesque*, No. 2, is the runaway favourite of the set: bright, quick, and instantly appealing, it's the piece that makes young pianists feel like performers for the first time.\n\n## What to listen for\nIt's in A minor with a brisk, light 2/4 pulse. The signature sound is a rippling stream of right-hand sixteenth notes answered by crisp little staccato chords — fast and airy, never heavy. The form is a rounded binary: the sparkling A-minor idea, a brighter middle section that slips into the relative major (C major), and then a return of the opening. Listen for the constant to-and-fro between flowing runs and punctuating chords.\n\n## What you'll learn\nThis study builds finger fluency and evenness in running sixteenth notes, light staccato chord playing, quick coordination between a flowing hand and a punctuating hand, and clear phrasing at a lively tempo. It's a superb confidence piece for early-intermediate players.\n\n## How to practise\nPractise the sixteenth-note runs slowly and evenly first — aim for a light, \"pearly\" touch from the fingertips rather than force. Keep the staccato chords crisp and short so they answer the runs cleanly. Coordinate the hands slowly at the hand-off points before adding speed. Feel the 2/4 in a quick, buoyant two, and keep the whole thing light — brilliance here comes from clarity, not volume. Note where the middle section brightens into major and shape that contrast. Build tempo gradually with a metronome.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nIts companion *La Candeur* opens the same Op. 100 set with a gentler mood. For similar sparkle and energy, Schumann's *Wild Horseman* is a great match; the *Clementi Sonatina* rewards the same clean fingerwork.",
     "details": {
@@ -875,6 +904,35 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     },
     "extraTags": []
   },
+  "classical-arpeggio-study-am": {
+    "bodyMdx": "## About this piece\nWritten in the tradition of Fernando Sor and Matteo Carcassi, this original arpeggio study spins a continuous ripple of eighth notes over a simple Am–E–Dm chord cycle. It's a gentle, singable introduction to the right-hand technique that classical guitar is built on.\n\n## What to listen for\nEvenness above all. The arpeggio should flow like water, with no accents where the hand crosses strings and a clear bass note anchoring each new chord. When it's right, the individual notes blur into a shimmering wash of harmony.\n\n## What you'll learn\nRight-hand **p–i–m–a** coordination, string crossing without bumps, and holding a relaxed, repeating hand shape while the left hand changes chords underneath.\n\n## How to practise\nBlock each bar into its underlying chord first — strum it once to memorise the shape. Then unfold the arpeggio slowly with a metronome, keeping every note the same length and volume. Let the left-hand fingers stay down for the whole bar so notes ring into one another.\n\n<div data-tmr-embed=\"0\"></div>",
+    "details": {
+      "key": "A minor",
+      "era": "Contemporary",
+      "form": "study/étude (arpeggio)",
+      "timeSignature": "4/4",
+      "composer": "The Music Repository",
+      "composedYear": "original étude",
+      "related": [
+        "carcassi-guitar-study-op60-no1",
+        "sor-study-op60-no1",
+        "spanish-andalusian-study"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The A minor scale on the neck",
+          "caption": "The shapes behind the study — slide the box up the neck and click a note to hear it.",
+          "root": "A",
+          "scale": "natural-minor"
+        }
+      ]
+    },
+    "extraTags": [
+      "cc-by-sa",
+      "beginner"
+    ]
+  },
   "clementi-sonatina-op36-no1-1st-mvt": {
     "bodyMdx": "## About this piece\nIf any single piece could be called \"the student sonatina,\" this is it. Muzio Clementi — an Italian-born composer, pianist, teacher, and even piano manufacturer who spent his career in London — published his *Six Sonatinas, Op. 36* in 1797 expressly as progressive teaching material, and they have never left the piano bench since. The first movement of No. 1 in C major is where countless pianists first meet Classical sonata form on their own terms. It is crisp, cheerful, and beautifully proportioned. (The tempo is marked *Spiritoso* — \"spirited\" — in the original; some editions title it simply *Allegro*.)\n\n## What to listen for\nThis is a compact sonata-form movement in bright C major. A bold opening theme built on scales and confident chords gives way to a lighter second idea in the dominant, G major; a brief development toys with the material before the recapitulation brings everything home. Listen for the tidy question-and-answer phrasing and the clean contrast between the assertive first theme and the more graceful second.\n\n## What you'll learn\nThis movement is a workout in even, fluent scale runs, clear articulation (the mix of detached and connected notes that defines Classical style), balanced hands, and an introduction to sonata form's map of themes and keys. It builds real fingerwork discipline.\n\n## How to practise\nDrill the scale passages slowly and evenly with sensible fingering — they are the heart of the piece and must run smoothly. Observe the articulation carefully: Classical music lives on the difference between crisp staccato and smooth legato. Keep a steady, spirited-but-controlled tempo; don't let the fast runs drag or bolt. Learn it by section (first theme, transition, second theme, development, recap) so you understand the form, then join them. Hands separately first wherever the runs get tricky.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nThe *Kuhlau Sonatina Op. 20 No. 1* is the natural next step up. Mozart's *Sonata K. 545* is the full-scale version of the same idea, and the *Beethoven Sonatina in G* sits comfortably alongside.",
     "details": {
@@ -1029,6 +1087,40 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     "extraTags": [
       "public-domain",
       "advanced"
+    ]
+  },
+  "folk-travis-picking-study": {
+    "bodyMdx": "## About this piece\nNamed after country guitarist Merle Travis, Travis picking is the alternating-bass fingerstyle that drives folk, country and ragtime guitar. This original study keeps the thumb bouncing steadily between bass strings while the fingers add melody notes on top, moving through G, C, Em and D.\n\n## What to listen for\nTwo independent voices from one instrument: a steady, metronomic bass under a lighter, syncopated treble. Done well it sounds like two players — the thumb never wavers even as the fingers weave around it.\n\n## What you'll learn\nThumb independence (the hardest and most valuable fingerstyle skill), alternating-bass patterns over common open chords, and the pinch — thumb and finger sounding together — that starts each pattern.\n\n## How to practise\nPractise the thumb alone first, alternating bass strings in strict time until it's automatic. Only then add the treble fingers. Keep the bass quiet and even; let it become a background you stop thinking about. Loop one chord until the pattern is effortless before chaining the changes.\n\n<div data-tmr-embed=\"0\"></div>",
+    "details": {
+      "key": "G major",
+      "era": "Contemporary",
+      "form": "fingerstyle study (Travis picking)",
+      "timeSignature": "4/4",
+      "composer": "The Music Repository",
+      "composedYear": "original étude",
+      "related": [
+        "wildwood-flower",
+        "carcassi-guitar-study-op60-no1",
+        "fingerstyle-guitar-foundations"
+      ],
+      "embeds": [
+        {
+          "tool": "chord-diagrams",
+          "title": "The open chords in this study",
+          "instrument": "guitar",
+          "chords": [
+            "G",
+            "C",
+            "Em",
+            "D"
+          ]
+        }
+      ]
+    },
+    "extraTags": [
+      "cc-by-sa",
+      "americana",
+      "intermediate"
     ]
   },
   "frankie-and-johnny": {
@@ -1241,6 +1333,39 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     },
     "extraTags": [
       "beginner"
+    ]
+  },
+  "jazz-ii-v-i-comping": {
+    "bodyMdx": "## About this piece\nThe ii–V–I is the most important progression in jazz, and *comping* — playing chords to accompany a soloist — is a core rhythm-guitar skill. This original study moves compact four-note voicings through Dm7–G7–Cmaj7 in the key of C, with a Cmaj7–A7 / Dm7–G7 turnaround so it loops seamlessly.\n\n## What to listen for\nSmooth voice leading. Because the voicings share notes, your hand barely moves between chords, and the top notes flow in small steps rather than leaps. That connectedness is what makes comping sound effortless and professional.\n\n## What you'll learn\nRootless-ish four-note jazz voicings for major-7, dominant-7 and minor-7 chords, economical fingering that keeps the changes close together, and how the ii–V–I resolves — the harmonic sentence at the heart of the standards repertoire.\n\n## How to practise\nLearn each shape as a block first, then connect them looking for the nearest fingering. Comp lightly on beats 1 and 3 to internalise the changes, then experiment with jazzier \"Freddie Green\" quarter-note strums or syncopated stabs. Say the chord names aloud as you play them.\n\n<div data-tmr-embed=\"0\"></div>",
+    "details": {
+      "key": "C major",
+      "era": "Contemporary",
+      "form": "comping study (ii–V–I)",
+      "timeSignature": "4/4",
+      "composer": "The Music Repository",
+      "composedYear": "original étude",
+      "related": [
+        "carulli-andante-op241",
+        "blues-shuffle-in-e",
+        "jazz-and-blues-harmony"
+      ],
+      "embeds": [
+        {
+          "tool": "chord-diagrams",
+          "title": "The voicings in this study",
+          "instrument": "guitar",
+          "chords": [
+            "Dm7",
+            "G7",
+            "Cmaj7",
+            "A7"
+          ]
+        }
+      ]
+    },
+    "extraTags": [
+      "cc-by-sa",
+      "intermediate"
     ]
   },
   "joplin-maple-leaf-rag": {
@@ -1463,6 +1588,35 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
       "exercise"
     ]
   },
+  "metal-gallop-riff": {
+    "bodyMdx": "## About this piece\nThe \"gallop\" — two sixteenths and an eighth, repeated — is the signature rhythm of heavy metal. This original étude pedals it on the open low E, then breaks into F5 and G5 power-chord stabs for a dark, Phrygian colour. It's a workout for the picking hand more than the fretting hand.\n\n## What to listen for\nPrecision and menace. Every gallop should be crisp and identical, tightly palm-muted so the notes are felt as much as heard. The move to the flat-second (F) gives the riff its sinister, Spanish-tinged edge.\n\n## What you'll learn\nAlternate or all-down picking at speed, tight palm muting for that chugging metal tone, and the sixteenth-eighth gallop subdivision that underpins countless metal classics.\n\n## How to practise\nStart at half tempo with a metronome and keep the palm mute constant. Count \"trip-a-let\" or \"1-e-&\" for each gallop so the sixteenths stay even. Only speed up once every gallop sounds machine-tight — sloppy sixteenths are worse than slow ones.\n\n<div data-tmr-embed=\"0\"></div>",
+    "details": {
+      "key": "E Phrygian",
+      "era": "Contemporary",
+      "form": "riff (palm-muted gallop)",
+      "timeSignature": "4/4",
+      "composer": "The Music Repository",
+      "composedYear": "original étude",
+      "related": [
+        "rock-power-chord-riff",
+        "spanish-andalusian-study",
+        "blues-shuffle-in-e"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The E Phrygian-dominant scale",
+          "caption": "The exotic, metal-friendly scale behind the riff — slide the box and click a note to hear it.",
+          "root": "E",
+          "scale": "phrygian-dominant"
+        }
+      ]
+    },
+    "extraTags": [
+      "cc-by-sa",
+      "intermediate"
+    ]
+  },
   "minor-pentatonic-scale-shapes": {
     "bodyMdx": "## The scale that unlocks soloing\n\nThe **minor pentatonic** scale has just five notes (\"penta\" = five), and it is the single most useful scale for blues, rock, and pop soloing on guitar. Because it drops the two most dissonant tones of the minor scale, almost anything you play with it sounds good. We'll learn it in **A minor**, whose notes are:\n\n| Note | A | C | D | E | G |\n| --- | --- | --- | --- | --- | --- |\n| Degree | 1 | ♭3 | 4 | 5 | ♭7 |\n\nCompared to the natural minor scale (`A B C D E F G`), the pentatonic simply removes the 2nd (`B`) and the ♭6 (`F`).\n\n## Shape 1: the home box\n\nEvery guitarist starts here — the \"box\" at the 5th fret, two notes per string, with root `A` on the low `E` string. Explore it right on the fretboard: tap any note to hear it, and note where the roots (dark) fall so you always know your \"home\" note.\n\n<div data-tmr-embed=\"0\"></div>\n\nPractise the box ascending and descending until it's automatic, always coming to rest on a root `A`.\n\n## The five movable shapes\n\nThe pentatonic covers the whole neck as **five connected shapes** that interlock, each picking up where the last leaves off. Slide the position control above (or tick **Whole neck**) to see them tile the fretboard: shape 1 at fret 5, then shapes at frets 8, 10, and 12 (the octave of shape 1), plus one at fret 3 just below. Learn shape 1 cold first, then add its neighbours one at a time, always noting where the root notes fall.\n\n## Movable = every key\n\nBecause there are no open strings inside these shapes, you can slide the whole pattern to any key. Switch the **Root** on the fretboard above to move shape 1's low-E root:\n\n- **A** → home at fret 5\n- **C** → fret 8\n- **G** → fret 3\n- **D** → fret 10\n\nThe root note on the low E string names the key — one memorised shape gives you all twelve minor keys.\n\n## Making it musical\n\nThe notes alone won't sound like the blues — the *phrasing* does. Borrow these staples:\n\n- **Bends:** bend the ♭7 (`G`) up a whole step toward the root, or the 4th (`D`) up to the 5th.\n- **Slides & hammer-ons** between the two notes on a string.\n- **The blue note:** add a ♭5 (`E♭`) as a quick passing tone between the 4th and 5th to turn the minor pentatonic into the full **blues scale**.\n- **Vibrato** on held notes for expression.\n\n## Relative major connection\n\nA minor pentatonic contains the same five notes as **C major pentatonic** — they are relatives, three frets apart. So the very same shapes work over major-key songs in C if you center on `C` instead of `A`.\n\n## Try it\n\nLoop the [12-bar blues in A](/catalogue/12-bar-blues-in-a) and solo using only shape 1 at the 5th fret. Focus on landing on `A` at the ends of phrases and bending the `G`. When that feels comfortable, connect into shape 2.",
     "details": {
@@ -1549,6 +1703,36 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     "extraTags": [
       "public-domain",
       "intermediate"
+    ]
+  },
+  "ode-to-joy-for-guitar": {
+    "bodyMdx": "## About this piece\nThe \"Ode to Joy\" theme from the finale of Beethoven's Ninth Symphony (1824) is one of the most recognisable melodies ever written. This single-line arrangement in G major is a perfect first piece for guitar: the whole tune uses only a handful of notes that sit comfortably in open position.\n\n## What to listen for\nThe shape of a great melody. It moves almost entirely by step, rising and falling in gentle arcs — no big leaps, nothing awkward. That simplicity is exactly why it's so singable and so satisfying to play.\n\n## What you'll learn\nReading and playing a single-note melody in first position, connecting notes smoothly for a legato line, and steady quarter-note timing — the foundations of playing tunes on the guitar.\n\n## How to practise\nLearn it four bars at a time and sing along; if you can sing it, your fingers will follow. Aim for an even, walking pulse and clean note changes with no gaps. Once it's smooth, try adding simple bass notes or open chords underneath.\n\n<div data-tmr-embed=\"0\"></div>",
+    "details": {
+      "key": "G major",
+      "era": "Classical",
+      "form": "theme (melody)",
+      "timeSignature": "4/4",
+      "composer": "Ludwig van Beethoven",
+      "composerDates": "1770–1827",
+      "composedYear": "1824",
+      "related": [
+        "beethoven-ode-to-joy",
+        "wildwood-flower",
+        "folk-travis-picking-study"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The G major scale on the neck",
+          "caption": "The scale this melody is built from — slide the box up the neck and click a note to hear it.",
+          "root": "G",
+          "scale": "major"
+        }
+      ]
+    },
+    "extraTags": [
+      "public-domain",
+      "beginner"
     ]
   },
   "omt-advanced-harmony-institution": {
@@ -1888,6 +2072,68 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     },
     "extraTags": [
       "cc-by-sa"
+    ]
+  },
+  "renaissance-pavane": {
+    "bodyMdx": "## About this piece\nA pavane is a slow, dignified processional dance from the Renaissance. This original miniature evokes the lute repertoire of that era: a singing melody in the treble supported by simple chords on the strong beats, coloured by the modal flavour of D Aeolian with its lowered seventh (C natural) and a warm B-flat.\n\n## What to listen for\nPoise and space. A pavane is unhurried — think of a stately court procession. Let each chord ring and each melody note breathe. The modal harmony gives it an antique, slightly melancholy character quite different from major or minor.\n\n## What you'll learn\nBalancing a melody against a chordal accompaniment on the same instrument, reading and shaping a two-voice texture, and the sound of the natural-minor (Aeolian) mode.\n\n## How to practise\nBring the top-line melody out and keep the supporting chords softer underneath. Practise slowly enough that every chord change is clean and the melody sings. Count in a slow two so the dance feels grounded rather than rushed.\n\n<div data-tmr-embed=\"0\"></div>",
+    "details": {
+      "key": "D minor (Aeolian)",
+      "era": "Contemporary",
+      "form": "pavane (Renaissance style)",
+      "timeSignature": "4/4",
+      "composer": "The Music Repository",
+      "composedYear": "original étude",
+      "related": [
+        "tarrega-lagrima",
+        "classical-arpeggio-study-am",
+        "spanish-andalusian-study"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The D natural-minor scale",
+          "caption": "The mode this pavane lives in — slide the box up the neck and click a note to hear it.",
+          "root": "D",
+          "scale": "natural-minor"
+        }
+      ]
+    },
+    "extraTags": [
+      "cc-by-sa",
+      "beginner"
+    ]
+  },
+  "rock-power-chord-riff": {
+    "bodyMdx": "## About this piece\nThe power chord — just a root and a fifth — is the sound of rock guitar. This original riff cycles a classic minor-key move (i–VI–VII: A5–F5–G5) in driving eighth notes, then lands on a ringing E5. It's deliberately simple so you can focus on tone, timing and clean chord changes.\n\n## What to listen for\nWeight and drive. Power chords carry no third, so they sound neither major nor minor — just powerful. The riff should feel like a locomotive: even, insistent eighths with a satisfying resolution when it hits the E5.\n\n## What you'll learn\nThe two-finger power-chord shape and how to move it accurately between strings, down-picking stamina for tight rhythm playing, and palm muting to control sustain and add punch.\n\n## How to practise\nDown-pick everything at first — it's harder but builds the locked-in feel rock needs. Mute the strings you're not playing with the sides of your fretting fingers so the distortion stays clean. Once the changes are smooth, add a light palm mute and push the tempo.\n\n<div data-tmr-embed=\"0\"></div>",
+    "details": {
+      "key": "A minor",
+      "era": "Contemporary",
+      "form": "riff (i–VI–VII)",
+      "timeSignature": "4/4",
+      "composer": "The Music Repository",
+      "composedYear": "original étude",
+      "related": [
+        "metal-gallop-riff",
+        "blues-shuffle-in-e",
+        "12-bar-blues-in-a"
+      ],
+      "embeds": [
+        {
+          "tool": "chord-diagrams",
+          "title": "The chords behind the riff",
+          "instrument": "guitar",
+          "chords": [
+            "Am",
+            "F",
+            "G",
+            "Em"
+          ]
+        }
+      ]
+    },
+    "extraTags": [
+      "cc-by-sa",
+      "beginner"
     ]
   },
   "satie-gnossienne-no1": {
@@ -2270,6 +2516,35 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     "extraTags": [
       "public-domain",
       "beginner"
+    ]
+  },
+  "spanish-andalusian-study": {
+    "bodyMdx": "## About this piece\nThe Andalusian cadence — a descending Am–G–F–E — is the unmistakable sound of Spanish and flamenco guitar. This original study arpeggiates that four-chord descent, ending on a bright E major that pulls the ear toward the Phrygian mode's exotic flat-second colour.\n\n## What to listen for\nThe pull of the descent. Each chord steps down a little, building tension, until the final E chord resolves it with a distinctly Spanish brightness. The half-step from F to E is the emotional heart of the sound.\n\n## What you'll learn\nRight-hand arpeggio control across changing chord shapes, the Andalusian (Phrygian) cadence that defines flamenco harmony, and how a Picardy-style major chord lands the mode.\n\n## How to practise\nLearn the four chord shapes first and practise switching between them cleanly, since the study never stops moving. Keep the arpeggio even, and let the bass notes ring to outline the descent. For extra flavour, try a light rasgueado (rolled strum) on the final E chord.\n\n<div data-tmr-embed=\"0\"></div>",
+    "details": {
+      "key": "A minor / E Phrygian",
+      "era": "Contemporary",
+      "form": "study/étude (Andalusian cadence)",
+      "timeSignature": "4/4",
+      "composer": "The Music Repository",
+      "composedYear": "original étude",
+      "related": [
+        "tarrega-recuerdos-de-la-alhambra",
+        "tarrega-adelita",
+        "metal-gallop-riff"
+      ],
+      "embeds": [
+        {
+          "tool": "scale-boxes",
+          "title": "The E Phrygian-dominant scale",
+          "caption": "The flamenco scale behind the cadence — slide the box up the neck and click a note to hear it.",
+          "root": "E",
+          "scale": "phrygian-dominant"
+        }
+      ]
+    },
+    "extraTags": [
+      "cc-by-sa",
+      "intermediate"
     ]
   },
   "swing-low-sweet-chariot": {
