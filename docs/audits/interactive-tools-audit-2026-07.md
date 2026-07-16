@@ -13,10 +13,10 @@ out a prioritized plan to **(1) deepen** existing tools, **(2) consolidate** ove
 > dictionary, bass clef + key signatures for the reading tools, the Beginner→Expert level selector
 > (X1), and consolidations C1 + C5 (C2/C3/C4/C6 deliberately kept separate — see §3). The tuner's mic
 > pitch-detection was already shipped. **Expansion started:** the **improvise guide** (§6,
-> `/tools/improvise` — scales that fit a chord), the **progression generator** (`/tools/progression-generator`),
-> the **fretboard note game** (`/tools/fret-game`) and a widened instrument menu (§5, 10→36 GM voices)
-> are shipped. The rest of §5/§6 remains open backlog. The whole workspace `pnpm lint` is green too
-> (pre-existing api + icon.tsx errors fixed).
+> `/tools/improvise`), the **progression generator** (`/tools/progression-generator`), the **fretboard
+> note game** (`/tools/fret-game`), the **piano & guitar map** (`/tools/scale-map`), a widened instrument
+> menu (§5, 10→36 GM voices) and **live embeds on 8 prose lessons** (§5, density 25→33/83) are shipped.
+> The rest of §5/§6 remains open backlog. The whole workspace `pnpm lint` is green too.
 
 > **Design principle threaded throughout — Level tiers.** Every tool should expose a
 > **Beginner / Intermediate / Advanced (/ Expert)** selector that gates which options are visible and
@@ -143,7 +143,7 @@ only **25 of 83 articles use live embeds**.
 | **Song/lead-sheet builder** | Compose a lead sheet (chords + melody) from tools, save/share (reuse saved-progressions backend) | L | Extends analyzer's save feature |
 | **Rhythm reading game** | Tap/clap along to generated rhythms with timing scoring (mic or key input) | M | Extends rhythm + dictation |
 | **Practice planner / routine builder** | Assemble tools + scores into a timed practice session; ties into progress dashboard & streaks | M | Backend already tracks practice minutes |
-| **Interactive fretboard/keyboard heatmap** | Visualize which notes belong to a key/scale/chord across the whole neck/keyboard at once | S–M | Pure visualization over expanded tables |
+| ✅ **DONE (2026-07-16) Piano & guitar map** (`/tools/scale-map`) | A scale or chord lit on a 2-octave keyboard AND the neck at once (root filled, tones tinted, clickable); Scale/Chord toggle + level tiers — serves the piano↔guitar-sync goal | S–M | Shipped |
 
 ---
 
