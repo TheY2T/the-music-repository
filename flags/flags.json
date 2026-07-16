@@ -537,6 +537,14 @@
       },
       "defaultVariant": "on"
     },
+    "tools.staff-game": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "personalization.saved-progressions": {
       "state": "ENABLED",
       "variants": {

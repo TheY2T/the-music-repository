@@ -433,6 +433,8 @@
   "tool.fret-game.summary": "A 60-second sprint: find the named note on the neck.",
   "tool.scale-map.title": "Piano & guitar map",
   "tool.scale-map.summary": "See a scale or chord lit on the keyboard and the neck at once.",
+  "tool.staff-game.title": "Note reading game",
+  "tool.staff-game.summary": "A 60-second sprint: name the note on the staff (treble or bass).",
   "myfav.loading": "Loading…",
   "myfav.emptyBefore": "No favorites yet. Browse the",
   "myfav.catalogue": "catalogue",
