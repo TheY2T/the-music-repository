@@ -24,4 +24,8 @@ This is a superb first tune for confidence and timing. You will practise a stead
 ## How to play it
 In C major the chords are C, F, and G7; it transposes easily to G (G, C, D7) or any comfortable key. Pianists can play a bouncy left-hand pattern under the melody; guitarists and ukulele players can strum a confident, even beat. Once it is under your fingers, try adding a light swing to the rhythm to capture its New Orleans spirit.
 
+```embeds
+[{ "tool": "progression", "title": "The chords behind the tune", "caption": "A bright I–IV–V march in C. Play the sequence through, one bar per chord.", "key": "C", "chords": ["C", "C7", "F", "C", "G7", "C"] }]
+```
+
 ## If you like this

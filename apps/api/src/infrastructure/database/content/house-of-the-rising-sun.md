@@ -27,5 +27,9 @@ Commonly played in **A minor**. A widely used progression is **Am – C – D �
 ## How to practise
 Learn the chord shapes and changes first, strumming once per chord in time. Then add the arpeggio, keeping the thumb steady on the bass. Practise the trickiest change (often to F) in isolation. Sing or hum the melody so your accompaniment breathes with the words.
 
+```embeds
+[{ "tool": "progression", "title": "The rising-sun progression", "caption": "The iconic minor-key climb — Am–C–D–F then Am–E7. Play it through in 6/8 to feel the sway.", "key": "Am", "chords": ["Am", "C", "D", "F", "Am", "E7"] }]
+```
+
 ## If you like this
 Try other traditional fingerstyle songs like *Scarborough Fair* and *Greensleeves*, or the flatpicking classic *Wildwood Flower*.

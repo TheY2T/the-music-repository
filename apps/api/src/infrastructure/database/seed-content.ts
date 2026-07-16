@@ -101,7 +101,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "amazing-grace-trad": {
-    "bodyMdx": "## About this song\n\"Amazing Grace\" is one of the most beloved hymns in the English-speaking world. The words were written in late 1772 by John Newton (1725–1807), an English clergyman who had once been a slave-ship captain before a dramatic religious conversion. The hymn is his spiritual autobiography in verse — \"I once was lost, but now am found\" — and it first appeared in print in the 1779 collection *Olney Hymns*, which Newton produced with the poet William Cowper. The melody most of us sing today is a different, later story: the American folk tune known as \"New Britain,\" pentatonic and Appalachian in flavour, which was wedded to Newton's text in the United States around the 1830s. Across two centuries more than twenty tunes have carried these words, but \"New Britain\" is the one that endured.\n\n## What to listen for\nThe tune is pentatonic — built from a five-note scale — which is why it sits so naturally on the voice and on beginner-friendly instruments. It is in a lilting 3/4 (waltz) time, and its shape outlines simple triads, rising gently at the start of each phrase and settling back down. The harmony is uncomplicated: in G major you can accompany the whole hymn with just G, C, and D chords. There is no chorus; each verse uses the identical melody (a strophic form).\n\n## What you'll learn\nThis is an ideal early song for phrasing and breath. You will practise shaping a long, arching melodic line, playing expressively in 3/4, and — on guitar or ukulele — changing smoothly between the three primary chords in time with a slow beat.\n\n## How to play it\nIn G major the chords are G, C, and D (add D7 for a stronger pull back to G). Pianists can play the melody in the right hand over simple broken or block chords in the left. Guitarists and ukulele players can strum one gentle chord per bar, or fingerpick a slow arpeggio to suit the reflective mood. Keep the tempo unhurried, lean into the grace notes, and let the phrases breathe.\n\n## If you like this",
+    "bodyMdx": "## About this song\n\"Amazing Grace\" is one of the most beloved hymns in the English-speaking world. The words were written in late 1772 by John Newton (1725–1807), an English clergyman who had once been a slave-ship captain before a dramatic religious conversion. The hymn is his spiritual autobiography in verse — \"I once was lost, but now am found\" — and it first appeared in print in the 1779 collection *Olney Hymns*, which Newton produced with the poet William Cowper. The melody most of us sing today is a different, later story: the American folk tune known as \"New Britain,\" pentatonic and Appalachian in flavour, which was wedded to Newton's text in the United States around the 1830s. Across two centuries more than twenty tunes have carried these words, but \"New Britain\" is the one that endured.\n\n## What to listen for\nThe tune is pentatonic — built from a five-note scale — which is why it sits so naturally on the voice and on beginner-friendly instruments. It is in a lilting 3/4 (waltz) time, and its shape outlines simple triads, rising gently at the start of each phrase and settling back down. The harmony is uncomplicated: in G major you can accompany the whole hymn with just G, C, and D chords. There is no chorus; each verse uses the identical melody (a strophic form).\n\n## What you'll learn\nThis is an ideal early song for phrasing and breath. You will practise shaping a long, arching melodic line, playing expressively in 3/4, and — on guitar or ukulele — changing smoothly between the three primary chords in time with a slow beat.\n\n## How to play it\nIn G major the chords are G, C, and D (add D7 for a stronger pull back to G). Pianists can play the melody in the right hand over simple broken or block chords in the left. Guitarists and ukulele players can strum one gentle chord per bar, or fingerpick a slow arpeggio to suit the reflective mood. Keep the tempo unhurried, lean into the grace notes, and let the phrases breathe.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this",
     "details": {
       "key": "G major",
       "era": "Traditional",
@@ -114,6 +114,21 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "swing-low-sweet-chariot",
         "simple-gifts",
         "shenandoah"
+      ],
+      "embeds": [
+        {
+          "tool": "progression",
+          "title": "The chords behind the hymn",
+          "caption": "A gentle I–IV–V in G — the harmonic backbone of the melody. Play it through slowly.",
+          "key": "G",
+          "chords": [
+            "G",
+            "C",
+            "G",
+            "D7",
+            "G"
+          ]
+        }
       ]
     },
     "extraTags": [
@@ -900,7 +915,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "house-of-the-rising-sun": {
-    "bodyMdx": "## About this piece\n\"The House of the Rising Sun\" is a traditional folk song with **no single known composer** — it grew and changed over generations through oral tradition (catalogued as Roud 6393). Its roots probably lie in old English broadside ballads carried to America by emigrants, where it was reset in New Orleans. The earliest surviving recording dates to 1934 (Clarence Ashley and Gwen Foster), and the song became world-famous through The Animals' 1964 arrangement. Because it belongs to everyone, countless versions exist — treat it as a shape to make your own.\n\n## What to listen for\nA brooding tale of a life gone wrong, set to a rolling 6/8 lilt. The famous minor-key arpeggio pattern gives it its haunting, circling character, each chord flowing into the next like a slow waltz-in-two.\n\n## What you'll learn\nArpeggiated chord accompaniment in 6/8, smooth chord changes, and steady fingerpicking. It's an ideal early fingerstyle song because the pattern repeats over changing chords, letting you focus on one hand at a time.\n\n## Chords, keys and approach\nCommonly played in **A minor**. A widely used progression is **Am – C – D – F – Am – C – E** (some versions end the cycle on E7). Capo and key vary with the singer. **Fingerpicking** suits it best: roll a broken-chord pattern (bass note then higher strings) through each chord in the 6/8 feel. It also works with a gentle arpeggiated strum. Keep the tempo unhurried and let the bass notes ring.\n\n## How to practise\nLearn the chord shapes and changes first, strumming once per chord in time. Then add the arpeggio, keeping the thumb steady on the bass. Practise the trickiest change (often to F) in isolation. Sing or hum the melody so your accompaniment breathes with the words.\n\n## If you like this\nTry other traditional fingerstyle songs like *Scarborough Fair* and *Greensleeves*, or the flatpicking classic *Wildwood Flower*.",
+    "bodyMdx": "## About this piece\n\"The House of the Rising Sun\" is a traditional folk song with **no single known composer** — it grew and changed over generations through oral tradition (catalogued as Roud 6393). Its roots probably lie in old English broadside ballads carried to America by emigrants, where it was reset in New Orleans. The earliest surviving recording dates to 1934 (Clarence Ashley and Gwen Foster), and the song became world-famous through The Animals' 1964 arrangement. Because it belongs to everyone, countless versions exist — treat it as a shape to make your own.\n\n## What to listen for\nA brooding tale of a life gone wrong, set to a rolling 6/8 lilt. The famous minor-key arpeggio pattern gives it its haunting, circling character, each chord flowing into the next like a slow waltz-in-two.\n\n## What you'll learn\nArpeggiated chord accompaniment in 6/8, smooth chord changes, and steady fingerpicking. It's an ideal early fingerstyle song because the pattern repeats over changing chords, letting you focus on one hand at a time.\n\n## Chords, keys and approach\nCommonly played in **A minor**. A widely used progression is **Am – C – D – F – Am – C – E** (some versions end the cycle on E7). Capo and key vary with the singer. **Fingerpicking** suits it best: roll a broken-chord pattern (bass note then higher strings) through each chord in the 6/8 feel. It also works with a gentle arpeggiated strum. Keep the tempo unhurried and let the bass notes ring.\n\n## How to practise\nLearn the chord shapes and changes first, strumming once per chord in time. Then add the arpeggio, keeping the thumb steady on the bass. Practise the trickiest change (often to F) in isolation. Sing or hum the melody so your accompaniment breathes with the words.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this\nTry other traditional fingerstyle songs like *Scarborough Fair* and *Greensleeves*, or the flatpicking classic *Wildwood Flower*.",
     "details": {
       "key": "A minor",
       "era": "Traditional",
@@ -913,6 +928,22 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "greensleeves-trad",
         "wildwood-flower",
         "frankie-and-johnny"
+      ],
+      "embeds": [
+        {
+          "tool": "progression",
+          "title": "The rising-sun progression",
+          "caption": "The iconic minor-key climb — Am–C–D–F then Am–E7. Play it through in 6/8 to feel the sway.",
+          "key": "Am",
+          "chords": [
+            "Am",
+            "C",
+            "D",
+            "F",
+            "Am",
+            "E7"
+          ]
+        }
       ]
     },
     "extraTags": [
@@ -1776,7 +1807,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "swing-low-sweet-chariot": {
-    "bodyMdx": "## About this song\n\"Swing Low, Sweet Chariot\" is an African-American spiritual, one of the most cherished in the tradition. It is generally attributed to Wallace Willis and his daughter Minerva Willis — Choctaw Freedmen — who are thought to have composed it in the late 1860s in Indian Territory (present-day Oklahoma). Wallace Willis, formerly enslaved, is said to have been moved by the sight of the Red River, which recalled the Jordan and the story of the prophet Elijah carried to heaven in a chariot. A minister, Alexander Reid, heard the Willises singing and transcribed the words and melody, sending them to the Fisk Jubilee Singers, whose late-19th-century tours carried the spiritual to audiences worldwide. Like many spirituals, its imagery of deliverance (\"coming for to carry me home\") has been understood to hold coded meanings of hope and freedom for enslaved people. It deserves to be sung with respect for that history.\n\n## What to listen for\nThe song is built on call-and-response: a leader sings a line and the group answers, a hallmark of the spiritual tradition. The melody is largely pentatonic and easy to sing, sitting in a warm 4/4 that can be taken slowly and soulfully or with a gentle swing. The harmony is simple and rooted; in G major it rests mostly on I, IV, and V.\n\n## What you'll learn\nYou will explore call-and-response phrasing, a relaxed feel for the beat, and the expressive weight that makes a spiritual land. It is also an easy, satisfying song for coordinating a slow, steady accompaniment beneath a singable tune.\n\n## How to play it\nIn G major, use G, C, D (and D7); a C-major setting (C, F, G7) suits many singers too. Pianists can play warm block chords or a rocking left hand under the melody; guitarists can strum gently or fingerpick. Let the \"swing low\" refrain settle deeply, and keep space in the phrasing so the call and the answer each breathe.\n\n## If you like this",
+    "bodyMdx": "## About this song\n\"Swing Low, Sweet Chariot\" is an African-American spiritual, one of the most cherished in the tradition. It is generally attributed to Wallace Willis and his daughter Minerva Willis — Choctaw Freedmen — who are thought to have composed it in the late 1860s in Indian Territory (present-day Oklahoma). Wallace Willis, formerly enslaved, is said to have been moved by the sight of the Red River, which recalled the Jordan and the story of the prophet Elijah carried to heaven in a chariot. A minister, Alexander Reid, heard the Willises singing and transcribed the words and melody, sending them to the Fisk Jubilee Singers, whose late-19th-century tours carried the spiritual to audiences worldwide. Like many spirituals, its imagery of deliverance (\"coming for to carry me home\") has been understood to hold coded meanings of hope and freedom for enslaved people. It deserves to be sung with respect for that history.\n\n## What to listen for\nThe song is built on call-and-response: a leader sings a line and the group answers, a hallmark of the spiritual tradition. The melody is largely pentatonic and easy to sing, sitting in a warm 4/4 that can be taken slowly and soulfully or with a gentle swing. The harmony is simple and rooted; in G major it rests mostly on I, IV, and V.\n\n## What you'll learn\nYou will explore call-and-response phrasing, a relaxed feel for the beat, and the expressive weight that makes a spiritual land. It is also an easy, satisfying song for coordinating a slow, steady accompaniment beneath a singable tune.\n\n## How to play it\nIn G major, use G, C, D (and D7); a C-major setting (C, F, G7) suits many singers too. Pianists can play warm block chords or a rocking left hand under the melody; guitarists can strum gently or fingerpick. Let the \"swing low\" refrain settle deeply, and keep space in the phrasing so the call and the answer each breathe.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this",
     "details": {
       "key": "G major",
       "era": "Spiritual",
@@ -1788,6 +1819,21 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
         "when-the-saints-go-marching-in",
         "amazing-grace-trad",
         "shenandoah"
+      ],
+      "embeds": [
+        {
+          "tool": "progression",
+          "title": "The call-and-response chords",
+          "caption": "A I–IV–V in G under the spiritual's call and response. Play it through to feel the shape.",
+          "key": "G",
+          "chords": [
+            "G",
+            "C",
+            "G",
+            "D7",
+            "G"
+          ]
+        }
       ]
     },
     "extraTags": [
@@ -2097,7 +2143,7 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     ]
   },
   "when-the-saints-go-marching-in": {
-    "bodyMdx": "## About this song\n\"When the Saints Go Marching In\" began life as a Christian hymn and became a jazz anthem. Its precise origins are unclear; it appears to have evolved in the early 1900s out of several similarly-titled gospel songs, including \"When the Saints Are Marching In\" (1896) and \"When the Saints March In for Crowning\" (1908). The song is inseparable from New Orleans, where brass bands took it up in the tradition of the \"jazz funeral\" — played slowly and mournfully on the way to the cemetery, then joyfully on the way back. The first known recording dates to 1923 by the Paramount Jubilee Singers, and Louis Armstrong's exuberant 1938 recording made \"The Saints\" famous around the world. Today it is the unofficial anthem of New Orleans.\n\n## What to listen for\nThe tune could hardly be simpler or more infectious. It moves mostly by step within a bright major scale, set in a marching 4/4, with a verse-and-refrain shape that invites everyone to join in. The harmony leans on just I, IV, and V, which is exactly why it works as a first song and as a bandstand crowd-pleaser.\n\n## What you'll learn\nThis is a superb first tune for confidence and timing. You will practise a steady, marching pulse, changing between three chords in time, and — for singers and horn players alike — a melody easy enough to memorise fast, freeing you to focus on feel and swing.\n\n## How to play it\nIn C major the chords are C, F, and G7; it transposes easily to G (G, C, D7) or any comfortable key. Pianists can play a bouncy left-hand pattern under the melody; guitarists and ukulele players can strum a confident, even beat. Once it is under your fingers, try adding a light swing to the rhythm to capture its New Orleans spirit.\n\n## If you like this",
+    "bodyMdx": "## About this song\n\"When the Saints Go Marching In\" began life as a Christian hymn and became a jazz anthem. Its precise origins are unclear; it appears to have evolved in the early 1900s out of several similarly-titled gospel songs, including \"When the Saints Are Marching In\" (1896) and \"When the Saints March In for Crowning\" (1908). The song is inseparable from New Orleans, where brass bands took it up in the tradition of the \"jazz funeral\" — played slowly and mournfully on the way to the cemetery, then joyfully on the way back. The first known recording dates to 1923 by the Paramount Jubilee Singers, and Louis Armstrong's exuberant 1938 recording made \"The Saints\" famous around the world. Today it is the unofficial anthem of New Orleans.\n\n## What to listen for\nThe tune could hardly be simpler or more infectious. It moves mostly by step within a bright major scale, set in a marching 4/4, with a verse-and-refrain shape that invites everyone to join in. The harmony leans on just I, IV, and V, which is exactly why it works as a first song and as a bandstand crowd-pleaser.\n\n## What you'll learn\nThis is a superb first tune for confidence and timing. You will practise a steady, marching pulse, changing between three chords in time, and — for singers and horn players alike — a melody easy enough to memorise fast, freeing you to focus on feel and swing.\n\n## How to play it\nIn C major the chords are C, F, and G7; it transposes easily to G (G, C, D7) or any comfortable key. Pianists can play a bouncy left-hand pattern under the melody; guitarists and ukulele players can strum a confident, even beat. Once it is under your fingers, try adding a light swing to the rhythm to capture its New Orleans spirit.\n\n<div data-tmr-embed=\"0\"></div>\n\n## If you like this",
     "details": {
       "key": "C major",
       "era": "Spiritual",
@@ -2108,6 +2154,22 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
       "related": [
         "swing-low-sweet-chariot",
         "amazing-grace-trad"
+      ],
+      "embeds": [
+        {
+          "tool": "progression",
+          "title": "The chords behind the tune",
+          "caption": "A bright I–IV–V march in C. Play the sequence through, one bar per chord.",
+          "key": "C",
+          "chords": [
+            "C",
+            "C7",
+            "F",
+            "C",
+            "G7",
+            "C"
+          ]
+        }
       ]
     },
     "extraTags": [

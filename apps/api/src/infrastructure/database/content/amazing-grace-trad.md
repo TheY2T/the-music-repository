@@ -24,4 +24,8 @@ This is an ideal early song for phrasing and breath. You will practise shaping a
 ## How to play it
 In G major the chords are G, C, and D (add D7 for a stronger pull back to G). Pianists can play the melody in the right hand over simple broken or block chords in the left. Guitarists and ukulele players can strum one gentle chord per bar, or fingerpick a slow arpeggio to suit the reflective mood. Keep the tempo unhurried, lean into the grace notes, and let the phrases breathe.
 
+```embeds
+[{ "tool": "progression", "title": "The chords behind the hymn", "caption": "A gentle I–IV–V in G — the harmonic backbone of the melody. Play it through slowly.", "key": "G", "chords": ["G", "C", "G", "D7", "G"] }]
+```
+
 ## If you like this

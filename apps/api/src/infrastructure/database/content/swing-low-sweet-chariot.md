@@ -24,4 +24,8 @@ You will explore call-and-response phrasing, a relaxed feel for the beat, and th
 ## How to play it
 In G major, use G, C, D (and D7); a C-major setting (C, F, G7) suits many singers too. Pianists can play warm block chords or a rocking left hand under the melody; guitarists can strum gently or fingerpick. Let the "swing low" refrain settle deeply, and keep space in the phrasing so the call and the answer each breathe.
 
+```embeds
+[{ "tool": "progression", "title": "The call-and-response chords", "caption": "A I–IV–V in G under the spiritual's call and response. Play it through to feel the shape.", "key": "G", "chords": ["G", "C", "G", "D7", "G"] }]
+```
+
 ## If you like this
