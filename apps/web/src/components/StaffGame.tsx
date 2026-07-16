@@ -158,9 +158,9 @@ export default function StaffGame() {
         className={cn(
           'flex justify-center rounded-lg border p-4',
           flash === 'ok'
-            ? 'border-emerald-500 bg-emerald-500/10'
+            ? 'border-success bg-success/10'
             : flash === 'wrong'
-              ? 'border-red-500 bg-red-500/10'
+              ? 'border-destructive bg-destructive/10'
               : 'border-border bg-muted',
         )}
       >

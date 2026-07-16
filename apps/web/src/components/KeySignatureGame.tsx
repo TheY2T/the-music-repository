@@ -216,8 +216,9 @@ export default function KeySignatureGame() {
               'rounded-lg border border-border py-3 text-lg font-semibold transition-colors',
               flash === 'ok' &&
                 opt.major === round.target.major &&
-                'border-emerald-500 bg-emerald-500 text-white',
-              flash === opt.major && 'border-red-500 bg-red-500 text-white',
+                'border-success bg-success text-success-foreground',
+              flash === opt.major &&
+                'border-destructive bg-destructive text-destructive-foreground',
               running ? 'hover:bg-accent/30' : 'opacity-50',
             )}
           >

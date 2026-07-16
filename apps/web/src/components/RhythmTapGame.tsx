@@ -277,11 +277,11 @@ export default function RhythmTapGame() {
                   slot % 2 === 0 ? 'border-border' : 'border-border/50',
                   playhead === slot && 'ring-2 ring-ring',
                   rating === 'perfect'
-                    ? 'border-emerald-500 bg-emerald-500'
+                    ? 'border-success bg-success'
                     : rating === 'good'
-                      ? 'border-amber-500 bg-amber-500/70'
+                      ? 'border-warning bg-warning/70'
                       : rating === 'miss'
-                        ? 'border-red-500 bg-red-500/40'
+                        ? 'border-destructive bg-destructive/40'
                         : hit
                           ? 'bg-primary/70'
                           : 'bg-transparent',

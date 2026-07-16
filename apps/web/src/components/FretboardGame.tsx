@@ -188,8 +188,8 @@ export default function FretboardGame() {
                           'flex h-full w-full items-center justify-center transition-colors',
                           isFlash
                             ? flash?.ok
-                              ? 'bg-emerald-500 text-white'
-                              : 'bg-red-500 text-white'
+                              ? 'bg-success text-success-foreground'
+                              : 'bg-destructive text-destructive-foreground'
                             : running
                               ? 'hover:bg-accent/30'
                               : '',

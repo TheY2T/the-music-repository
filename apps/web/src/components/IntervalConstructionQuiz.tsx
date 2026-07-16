@@ -78,11 +78,11 @@ export default function IntervalConstructionQuiz() {
               type="button"
               onClick={() => guess(pc)}
               disabled={answered !== null}
-              className={`h-10 w-12 rounded-md border text-sm font-medium transition-colors ${
+              className={`h-10 w-12 rounded-md border text-sm font-medium text-foreground transition-colors ${
                 state === 'correct'
-                  ? 'border-green-600 bg-green-600/15'
+                  ? 'border-success bg-success/15'
                   : state === 'wrong'
-                    ? 'border-red-600 bg-red-600/15'
+                    ? 'border-destructive bg-destructive/15'
                     : 'border-border hover:bg-muted'
               }`}
             >

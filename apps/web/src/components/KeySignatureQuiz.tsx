@@ -93,11 +93,11 @@ export default function KeySignatureQuiz() {
               onClick={() => guess(option)}
               disabled={answered !== null}
               data-help="scales"
-              className={`rounded-lg border p-3 text-lg font-semibold transition-colors ${
+              className={`rounded-lg border p-3 text-lg font-semibold text-foreground transition-colors ${
                 state === 'correct'
-                  ? 'border-green-600 bg-green-600/15'
+                  ? 'border-success bg-success/15'
                   : state === 'wrong'
-                    ? 'border-red-600 bg-red-600/15'
+                    ? 'border-destructive bg-destructive/15'
                     : 'border-border hover:bg-muted'
               }`}
             >
