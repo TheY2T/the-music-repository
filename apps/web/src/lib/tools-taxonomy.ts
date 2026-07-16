@@ -58,6 +58,7 @@ const CATEGORY_BY_SLUG: Record<string, ToolCategory> = {
   rhythm: 'rhythm-time',
   'rhythm-game': 'rhythm-time',
   'speed-trainer': 'play-practice',
+  'practice-planner': 'play-practice',
   grooves: 'rhythm-time',
   // Reading & Notation
   staff: 'reading-notation',
@@ -116,6 +117,7 @@ export const TOOL_ICON: Record<string, string> = {
   rhythm: 'clock',
   'rhythm-game': 'gauge',
   'speed-trainer': 'trending-up',
+  'practice-planner': 'calendar',
   caged: 'guitar',
   'scale-boxes': 'guitar',
   song: 'music',

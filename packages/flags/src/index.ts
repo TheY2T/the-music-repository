@@ -157,6 +157,8 @@ export const FlagKeys = {
   ToolSpeedTrainer: 'tools.speed-trainer',
   /** Expansion — timed key-signature naming game. */
   ToolKeySigGame: 'tools.key-sig-game',
+  /** Expansion — build + run a timed practice routine. */
+  ToolPracticePlanner: 'tools.practice-planner',
   /** Phase 6 — premium entitlements gate `visibility=premium` content + the subscription flow. */
   Premium: 'monetization.premium',
   /** Phase 6 — teacher/classroom mode (create/join classrooms, grant premium to a class). */
@@ -239,6 +241,7 @@ export const FlagDefaults = {
   [FlagKeys.ToolVoiceLeading]: true,
   [FlagKeys.ToolSpeedTrainer]: true,
   [FlagKeys.ToolKeySigGame]: true,
+  [FlagKeys.ToolPracticePlanner]: true,
   [FlagKeys.Premium]: true,
   [FlagKeys.Classrooms]: true,
   [FlagKeys.I18n]: true,

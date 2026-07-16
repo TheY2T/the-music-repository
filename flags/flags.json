@@ -577,6 +577,14 @@
       },
       "defaultVariant": "on"
     },
+    "tools.practice-planner": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "personalization.saved-progressions": {
       "state": "ENABLED",
       "variants": {

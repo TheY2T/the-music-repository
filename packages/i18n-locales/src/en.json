@@ -443,6 +443,8 @@
   "tool.speed-trainer.summary": "Loop a scale and ramp the tempo up to build clean speed.",
   "tool.key-sig-game.title": "Key signature game",
   "tool.key-sig-game.summary": "A 60-second sprint: name the major key from its signature.",
+  "tool.practice-planner.title": "Practice planner",
+  "tool.practice-planner.summary": "Build a practice routine and run it as a guided, timed session.",
   "myfav.loading": "Loading…",
   "myfav.emptyBefore": "No favorites yet. Browse the",
   "myfav.catalogue": "catalogue",

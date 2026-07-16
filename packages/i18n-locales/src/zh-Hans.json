@@ -443,6 +443,8 @@
   "tool.speed-trainer.summary": "循环音阶并逐步提速，稳健地练出速度。",
   "tool.key-sig-game.title": "调号游戏",
   "tool.key-sig-game.summary": "60 秒挑战：根据调号说出大调名称。",
+  "tool.practice-planner.title": "练习计划器",
+  "tool.practice-planner.summary": "制定练习流程，并作为有引导的计时练习来进行。",
   "myfav.loading": "加载中…",
   "myfav.emptyBefore": "还没有收藏。浏览",
   "myfav.catalogue": "曲库",
