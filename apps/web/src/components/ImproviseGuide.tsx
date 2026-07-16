@@ -1,5 +1,6 @@
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
+import InstrumentLoading from '@/components/InstrumentLoading';
 import LevelToggle from '@/components/LevelToggle';
 import {
   CHORDS,
@@ -11,6 +12,7 @@ import {
   scalesForChord,
 } from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
+import { useInstrumentReady } from '@/lib/use-instrument-ready';
 import { useLevel } from '@/lib/use-level';
 
 const ROOT_MIDI = 60; // C4 reference octave
@@ -48,6 +50,9 @@ export default function ImproviseGuide() {
       window.setTimeout(() => playNote(midi, 0.45), 350 + index * 260);
     });
   }
+
+  const { ready } = useInstrumentReady();
+  if (!ready) return <InstrumentLoading />;
 
   return (
     <div className="space-y-6">

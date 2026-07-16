@@ -1,10 +1,12 @@
 import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { cn } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
+import InstrumentLoading from '@/components/InstrumentLoading';
 import { PixiCanvas } from '@/components/PixiCanvas';
 import { noteNameToPitchClass } from '@/lib/embeds';
 import { pitchName } from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
+import { useInstrumentReady } from '@/lib/use-instrument-ready';
 
 /**
  * An interval reference: the twelve intervals above a root as tappable cards (short name + the note it
@@ -27,6 +29,9 @@ export default function Intervals({ root = 'C', locale }: { root?: string; local
     playNote(rootMidi, 0.8);
     window.setTimeout(() => playNote(rootMidi + i, 0.8), 420);
   };
+
+  const { ready } = useInstrumentReady();
+  if (!ready) return <InstrumentLoading />;
 
   return (
     <PixiCanvas

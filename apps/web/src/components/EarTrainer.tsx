@@ -1,8 +1,10 @@
 import { Button, Icon } from '@TheY2T/tmr-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import DrillFeedback from '@/components/DrillFeedback';
+import InstrumentLoading from '@/components/InstrumentLoading';
 import { INTERVAL_NAMES } from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
+import { useInstrumentReady } from '@/lib/use-instrument-ready';
 import { useMidiInput } from '@/lib/use-midi-input';
 
 interface Question {
@@ -93,6 +95,9 @@ export default function EarTrainer() {
   }
 
   const isCorrect = answered !== null && answered === question.semitones;
+
+  const { ready } = useInstrumentReady();
+  if (!ready) return <InstrumentLoading />;
 
   return (
     <div className="space-y-6">

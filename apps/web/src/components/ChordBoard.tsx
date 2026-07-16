@@ -1,9 +1,11 @@
 import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { cn } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
+import InstrumentLoading from '@/components/InstrumentLoading';
 import { PixiCanvas } from '@/components/PixiCanvas';
 import { chordToMidi } from '@/lib/embeds';
 import { playNote } from '@/lib/soundfont';
+import { useInstrumentReady } from '@/lib/use-instrument-ready';
 
 /**
  * A board of tappable chord cards (symbol + optional Roman-numeral label) that sound the chord's tones
@@ -38,6 +40,9 @@ export default function ChordBoard({
     setActive(i);
     playChord(chords[i]);
   };
+
+  const { ready } = useInstrumentReady();
+  if (!ready) return <InstrumentLoading />;
 
   return (
     <PixiCanvas

@@ -1,7 +1,9 @@
 import { Icon } from '@TheY2T/tmr-ui';
 import { useCallback, useState } from 'react';
+import InstrumentLoading from '@/components/InstrumentLoading';
 import { identifyChords, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
+import { useInstrumentReady } from '@/lib/use-instrument-ready';
 import { useMidiInput } from '@/lib/use-midi-input';
 
 const ROOT_MIDI = 60;
@@ -51,6 +53,9 @@ export default function ChordIdentifier() {
       playNote(ROOT_MIDI + pc, 1.1);
     }
   }
+
+  const { ready } = useInstrumentReady();
+  if (!ready) return <InstrumentLoading />;
 
   return (
     <div className="space-y-6">

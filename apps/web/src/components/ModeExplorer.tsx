@@ -1,7 +1,9 @@
 import { Chip, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
+import InstrumentLoading from '@/components/InstrumentLoading';
 import { intervalLabel, MODES, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
+import { useInstrumentReady } from '@/lib/use-instrument-ready';
 
 const ROOT_MIDI = 60;
 
@@ -15,6 +17,9 @@ export default function ModeExplorer() {
       window.setTimeout(() => playNote(ROOT_MIDI + root + interval, 0.45), index * 200);
     });
   }
+
+  const { ready } = useInstrumentReady();
+  if (!ready) return <InstrumentLoading />;
 
   return (
     <div className="space-y-6">

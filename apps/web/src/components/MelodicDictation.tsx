@@ -1,10 +1,12 @@
 import type { Locale } from '@TheY2T/tmr-i18n';
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
+import InstrumentLoading from '@/components/InstrumentLoading';
 import AlphaTexScore from '@/components/score/AlphaTexScore';
 import { trebleStaffNotes } from '@/lib/music-theory';
 import { melodyToAlphaTex } from '@/lib/score/alphatex';
 import { playNote } from '@/lib/soundfont';
+import { useInstrumentReady } from '@/lib/use-instrument-ready';
 
 // One-octave pool C4–C5 so the answer palette covers every note the generator can pick.
 const POOL = trebleStaffNotes().filter((n) => n.midi >= 60 && n.midi <= 72);
@@ -72,6 +74,9 @@ export default function MelodicDictation({ locale }: { locale: Locale }) {
       total: s.total + 1,
     }));
   }
+
+  const { ready } = useInstrumentReady();
+  if (!ready) return <InstrumentLoading />;
 
   return (
     <div className="space-y-5">

@@ -1,5 +1,6 @@
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
+import InstrumentLoading from '@/components/InstrumentLoading';
 import LevelToggle from '@/components/LevelToggle';
 import { isWithinLevel, pitchName, ROOT_CHOICES } from '@/lib/music-theory';
 import {
@@ -9,6 +10,7 @@ import {
   realizeProgression,
 } from '@/lib/progressions';
 import { playNote } from '@/lib/soundfont';
+import { useInstrumentReady } from '@/lib/use-instrument-ready';
 import { useLevel } from '@/lib/use-level';
 
 const CHORD_MIDI = 60; // voice chords around C4
@@ -31,6 +33,9 @@ export default function ProgressionGenerator() {
       }, index * 850);
     });
   }
+
+  const { ready } = useInstrumentReady();
+  if (!ready) return <InstrumentLoading />;
 
   return (
     <div className="space-y-6">

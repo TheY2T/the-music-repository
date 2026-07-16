@@ -1,5 +1,6 @@
 import { Select } from '@TheY2T/tmr-ui';
 import { useState } from 'react';
+import InstrumentLoading from '@/components/InstrumentLoading';
 import {
   FRET_MARKERS,
   pitchName,
@@ -9,6 +10,7 @@ import {
   scalePitchClasses,
 } from '@/lib/music-theory';
 import { playNote } from '@/lib/soundfont';
+import { useInstrumentReady } from '@/lib/use-instrument-ready';
 
 const FRET_COUNT = 15;
 const BOX_WIDTH = 4; // frets spanned by a position box
@@ -34,6 +36,9 @@ export default function ScaleBoxes({
   const flats = [1, 3, 5, 8, 10].includes(root);
 
   const inWindow = (fret: number) => showAll || (fret >= position && fret <= position + BOX_WIDTH);
+
+  const { ready } = useInstrumentReady();
+  if (!ready) return <InstrumentLoading />;
 
   return (
     <div className="space-y-4">
