@@ -57,6 +57,7 @@ const {
   toolScore,
   toolImprovise,
   toolProgressionGen,
+  toolFretGame,
 } = Astro.locals.flags;
 const locale = Astro.locals.locale;
 
@@ -109,6 +110,7 @@ const enabledSlugs: string[] = (
     { slug: 'score', enabled: toolScore },
     { slug: 'improvise', enabled: toolImprovise },
     { slug: 'progression-generator', enabled: toolProgressionGen },
+    { slug: 'fret-game', enabled: toolFretGame },
   ] satisfies { slug: string; enabled: boolean }[]
 )
   .filter((tool) => tool.enabled)

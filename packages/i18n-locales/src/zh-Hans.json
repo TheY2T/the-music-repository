@@ -429,6 +429,8 @@
   "tool.improvise.summary": "选择一个和弦，查看适合的音阶——独奏的安全之选。",
   "tool.progression-generator.title": "和弦进行生成器",
   "tool.progression-generator.summary": "按风格生成常见和弦进行，可转到任意调。",
+  "tool.fret-game.title": "指板音名游戏",
+  "tool.fret-game.summary": "60 秒挑战：在指板上找到指定音符。",
   "myfav.loading": "加载中…",
   "myfav.emptyBefore": "还没有收藏。浏览",
   "myfav.catalogue": "曲库",

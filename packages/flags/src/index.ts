@@ -143,6 +143,8 @@ export const FlagKeys = {
   ToolImprovise: 'tools.improvise',
   /** Expansion — chord-progression generator: common progressions by style/key. */
   ToolProgressionGen: 'tools.progression-generator',
+  /** Expansion — timed fretboard note-finding game. */
+  ToolFretGame: 'tools.fret-game',
   /** Phase 6 — premium entitlements gate `visibility=premium` content + the subscription flow. */
   Premium: 'monetization.premium',
   /** Phase 6 — teacher/classroom mode (create/join classrooms, grant premium to a class). */
@@ -218,6 +220,7 @@ export const FlagDefaults = {
   [FlagKeys.ToolSoundfont]: true,
   [FlagKeys.ToolImprovise]: true,
   [FlagKeys.ToolProgressionGen]: true,
+  [FlagKeys.ToolFretGame]: true,
   [FlagKeys.Premium]: true,
   [FlagKeys.Classrooms]: true,
   [FlagKeys.I18n]: true,
