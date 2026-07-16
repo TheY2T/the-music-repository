@@ -151,6 +151,8 @@ export const FlagKeys = {
   ToolStaffGame: 'tools.staff-game',
   /** Expansion — tap-the-rhythm timing game. */
   ToolRhythmGame: 'tools.rhythm-game',
+  /** Expansion — chord voice-leading viewer. */
+  ToolVoiceLeading: 'tools.voice-leading',
   /** Phase 6 — premium entitlements gate `visibility=premium` content + the subscription flow. */
   Premium: 'monetization.premium',
   /** Phase 6 — teacher/classroom mode (create/join classrooms, grant premium to a class). */
@@ -230,6 +232,7 @@ export const FlagDefaults = {
   [FlagKeys.ToolScaleMap]: true,
   [FlagKeys.ToolStaffGame]: true,
   [FlagKeys.ToolRhythmGame]: true,
+  [FlagKeys.ToolVoiceLeading]: true,
   [FlagKeys.Premium]: true,
   [FlagKeys.Classrooms]: true,
   [FlagKeys.I18n]: true,
