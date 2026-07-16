@@ -1,5 +1,12 @@
 import { Button, cn, Icon, Select } from '@TheY2T/tmr-ui';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { PixiCanvas } from '@/components/PixiCanvas';
 import { DEFAULT_KEYBOARD_KEYS, KEYBOARD_SIZES, layoutForKeys, qwertyMap } from '@/lib/keyboard';
 import { pitchName, ROOT_CHOICES, SCALES, scalePitchClasses } from '@/lib/music-theory';
@@ -116,6 +123,47 @@ export default function PianoKeyboard({
     setActive(new Set(activeRef.current));
   }, []);
 
+  // Pointer glissando: pressing a key starts a drag, and sliding the pointer across the keys releases
+  // the previous note and sounds the next — so a click-and-drag sweeps successively through the keys.
+  // A plain press-and-hold still sustains (the drag note is released on pointer-up).
+  const dragNote = useRef<number | null>(null);
+  const dragging = useRef(false);
+
+  const pointerPlay = useCallback(
+    (midi: number) => {
+      dragging.current = true;
+      dragNote.current = midi;
+      press(midi, POINTER_VELOCITY);
+    },
+    [press],
+  );
+
+  const pointerGlide = useCallback(
+    (midi: number) => {
+      if (!dragging.current || dragNote.current === midi) return;
+      if (dragNote.current != null) release(dragNote.current);
+      dragNote.current = midi;
+      press(midi, POINTER_VELOCITY);
+    },
+    [press, release],
+  );
+
+  const pointerEnd = useCallback(() => {
+    if (dragNote.current != null) release(dragNote.current);
+    dragNote.current = null;
+    dragging.current = false;
+  }, [release]);
+
+  // End a glissando wherever the pointer is released (outside the keys, or off-window).
+  useEffect(() => {
+    window.addEventListener('pointerup', pointerEnd);
+    window.addEventListener('pointercancel', pointerEnd);
+    return () => {
+      window.removeEventListener('pointerup', pointerEnd);
+      window.removeEventListener('pointercancel', pointerEnd);
+    };
+  }, [pointerEnd]);
+
   // Live MIDI input → sound + highlight, with velocity dynamics.
   const onMidiNote = useCallback(
     (midi: number, isOn: boolean, velocity: number) => {
@@ -217,19 +265,30 @@ export default function PianoKeyboard({
     );
   }
 
+  // Slide the pointer over the keys during a drag → glissando. Uses elementFromPoint so it works even
+  // when a touch pointer is implicitly captured by the key it started on (pointermove still bubbles).
+  const fallbackGlide = (e: ReactPointerEvent) => {
+    if (!dragging.current) return;
+    const key = document
+      .elementFromPoint(e.clientX, e.clientY)
+      ?.closest<HTMLElement>('[data-midi]');
+    if (key) pointerGlide(Number(key.dataset.midi));
+  };
+
   // Accessible, token-themed DOM keyboard — the real control surface; visible when WebGL is absent.
   const fallbackKeyboard = (
-    <div className="relative flex h-44 select-none rounded-lg border border-border bg-muted p-1">
+    <div
+      className="relative flex h-44 touch-none select-none rounded-lg border border-border bg-muted p-1"
+      onPointerMove={fallbackGlide}
+    >
       {whiteMidis.map((m) => (
         <button
           type="button"
           key={m}
+          data-midi={m}
           aria-label={noteLabel(m, flats)}
           aria-pressed={active.has(m)}
-          onPointerDown={() => press(m, POINTER_VELOCITY)}
-          onPointerUp={() => release(m)}
-          onPointerLeave={() => release(m)}
-          onPointerCancel={() => release(m)}
+          onPointerDown={() => pointerPlay(m)}
           style={{ width: `${whiteWidthPct}%` }}
           className={cn(
             'relative flex items-end justify-center rounded-b border border-border pb-1 text-xs',
@@ -244,15 +303,13 @@ export default function PianoKeyboard({
         <button
           type="button"
           key={m}
+          data-midi={m}
           aria-label={noteLabel(m, flats)}
           aria-pressed={active.has(m)}
           onPointerDown={(e) => {
             e.stopPropagation();
-            press(m, POINTER_VELOCITY);
+            pointerPlay(m);
           }}
-          onPointerUp={() => release(m)}
-          onPointerLeave={() => release(m)}
-          onPointerCancel={() => release(m)}
           style={{
             left: `${(afterWhiteIndex + 1) * whiteWidthPct}%`,
             width: `${whiteWidthPct * 0.62}%`,
@@ -421,8 +478,9 @@ export default function PianoKeyboard({
               active,
               showLabels,
               flats,
-              onPlay: (m: number) => press(m, POINTER_VELOCITY),
-              onRelease: release,
+              onPlay: pointerPlay,
+              onGlide: pointerGlide,
+              onRelease: pointerEnd,
             }}
             containerClassName="h-44 w-full rounded-lg border border-border bg-muted"
             fallback={fallbackKeyboard}

@@ -4,7 +4,10 @@ import {
   type ActiveFilterItem,
   ActiveFilters,
   Badge,
+  Button,
   CardGrid,
+  Chip,
+  cn,
   EmptyState,
   type FacetGroup,
   FacetPanel,
@@ -16,6 +19,16 @@ import {
 } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import FavoriteHeart from '@/components/FavoriteHeart';
+import {
+  clearRecents,
+  getRecents,
+  loadBrowseState,
+  pushRecent,
+  type RecentCatalogueItem,
+  saveBrowseState,
+  setLastSelected,
+  takeLastSelected,
+} from '@/lib/catalogue-history';
 import { listFavoriteSlugs } from '@/lib/favorites-api';
 
 const PAGE_SIZE = 24;
@@ -40,12 +53,34 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
   const [type, setType] = useState<string | undefined>();
   const [page, setPage] = useState(1);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  // Browse memory: the previously-opened card (scroll target + highlight) and the recents strip.
+  const [pendingScrollSlug, setPendingScrollSlug] = useState<string | null>(null);
+  const [highlightSlug, setHighlightSlug] = useState<string | null>(null);
+  const [recents, setRecents] = useState<RecentCatalogueItem[]>([]);
 
   useEffect(() => {
     if (showFavorites) {
       listFavoriteSlugs().then((slugs) => setFavorites(new Set(slugs)));
     }
   }, [showFavorites]);
+
+  // Restore the last browse session (filters + page) and queue a scroll to the card that was open,
+  // then load the recents strip. Runs once, post-hydration (storage is client-only), so no mismatch.
+  useEffect(() => {
+    const saved = loadBrowseState();
+    if (saved) {
+      setQ(saved.q);
+      setGenre(saved.genre);
+      setEra(saved.era);
+      setInstrument(saved.instrument);
+      setTopic(saved.topic);
+      setType(saved.type);
+      setPage(saved.page);
+    }
+    const slug = takeLastSelected();
+    if (slug) setPendingScrollSlug(slug);
+    setRecents(getRecents());
+  }, []);
 
   function onFavoriteChange(slug: string, next: boolean) {
     setFavorites((prev) => {
@@ -70,6 +105,45 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
   const items = result?.items ?? [];
   const total = result?.total ?? 0;
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+  // Once the restored page has loaded, scroll the previously-opened card into view and highlight it.
+  // If it isn't on this page (filtered out since), give up quietly rather than scroll to nothing.
+  useEffect(() => {
+    if (!pendingScrollSlug || isFetching || items.length === 0) return;
+    if (!items.some((i) => i.slug === pendingScrollSlug)) {
+      setPendingScrollSlug(null);
+      return;
+    }
+    const el = document.getElementById(`cat-item-${pendingScrollSlug}`);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setHighlightSlug(pendingScrollSlug);
+    setPendingScrollSlug(null);
+  }, [pendingScrollSlug, isFetching, items]);
+
+  // The highlight is a brief cue — fade it out after a moment.
+  useEffect(() => {
+    if (!highlightSlug) return;
+    const timer = setTimeout(() => setHighlightSlug(null), 2600);
+    return () => clearTimeout(timer);
+  }, [highlightSlug]);
+
+  // Remember context when the user opens a card, so returning restores the list + scrolls to it.
+  function onSelect(item: (typeof items)[number]) {
+    saveBrowseState({ q, genre, era, instrument, topic, type, page });
+    setLastSelected(item.slug);
+    pushRecent({
+      slug: item.slug,
+      title: item.title,
+      type: item.type,
+      difficulty: item.difficulty,
+    });
+  }
+
+  function onClearRecents() {
+    clearRecents();
+    setRecents([]);
+  }
 
   const groups: FacetGroup[] = [
     {
@@ -197,6 +271,39 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
       </aside>
 
       <section className="space-y-4">
+        {recents.length > 0 ? (
+          <div className="space-y-2 rounded-lg border border-border bg-muted/40 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <p className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                <Icon name="clock" className="size-4 text-muted-foreground" />
+                {t(locale, 'catalogue.recentlyViewed')}
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-auto px-2 py-1 text-xs"
+                onClick={onClearRecents}
+              >
+                {t(locale, 'catalogue.recentsClear')}
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {recents.map((r) => (
+                <a
+                  key={r.slug}
+                  href={localizedPath(locale, `/catalogue/${r.slug}`)}
+                  onClick={() => setLastSelected(r.slug)}
+                  className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Chip variant="muted" interactive>
+                    {r.title}
+                  </Chip>
+                </a>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-sm text-muted-foreground">
             {isFetching
@@ -235,7 +342,20 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
         ) : (
           <CardGrid>
             {items.map((item) => (
-              <li key={item.slug}>
+              // biome-ignore lint/a11y/useKeyWithClickEvents: passive recorder — the real control is the nested card <a> (keyboard-accessible), whose Enter-activation bubbles a click here too.
+              <li
+                key={item.slug}
+                id={`cat-item-${item.slug}`}
+                onClick={(e) => {
+                  // Record context only for a navigation click (the card link), not the favorite heart.
+                  if ((e.target as HTMLElement).closest('a[href]')) onSelect(item);
+                }}
+                className={cn(
+                  'scroll-mt-24 rounded-lg transition-shadow',
+                  highlightSlug === item.slug &&
+                    'ring-2 ring-ring ring-offset-2 ring-offset-background',
+                )}
+              >
                 <MediaCard
                   title={item.title}
                   href={localizedPath(locale, `/catalogue/${item.slug}`)}

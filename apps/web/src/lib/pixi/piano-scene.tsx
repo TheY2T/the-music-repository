@@ -25,10 +25,12 @@ export interface PianoSceneProps {
   active: Set<number>;
   showLabels: boolean;
   flats: boolean;
-  /** Note-on: pointer pressed a key. */
+  /** Note-on: pointer pressed a key (starts a drag glissando). */
   onPlay: (midi: number) => void;
-  /** Note-off: the pressed key was released (pointer up / left the canvas). Enables sustain. */
-  onRelease?: (midi: number) => void;
+  /** Glissando step: the pointer slid onto a key while a drag is in progress. */
+  onGlide?: (midi: number) => void;
+  /** Note-off: the drag ended (pointer up / left the canvas). Enables sustain. */
+  onRelease?: () => void;
 }
 
 interface Particle {
@@ -55,6 +57,7 @@ function Keybed({
   showLabels,
   flats,
   onPlay,
+  onGlide,
   onRelease,
   reducedMotion,
 }: PianoSceneProps & { reducedMotion: boolean }) {
@@ -204,8 +207,9 @@ function Keybed({
           eventMode="static"
           cursor="pointer"
           onPointerDown={() => onPlay(midi)}
-          onPointerUp={() => onRelease?.(midi)}
-          onPointerUpOutside={() => onRelease?.(midi)}
+          onPointerEnter={() => onGlide?.(midi)}
+          onPointerUp={() => onRelease?.()}
+          onPointerUpOutside={() => onRelease?.()}
           draw={(g: Graphics) => drawWhite(g, midi)}
         />
       ))}
@@ -227,8 +231,9 @@ function Keybed({
           eventMode="static"
           cursor="pointer"
           onPointerDown={() => onPlay(midi)}
-          onPointerUp={() => onRelease?.(midi)}
-          onPointerUpOutside={() => onRelease?.(midi)}
+          onPointerEnter={() => onGlide?.(midi)}
+          onPointerUp={() => onRelease?.()}
+          onPointerUpOutside={() => onRelease?.()}
           draw={(g: Graphics) => drawBlack(g, midi, afterWhiteIndex)}
         />
       ))}
