@@ -14,9 +14,10 @@ out a prioritized plan to **(1) deepen** existing tools, **(2) consolidate** ove
 > (X1), and consolidations C1 + C5 (C2/C3/C4/C6 deliberately kept separate — see §3). The tuner's mic
 > pitch-detection was already shipped. **Expansion started:** the **improvise guide** (§6,
 > `/tools/improvise`), the **progression generator** (`/tools/progression-generator`), the **fretboard
-> note game** (`/tools/fret-game`), the **piano & guitar map** (`/tools/scale-map`), a widened instrument
-> menu (§5, 10→36 GM voices) and **live embeds on 8 prose lessons** (§5, density 25→33/83) are shipped.
-> The rest of §5/§6 remains open backlog. The whole workspace `pnpm lint` is green too.
+> note game** (`/tools/fret-game`), the **note-reading game** (`/tools/staff-game`), the **piano & guitar
+> map** (`/tools/scale-map`), a widened instrument menu (§5, 10→36 GM voices) and **live embeds on 12 prose
+> lessons** (§5, density 25→37/83) are shipped. The rest of §5/§6 remains open backlog (mostly converting
+> the other prose lessons — repeatable now). The whole workspace `pnpm lint` is green too.
 
 > **Design principle threaded throughout — Level tiers.** Every tool should expose a
 > **Beginner / Intermediate / Advanced (/ Expert)** selector that gates which options are visible and
@@ -138,6 +139,7 @@ only **25 of 83 articles use live embeds**.
 | Tool | What | Effort | Notes |
 |---|---|---|---|
 | ✅ **DONE (2026-07-15) Fretboard note game** (`/tools/fret-game`) | 60-second timed find-the-note sprint with score/streak + saved best; level-tiered (beginner naturals+labels → advanced all-12 hidden) | M | Shipped |
+| ✅ **DONE (2026-07-16) Note-reading game** (`/tools/staff-game`) | The reading counterpart — timed name-the-note-on-the-staff sprint; level-tiered (beginner treble → intermediate+ adds bass clef) | M | Shipped |
 | ✅ **DONE (2026-07-15) Chord-progression generator** (`/tools/progression-generator`) | Genre/style templates (pop/folk/blues/jazz/classical) → progression in any key, level-tiered, playable (`progressions.ts`) | M | Shipped |
 | ✅ **DONE (2026-07-15) Improvisation / scale-over-chord guide** (`/tools/improvise`) | Pick a chord → every scale that contains its tones (`scalesForChord`), level-tiered, chord+scale playable together | M–L | Shipped |
 | **Song/lead-sheet builder** | Compose a lead sheet (chords + melody) from tools, save/share (reuse saved-progressions backend) | L | Extends analyzer's save feature |
