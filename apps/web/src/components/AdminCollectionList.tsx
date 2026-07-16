@@ -16,6 +16,7 @@ import {
 } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { collectionsAdminApi } from '@/lib/admin-api';
+import { useBrowseHistory } from '@/lib/browse-history';
 
 export default function AdminCollectionList({ locale }: { locale: Locale }) {
   const [items, setItems] = useState<CollectionSummary[] | null>(null);
@@ -27,6 +28,13 @@ export default function AdminCollectionList({ locale }: { locale: Locale }) {
       .then((result) => setItems(result.items))
       .catch((e: Error) => setError(e.message));
   }, []);
+
+  // Scroll to + highlight the row the editor just came back from (no filters here, so no state).
+  const { highlightSlug, domId, recordSelect } = useBrowseHistory({
+    namespace: 'admin-collections',
+    itemSlugs: items?.map((c) => c.slug) ?? [],
+    ready: items != null,
+  });
 
   if (error) {
     return <p className="text-sm text-destructive">{t(locale, 'acoll.loadError', { error })}</p>;
@@ -64,7 +72,14 @@ export default function AdminCollectionList({ locale }: { locale: Locale }) {
             </TableHeader>
             <TableBody>
               {items.map((collection) => (
-                <TableRow key={collection.slug}>
+                <TableRow
+                  key={collection.slug}
+                  id={domId(collection.slug)}
+                  className={cn(
+                    'scroll-mt-24',
+                    highlightSlug === collection.slug && 'bg-accent/15',
+                  )}
+                >
                   <TableCell>
                     <div className="font-medium text-foreground">{collection.title}</div>
                     <div className="text-xs text-muted-foreground">{collection.slug}</div>
@@ -81,6 +96,9 @@ export default function AdminCollectionList({ locale }: { locale: Locale }) {
                         locale,
                         `/admin/collections/${encodeURIComponent(collection.slug)}/edit`,
                       )}
+                      onClick={() =>
+                        recordSelect({ slug: collection.slug, title: collection.title })
+                      }
                       className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}
                     >
                       <Icon name="pencil" className="size-4" />

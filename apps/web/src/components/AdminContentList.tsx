@@ -17,6 +17,7 @@ import {
 } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { adminApi } from '@/lib/admin-api';
+import { useBrowseHistory } from '@/lib/browse-history';
 
 /** Localized label for a content status (`draft`/`review`/`published`; unknown → draft). */
 function statusLabel(locale: Locale, status: string): string {
@@ -44,6 +45,13 @@ export default function AdminContentList({ locale }: { locale: Locale }) {
       .then((result) => setItems(result.items))
       .catch((e: Error) => setError(e.message));
   }, []);
+
+  // Scroll to + highlight the row the editor just came back from (no filters here, so no state).
+  const { highlightSlug, domId, recordSelect } = useBrowseHistory({
+    namespace: 'admin-content',
+    itemSlugs: items?.map((i) => i.slug) ?? [],
+    ready: items != null,
+  });
 
   if (error) {
     return <p className="text-sm text-destructive">{t(locale, 'acl.loadError', { error })}</p>;
@@ -81,7 +89,11 @@ export default function AdminContentList({ locale }: { locale: Locale }) {
             </TableHeader>
             <TableBody>
               {items.map((item) => (
-                <TableRow key={item.slug}>
+                <TableRow
+                  key={item.slug}
+                  id={domId(item.slug)}
+                  className={cn('scroll-mt-24', highlightSlug === item.slug && 'bg-accent/15')}
+                >
                   <TableCell>
                     <div className="font-medium text-foreground">{item.title}</div>
                     <div className="text-xs text-muted-foreground">{item.slug}</div>
@@ -98,6 +110,7 @@ export default function AdminContentList({ locale }: { locale: Locale }) {
                         locale,
                         `/admin/content/${encodeURIComponent(item.slug)}/edit`,
                       )}
+                      onClick={() => recordSelect({ slug: item.slug, title: item.title })}
                       className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}
                     >
                       <Icon name="pencil" className="size-4" />

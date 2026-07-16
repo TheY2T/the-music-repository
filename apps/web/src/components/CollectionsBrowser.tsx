@@ -18,12 +18,25 @@ import {
 } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import CollectionCard from '@/components/CollectionCard';
+import RecentlyViewedStrip from '@/components/RecentlyViewedStrip';
 import SaveCollectionButton from '@/components/SaveCollectionButton';
+import { useBrowseHistory } from '@/lib/browse-history';
 import { listSavedCollectionSlugs } from '@/lib/collections-api';
 import { getProgress } from '@/lib/progress-api';
 
 const PAGE_SIZE = 24;
 const SORTS = ['featured', 'newest', 'popular', 'az', 'difficulty'] as const;
+
+interface CollectionsBrowseState {
+  q: string;
+  kind?: string;
+  era: string[];
+  instrument: string[];
+  technique: string[];
+  difficulty?: number;
+  sort: (typeof SORTS)[number];
+  page: number;
+}
 const SORT_LABEL: Record<(typeof SORTS)[number], MessageKey> = {
   featured: 'collections.sortFeatured',
   newest: 'collections.sortNewest',
@@ -101,6 +114,24 @@ function Browser({
   const items = result?.items ?? [];
   const total = result?.total ?? 0;
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+  const { recents, highlightSlug, domId, recordSelect, clearRecents } =
+    useBrowseHistory<CollectionsBrowseState>({
+      namespace: 'collections',
+      itemSlugs: items.map((c) => c.slug),
+      ready: !isFetching,
+      getState: () => ({ q, kind, era, instrument, technique, difficulty, sort, page }),
+      applyState: (s) => {
+        setQ(s.q);
+        setKind(s.kind);
+        setEra(s.era);
+        setInstrument(s.instrument);
+        setTechnique(s.technique);
+        setDifficulty(s.difficulty);
+        setSort(s.sort);
+        setPage(s.page);
+      },
+    });
 
   const groups: FacetGroup[] = [
     {
@@ -296,6 +327,20 @@ function Browser({
         </aside>
 
         <section className="space-y-4">
+          <RecentlyViewedStrip
+            title={t(locale, 'common.recentlyViewed')}
+            clearLabel={t(locale, 'common.recentsClear')}
+            items={recents.map((r) => ({
+              slug: r.slug,
+              title: r.title,
+              href: localizedPath(locale, `/collections/${r.slug}`),
+            }))}
+            onClear={clearRecents}
+            onSelect={(slug) =>
+              recordSelect(recents.find((r) => r.slug === slug) ?? { slug, title: slug })
+            }
+          />
+
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-sm text-muted-foreground">
               {isFetching
@@ -350,7 +395,22 @@ function Browser({
           ) : (
             <CardGrid>
               {items.map((c) => (
-                <li key={c.slug}>{card(c)}</li>
+                // biome-ignore lint/a11y/useKeyWithClickEvents: passive recorder — the real control is the nested card <a> (keyboard-accessible), whose Enter-activation bubbles a click here too.
+                <li
+                  key={c.slug}
+                  id={domId(c.slug)}
+                  onClick={(e) => {
+                    if ((e.target as HTMLElement).closest('a[href]'))
+                      recordSelect({ slug: c.slug, title: c.title });
+                  }}
+                  className={cn(
+                    'scroll-mt-24 rounded-lg transition-shadow',
+                    highlightSlug === c.slug &&
+                      'ring-2 ring-ring ring-offset-2 ring-offset-background',
+                  )}
+                >
+                  {card(c)}
+                </li>
               ))}
             </CardGrid>
           )}

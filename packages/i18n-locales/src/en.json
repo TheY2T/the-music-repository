@@ -101,10 +101,10 @@
   "catalogue.clearFilters": "Clear all",
   "catalogue.emptyTitle": "No matches",
   "catalogue.emptyDesc": "Try removing a filter or searching for something else.",
-  "catalogue.recentlyViewed": "Recently viewed",
-  "catalogue.recentsClear": "Clear",
   "common.prev": "Prev",
   "common.next": "Next",
+  "common.recentlyViewed": "Recently viewed",
+  "common.recentsClear": "Clear",
 
   "score.play": "Play",
   "score.pause": "Pause",

@@ -101,10 +101,10 @@
   "catalogue.clearFilters": "清除全部",
   "catalogue.emptyTitle": "没有匹配项",
   "catalogue.emptyDesc": "尝试移除某个筛选条件或搜索其他内容。",
-  "catalogue.recentlyViewed": "最近浏览",
-  "catalogue.recentsClear": "清除",
   "common.prev": "上一页",
   "common.next": "下一页",
+  "common.recentlyViewed": "最近浏览",
+  "common.recentsClear": "清除",
 
   "score.play": "播放",
   "score.pause": "暂停",

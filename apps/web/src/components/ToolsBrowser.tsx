@@ -1,5 +1,12 @@
 import { Card, cn, Icon, type IconName, SearchField } from '@TheY2T/tmr-ui';
 import { useMemo, useState } from 'react';
+import RecentlyViewedStrip from '@/components/RecentlyViewedStrip';
+import { useBrowseHistory } from '@/lib/browse-history';
+
+interface ToolsBrowseState {
+  query: string;
+  activeCat: string;
+}
 
 /**
  * Interactive browser for the /tools page: a search box + category filter chips over collapsible
@@ -22,7 +29,13 @@ export interface ToolCategoryMeta {
 export interface ToolsBrowserProps {
   tools: ToolItem[];
   categories: ToolCategoryMeta[];
-  strings: { searchPlaceholder: string; all: string; noResults: string };
+  strings: {
+    searchPlaceholder: string;
+    all: string;
+    noResults: string;
+    recentlyViewed: string;
+    recentsClear: string;
+  };
 }
 
 function CategoryChip({
@@ -51,10 +64,26 @@ function CategoryChip({
   );
 }
 
-function ToolCard({ tool }: { tool: ToolItem }) {
+function ToolCard({
+  tool,
+  id,
+  highlighted,
+  onSelect,
+}: {
+  tool: ToolItem;
+  id: string;
+  highlighted: boolean;
+  onSelect: (tool: ToolItem) => void;
+}) {
   return (
-    <li>
-      <a href={tool.href} className="group block h-full">
+    <li
+      id={id}
+      className={cn(
+        'scroll-mt-24 rounded-lg transition-shadow',
+        highlighted && 'ring-2 ring-ring ring-offset-2 ring-offset-background',
+      )}
+    >
+      <a href={tool.href} onClick={() => onSelect(tool)} className="group block h-full">
         <Card className="flex h-full items-start gap-3 p-4 transition group-hover:-translate-y-0.5 group-hover:border-accent group-hover:shadow-md">
           <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-accent/15 text-accent">
             <Icon name={tool.iconName as IconName} className="size-5" />
@@ -91,6 +120,24 @@ export default function ToolsBrowser({ tools, categories, strings }: ToolsBrowse
       .map((c) => ({ ...c, items: visible.filter((t) => t.category === c.key) }))
       .filter((g) => g.items.length > 0);
   }, [tools, categories, activeCat, q]);
+
+  const visibleSlugs = useMemo(() => grouped.flatMap((g) => g.items.map((t) => t.slug)), [grouped]);
+  const { recents, highlightSlug, domId, recordSelect, clearRecents } =
+    useBrowseHistory<ToolsBrowseState>({
+      namespace: 'tools',
+      itemSlugs: visibleSlugs,
+      getState: () => ({ query, activeCat }),
+      applyState: (s) => {
+        setQuery(s.query);
+        setActiveCat(s.activeCat);
+      },
+    });
+  const recentTools = recents
+    .map((r) => {
+      const tool = tools.find((t) => t.slug === r.slug);
+      return tool ? { slug: tool.slug, title: tool.title, href: tool.href } : null;
+    })
+    .filter((x): x is { slug: string; title: string; href: string } => x !== null);
 
   function toggle(key: string) {
     setCollapsed((prev) => {
@@ -131,6 +178,17 @@ export default function ToolsBrowser({ tools, categories, strings }: ToolsBrowse
         </div>
       </div>
 
+      <RecentlyViewedStrip
+        title={strings.recentlyViewed}
+        clearLabel={strings.recentsClear}
+        items={recentTools}
+        onClear={clearRecents}
+        onSelect={(slug) => {
+          const tool = tools.find((t) => t.slug === slug);
+          if (tool) recordSelect({ slug: tool.slug, title: tool.title });
+        }}
+      />
+
       {grouped.length === 0 ? (
         <p className="text-sm text-muted-foreground">{strings.noResults}</p>
       ) : (
@@ -159,7 +217,13 @@ export default function ToolsBrowser({ tools, categories, strings }: ToolsBrowse
                 {open ? (
                   <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {group.items.map((tool) => (
-                      <ToolCard key={tool.slug} tool={tool} />
+                      <ToolCard
+                        key={tool.slug}
+                        tool={tool}
+                        id={domId(tool.slug)}
+                        highlighted={highlightSlug === tool.slug}
+                        onSelect={(t) => recordSelect({ slug: t.slug, title: t.title })}
+                      />
                     ))}
                   </ul>
                 ) : null}
