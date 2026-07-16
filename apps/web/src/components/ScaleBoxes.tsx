@@ -95,7 +95,7 @@ export default function ScaleBoxes({
       </div>
 
       <div className="overflow-x-auto">
-        <div className="inline-block rounded-lg border border-border bg-neutral-100 p-2 dark:bg-neutral-900">
+        <div className="inline-block rounded-lg border border-border bg-muted p-2">
           {/* Fret number row */}
           <div className="flex">
             <div className="w-6" />
@@ -124,13 +124,13 @@ export default function ScaleBoxes({
                     key={`f${fret}`}
                     onClick={() => playNote(midi)}
                     className={`m-[1px] flex h-6 w-8 items-center justify-center rounded-sm border text-[10px] ${
-                      fret === 0 ? 'border-r-2 border-r-neutral-400' : 'border-transparent'
+                      fret === 0 ? 'border-r-2 border-r-muted-foreground' : 'border-transparent'
                     } ${
                       on
                         ? isRoot
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-blue-300 text-blue-950'
-                        : 'text-neutral-300 dark:text-neutral-700'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-accent/40 text-foreground'
+                        : 'text-muted-foreground/40'
                     }`}
                   >
                     {on ? pitchName(pc, flats) : '·'}
@@ -142,8 +142,8 @@ export default function ScaleBoxes({
         </div>
       </div>
       <p className="text-xs text-muted-foreground">
-        {pitchName(root, flats)} {scale.name} — roots in dark blue. Slide the position to see the
-        scale as a movable box (or show the whole neck). Click a note to hear it.
+        {pitchName(root, flats)} {scale.name} — root notes highlighted. Slide the position to see
+        the scale as a movable box (or show the whole neck). Click a note to hear it.
       </p>
     </div>
   );

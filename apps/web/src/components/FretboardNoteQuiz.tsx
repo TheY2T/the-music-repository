@@ -59,7 +59,7 @@ export default function FretboardNoteQuiz() {
       </span>
 
       <div className="overflow-x-auto">
-        <div className="inline-block rounded-lg border border-border bg-neutral-100 p-2 dark:bg-neutral-900">
+        <div className="inline-block rounded-lg border border-border bg-muted p-2">
           <div className="flex">
             <div className="w-6" />
             {Array.from({ length: FRET_COUNT + 1 }, (_, fret) => (
@@ -82,12 +82,12 @@ export default function FretboardNoteQuiz() {
                   <div
                     key={`f${fret}`}
                     className={`m-[1px] flex h-7 w-9 items-center justify-center rounded-sm border text-xs font-semibold ${
-                      fret === 0 ? 'border-r-2 border-r-neutral-400' : 'border-transparent'
+                      fret === 0 ? 'border-r-2 border-r-muted-foreground' : 'border-transparent'
                     } ${
                       isTarget
                         ? answered === null
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-green-600 text-white'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-success text-success-foreground'
                         : ''
                     }`}
                   >
@@ -116,11 +116,11 @@ export default function FretboardNoteQuiz() {
               type="button"
               onClick={() => guess(pc)}
               disabled={answered !== null}
-              className={`w-12 rounded-md border py-2 text-sm font-semibold transition-colors ${
+              className={`w-12 rounded-md border py-2 text-sm font-semibold text-foreground transition-colors ${
                 state === 'correct'
-                  ? 'border-green-600 bg-green-600/15'
+                  ? 'border-success bg-success/15'
                   : state === 'wrong'
-                    ? 'border-red-600 bg-red-600/15'
+                    ? 'border-destructive bg-destructive/15'
                     : 'border-border hover:bg-muted'
               }`}
             >
