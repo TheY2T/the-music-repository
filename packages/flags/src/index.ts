@@ -153,6 +153,8 @@ export const FlagKeys = {
   ToolRhythmGame: 'tools.rhythm-game',
   /** Expansion — chord voice-leading viewer. */
   ToolVoiceLeading: 'tools.voice-leading',
+  /** Expansion — scale speed / tempo-ramp trainer. */
+  ToolSpeedTrainer: 'tools.speed-trainer',
   /** Phase 6 — premium entitlements gate `visibility=premium` content + the subscription flow. */
   Premium: 'monetization.premium',
   /** Phase 6 — teacher/classroom mode (create/join classrooms, grant premium to a class). */
@@ -233,6 +235,7 @@ export const FlagDefaults = {
   [FlagKeys.ToolStaffGame]: true,
   [FlagKeys.ToolRhythmGame]: true,
   [FlagKeys.ToolVoiceLeading]: true,
+  [FlagKeys.ToolSpeedTrainer]: true,
   [FlagKeys.Premium]: true,
   [FlagKeys.Classrooms]: true,
   [FlagKeys.I18n]: true,

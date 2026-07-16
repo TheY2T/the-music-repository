@@ -62,6 +62,7 @@ const {
   toolStaffGame,
   toolRhythmGame,
   toolVoiceLeading,
+  toolSpeedTrainer,
 } = Astro.locals.flags;
 const locale = Astro.locals.locale;
 
@@ -119,6 +120,7 @@ const enabledSlugs: string[] = (
     { slug: 'staff-game', enabled: toolStaffGame },
     { slug: 'rhythm-game', enabled: toolRhythmGame },
     { slug: 'voice-leading', enabled: toolVoiceLeading },
+    { slug: 'speed-trainer', enabled: toolSpeedTrainer },
   ] satisfies { slug: string; enabled: boolean }[]
 )
   .filter((tool) => tool.enabled)

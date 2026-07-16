@@ -439,6 +439,8 @@
   "tool.rhythm-game.summary": "Hear a one-bar rhythm, then tap it back in time.",
   "tool.voice-leading.title": "Voice-leading viewer",
   "tool.voice-leading.summary": "See the smoothest way to move between two chords.",
+  "tool.speed-trainer.title": "Speed trainer",
+  "tool.speed-trainer.summary": "Loop a scale and ramp the tempo up to build clean speed.",
   "myfav.loading": "Loading…",
   "myfav.emptyBefore": "No favorites yet. Browse the",
   "myfav.catalogue": "catalogue",

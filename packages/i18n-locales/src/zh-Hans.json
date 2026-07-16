@@ -439,6 +439,8 @@
   "tool.rhythm-game.summary": "听一小节节奏，然后按拍打出来。",
   "tool.voice-leading.title": "声部进行查看器",
   "tool.voice-leading.summary": "查看两个和弦之间最平滑的连接方式。",
+  "tool.speed-trainer.title": "速度训练器",
+  "tool.speed-trainer.summary": "循环音阶并逐步提速，稳健地练出速度。",
   "myfav.loading": "加载中…",
   "myfav.emptyBefore": "还没有收藏。浏览",
   "myfav.catalogue": "曲库",
