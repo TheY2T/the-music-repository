@@ -441,6 +441,8 @@
   "tool.voice-leading.summary": "See the smoothest way to move between two chords.",
   "tool.speed-trainer.title": "Speed trainer",
   "tool.speed-trainer.summary": "Loop a scale and ramp the tempo up to build clean speed.",
+  "tool.key-sig-game.title": "Key signature game",
+  "tool.key-sig-game.summary": "A 60-second sprint: name the major key from its signature.",
   "myfav.loading": "Loading…",
   "myfav.emptyBefore": "No favorites yet. Browse the",
   "myfav.catalogue": "catalogue",
