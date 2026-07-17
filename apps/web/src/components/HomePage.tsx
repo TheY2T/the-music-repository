@@ -31,6 +31,7 @@ export interface HomePageProps {
   showTools: boolean;
   showCollections: boolean;
   showUpgrade: boolean;
+  showMonetization: boolean;
 }
 
 const POPULAR_TOOLS: { slug: string; icon: IconName; titleKey: MessageKey }[] = [
@@ -66,7 +67,7 @@ function tierLabel(locale: Locale, tier?: string): string {
   return t(locale, key);
 }
 
-function FeaturedRow({ locale }: { locale: Locale }) {
+function FeaturedRow({ locale, showMonetization }: { locale: Locale; showMonetization: boolean }) {
   const { data, isFetching } = useSearchCatalogue({ pageSize: 10 });
   const items = data?.data?.items ?? [];
 
@@ -105,7 +106,7 @@ function FeaturedRow({ locale }: { locale: Locale }) {
           seed={item.slug}
           tags={[...item.genres, ...item.instruments].map((r) => r.name)}
           badgeSlot={
-            item.locked ? (
+            item.locked && showMonetization ? (
               <Badge variant="warning">
                 <Icon name="lock" className="size-3" />
                 {tierLabel(locale, item.tier)}
@@ -184,6 +185,7 @@ function Home({
   showTools,
   showCollections,
   showUpgrade,
+  showMonetization,
 }: HomePageProps) {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 md:py-16">
@@ -237,7 +239,7 @@ function Home({
       </div>
 
       <section className="mt-16">
-        <FeaturedRow locale={locale} />
+        <FeaturedRow locale={locale} showMonetization={showMonetization} />
       </section>
 
       {showCollections && (

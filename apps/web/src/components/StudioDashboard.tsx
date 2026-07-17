@@ -15,7 +15,15 @@ import FavoriteHeart from '@/components/FavoriteHeart';
 import { createBrowseHistory, type RecentItem } from '@/lib/browse-history';
 import { listFavorites } from '@/lib/favorites-api';
 
-function Dashboard({ locale, showFavorites }: { locale: Locale; showFavorites: boolean }) {
+function Dashboard({
+  locale,
+  showFavorites,
+  showMonetization,
+}: {
+  locale: Locale;
+  showFavorites: boolean;
+  showMonetization: boolean;
+}) {
   const [recents, setRecents] = useState<RecentItem[]>([]);
   const [saved, setSaved] = useState<ContentSummary[] | null>(null);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
@@ -98,7 +106,7 @@ function Dashboard({ locale, showFavorites }: { locale: Locale; showFavorites: b
       seed={item.slug}
       tags={[...item.genres, ...item.instruments].map((r) => r.name)}
       badgeSlot={
-        item.locked ? (
+        item.locked && showMonetization ? (
           <Badge variant="warning">
             <Icon name="lock" className="size-3" />
           </Badge>
@@ -153,13 +161,19 @@ function Dashboard({ locale, showFavorites }: { locale: Locale; showFavorites: b
 export default function StudioDashboard({
   locale,
   showFavorites = false,
+  showMonetization = false,
 }: {
   locale: Locale;
   showFavorites?: boolean;
+  showMonetization?: boolean;
 }) {
   return (
     <ApiProvider>
-      <Dashboard locale={locale} showFavorites={showFavorites} />
+      <Dashboard
+        locale={locale}
+        showFavorites={showFavorites}
+        showMonetization={showMonetization}
+      />
     </ApiProvider>
   );
 }

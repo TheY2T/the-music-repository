@@ -319,12 +319,24 @@ src/
 
 ## Monetization / premium (Phase 6)
 
+- **Monetization is DEFERRED — both flags default OFF, so everything ships free/public-domain.** Two
+  independent flags:
+  - **`monetization.premium`** (feature): the entitlement engine — locking, `/upgrade` checkout,
+    grant-premium. OFF ⇒ the API returns nothing locked (`resolveViewerRank` → Infinity), checkout
+    endpoints 404, store pages redirect. Turn on only once premium content actually exists.
+  - **`monetization.messaging`** (`monetizationMessaging` in locals): any user-facing *mention* of
+    premium / unlocking / paid — premium badges, "upgrade to unlock" CTAs, the Premium nav link, home
+    upgrade section, the classrooms grant-premium control. OFF ⇒ the app never references paid content.
+  - Pages pass a **`showMonetization`** prop (= `flags.monetizationMessaging`) into
+    `CatalogueBrowser`/`CatalogueHub`/`ContentDetail`; the badge renders only when `item.locked &&
+    showMonetization`. The nav link + home CTA + classrooms grant require `premium && monetizationMessaging`.
 - `src/lib/subscription-api.ts` — credentialed `getSubscription`/`activatePremium`/`cancelPremium`.
 - `UpgradePanel.tsx` backs `/upgrade` (gated on `premium` flag + login) — a **mock checkout** (Free →
   Activate → Premium active/Cancel; staff see a note, no button).
-- Premium gating is driven by the API's `item.locked`: a 🔒 Premium badge on catalogue cards
-  (`CatalogueBrowser`) and a locked upgrade panel on the detail page (`ContentDetail`). No client-side
-  entitlement logic — the API decides. Home shows a "Premium" link when logged in + flag on.
+- Premium gating is driven by the API's `item.locked` (only ever true when `monetization.premium` is on):
+  a 🔒 Premium badge on catalogue cards (`CatalogueBrowser`) and a locked upgrade panel on the detail
+  page (`ContentDetail`), both further gated by `showMonetization`. No client-side entitlement logic —
+  the API decides. Home shows a "Premium" link only when `premium && monetizationMessaging` + login.
 - **Classrooms (teacher mode, `education.classrooms`):** `src/lib/classrooms-api.ts` +
   `ClassroomsManager.tsx` on `/classrooms` (login + flag gated). The "Manage" panel does create / join
   by code / roster (remove member, make-owner) / grant premium / **assign content by slug** / **class

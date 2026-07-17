@@ -9,7 +9,7 @@ import { localizedPath, t } from '@TheY2T/tmr-i18n';
  * can fetch live catalogue data. Global header/footer come from BaseLayout. Nav/tool/premium
  * visibility follows the same flag+auth gating as the rest of the site.
  */
-const { collections, premium } = Astro.locals.flags;
+const { collections, premium, monetizationMessaging } = Astro.locals.flags;
 const locale = Astro.locals.locale;
 const user = Astro.locals.user;
 
@@ -18,7 +18,7 @@ const showTools = Object.entries(Astro.locals.flags).some(
   ([k, v]) => k.startsWith('tool') && k !== 'toolPractice' && v === true,
 );
 const showCollections = collections;
-const showUpgrade = premium && !!user;
+const showUpgrade = premium && monetizationMessaging && !!user;
 ---
 
 <BaseLayout title={t(locale, 'home.pageTitle')}>
@@ -32,5 +32,6 @@ const showUpgrade = premium && !!user;
     showTools={showTools}
     showCollections={showCollections}
     showUpgrade={showUpgrade}
+    showMonetization={monetizationMessaging}
   />
 </BaseLayout>

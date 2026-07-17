@@ -87,7 +87,9 @@ export class ClassroomsController {
 
   @Post('classrooms/:id/grant-premium')
   @HttpCode(200)
-  @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.Classrooms }] })
+  @RequireFlagsEnabled({
+    flags: [{ flagKey: FlagKeys.Classrooms }, { flagKey: FlagKeys.Premium }],
+  })
   @RequireAuth()
   grant(@Param('id') id: string) {
     return this.grantPremium.execute(id, this.currentUser.require().id);

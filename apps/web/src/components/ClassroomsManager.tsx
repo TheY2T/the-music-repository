@@ -49,10 +49,12 @@ function SectionHeading({ iconName, children }: { iconName: IconName; children: 
 function ClassroomCard({
   classroom,
   onChanged,
+  showPremium,
   locale,
 }: {
   classroom: Classroom;
   onChanged: () => void;
+  showPremium: boolean;
   locale: Locale;
 }) {
   const [detail, setDetail] = useState<ClassroomDetail | null>(null);
@@ -126,7 +128,7 @@ function ClassroomCard({
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-display font-semibold tracking-tight">{classroom.name}</span>
             <Badge variant="secondary">{classroom.role}</Badge>
-            {classroom.premiumGranted ? (
+            {showPremium && classroom.premiumGranted ? (
               <Badge variant="success">
                 <Icon name="crown" className="size-3" />
                 {t(locale, 'classmgr.premiumGranted')}
@@ -339,7 +341,7 @@ function ClassroomCard({
 
             {/* Actions */}
             <div className="flex flex-wrap gap-3 border-t border-border pt-4">
-              {isOwner && !classroom.premiumGranted ? (
+              {showPremium && isOwner && !classroom.premiumGranted ? (
                 <Button
                   type="button"
                   onClick={grant}
@@ -383,9 +385,11 @@ function ClassroomCard({
 
 export default function ClassroomsManager({
   canCreate = false,
+  showPremium = false,
   locale,
 }: {
   canCreate?: boolean;
+  showPremium?: boolean;
   locale: Locale;
 }) {
   const [rooms, setRooms] = useState<Classroom[]>([]);
@@ -497,7 +501,13 @@ export default function ClassroomsManager({
         ) : (
           <ul className="space-y-3">
             {rooms.map((room) => (
-              <ClassroomCard key={room.id} classroom={room} onChanged={refresh} locale={locale} />
+              <ClassroomCard
+                key={room.id}
+                classroom={room}
+                onChanged={refresh}
+                showPremium={showPremium}
+                locale={locale}
+              />
             ))}
           </ul>
         )}

@@ -38,7 +38,11 @@ describe('web middleware', () => {
     await onRequest(ctx as never, next as never);
 
     expect(ctx.locals.flags).toBeDefined();
-    expect((ctx.locals.flags as { premium: boolean }).premium).toBe(true);
+    // Monetization is deferred — premium + its messaging default OFF (everything free).
+    expect((ctx.locals.flags as { premium: boolean }).premium).toBe(false);
+    expect((ctx.locals.flags as { monetizationMessaging: boolean }).monetizationMessaging).toBe(
+      false,
+    );
     expect((ctx.locals.flags as { i18nEnabled: boolean }).i18nEnabled).toBe(true);
     expect(ctx.locals.locale).toBe('en');
     expect(next).toHaveBeenCalledWith();

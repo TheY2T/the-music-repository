@@ -39,6 +39,7 @@ function CatalogueShelf({
   config,
   locale,
   showFavorites,
+  showMonetization,
   favorites,
   onFavoriteChange,
   onSeeAll,
@@ -47,6 +48,7 @@ function CatalogueShelf({
   config: ShelfConfig;
   locale: Locale;
   showFavorites: boolean;
+  showMonetization: boolean;
   favorites: Set<string>;
   onFavoriteChange: (slug: string, next: boolean) => void;
   onSeeAll: () => void;
@@ -105,7 +107,7 @@ function CatalogueShelf({
           seed={item.slug}
           tags={[...item.genres, ...item.instruments].map((r) => r.name)}
           badgeSlot={
-            item.locked ? (
+            item.locked && showMonetization ? (
               <Badge variant="warning">
                 <Icon name="lock" className="size-3" />
               </Badge>
@@ -275,11 +277,13 @@ function readInitialAxis(): AxisKey {
 function Hub({
   showFavorites,
   showCollections,
+  showMonetization,
   tools,
   locale,
 }: {
   showFavorites: boolean;
   showCollections: boolean;
+  showMonetization: boolean;
   tools: HubTool[];
   locale: Locale;
 }) {
@@ -380,6 +384,7 @@ function Hub({
           // Remount when the entry filters change so `useState` initializers re-seed.
           key={JSON.stringify(browseFilters ?? {})}
           showFavorites={showFavorites}
+          showMonetization={showMonetization}
           locale={locale}
           initialFilters={browseFilters}
         />
@@ -414,6 +419,7 @@ function Hub({
                 config={config}
                 locale={locale}
                 showFavorites={showFavorites}
+                showMonetization={showMonetization}
                 favorites={favorites}
                 onFavoriteChange={onFavoriteChange}
                 onSeeAll={() => openBrowse(config.filters)}
@@ -434,11 +440,13 @@ function Hub({
 export default function CatalogueHub({
   showFavorites = false,
   showCollections = false,
+  showMonetization = false,
   tools = [],
   locale,
 }: {
   showFavorites?: boolean;
   showCollections?: boolean;
+  showMonetization?: boolean;
   tools?: HubTool[];
   locale: Locale;
 }) {
@@ -447,6 +455,7 @@ export default function CatalogueHub({
       <Hub
         showFavorites={showFavorites}
         showCollections={showCollections}
+        showMonetization={showMonetization}
         tools={tools}
         locale={locale}
       />

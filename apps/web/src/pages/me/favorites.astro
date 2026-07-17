@@ -12,6 +12,7 @@ if (!Astro.locals.user) {
   return Astro.redirect('/signin?redirect=/me/favorites');
 }
 const locale = Astro.locals.locale;
+const showMonetization = Astro.locals.flags.monetizationMessaging;
 ---
 
 <BaseLayout title={`${t(locale, 'nav.myFavorites')} — ${t(locale, 'site.name')}`}>
@@ -20,6 +21,6 @@ const locale = Astro.locals.locale;
     back={{ href: localizedPath(locale, '/catalogue'), label: t(locale, 'common.backCatalogue') }}
     maxWidth="max-w-6xl"
   >
-    <MyFavorites client:load locale={locale} />
+    <MyFavorites client:load locale={locale} showMonetization={showMonetization} />
   </PageShell>
 </BaseLayout>

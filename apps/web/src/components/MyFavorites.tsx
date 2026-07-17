@@ -20,7 +20,13 @@ function tierLabel(locale: Locale, tier?: string): string {
   return t(locale, key);
 }
 
-export default function MyFavorites({ locale }: { locale: Locale }) {
+export default function MyFavorites({
+  locale,
+  showMonetization = false,
+}: {
+  locale: Locale;
+  showMonetization?: boolean;
+}) {
   const [items, setItems] = useState<ContentSummary[] | null>(null);
 
   useEffect(() => {
@@ -78,7 +84,7 @@ export default function MyFavorites({ locale }: { locale: Locale }) {
             seed={item.slug}
             tags={[...item.genres, ...item.instruments].map((r) => r.name)}
             badgeSlot={
-              item.locked ? (
+              item.locked && showMonetization ? (
                 <Badge variant="warning">
                   <Icon name="lock" className="size-3" />
                   {tierLabel(locale, item.tier)}

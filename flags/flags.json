@@ -479,7 +479,15 @@
         "on": true,
         "off": false
       },
-      "defaultVariant": "on"
+      "defaultVariant": "off"
+    },
+    "monetization.messaging": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "off"
     },
     "education.classrooms": {
       "state": "ENABLED",

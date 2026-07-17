@@ -123,6 +123,13 @@ write-side features:
 
 ## Monetization / entitlements (Phase 6, ADR 0015)
 
+> **Deferred: `monetization.premium` defaults OFF** (both the flagd config and `FlagDefaults`), so the
+> whole system is dormant and all content is free/public-domain — `resolveViewerRank` short-circuits to
+> Infinity ⇒ nothing is ever locked, and the `@RequireFlagsEnabled(Premium)` routes (checkout,
+> billing-portal, classroom **grant-premium**) 404. Turn the flag on only once premium content exists.
+> The web-only `monetization.messaging` flag separately gates all premium *copy/CTAs* (see
+> `apps/web/CLAUDE.md`).
+
 Premium gating lives in `src/entitlements/`. `Entitlements` port (`getPremium`/`grantPremium`/
 `revokePremium`) ← `DrizzleEntitlements` (`entitlements` table); request-scoped `PremiumAccessService`
 combines `CurrentUser` + `Entitlements` into **entitled = staff OR active premium grant**.

@@ -71,10 +71,12 @@ function toggle(list: string[], value: string): string[] {
 
 export function CatalogueGrid({
   showFavorites,
+  showMonetization = false,
   locale,
   initialFilters,
 }: {
   showFavorites: boolean;
+  showMonetization?: boolean;
   locale: Locale;
   initialFilters?: CatalogueGridFilters;
 }) {
@@ -441,7 +443,7 @@ export function CatalogueGrid({
                     seed={item.slug}
                     tags={[...item.genres, ...item.instruments].map((r) => r.name)}
                     badgeSlot={
-                      item.locked ? (
+                      item.locked && showMonetization ? (
                         <Badge variant="warning">
                           <Icon name="lock" className="size-3" />
                           {tierLabel(locale, item.tier)}
@@ -480,14 +482,20 @@ export function CatalogueGrid({
 
 export default function CatalogueBrowser({
   showFavorites = false,
+  showMonetization = false,
   locale,
 }: {
   showFavorites?: boolean;
+  showMonetization?: boolean;
   locale: Locale;
 }) {
   return (
     <ApiProvider>
-      <CatalogueGrid showFavorites={showFavorites} locale={locale} />
+      <CatalogueGrid
+        showFavorites={showFavorites}
+        showMonetization={showMonetization}
+        locale={locale}
+      />
     </ApiProvider>
   );
 }

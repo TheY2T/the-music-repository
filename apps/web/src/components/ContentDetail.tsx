@@ -156,10 +156,12 @@ function Detail({
   slug,
   locale,
   interactiveScores,
+  showMonetization,
 }: {
   slug: string;
   locale: Locale;
   interactiveScores: boolean;
+  showMonetization: boolean;
 }) {
   const { data, isLoading } = useGetContentBySlug(slug);
   // customFetch returns non-2xx as data (not a throw), so narrow on the 200 status.
@@ -227,7 +229,7 @@ function Detail({
                 {t(locale, 'catalogue.grade', { level: item.difficulty })}
               </span>
             ) : null}
-            {item.locked ? (
+            {item.locked && showMonetization ? (
               <Badge variant="warning">
                 <Icon name="lock" className="size-3" />
                 {tierLabel(locale, item.tier)}
@@ -375,14 +377,21 @@ export default function ContentDetail({
   slug,
   locale,
   interactiveScores = true,
+  showMonetization = false,
 }: {
   slug: string;
   locale: Locale;
   interactiveScores?: boolean;
+  showMonetization?: boolean;
 }) {
   return (
     <ApiProvider>
-      <Detail slug={slug} locale={locale} interactiveScores={interactiveScores} />
+      <Detail
+        slug={slug}
+        locale={locale}
+        interactiveScores={interactiveScores}
+        showMonetization={showMonetization}
+      />
     </ApiProvider>
   );
 }

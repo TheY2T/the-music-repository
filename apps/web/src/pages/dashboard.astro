@@ -16,6 +16,7 @@ if (!Astro.locals.user) {
 const locale = Astro.locals.locale;
 const showFavorites = Astro.locals.flags.favorites;
 const showBackground = Astro.locals.flags.dashboardBackground;
+const showMonetization = Astro.locals.flags.monetizationMessaging;
 ---
 
 <BaseLayout title={`${t(locale, 'dashboard.title')} — ${t(locale, 'site.name')}`}>
@@ -35,7 +36,12 @@ const showBackground = Astro.locals.flags.dashboardBackground;
         back={{ href: localizedPath(locale, '/catalogue'), label: t(locale, 'common.backCatalogue') }}
         maxWidth="max-w-6xl"
       >
-        <StudioDashboard client:load locale={locale} showFavorites={showFavorites} />
+        <StudioDashboard
+          client:load
+          locale={locale}
+          showFavorites={showFavorites}
+          showMonetization={showMonetization}
+        />
       </PageShell>
     </div>
   </div>

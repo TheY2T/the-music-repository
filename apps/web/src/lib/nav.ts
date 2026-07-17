@@ -83,7 +83,10 @@ export function buildAccountNav(ctx: NavContext): NavItem[] {
     items.push(makeItem(ctx, 'favorites', '/me/favorites', 'nav.myFavorites', 'heart'));
   if (flags.collectionBookmarks || flags.userCollections)
     items.push(makeItem(ctx, 'my-collections', '/me/collections', 'nav.myCollections', 'bookmark'));
-  if (flags.premium) items.push(makeItem(ctx, 'upgrade', '/upgrade', 'nav.premium', 'crown'));
+  // The store link appears only when the premium engine is on AND monetization messaging is allowed,
+  // so it never dangles (the /upgrade page needs `premium`) and stays hidden while monetization is deferred.
+  if (flags.premium && flags.monetizationMessaging)
+    items.push(makeItem(ctx, 'upgrade', '/upgrade', 'nav.premium', 'crown'));
   if (flags.classrooms)
     items.push(makeItem(ctx, 'classrooms', '/classrooms', 'nav.classrooms', 'graduation-cap'));
   if (flags.dashboardBackground)

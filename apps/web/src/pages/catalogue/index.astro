@@ -12,6 +12,8 @@ const locale = Astro.locals.locale;
 const hub = Astro.locals.flags.catalogueHub;
 const showCollections = Astro.locals.flags.collections;
 const showInfoView = Astro.locals.flags.infoView;
+// Premium badges are monetization messaging — hidden while monetization is deferred.
+const showMonetization = Astro.locals.flags.monetizationMessaging;
 
 // Resolve the flagship tools enabled for this viewer (each gated by its own `tools.*` flag).
 const flags = Astro.locals.flags as unknown as Record<string, boolean>;
@@ -35,11 +37,17 @@ const tools = enabledFlagshipToolSlugs(flags).map((slug) => ({
           client:load
           showFavorites={showFavorites}
           showCollections={showCollections}
+          showMonetization={showMonetization}
           tools={tools}
           locale={locale}
         />
       ) : (
-        <CatalogueBrowser client:load showFavorites={showFavorites} locale={locale} />
+        <CatalogueBrowser
+          client:load
+          showFavorites={showFavorites}
+          showMonetization={showMonetization}
+          locale={locale}
+        />
       )
     }
     {showInfoView && <InfoView client:idle />}

@@ -83,6 +83,7 @@ declare namespace App {
       toolScore: boolean;
       toolSoundfont: boolean;
       premium: boolean;
+      monetizationMessaging: boolean;
       classrooms: boolean;
       i18nEnabled: boolean;
     };

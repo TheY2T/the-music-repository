@@ -173,8 +173,15 @@ export const FlagKeys = {
   ToolKeySigGame: 'tools.key-sig-game',
   /** Expansion — build + run a timed practice routine. */
   ToolPracticePlanner: 'tools.practice-planner',
-  /** Phase 6 — premium entitlements gate `visibility=premium` content + the subscription flow. */
+  /** Phase 6 — premium entitlements gate `visibility=premium` content + the subscription flow.
+   * OFF (default) = everything is free/public-domain and nothing is locked. Turn on only once
+   * monetized content actually exists. */
   Premium: 'monetization.premium',
+  /** Monetization *messaging* — any user-facing mention of premium / unlocking / paid content
+   * (premium badges, "upgrade to unlock" panels, the Premium nav link + upgrade CTAs). OFF (default)
+   * = the app never references paid content. Separate from {@link Premium} so the entitlement engine
+   * and the marketing copy can be rolled out independently. */
+  MonetizationMessaging: 'monetization.messaging',
   /** Phase 6 — teacher/classroom mode (create/join classrooms, grant premium to a class). */
   Classrooms: 'education.classrooms',
   /** i18n — enables `/zh` localized routing + the language switcher (English + 中文). */
@@ -263,7 +270,9 @@ export const FlagDefaults = {
   [FlagKeys.ToolSpeedTrainer]: true,
   [FlagKeys.ToolKeySigGame]: true,
   [FlagKeys.ToolPracticePlanner]: true,
-  [FlagKeys.Premium]: true,
+  // Monetization is deferred — everything ships free until premium content is built.
+  [FlagKeys.Premium]: false,
+  [FlagKeys.MonetizationMessaging]: false,
   [FlagKeys.Classrooms]: true,
   [FlagKeys.I18n]: true,
 } satisfies Record<FlagKey, boolean>;

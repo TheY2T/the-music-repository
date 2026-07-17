@@ -13,6 +13,8 @@ if (!Astro.locals.user) {
 }
 // Only teachers/admins may create classrooms (RBAC: classroom:create).
 const canCreate = ['admin', 'teacher'].includes(Astro.locals.user.role ?? '');
+// Granting premium to a class is a monetization action — hidden while monetization is deferred.
+const showPremium = Astro.locals.flags.premium && Astro.locals.flags.monetizationMessaging;
 const locale = Astro.locals.locale;
 ---
 
@@ -23,6 +25,11 @@ const locale = Astro.locals.locale;
     back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
     maxWidth="max-w-3xl"
   >
-    <ClassroomsManager client:load canCreate={canCreate} locale={locale} />
+    <ClassroomsManager
+      client:load
+      canCreate={canCreate}
+      showPremium={showPremium}
+      locale={locale}
+    />
   </PageShell>
 </BaseLayout>

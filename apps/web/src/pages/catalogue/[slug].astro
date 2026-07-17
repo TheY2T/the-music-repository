@@ -13,6 +13,7 @@ const showFavorite = Astro.locals.flags.favorites && loggedIn;
 const showComplete = Astro.locals.flags.progress && loggedIn;
 const showInfoView = Astro.locals.flags.infoView;
 const interactiveScores = Astro.locals.flags.interactiveScores;
+const showMonetization = Astro.locals.flags.monetizationMessaging;
 const locale = Astro.locals.locale;
 ---
 
@@ -31,6 +32,7 @@ const locale = Astro.locals.locale;
       slug={slug}
       locale={locale}
       interactiveScores={interactiveScores}
+      showMonetization={showMonetization}
     />
   </PageShell>
   {showInfoView && <InfoView client:idle />}
