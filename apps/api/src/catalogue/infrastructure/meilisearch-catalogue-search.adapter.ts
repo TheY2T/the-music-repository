@@ -5,6 +5,7 @@ import { CatalogueSearch } from '../application/ports/catalogue-search.port';
 import {
   type CatalogueQuery,
   type CatalogueResult,
+  type CatalogueSort,
   type ContentItem,
   type Facets,
   type FacetValue,
@@ -97,6 +98,12 @@ export class MeilisearchCatalogueSearch extends CatalogueSearch implements OnMod
     if (query.difficulty != null) {
       filter.push(`difficulty = ${query.difficulty}`);
     }
+    if (query.difficultyMin != null) {
+      filter.push(`difficulty >= ${query.difficultyMin}`);
+    }
+    if (query.difficultyMax != null) {
+      filter.push(`difficulty <= ${query.difficultyMax}`);
+    }
     if (query.genres.length) {
       filter.push(query.genres.map((g) => `genreSlugs = '${g}'`));
     }
@@ -112,6 +119,7 @@ export class MeilisearchCatalogueSearch extends CatalogueSearch implements OnMod
 
     const result = await this.client.index(INDEX_UID).search(query.q ?? '', {
       filter,
+      sort: toMeiliSort(query.sort),
       facets: ['genreSlugs', 'instrumentSlugs', 'topicSlugs', 'era', 'type', 'difficulty'],
       limit: query.pageSize,
       offset: (query.page - 1) * query.pageSize,
@@ -146,6 +154,21 @@ export class MeilisearchCatalogueSearch extends CatalogueSearch implements OnMod
       page: query.page,
       pageSize: query.pageSize,
     };
+  }
+}
+
+/** Map the domain sort to Meili's `sort` array (`title`/`difficulty` are sortableAttributes).
+ * `relevance` (or unset) → undefined, letting Meili's default text ranking apply. */
+function toMeiliSort(sort: CatalogueSort | undefined): string[] | undefined {
+  switch (sort) {
+    case 'difficulty-asc':
+      return ['difficulty:asc'];
+    case 'difficulty-desc':
+      return ['difficulty:desc'];
+    case 'title-asc':
+      return ['title:asc'];
+    default:
+      return undefined;
   }
 }
 

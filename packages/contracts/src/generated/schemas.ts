@@ -895,6 +895,9 @@ export const SearchCatalogueQueryParams = zod.object({
   "era": zod.array(zod.string()).optional(),
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']).optional(),
   "difficulty": zod.number().optional(),
+  "difficultyMin": zod.number().optional().describe('Inclusive lower bound on difficulty (1..10) — used by the level-band facet.'),
+  "difficultyMax": zod.number().optional().describe('Inclusive upper bound on difficulty (1..10) — used by the level-band facet.'),
+  "sort": zod.string().optional().describe('Result ordering: `relevance` (default) | `difficulty-asc` | `difficulty-desc` | `title-asc`.'),
   "page": zod.number().optional(),
   "pageSize": zod.number().optional()
 })

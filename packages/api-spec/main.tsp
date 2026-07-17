@@ -233,6 +233,12 @@ op searchCatalogue(
   @query era?: string[],
   @query type?: ContentType,
   @query difficulty?: int32,
+  /** Inclusive lower bound on difficulty (1..10) — used by the level-band facet. */
+  @query difficultyMin?: int32,
+  /** Inclusive upper bound on difficulty (1..10) — used by the level-band facet. */
+  @query difficultyMax?: int32,
+  /** Result ordering: `relevance` (default) | `difficulty-asc` | `difficulty-desc` | `title-asc`. */
+  @query sort?: string,
   @query page?: int32,
   @query pageSize?: int32,
 ): CatalogueList;

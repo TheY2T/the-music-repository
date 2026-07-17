@@ -13,13 +13,33 @@ import {
   MediaCard,
   Pagination,
   SearchField,
+  Select,
   Skeleton,
 } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import FavoriteHeart from '@/components/FavoriteHeart';
 import RecentlyViewedStrip from '@/components/RecentlyViewedStrip';
 import { useBrowseHistory } from '@/lib/browse-history';
+import {
+  bandCount,
+  bandRange,
+  type CatalogueGridFilters,
+  LEVEL_BANDS,
+  LEVEL_LABEL,
+} from '@/lib/catalogue-shelves';
 import { listFavoriteSlugs } from '@/lib/favorites-api';
+
+/** Result ordering (mirrors the API's `CatalogueSort`). `relevance` sends no `sort` param. */
+export type CatalogueSort = 'relevance' | 'difficulty-asc' | 'difficulty-desc' | 'title-asc';
+const SORTS: CatalogueSort[] = ['relevance', 'difficulty-asc', 'difficulty-desc', 'title-asc'];
+const SORT_LABEL: Record<CatalogueSort, MessageKey> = {
+  relevance: 'catalogue.sort.relevance',
+  'difficulty-asc': 'catalogue.sort.difficultyAsc',
+  'difficulty-desc': 'catalogue.sort.difficultyDesc',
+  'title-asc': 'catalogue.sort.titleAsc',
+};
+
+export type { CatalogueGridFilters };
 
 interface CatalogueBrowseState {
   q: string;
@@ -28,10 +48,13 @@ interface CatalogueBrowseState {
   instrument: string[];
   topic: string[];
   type?: string;
+  level?: string;
+  sort: CatalogueSort;
   page: number;
 }
 
 const PAGE_SIZE = 24;
+const SKELETON_KEYS = ['sk1', 'sk2', 'sk3', 'sk4', 'sk5', 'sk6'];
 
 /** Localized label for a premium tier (`premium`/`pro`/`institution`; unknown → premium). */
 function tierLabel(locale: Locale, tier?: string): string {
@@ -44,13 +67,23 @@ function toggle(list: string[], value: string): string[] {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
 }
 
-function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Locale }) {
-  const [q, setQ] = useState('');
-  const [genre, setGenre] = useState<string[]>([]);
-  const [era, setEra] = useState<string[]>([]);
-  const [instrument, setInstrument] = useState<string[]>([]);
-  const [topic, setTopic] = useState<string[]>([]);
-  const [type, setType] = useState<string | undefined>();
+export function CatalogueGrid({
+  showFavorites,
+  locale,
+  initialFilters,
+}: {
+  showFavorites: boolean;
+  locale: Locale;
+  initialFilters?: CatalogueGridFilters;
+}) {
+  const [q, setQ] = useState(initialFilters?.q ?? '');
+  const [genre, setGenre] = useState<string[]>(initialFilters?.genre ?? []);
+  const [era, setEra] = useState<string[]>(initialFilters?.era ?? []);
+  const [instrument, setInstrument] = useState<string[]>(initialFilters?.instrument ?? []);
+  const [topic, setTopic] = useState<string[]>(initialFilters?.topic ?? []);
+  const [type, setType] = useState<string | undefined>(initialFilters?.type);
+  const [level, setLevel] = useState<string | undefined>(initialFilters?.level);
+  const [sort, setSort] = useState<CatalogueSort>('relevance');
   const [page, setPage] = useState(1);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
@@ -69,6 +102,7 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
     });
   }
 
+  const band = bandRange(level);
   const { data, isFetching } = useSearchCatalogue({
     q: q || undefined,
     genre,
@@ -76,6 +110,9 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
     instrument,
     topic,
     type: type as SearchCatalogueType | undefined,
+    difficultyMin: band?.min,
+    difficultyMax: band?.max,
+    sort: sort === 'relevance' ? undefined : sort,
     page,
     pageSize: PAGE_SIZE,
   });
@@ -89,7 +126,7 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
       namespace: 'catalogue',
       itemSlugs: items.map((i) => i.slug),
       ready: !isFetching,
-      getState: () => ({ q, genre, era, instrument, topic, type, page }),
+      getState: () => ({ q, genre, era, instrument, topic, type, level, sort, page }),
       applyState: (s) => {
         setQ(s.q);
         setGenre(s.genre);
@@ -97,9 +134,19 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
         setInstrument(s.instrument);
         setTopic(s.topic);
         setType(s.type);
+        setLevel(s.level);
+        setSort(s.sort ?? 'relevance');
         setPage(s.page);
       },
     });
+
+  // Aggregate the per-grade difficulty distribution into band counts for the level facet.
+  const levelOptions = LEVEL_BANDS.map((b) => ({
+    value: b.key,
+    label: t(locale, LEVEL_LABEL[b.key]),
+    count: bandCount(result?.facets.difficulties, b),
+    selected: level === b.key,
+  }));
 
   const groups: FacetGroup[] = [
     {
@@ -111,6 +158,11 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
         count: f.count,
         selected: type === f.value,
       })),
+    },
+    {
+      key: 'level',
+      label: t(locale, 'catalogue.facetLevel'),
+      options: levelOptions,
     },
     {
       key: 'genre',
@@ -157,6 +209,7 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
   function onToggleFacet(groupKey: string, value: string) {
     setPage(1);
     if (groupKey === 'type') setType((cur) => (cur === value ? undefined : value));
+    else if (groupKey === 'level') setLevel((cur) => (cur === value ? undefined : value));
     else if (groupKey === 'genre') setGenre((cur) => toggle(cur, value));
     else if (groupKey === 'era') setEra((cur) => toggle(cur, value));
     else if (groupKey === 'instrument') setInstrument((cur) => toggle(cur, value));
@@ -174,6 +227,16 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
       label: labelFor('type', type),
       onRemove: () => {
         setType(undefined);
+        setPage(1);
+      },
+    });
+  }
+  if (level) {
+    activeFilters.push({
+      key: `level:${level}`,
+      label: labelFor('level', level),
+      onRemove: () => {
+        setLevel(undefined);
         setPage(1);
       },
     });
@@ -198,6 +261,7 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
 
   function clearAll() {
     setType(undefined);
+    setLevel(undefined);
     setGenre([]);
     setEra([]);
     setInstrument([]);
@@ -209,141 +273,159 @@ function Browser({ showFavorites, locale }: { showFavorites: boolean; locale: Lo
   const hasActive = activeFilters.length > 0;
 
   return (
-    <div className="grid gap-8 md:grid-cols-[240px_1fr]">
-      <aside className="space-y-6">
-        <SearchField
-          value={q}
-          onChange={(event) => {
-            setQ(event.target.value);
-            setPage(1);
-          }}
-          onClear={() => {
-            setQ('');
-            setPage(1);
-          }}
-          placeholder={t(locale, 'catalogue.search')}
-        />
-        <FacetPanel groups={groups} onToggle={onToggleFacet} />
-      </aside>
-
-      <section className="space-y-4">
-        <RecentlyViewedStrip
-          title={t(locale, 'common.recentlyViewed')}
-          clearLabel={t(locale, 'common.recentsClear')}
-          items={recents.map((r) => ({
-            slug: r.slug,
-            title: r.title,
-            href: localizedPath(locale, `/catalogue/${r.slug}`),
-          }))}
-          onClear={clearRecents}
-          onSelect={(slug) =>
-            recordSelect(recents.find((r) => r.slug === slug) ?? { slug, title: slug })
-          }
-        />
-
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="text-sm text-muted-foreground">
-            {isFetching
-              ? t(locale, 'catalogue.searching')
-              : t(locale, 'catalogue.results', { count: total })}
-          </p>
-        </div>
-
-        {hasActive ? (
-          <ActiveFilters
-            filters={activeFilters}
-            onClear={clearAll}
-            clearLabel={t(locale, 'catalogue.clearFilters')}
+    <div className="space-y-6">
+      <div className="grid gap-8 md:grid-cols-[240px_1fr]">
+        <aside className="space-y-6">
+          <SearchField
+            value={q}
+            onChange={(event) => {
+              setQ(event.target.value);
+              setPage(1);
+            }}
+            onClear={() => {
+              setQ('');
+              setPage(1);
+            }}
+            placeholder={t(locale, 'catalogue.search')}
           />
-        ) : null}
+          <FacetPanel groups={groups} onToggle={onToggleFacet} />
+        </aside>
 
-        {isFetching && items.length === 0 ? (
-          <CardGrid>
-            {Array.from({ length: 6 }).map((_, i) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: fixed-length skeleton placeholders.
-              <li key={i} className="space-y-3 rounded-lg border border-border p-0">
-                <Skeleton className="aspect-[4/3] w-full rounded-b-none" />
-                <div className="space-y-2 p-4">
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-3 w-full" />
-                </div>
-              </li>
-            ))}
-          </CardGrid>
-        ) : items.length === 0 ? (
-          <EmptyState
-            icon={<Icon name="search" className="size-6" />}
-            title={t(locale, 'catalogue.emptyTitle')}
-            description={t(locale, 'catalogue.emptyDesc')}
+        <section className="space-y-4">
+          <RecentlyViewedStrip
+            title={t(locale, 'common.recentlyViewed')}
+            clearLabel={t(locale, 'common.recentsClear')}
+            items={recents.map((r) => ({
+              slug: r.slug,
+              title: r.title,
+              href: localizedPath(locale, `/catalogue/${r.slug}`),
+            }))}
+            onClear={clearRecents}
+            onSelect={(slug) =>
+              recordSelect(recents.find((r) => r.slug === slug) ?? { slug, title: slug })
+            }
           />
-        ) : (
-          <CardGrid>
-            {items.map((item) => (
-              // biome-ignore lint/a11y/useKeyWithClickEvents: passive recorder — the real control is the nested card <a> (keyboard-accessible), whose Enter-activation bubbles a click here too.
-              <li
-                key={item.slug}
-                id={domId(item.slug)}
-                onClick={(e) => {
-                  // Record context only for a navigation click (the card link), not the favorite heart.
-                  if ((e.target as HTMLElement).closest('a[href]'))
-                    recordSelect({
-                      slug: item.slug,
-                      title: item.title,
-                      type: item.type,
-                      difficulty: item.difficulty,
-                    });
+
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-muted-foreground">
+              {isFetching
+                ? t(locale, 'catalogue.searching')
+                : t(locale, 'catalogue.results', { count: total })}
+            </p>
+            <label className="flex items-center gap-2 text-sm text-muted-foreground">
+              {t(locale, 'catalogue.sortLabel')}
+              <Select
+                value={sort}
+                onChange={(e) => {
+                  setSort(e.target.value as CatalogueSort);
+                  setPage(1);
                 }}
-                className={cn(
-                  'scroll-mt-24 rounded-lg transition-shadow',
-                  highlightSlug === item.slug &&
-                    'ring-2 ring-ring ring-offset-2 ring-offset-background',
-                )}
+                className="w-auto"
               >
-                <MediaCard
-                  title={item.title}
-                  href={localizedPath(locale, `/catalogue/${item.slug}`)}
-                  summary={item.summary ?? undefined}
-                  typeLabel={item.type}
-                  difficultyLabel={
-                    item.difficulty
-                      ? t(locale, 'catalogue.grade', { level: item.difficulty })
-                      : undefined
-                  }
-                  seed={item.slug}
-                  tags={[...item.genres, ...item.instruments].map((r) => r.name)}
-                  badgeSlot={
-                    item.locked ? (
-                      <Badge variant="warning">
-                        <Icon name="lock" className="size-3" />
-                        {tierLabel(locale, item.tier)}
-                      </Badge>
-                    ) : undefined
-                  }
-                  actionSlot={
-                    showFavorites ? (
-                      <FavoriteHeart
-                        slug={item.slug}
-                        favorited={favorites.has(item.slug)}
-                        onChange={onFavoriteChange}
-                      />
-                    ) : undefined
-                  }
-                />
-              </li>
-            ))}
-          </CardGrid>
-        )}
+                {SORTS.map((s) => (
+                  <option key={s} value={s}>
+                    {t(locale, SORT_LABEL[s])}
+                  </option>
+                ))}
+              </Select>
+            </label>
+          </div>
 
-        {pageCount > 1 ? (
-          <Pagination
-            page={page}
-            pageCount={pageCount}
-            onPageChange={setPage}
-            prevLabel={t(locale, 'common.prev')}
-            nextLabel={t(locale, 'common.next')}
-          />
-        ) : null}
-      </section>
+          {hasActive ? (
+            <ActiveFilters
+              filters={activeFilters}
+              onClear={clearAll}
+              clearLabel={t(locale, 'catalogue.clearFilters')}
+            />
+          ) : null}
+
+          {isFetching && items.length === 0 ? (
+            <CardGrid>
+              {SKELETON_KEYS.map((key) => (
+                <li key={key} className="space-y-3 rounded-lg border border-border p-0">
+                  <Skeleton className="aspect-[4/3] w-full rounded-b-none" />
+                  <div className="space-y-2 p-4">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-full" />
+                  </div>
+                </li>
+              ))}
+            </CardGrid>
+          ) : items.length === 0 ? (
+            <EmptyState
+              icon={<Icon name="search" className="size-6" />}
+              title={t(locale, 'catalogue.emptyTitle')}
+              description={t(locale, 'catalogue.emptyDesc')}
+            />
+          ) : (
+            <CardGrid>
+              {items.map((item) => (
+                // biome-ignore lint/a11y/useKeyWithClickEvents: passive recorder — the real control is the nested card <a> (keyboard-accessible), whose Enter-activation bubbles a click here too.
+                <li
+                  key={item.slug}
+                  id={domId(item.slug)}
+                  onClick={(e) => {
+                    // Record context only for a navigation click (the card link), not the favorite heart.
+                    if ((e.target as HTMLElement).closest('a[href]'))
+                      recordSelect({
+                        slug: item.slug,
+                        title: item.title,
+                        type: item.type,
+                        difficulty: item.difficulty,
+                      });
+                  }}
+                  className={cn(
+                    'scroll-mt-24 rounded-lg transition-shadow',
+                    highlightSlug === item.slug &&
+                      'ring-2 ring-ring ring-offset-2 ring-offset-background',
+                  )}
+                >
+                  <MediaCard
+                    title={item.title}
+                    href={localizedPath(locale, `/catalogue/${item.slug}`)}
+                    summary={item.summary ?? undefined}
+                    typeLabel={item.type}
+                    difficultyLabel={
+                      item.difficulty
+                        ? t(locale, 'catalogue.grade', { level: item.difficulty })
+                        : undefined
+                    }
+                    seed={item.slug}
+                    tags={[...item.genres, ...item.instruments].map((r) => r.name)}
+                    badgeSlot={
+                      item.locked ? (
+                        <Badge variant="warning">
+                          <Icon name="lock" className="size-3" />
+                          {tierLabel(locale, item.tier)}
+                        </Badge>
+                      ) : undefined
+                    }
+                    actionSlot={
+                      showFavorites ? (
+                        <FavoriteHeart
+                          slug={item.slug}
+                          favorited={favorites.has(item.slug)}
+                          onChange={onFavoriteChange}
+                        />
+                      ) : undefined
+                    }
+                  />
+                </li>
+              ))}
+            </CardGrid>
+          )}
+
+          {pageCount > 1 ? (
+            <Pagination
+              page={page}
+              pageCount={pageCount}
+              onPageChange={setPage}
+              prevLabel={t(locale, 'common.prev')}
+              nextLabel={t(locale, 'common.next')}
+            />
+          ) : null}
+        </section>
+      </div>
     </div>
   );
 }
@@ -357,7 +439,7 @@ export default function CatalogueBrowser({
 }) {
   return (
     <ApiProvider>
-      <Browser showFavorites={showFavorites} locale={locale} />
+      <CatalogueGrid showFavorites={showFavorites} locale={locale} />
     </ApiProvider>
   );
 }

@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { categoryOf, TOOL_CATEGORY_ORDER, TOOL_ICON, toolMatches } from './tools-taxonomy';
+import {
+  categoryOf,
+  enabledFlagshipToolSlugs,
+  FLAGSHIP_TOOLS,
+  TOOL_CATEGORY_ORDER,
+  TOOL_ICON,
+  toolMatches,
+} from './tools-taxonomy';
 
 // The full set of tool slugs the /tools page lists (kept in sync with tools/index.astro).
 const ALL_SLUGS = Object.keys(TOOL_ICON);
@@ -42,5 +49,22 @@ describe('toolMatches', () => {
   it('treats an empty/whitespace query as matching everything', () => {
     expect(toolMatches('', 'Anything', 'Whatever')).toBe(true);
     expect(toolMatches('   ', 'Anything', 'Whatever')).toBe(true);
+  });
+});
+
+describe('enabledFlagshipToolSlugs', () => {
+  it('every flagship tool is a real, classified tool with an icon', () => {
+    for (const { slug } of FLAGSHIP_TOOLS) {
+      expect(TOOL_ICON[slug], slug).toBeDefined();
+    }
+  });
+
+  it('returns only the flagship tools whose flag is enabled, in order', () => {
+    const flags = { toolKeyboard: true, toolFretboard: false, toolCircleOfFifths: true };
+    expect(enabledFlagshipToolSlugs(flags)).toEqual(['keyboard', 'circle-of-fifths']);
+  });
+
+  it('returns nothing when no flags are enabled', () => {
+    expect(enabledFlagshipToolSlugs({})).toEqual([]);
   });
 });

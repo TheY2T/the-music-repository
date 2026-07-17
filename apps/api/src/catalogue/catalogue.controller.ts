@@ -7,7 +7,12 @@ import { PremiumAccessService } from '../entitlements/application/premium-access
 import { GetContentBySlugUseCase } from './application/use-cases/get-content-by-slug.use-case';
 import { GetRelatedContentUseCase } from './application/use-cases/get-related-content.use-case';
 import { SearchCatalogueUseCase } from './application/use-cases/search-catalogue.use-case';
-import { type CatalogueQuery, entitledRank } from './domain/content-item';
+import {
+  CATALOGUE_SORTS,
+  type CatalogueQuery,
+  type CatalogueSort,
+  entitledRank,
+} from './domain/content-item';
 
 type RawQuery = Record<string, string | string[] | undefined>;
 
@@ -67,8 +72,17 @@ function toInt(value: string | string[] | undefined, fallback: number): number {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
+function toDifficulty(value: string | string[] | undefined): number | undefined {
+  const parsed = toInt(value, Number.NaN);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function toSort(value: string | string[] | undefined): CatalogueSort | undefined {
+  const raw = Array.isArray(value) ? value[0] : value;
+  return (CATALOGUE_SORTS as string[]).includes(raw ?? '') ? (raw as CatalogueSort) : undefined;
+}
+
 function normalizeQuery(query: RawQuery): CatalogueQuery {
-  const difficultyRaw = toInt(query.difficulty, Number.NaN);
   return {
     q: typeof query.q === 'string' ? query.q : undefined,
     genres: toArray(query.genre),
@@ -76,7 +90,10 @@ function normalizeQuery(query: RawQuery): CatalogueQuery {
     topics: toArray(query.topic),
     eras: toArray(query.era),
     type: typeof query.type === 'string' ? query.type : undefined,
-    difficulty: Number.isFinite(difficultyRaw) ? difficultyRaw : undefined,
+    difficulty: toDifficulty(query.difficulty),
+    difficultyMin: toDifficulty(query.difficultyMin),
+    difficultyMax: toDifficulty(query.difficultyMax),
+    sort: toSort(query.sort),
     page: Math.max(1, toInt(query.page, 1)),
     pageSize: Math.min(100, Math.max(1, toInt(query.pageSize, 20))),
   };

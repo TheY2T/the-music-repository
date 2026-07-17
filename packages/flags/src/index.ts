@@ -33,6 +33,8 @@ export const FlagKeys = {
   Favorites: 'personalization.favorites',
   /** Phase 5 backlog — gates cloud-synced saved chord progressions (chord analyzer). */
   SavedProgressions: 'personalization.saved-progressions',
+  /** Catalogue redesign (ADR 0031) — curated-shelf hub + axis switcher + level facet/sort; off = flat grid. */
+  CatalogueHub: 'catalogue.hub',
   /** Phase 2 — gates collections (courses / learning paths) browse + admin. */
   Collections: 'learning.collections',
   /** Collections Library — faceted discovery (search/facets/sort/shelves) on the collections index. */
@@ -185,6 +187,7 @@ export const FlagDefaults = {
   [FlagKeys.ContentRevisions]: true,
   [FlagKeys.Favorites]: true,
   [FlagKeys.SavedProgressions]: true,
+  [FlagKeys.CatalogueHub]: true,
   [FlagKeys.Collections]: true,
   [FlagKeys.CollectionDiscovery]: true,
   [FlagKeys.CollectionBookmarks]: true,

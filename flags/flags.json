@@ -49,6 +49,14 @@
       },
       "defaultVariant": "on"
     },
+    "catalogue.hub": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "learning.collections": {
       "state": "ENABLED",
       "variants": {

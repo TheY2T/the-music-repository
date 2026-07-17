@@ -163,6 +163,16 @@ export interface ContentDetailView extends ContentSummaryView {
   updatedAt: string;
 }
 
+/** Result ordering for a catalogue query. `relevance` = Meili's default text ranking (no sort). */
+export type CatalogueSort = 'relevance' | 'difficulty-asc' | 'difficulty-desc' | 'title-asc';
+
+export const CATALOGUE_SORTS: CatalogueSort[] = [
+  'relevance',
+  'difficulty-asc',
+  'difficulty-desc',
+  'title-asc',
+];
+
 export interface CatalogueQuery {
   q?: string;
   genres: string[];
@@ -171,6 +181,10 @@ export interface CatalogueQuery {
   eras: string[];
   type?: string;
   difficulty?: number;
+  /** Inclusive difficulty range (1..10), driving the level-band facet. */
+  difficultyMin?: number;
+  difficultyMax?: number;
+  sort?: CatalogueSort;
   page: number;
   pageSize: number;
 }

@@ -1,11 +1,23 @@
 ---
 import CatalogueBrowser from '@/components/CatalogueBrowser.tsx';
+import CatalogueHub from '@/components/CatalogueHub.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import { enabledFlagshipToolSlugs } from '@/lib/tools-taxonomy';
+import { localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 const showFavorites = Astro.locals.flags.favorites && !!Astro.locals.user;
 const locale = Astro.locals.locale;
+const hub = Astro.locals.flags.catalogueHub;
+const showCollections = Astro.locals.flags.collections;
+
+// Resolve the flagship tools enabled for this viewer (each gated by its own `tools.*` flag).
+const flags = Astro.locals.flags as unknown as Record<string, boolean>;
+const tools = enabledFlagshipToolSlugs(flags).map((slug) => ({
+  slug,
+  title: t(locale, `tool.${slug}.title` as MessageKey),
+  summary: t(locale, `tool.${slug}.summary` as MessageKey),
+}));
 ---
 
 <BaseLayout title={t(locale, 'catalogue.pageTitle')}>
@@ -15,6 +27,18 @@ const locale = Astro.locals.locale;
     back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
     maxWidth="max-w-6xl"
   >
-    <CatalogueBrowser client:load showFavorites={showFavorites} locale={locale} />
+    {
+      hub ? (
+        <CatalogueHub
+          client:load
+          showFavorites={showFavorites}
+          showCollections={showCollections}
+          tools={tools}
+          locale={locale}
+        />
+      ) : (
+        <CatalogueBrowser client:load showFavorites={showFavorites} locale={locale} />
+      )
+    }
   </PageShell>
 </BaseLayout>

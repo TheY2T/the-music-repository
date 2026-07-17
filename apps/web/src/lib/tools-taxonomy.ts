@@ -148,6 +148,27 @@ export const TOOL_ICON: Record<string, string> = {
   'scale-map': 'layout-grid',
 };
 
+/**
+ * Curated flagship tools surfaced on the catalogue hub's "Interactive tools" shelf (ADR 0031), each
+ * with the camelCase key it reads from `Astro.locals.flags`. Ordered by prominence; the page filters
+ * to the enabled ones. The full set stays on `/tools`.
+ */
+export const FLAGSHIP_TOOLS: { slug: string; flag: string }[] = [
+  { slug: 'keyboard', flag: 'toolKeyboard' },
+  { slug: 'fretboard', flag: 'toolFretboard' },
+  { slug: 'circle-of-fifths', flag: 'toolCircleOfFifths' },
+  { slug: 'scale-explorer', flag: 'toolScaleExplorer' },
+  { slug: 'chord-diagrams', flag: 'toolChordDiagrams' },
+  { slug: 'metronome', flag: 'toolMetronome' },
+  { slug: 'ear-trainer', flag: 'toolEarTrainer' },
+  { slug: 'progression', flag: 'toolProgression' },
+];
+
+/** The flagship tool slugs enabled for a viewer, in prominence order (reads camelCase flag keys). */
+export function enabledFlagshipToolSlugs(flags: Record<string, boolean>): string[] {
+  return FLAGSHIP_TOOLS.filter((tool) => flags[tool.flag]).map((tool) => tool.slug);
+}
+
 /** Case-insensitive substring match of a query over a tool's title + summary. */
 export function toolMatches(query: string, title: string, summary: string): boolean {
   const q = query.trim().toLowerCase();

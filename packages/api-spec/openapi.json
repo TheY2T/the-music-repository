@@ -550,6 +550,38 @@
             "explode": false
           },
           {
+            "name": "difficultyMin",
+            "in": "query",
+            "required": false,
+            "description": "Inclusive lower bound on difficulty (1..10) — used by the level-band facet.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "explode": false
+          },
+          {
+            "name": "difficultyMax",
+            "in": "query",
+            "required": false,
+            "description": "Inclusive upper bound on difficulty (1..10) — used by the level-band facet.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "explode": false
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Result ordering: `relevance` (default) | `difficulty-asc` | `difficulty-desc` | `title-asc`.",
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
             "name": "page",
             "in": "query",
             "required": false,
