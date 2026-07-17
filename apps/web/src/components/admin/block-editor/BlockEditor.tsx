@@ -26,8 +26,10 @@ import TableRow from '@tiptap/extension-table-row';
 import { type Editor, EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { COLLECTION_ITEM_NODE } from '@/lib/collection-doc';
+import { TmrCollectionItem } from './collection-nodes';
 import { EmbedInspector } from './EmbedInspector';
-import { EditorUiContext, type EmbedInspectorTarget } from './editor-ui';
+import { type CatalogueOption, EditorUiContext, type EmbedInspectorTarget } from './editor-ui';
 import { defaultConfig, TOOL_LABEL_KEY, TOOL_ORDER } from './embed-fields';
 import { HtmlBlock, TmrEmbed } from './nodes';
 
@@ -45,11 +47,13 @@ export interface BlockEditorProps {
    * prose + basic marks only (no interactive embeds, no tables) — for collection descriptions and help
    * topics, which store plain markdown.
    */
-  profile?: 'full' | 'minimal';
+  profile?: 'full' | 'minimal' | 'collection';
   /** Canonical doc (preferred). When null, the editor falls back to parsing `bodyMdx` + `embeds`. */
   initialDoc: PMDoc | null;
   initialBodyMdx: string;
   initialEmbeds: EmbedConfig[];
+  /** Catalogue entries for the collection profile's item picker. */
+  catalogue?: CatalogueOption[];
   onChange?: (change: BlockEditorChange) => void;
 }
 
@@ -110,9 +114,11 @@ export function BlockEditor({
   initialDoc,
   initialBodyMdx,
   initialEmbeds,
+  catalogue,
   onChange,
 }: BlockEditorProps) {
   const full = profile === 'full';
+  const isCollection = profile === 'collection';
   const [target, setTarget] = useState<EmbedInspectorTarget | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onChangeRef = useRef(onChange);
@@ -140,8 +146,7 @@ export function BlockEditor({
       TableHeader,
       TableCell,
       Placeholder.configure({ placeholder: t(locale, 'blockEditor.placeholder') }),
-      TmrEmbed,
-      HtmlBlock,
+      ...(isCollection ? [TmrCollectionItem] : [TmrEmbed, HtmlBlock]),
     ],
     content: initialContent,
     editorProps: {
@@ -172,9 +177,20 @@ export function BlockEditor({
 
   const openInspector = useCallback((next: EmbedInspectorTarget) => setTarget(next), []);
   const ui = useMemo(
-    () => ({ locale, interactive, openInspector }),
-    [locale, interactive, openInspector],
+    () => ({ locale, interactive, openInspector, catalogue }),
+    [locale, interactive, openInspector, catalogue],
   );
+
+  const insertItem = () => {
+    editor
+      ?.chain()
+      .focus()
+      .insertContent({
+        type: COLLECTION_ITEM_NODE,
+        attrs: { contentSlug: '', curatorNote: '', focusSkills: [] },
+      })
+      .run();
+  };
 
   const insertTool = (tool: EmbedTool) => {
     editor
@@ -301,6 +317,29 @@ export function BlockEditor({
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
+            </>
+          ) : null}
+          {isCollection ? (
+            <>
+              <span className="mx-1 h-6 w-px bg-border" />
+              <button
+                type="button"
+                onClick={() =>
+                  editor?.chain().focus().insertContent({ type: 'heading', attrs: { level: 2 } }).run()
+                }
+                className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                <Icon name="plus" className="size-4" />
+                {t(locale, 'blockEditor.item.addSection')}
+              </button>
+              <button
+                type="button"
+                onClick={insertItem}
+                className="inline-flex items-center gap-1.5 rounded-md bg-accent/15 px-2.5 py-1.5 text-sm font-medium text-accent hover:bg-accent/25"
+              >
+                <Icon name="plus" className="size-4" />
+                {t(locale, 'blockEditor.item.add')}
+              </button>
             </>
           ) : null}
         </div>

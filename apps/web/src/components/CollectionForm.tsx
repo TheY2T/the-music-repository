@@ -1,4 +1,5 @@
 import type { CollectionItemInput, CollectionWriteInput } from '@TheY2T/tmr-api-client';
+import type { PMDoc } from '@TheY2T/tmr-content-serde';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import {
   Accordion,
@@ -7,7 +8,6 @@ import {
   AccordionTrigger,
   Badge,
   Button,
-  Card,
   Field,
   Icon,
   Input,
@@ -15,79 +15,18 @@ import {
   Select,
   Textarea,
 } from '@TheY2T/tmr-ui';
-import {
-  closestCenter,
-  DndContext,
-  type DragEndEvent,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { type FormEvent, type ReactNode, useEffect, useState } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { BlockEditor } from '@/components/admin/block-editor/BlockEditor';
-import { collectionsAdminApi } from '@/lib/admin-api';
-
-let sectionIdCounter = 0;
-/** Stable local id for a section row (dnd-kit needs one; not persisted). */
-function nextSectionId(): string {
-  sectionIdCounter += 1;
-  return `sec-${sectionIdCounter}`;
-}
-
-/** A sortable wrapper giving its child a drag handle via render-prop; keyboard-accessible. */
-function SortableSection({
-  id,
-  children,
-}: {
-  id: string;
-  children: (handle: {
-    attributes: Record<string, unknown>;
-    listeners: Record<string, unknown>;
-  }) => ReactNode;
-}) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id,
-  });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-  return (
-    <div ref={setNodeRef} style={style}>
-      {children({
-        attributes: attributes as unknown as Record<string, unknown>,
-        listeners: (listeners ?? {}) as unknown as Record<string, unknown>,
-      })}
-    </div>
-  );
-}
+import type { CatalogueOption } from '@/components/admin/block-editor/editor-ui';
+import { adminApi, collectionsAdminApi } from '@/lib/admin-api';
+import { type CollectionDocData, collectionToDoc, docToCollection } from '@/lib/collection-doc';
 
 const KINDS = ['course', 'path', 'syllabus', 'songlist'] as const;
-
-interface SectionForm {
-  /** Stable local id for drag-and-drop (not persisted; order comes from array position). */
-  id: string;
-  title: string;
-  description: string;
-  /** newline-separated `slug` or `slug | curator note`. */
-  items: string;
-}
 
 const emptyForm = {
   slug: '',
   title: '',
   summary: '',
-  bodyMdx: '',
   kind: 'course' as CollectionWriteInput['kind'],
   curatorName: '',
   curatorBio: '',
@@ -97,8 +36,9 @@ const emptyForm = {
   featured: false,
   tags: '', // comma-separated
   outcomes: '', // newline-separated
-  ungrouped: '', // newline-separated content slugs with no section
 };
+
+const emptyDoc: CollectionDocData = { bodyMdx: '', ungrouped: [], sections: [] };
 
 function toInt(value: string): number | undefined {
   const n = Number.parseInt(value, 10);
@@ -112,16 +52,6 @@ function splitLines(text: string): string[] {
     .filter(Boolean);
 }
 
-function parseItemLine(line: string): { contentSlug: string; curatorNote?: string } | null {
-  const [slugPart, ...noteParts] = line.split('|');
-  const contentSlug = slugPart.trim();
-  if (!contentSlug) {
-    return null;
-  }
-  const note = noteParts.join('|').trim();
-  return { contentSlug, curatorNote: note || undefined };
-}
-
 export default function CollectionForm({
   slug,
   locale,
@@ -129,21 +59,30 @@ export default function CollectionForm({
 }: {
   slug?: string;
   locale: Locale;
-  /** Use the minimal block editor for the collection description (ADR 0030). */
+  /** Use the block editor (single authoring surface: prose + sections + items) — ADR 0030 / Phase B. */
   blockEditor?: boolean;
 }) {
   const isEdit = Boolean(slug);
   const [form, setForm] = useState({ ...emptyForm });
-  const [sections, setSections] = useState<SectionForm[]>([]);
+  // The structure (intro prose + sections + items) is authored in the editor; this is the live output.
+  const [docData, setDocData] = useState<CollectionDocData>(emptyDoc);
+  const [initialDoc, setInitialDoc] = useState<PMDoc | null>(null);
+  const [catalogue, setCatalogue] = useState<CatalogueOption[]>([]);
   const [loaded, setLoaded] = useState(!isEdit);
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
-  );
+
+  // Catalogue pieces the item picker can reference.
+  useEffect(() => {
+    adminApi
+      .list()
+      .then((r) =>
+        setCatalogue(r.items.map((c) => ({ slug: c.slug, title: c.title, type: c.type }))),
+      )
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (!slug) {
@@ -156,7 +95,6 @@ export default function CollectionForm({
           slug: c.slug,
           title: c.title,
           summary: c.summary ?? '',
-          bodyMdx: c.bodyMdx ?? '',
           kind: c.kind,
           curatorName: c.curatorName ?? '',
           curatorBio: c.curatorBio ?? '',
@@ -166,21 +104,28 @@ export default function CollectionForm({
           featured: c.featured ?? false,
           tags: (c.tags ?? []).join(', '),
           outcomes: (c.outcomes ?? []).join('\n'),
+        });
+        const data: CollectionDocData = {
+          bodyMdx: c.bodyMdx ?? '',
           ungrouped: c.items
             .filter((e) => !e.sectionId)
-            .map((e) => e.content.slug)
-            .join('\n'),
-        });
-        setSections(
-          c.sections.map((s) => ({
-            id: nextSectionId(),
+            .map((e) => ({
+              contentSlug: e.content.slug,
+              curatorNote: e.curatorNote ?? undefined,
+              focusSkills: e.focusSkills?.length ? e.focusSkills : undefined,
+            })),
+          sections: c.sections.map((s) => ({
             title: s.title,
-            description: s.description ?? '',
-            items: s.items
-              .map((e) => (e.curatorNote ? `${e.content.slug} | ${e.curatorNote}` : e.content.slug))
-              .join('\n'),
+            description: s.description ?? undefined,
+            items: s.items.map((e) => ({
+              contentSlug: e.content.slug,
+              curatorNote: e.curatorNote ?? undefined,
+              focusSkills: e.focusSkills?.length ? e.focusSkills : undefined,
+            })),
           })),
-        );
+        };
+        setDocData(data);
+        setInitialDoc(collectionToDoc(data));
         setStatus(c.status);
         setLoaded(true);
       })
@@ -190,23 +135,8 @@ export default function CollectionForm({
       });
   }, [slug]);
 
-  function onSectionDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-    if (over && active.id !== over.id) {
-      setSections((cur) => {
-        const from = cur.findIndex((s) => s.id === active.id);
-        const to = cur.findIndex((s) => s.id === over.id);
-        return from < 0 || to < 0 ? cur : arrayMove(cur, from, to);
-      });
-    }
-  }
-
   function set<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
-  }
-
-  function setSection(index: number, patch: Partial<SectionForm>) {
-    setSections((cur) => cur.map((s, i) => (i === index ? { ...s, ...patch } : s)));
   }
 
   function meta(): CollectionWriteInput {
@@ -219,7 +149,7 @@ export default function CollectionForm({
       slug: form.slug.trim(),
       title: form.title.trim(),
       summary: form.summary.trim() || undefined,
-      bodyMdx: form.bodyMdx.trim() || undefined,
+      bodyMdx: docData.bodyMdx.trim() || undefined,
       kind: form.kind,
       visibility: 'public',
       featured: form.featured,
@@ -234,27 +164,30 @@ export default function CollectionForm({
   }
 
   function buildItems(): CollectionItemInput[] {
-    const items: CollectionItemInput[] = splitLines(form.ungrouped).map((contentSlug) => ({
-      contentSlug,
-    }));
-    sections.forEach((sec, sectionIndex) => {
-      for (const line of splitLines(sec.items)) {
-        const parsed = parseItemLine(line);
-        if (parsed) {
-          items.push({ ...parsed, sectionIndex });
-        }
-      }
-    });
-    return items;
+    return [
+      ...docData.ungrouped.map((it) => ({
+        contentSlug: it.contentSlug,
+        curatorNote: it.curatorNote,
+        focusSkills: it.focusSkills,
+      })),
+      ...docData.sections.flatMap((s, sectionIndex) =>
+        s.items.map((it) => ({
+          contentSlug: it.contentSlug,
+          curatorNote: it.curatorNote,
+          focusSkills: it.focusSkills,
+          sectionIndex,
+        })),
+      ),
+    ];
   }
 
   /** Persist metadata → sections → items (sections before items so `sectionIndex` resolves). */
   async function persist(targetSlug: string) {
     await collectionsAdminApi.setSections(
       targetSlug,
-      sections.map((s) => ({
+      docData.sections.map((s) => ({
         title: s.title.trim(),
-        description: s.description.trim() || undefined,
+        description: s.description?.trim() || undefined,
       })),
     );
     await collectionsAdminApi.setItems(targetSlug, buildItems());
@@ -320,6 +253,7 @@ export default function CollectionForm({
           {notice}
         </p>
       ) : null}
+
       <form onSubmit={onSave} className="space-y-6">
         {/* Title + summary are the document head; the workflow status sits alongside. */}
         <div className="flex items-start justify-between gap-3">
@@ -344,7 +278,7 @@ export default function CollectionForm({
           ) : null}
         </div>
 
-        {/* Metadata as a collapsible properties strip, not a stack of cards. */}
+        {/* Metadata as a collapsible properties strip. */}
         <Accordion
           type="multiple"
           defaultValue={['properties']}
@@ -447,130 +381,33 @@ export default function CollectionForm({
           </AccordionItem>
         </Accordion>
 
-        {/* Description (full-width). */}
-        {blockEditor ? (
-          <div className="space-y-2">
-            <span className="text-sm font-medium">{t(locale, 'colform.body')}</span>
-            {loaded ? (
+        {/* Contents — intro prose, sections (headings) and items authored in one editor. */}
+        <div className="space-y-2">
+          <div className="space-y-0.5">
+            <span className="text-sm font-medium">{t(locale, 'colform.structureLabel')}</span>
+            <p className="text-xs text-muted-foreground">{t(locale, 'colform.structureHint')}</p>
+          </div>
+          {blockEditor ? (
+            loaded ? (
               <BlockEditor
                 key={slug ?? 'new'}
-                profile="minimal"
+                profile="collection"
                 locale={locale}
-                initialDoc={null}
-                initialBodyMdx={form.bodyMdx}
+                initialDoc={initialDoc}
+                initialBodyMdx=""
                 initialEmbeds={[]}
-                onChange={(c) => set('bodyMdx', c.bodyMdx)}
+                catalogue={catalogue}
+                onChange={(c) => setDocData(docToCollection(c.doc))}
               />
-            ) : null}
-          </div>
-        ) : (
-          <Field label={t(locale, 'colform.body')} htmlFor="colform-body">
+            ) : null
+          ) : (
             <Textarea
-              id="colform-body"
-              className="h-28"
-              value={form.bodyMdx}
-              onChange={(e) => set('bodyMdx', e.target.value)}
+              className="h-40"
+              value={docData.bodyMdx}
+              onChange={(e) => setDocData((d) => ({ ...d, bodyMdx: e.target.value }))}
             />
-          </Field>
-        )}
-
-        <Card className="space-y-4 p-5">
-          <Field label={t(locale, 'colform.ungroupedHelp')} htmlFor="colform-ungrouped">
-            <Textarea
-              id="colform-ungrouped"
-              className="h-24 font-mono"
-              value={form.ungrouped}
-              onChange={(e) => set('ungrouped', e.target.value)}
-              placeholder={'c-major-scale-two-octaves\nczerny-op-599-no-1'}
-            />
-          </Field>
-
-          <div className="space-y-4 border-t border-border pt-4">
-            <div className="flex items-center justify-between">
-              <p className="font-display font-semibold">{t(locale, 'colform.sectionsHeading')}</p>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  setSections((cur) => [
-                    ...cur,
-                    { id: nextSectionId(), title: '', description: '', items: '' },
-                  ])
-                }
-              >
-                <Icon name="plus" className="size-4" />
-                {t(locale, 'colform.addSection')}
-              </Button>
-            </div>
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={onSectionDragEnd}
-              accessibility={{
-                announcements: {
-                  onDragStart: () => t(locale, 'colform.dndPicked'),
-                  onDragOver: () => t(locale, 'colform.dndMoved'),
-                  onDragEnd: () => t(locale, 'colform.dndDropped'),
-                  onDragCancel: () => t(locale, 'colform.dndCancelled'),
-                },
-              }}
-            >
-              <SortableContext
-                items={sections.map((s) => s.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                <div className="space-y-4">
-                  {sections.map((section, index) => (
-                    <SortableSection key={section.id} id={section.id}>
-                      {(handle) => (
-                        <Card className="space-y-3 border-dashed p-4">
-                          <div className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              aria-label={t(locale, 'colform.reorderSection')}
-                              className="shrink-0 cursor-grab text-muted-foreground hover:text-foreground"
-                              {...handle.attributes}
-                              {...handle.listeners}
-                            >
-                              <Icon name="grip-vertical" className="size-4" />
-                            </button>
-                            <Input
-                              value={section.title}
-                              onChange={(e) => setSection(index, { title: e.target.value })}
-                              placeholder={t(locale, 'colform.sectionTitle')}
-                            />
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setSections((cur) => cur.filter((_, i) => i !== index))
-                              }
-                              aria-label={t(locale, 'colform.removeSection')}
-                              className="shrink-0 text-muted-foreground hover:text-destructive"
-                            >
-                              <Icon name="trash" className="size-4" />
-                            </button>
-                          </div>
-                          <Input
-                            value={section.description}
-                            onChange={(e) => setSection(index, { description: e.target.value })}
-                            placeholder={t(locale, 'colform.sectionSummary')}
-                          />
-                          <Textarea
-                            className="h-24 font-mono text-sm"
-                            value={section.items}
-                            onChange={(e) => setSection(index, { items: e.target.value })}
-                            placeholder={t(locale, 'colform.sectionItemsHelp')}
-                          />
-                        </Card>
-                      )}
-                    </SortableSection>
-                  ))}
-                </div>
-              </SortableContext>
-            </DndContext>
-          </div>
-        </Card>
+          )}
+        </div>
 
         <div className="flex flex-wrap gap-3 border-t border-border pt-4">
           <Button type="submit" disabled={busy}>
