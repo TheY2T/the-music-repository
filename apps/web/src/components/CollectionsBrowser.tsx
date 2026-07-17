@@ -21,6 +21,7 @@ import RecentlyViewedStrip from '@/components/RecentlyViewedStrip';
 import SaveCollectionButton from '@/components/SaveCollectionButton';
 import { useBrowseHistory } from '@/lib/browse-history';
 import { listSavedCollectionSlugs } from '@/lib/collections-api';
+import type { CollectionsFilters } from '@/lib/collections-shelves';
 import { getProgress } from '@/lib/progress-api';
 
 const PAGE_SIZE = 24;
@@ -57,21 +58,26 @@ function durationLabel(locale: Locale, minutes?: number): string | undefined {
     : t(locale, 'collections.durationMinutes', { minutes });
 }
 
-function Browser({
+export function CollectionsGrid({
   locale,
   showProgress,
   showSave,
+  initialFilters,
+  showFeatured = true,
 }: {
   locale: Locale;
   showProgress: boolean;
   showSave: boolean;
+  initialFilters?: CollectionsFilters;
+  /** Whether to render the featured-collection banner when idle (the hub renders its own). */
+  showFeatured?: boolean;
 }) {
-  const [q, setQ] = useState('');
-  const [kind, setKind] = useState<string | undefined>();
-  const [era, setEra] = useState<string[]>([]);
-  const [instrument, setInstrument] = useState<string[]>([]);
-  const [technique, setTechnique] = useState<string[]>([]);
-  const [difficulty, setDifficulty] = useState<number | undefined>();
+  const [q, setQ] = useState(initialFilters?.q ?? '');
+  const [kind, setKind] = useState<string | undefined>(initialFilters?.kind);
+  const [era, setEra] = useState<string[]>(initialFilters?.era ?? []);
+  const [instrument, setInstrument] = useState<string[]>(initialFilters?.instrument ?? []);
+  const [technique, setTechnique] = useState<string[]>(initialFilters?.technique ?? []);
+  const [difficulty, setDifficulty] = useState<number | undefined>(initialFilters?.difficulty);
   const [sort, setSort] = useState<(typeof SORTS)[number]>('featured');
   const [page, setPage] = useState(1);
   const [saved, setSaved] = useState<Set<string>>(new Set());
@@ -290,7 +296,7 @@ function Browser({
 
   return (
     <div className="space-y-6">
-      {featured ? (
+      {showFeatured && featured ? (
         <div className="flex flex-col gap-3 rounded-lg border border-border bg-card p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div className="flex flex-col gap-1">
             <p className="font-display text-xs font-semibold uppercase tracking-wider text-accent">
@@ -444,7 +450,7 @@ export default function CollectionsBrowser({
 }) {
   return (
     <ApiProvider>
-      <Browser locale={locale} showProgress={showProgress} showSave={showSave} />
+      <CollectionsGrid locale={locale} showProgress={showProgress} showSave={showSave} />
     </ApiProvider>
   );
 }

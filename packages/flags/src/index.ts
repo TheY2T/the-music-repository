@@ -41,6 +41,8 @@ export const FlagKeys = {
   Collections: 'learning.collections',
   /** Collections Library — faceted discovery (search/facets/sort/shelves) on the collections index. */
   CollectionDiscovery: 'learning.collections-discovery',
+  /** Collections Library — curated-shelf hub + axis switcher (mirrors catalogue.hub); off = faceted grid. */
+  CollectionsHub: 'learning.collections-hub',
   /** Collections Library — save/bookmark collections to a personal library (auth). */
   CollectionBookmarks: 'learning.collections-bookmarks',
   /** Collections Library — 1..5 collection ratings + popularity shelves (auth to rate). */
@@ -193,6 +195,7 @@ export const FlagDefaults = {
   [FlagKeys.LearnerDashboard]: true,
   [FlagKeys.Collections]: true,
   [FlagKeys.CollectionDiscovery]: true,
+  [FlagKeys.CollectionsHub]: true,
   [FlagKeys.CollectionBookmarks]: true,
   [FlagKeys.CollectionRatings]: true,
   [FlagKeys.UserCollections]: true,

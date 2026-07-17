@@ -94,6 +94,8 @@
   "catalogue.facetInstrument": "乐器",
   "catalogue.facetTopic": "主题",
   "catalogue.facetEra": "时期",
+  "catalogue.facetComposer": "作曲家",
+  "catalogue.facetKey": "调性",
   "catalogue.searching": "搜索中…",
   "catalogue.results": "{count} 条结果",
   "catalogue.grade": "{level} 级",

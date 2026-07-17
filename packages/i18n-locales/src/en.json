@@ -94,6 +94,8 @@
   "catalogue.facetInstrument": "Instrument",
   "catalogue.facetTopic": "Topic",
   "catalogue.facetEra": "Era",
+  "catalogue.facetComposer": "Composer",
+  "catalogue.facetKey": "Key",
   "catalogue.searching": "Searching…",
   "catalogue.results": "{count} results",
   "catalogue.grade": "Grade {level}",

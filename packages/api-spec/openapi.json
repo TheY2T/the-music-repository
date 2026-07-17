@@ -522,6 +522,30 @@
             "explode": false
           },
           {
+            "name": "composer",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "explode": false
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "explode": false
+          },
+          {
             "name": "type",
             "in": "query",
             "required": false,
@@ -4608,7 +4632,9 @@
           "topics",
           "eras",
           "types",
-          "difficulties"
+          "difficulties",
+          "composers",
+          "keys"
         ],
         "properties": {
           "genres": {
@@ -4642,6 +4668,18 @@
             }
           },
           "difficulties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FacetValue"
+            }
+          },
+          "composers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FacetValue"
+            }
+          },
+          "keys": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FacetValue"

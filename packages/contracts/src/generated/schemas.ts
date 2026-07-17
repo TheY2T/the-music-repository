@@ -893,6 +893,8 @@ export const SearchCatalogueQueryParams = zod.object({
   "instrument": zod.array(zod.string()).optional(),
   "topic": zod.array(zod.string()).optional(),
   "era": zod.array(zod.string()).optional(),
+  "composer": zod.array(zod.string()).optional(),
+  "key": zod.array(zod.string()).optional(),
   "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']).optional(),
   "difficulty": zod.number().optional(),
   "difficultyMin": zod.number().optional().describe('Inclusive lower bound on difficulty (1..10) — used by the level-band facet.'),
@@ -952,6 +954,16 @@ export const SearchCatalogueResponse = zod.object({
   "count": zod.number()
 }).describe('One facet bucket (a value + its result count).')),
   "difficulties": zod.array(zod.object({
+  "value": zod.string(),
+  "label": zod.string(),
+  "count": zod.number()
+}).describe('One facet bucket (a value + its result count).')),
+  "composers": zod.array(zod.object({
+  "value": zod.string(),
+  "label": zod.string(),
+  "count": zod.number()
+}).describe('One facet bucket (a value + its result count).')),
+  "keys": zod.array(zod.object({
   "value": zod.string(),
   "label": zod.string(),
   "count": zod.number()

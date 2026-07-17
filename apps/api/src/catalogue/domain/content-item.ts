@@ -179,6 +179,8 @@ export interface CatalogueQuery {
   instruments: string[];
   topics: string[];
   eras: string[];
+  composers: string[];
+  keys: string[];
   type?: string;
   difficulty?: number;
   /** Inclusive difficulty range (1..10), driving the level-band facet. */
@@ -187,6 +189,16 @@ export interface CatalogueQuery {
   sort?: CatalogueSort;
   page: number;
   pageSize: number;
+}
+
+/** Normalize a free-form `details.key` string to a facetable primary key — the leading key token
+ * before any qualifier (e.g. "B-flat major (opening), moving to E-flat major" → "B-flat major"). */
+export function normalizeKey(raw: string | null | undefined): string | null {
+  if (!raw) {
+    return null;
+  }
+  const primary = raw.split(/[(,;]/)[0]?.trim();
+  return primary ? primary : null;
 }
 
 export interface FacetValue {
@@ -202,6 +214,8 @@ export interface Facets {
   eras: FacetValue[];
   types: FacetValue[];
   difficulties: FacetValue[];
+  composers: FacetValue[];
+  keys: FacetValue[];
 }
 
 export interface CatalogueResult {

@@ -89,6 +89,8 @@ function normalizeQuery(query: RawQuery): CatalogueQuery {
     instruments: toArray(query.instrument),
     topics: toArray(query.topic),
     eras: toArray(query.era),
+    composers: toArray(query.composer),
+    keys: toArray(query.key),
     type: typeof query.type === 'string' ? query.type : undefined,
     difficulty: toDifficulty(query.difficulty),
     difficultyMin: toDifficulty(query.difficultyMin),

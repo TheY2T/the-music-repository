@@ -16,6 +16,7 @@ declare namespace App {
       learnerDashboard: boolean;
       collections: boolean;
       collectionDiscovery: boolean;
+      collectionsHub: boolean;
       collectionBookmarks: boolean;
       collectionRatings: boolean;
       userCollections: boolean;

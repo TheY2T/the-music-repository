@@ -1,5 +1,6 @@
 ---
 import CollectionsBrowser from '@/components/CollectionsBrowser.tsx';
+import CollectionsHub from '@/components/CollectionsHub.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
@@ -11,6 +12,7 @@ const locale = Astro.locals.locale;
 const { flags, user } = Astro.locals;
 const showProgress = flags.progress && !!user;
 const showSave = flags.collectionBookmarks && !!user;
+const hub = flags.collectionsHub;
 ---
 
 <BaseLayout title={t(locale, 'collections.pageTitle')}>
@@ -20,11 +22,22 @@ const showSave = flags.collectionBookmarks && !!user;
     back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
     maxWidth="max-w-6xl"
   >
-    <CollectionsBrowser
-      client:load
-      locale={locale}
-      showProgress={showProgress}
-      showSave={showSave}
-    />
+    {
+      hub ? (
+        <CollectionsHub
+          client:load
+          locale={locale}
+          showProgress={showProgress}
+          showSave={showSave}
+        />
+      ) : (
+        <CollectionsBrowser
+          client:load
+          locale={locale}
+          showProgress={showProgress}
+          showSave={showSave}
+        />
+      )
+    }
   </PageShell>
 </BaseLayout>

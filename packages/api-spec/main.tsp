@@ -210,6 +210,8 @@ model Facets {
   eras: FacetValue[];
   types: FacetValue[];
   difficulties: FacetValue[];
+  composers: FacetValue[];
+  keys: FacetValue[];
 }
 
 /** Paginated, faceted catalogue search result. */
@@ -231,6 +233,8 @@ op searchCatalogue(
   @query instrument?: string[],
   @query topic?: string[],
   @query era?: string[],
+  @query composer?: string[],
+  @query key?: string[],
   @query type?: ContentType,
   @query difficulty?: int32,
   /** Inclusive lower bound on difficulty (1..10) — used by the level-band facet. */

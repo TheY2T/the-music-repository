@@ -47,6 +47,8 @@ interface CatalogueBrowseState {
   era: string[];
   instrument: string[];
   topic: string[];
+  composer?: string[];
+  key?: string[];
   type?: string;
   level?: string;
   sort: CatalogueSort;
@@ -81,6 +83,8 @@ export function CatalogueGrid({
   const [era, setEra] = useState<string[]>(initialFilters?.era ?? []);
   const [instrument, setInstrument] = useState<string[]>(initialFilters?.instrument ?? []);
   const [topic, setTopic] = useState<string[]>(initialFilters?.topic ?? []);
+  const [composer, setComposer] = useState<string[]>([]);
+  const [musicKey, setMusicKey] = useState<string[]>([]);
   const [type, setType] = useState<string | undefined>(initialFilters?.type);
   const [level, setLevel] = useState<string | undefined>(initialFilters?.level);
   const [sort, setSort] = useState<CatalogueSort>('relevance');
@@ -109,6 +113,8 @@ export function CatalogueGrid({
     era,
     instrument,
     topic,
+    composer,
+    key: musicKey,
     type: type as SearchCatalogueType | undefined,
     difficultyMin: band?.min,
     difficultyMax: band?.max,
@@ -126,13 +132,27 @@ export function CatalogueGrid({
       namespace: 'catalogue',
       itemSlugs: items.map((i) => i.slug),
       ready: !isFetching,
-      getState: () => ({ q, genre, era, instrument, topic, type, level, sort, page }),
+      getState: () => ({
+        q,
+        genre,
+        era,
+        instrument,
+        topic,
+        composer,
+        key: musicKey,
+        type,
+        level,
+        sort,
+        page,
+      }),
       applyState: (s) => {
         setQ(s.q);
         setGenre(s.genre);
         setEra(s.era);
         setInstrument(s.instrument);
         setTopic(s.topic);
+        setComposer(s.composer ?? []);
+        setMusicKey(s.key ?? []);
         setType(s.type);
         setLevel(s.level);
         setSort(s.sort ?? 'relevance');
@@ -204,6 +224,27 @@ export function CatalogueGrid({
         selected: topic.includes(f.value),
       })),
     },
+    {
+      key: 'composer',
+      label: t(locale, 'catalogue.facetComposer'),
+      // Composer/key have many values — show the top dozen; selected values stay removable via chips.
+      options: (result?.facets.composers ?? []).slice(0, 12).map((f) => ({
+        value: f.value,
+        label: f.label,
+        count: f.count,
+        selected: composer.includes(f.value),
+      })),
+    },
+    {
+      key: 'key',
+      label: t(locale, 'catalogue.facetKey'),
+      options: (result?.facets.keys ?? []).slice(0, 12).map((f) => ({
+        value: f.value,
+        label: f.label,
+        count: f.count,
+        selected: musicKey.includes(f.value),
+      })),
+    },
   ];
 
   function onToggleFacet(groupKey: string, value: string) {
@@ -214,6 +255,8 @@ export function CatalogueGrid({
     else if (groupKey === 'era') setEra((cur) => toggle(cur, value));
     else if (groupKey === 'instrument') setInstrument((cur) => toggle(cur, value));
     else if (groupKey === 'topic') setTopic((cur) => toggle(cur, value));
+    else if (groupKey === 'composer') setComposer((cur) => toggle(cur, value));
+    else if (groupKey === 'key') setMusicKey((cur) => toggle(cur, value));
   }
 
   // Active-filter chips: look each selected value up in its facet group for the display label.
@@ -246,6 +289,8 @@ export function CatalogueGrid({
     ['era', era, setEra],
     ['instrument', instrument, setInstrument],
     ['topic', topic, setTopic],
+    ['composer', composer, setComposer],
+    ['key', musicKey, setMusicKey],
   ] as const) {
     for (const value of values) {
       activeFilters.push({
@@ -266,6 +311,8 @@ export function CatalogueGrid({
     setEra([]);
     setInstrument([]);
     setTopic([]);
+    setComposer([]);
+    setMusicKey([]);
     setQ('');
     setPage(1);
   }

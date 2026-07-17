@@ -9,6 +9,7 @@ import {
   type ContentItem,
   type Facets,
   type FacetValue,
+  normalizeKey,
   slugToLabel,
 } from '../domain/content-item';
 
@@ -25,6 +26,10 @@ interface IndexDoc {
   tier: string | null;
   /** Period/style facet value from `details.era` (e.g. "Baroque"); null when unset. */
   era: string | null;
+  /** Composer facet value from `details.composer` (e.g. "Frédéric Chopin"); null when unset. */
+  composer: string | null;
+  /** Normalized primary key from `details.key` (e.g. "A minor"); null when unset. */
+  key: string | null;
   genreSlugs: string[];
   instrumentSlugs: string[];
   topicSlugs: string[];
@@ -68,6 +73,8 @@ export class MeilisearchCatalogueSearch extends CatalogueSearch implements OnMod
         'instrumentSlugs',
         'topicSlugs',
         'era',
+        'composer',
+        'key',
         'type',
         'difficulty',
         'visibility',
@@ -116,11 +123,26 @@ export class MeilisearchCatalogueSearch extends CatalogueSearch implements OnMod
     if (query.eras.length) {
       filter.push(query.eras.map((e) => `era = '${e}'`));
     }
+    if (query.composers.length) {
+      filter.push(query.composers.map((c) => `composer = '${c}'`));
+    }
+    if (query.keys.length) {
+      filter.push(query.keys.map((k) => `key = '${k}'`));
+    }
 
     const result = await this.client.index(INDEX_UID).search(query.q ?? '', {
       filter,
       sort: toMeiliSort(query.sort),
-      facets: ['genreSlugs', 'instrumentSlugs', 'topicSlugs', 'era', 'type', 'difficulty'],
+      facets: [
+        'genreSlugs',
+        'instrumentSlugs',
+        'topicSlugs',
+        'era',
+        'composer',
+        'key',
+        'type',
+        'difficulty',
+      ],
       limit: query.pageSize,
       offset: (query.page - 1) * query.pageSize,
     });
@@ -131,9 +153,11 @@ export class MeilisearchCatalogueSearch extends CatalogueSearch implements OnMod
       genres: toFacet(dist.genreSlugs),
       instruments: toFacet(dist.instrumentSlugs),
       topics: toFacet(dist.topicSlugs),
-      eras: toEraFacet(dist.era),
+      eras: toValueFacet(dist.era),
       types: toFacet(dist.type),
       difficulties: toDifficultyFacet(dist.difficulty),
+      composers: toValueFacet(dist.composer),
+      keys: toValueFacet(dist.key),
     };
 
     return {
@@ -183,6 +207,8 @@ function toIndexDoc(item: ContentItem): IndexDoc {
     visibility: item.visibility,
     tier: item.tier,
     era: item.details?.era ?? null,
+    composer: item.details?.composer ?? null,
+    key: normalizeKey(item.details?.key),
     genreSlugs: item.genres.map((g) => g.slug),
     instrumentSlugs: item.instruments.map((i) => i.slug),
     topicSlugs: item.topics.map((t) => t.slug),
@@ -204,8 +230,8 @@ function toFacet(distribution: Record<string, number> | undefined): FacetValue[]
     .sort((a, b) => b.count - a.count);
 }
 
-/** Era facet — the stored value is already a display string ("Baroque"), so value == label. */
-function toEraFacet(distribution: Record<string, number> | undefined): FacetValue[] {
+/** Facet whose stored value is already a display string (era/composer/key), so value == label. */
+function toValueFacet(distribution: Record<string, number> | undefined): FacetValue[] {
   if (!distribution) {
     return [];
   }

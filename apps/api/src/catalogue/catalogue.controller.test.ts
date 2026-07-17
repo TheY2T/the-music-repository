@@ -13,7 +13,16 @@ import type { CatalogueQuery } from './domain/content-item';
 function makeController() {
   const execute = vi.fn().mockResolvedValue({
     items: [],
-    facets: { genres: [], instruments: [], topics: [], eras: [], types: [], difficulties: [] },
+    facets: {
+      genres: [],
+      instruments: [],
+      topics: [],
+      eras: [],
+      types: [],
+      difficulties: [],
+      composers: [],
+      keys: [],
+    },
     total: 0,
     page: 1,
     pageSize: 20,
@@ -60,5 +69,14 @@ describe('CatalogueController query normalization', () => {
     expect(query.genres).toEqual(['blues']);
     expect(query.page).toBe(1);
     expect(query.pageSize).toBe(100);
+  });
+
+  it('parses composer and key array facets', async () => {
+    const query = await normalizedFrom({
+      composer: ['Frédéric Chopin'],
+      key: ['A minor', 'C major'],
+    });
+    expect(query.composers).toEqual(['Frédéric Chopin']);
+    expect(query.keys).toEqual(['A minor', 'C major']);
   });
 });

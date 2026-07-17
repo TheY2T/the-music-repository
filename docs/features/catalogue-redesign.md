@@ -1,6 +1,6 @@
 # Feature: Catalogue redesign — hub, axis switcher & shelves
 
-- **Phase:** Platform/UX · **Status:** Phases 1–2 + 4 shipped (hub shelves + axis switcher + level facet + sort; collections & tools federated; signed-in dashboard at `/dashboard`). The **Atlas** intersection mode (Phase 3) was trialed and **reverted** (a count matrix gave weak content signal — see ADR 0031). Phase 5 planned.
+- **Phase:** Platform/UX · **Status:** Phases 1–2 + 4–5 shipped (hub shelves + axis switcher + level facet + sort; collections & tools federated; signed-in dashboard at `/dashboard`; composer + key facets). The **Atlas** intersection mode (Phase 3) was trialed and **reverted** (a count matrix gave weak content signal — see ADR 0031).
 - **Flag key:** `catalogue.hub` (hub) · `learning.dashboard` (signed-in dashboard) — from `@TheY2T/tmr-flags`
 - **ADR:** [0031](../adr/0031-catalogue-hub-redesign.md) · builds on [0023 collections](../adr/0023-collections-library.md), [0021 themes](../adr/0021-multi-theme-vintage-design-system.md), [0018 design system](../adr/0018-ui-component-library-atomic-design.md)
 
@@ -20,7 +20,9 @@ experiences — with the faceted grid retained underneath for precise narrowing.
   (`?view=browse`) and preserves the active filters when switching.
 - **Axis switcher** (`SegmentedToggle`) — *Instrument · Skill level · Era · Genre · Format*. Changing it
   re-labels and re-orders the shelves around that dimension (the same catalogue, re-sliced). URL-reflected
-  (`?by=level`).
+  (`?by=level`) and remembered for the session (`sessionStorage['tmr.catalogue.hubAxis']`), so re-entering
+  the hub without a `?by=` — a shared `?view=browse` link, or simply returning later — restores the last
+  axis instead of snapping back to the default. The collections hub mirrors this (`tmr.collections.hubAxis`).
 - **Shelf stack** (`FeaturedShelf`) — one row per top facet value of the chosen axis (fixed grade bands
   for the level axis), plus evergreen **Collections & guided paths** (federated from the `collections`
   index, wide "path" cards via `CollectionCard`) and **Interactive tools** rows. Each axis shelf's
@@ -54,12 +56,14 @@ Theming: **semantic tokens only** (3 aesthetics × light/dark, ADR 0021). Icons 
 | Format | `content_items.type` — already faceted | Promote `type` to a browse axis |
 | Genre / Instrument / Topic | SQL taxonomies + Meili slug facets | Reuse as axes |
 | Era | `details.era` → Meili `era` facet | Reuse as axis |
-| Collections | separate `collections` Meili index (ADR 0023) | Federate onto the hub as "path" cards |
-| **Composer** (Phase 5) | `details.composer` JSONB | Add to Meili `toIndexDoc` + `filterableAttributes`; new facet |
-| **Key** (Phase 5) | `details.key` JSONB | Add to Meili `toIndexDoc` + `filterableAttributes`; new facet |
+| Collections | separate `collections` Meili index (ADR 0023) | Federate onto the catalogue hub as "path" cards; the **collections page** has its own parallel hub (`CollectionsHub`, flag `learning.collections-hub`) — axis switcher (Kind/Era/Instrument) + Hub/Browse toggle over `CollectionsGrid`, mirroring the catalogue |
+| **Composer** (shipped) | `details.composer` JSONB | Indexed verbatim into Meili (`toIndexDoc` + `filterableAttributes`); Composer facet |
+| **Key** (shipped) | `details.key` JSONB | **Normalized** to a primary key (`normalizeKey`, strips qualifiers after `(`/`,`/`;`) then indexed; Key facet |
 
-Meili `content_items` today: filterable `genreSlugs, instrumentSlugs, topicSlugs, era, type,
-difficulty, visibility`; sortable `title, difficulty`. Phase 5 adds `composer, key` to filterable.
+Meili `content_items`: filterable `genreSlugs, instrumentSlugs, topicSlugs, era, composer, key, type,
+difficulty, visibility`; sortable `title, difficulty`. Composer/key facet values are display strings
+(value == label, like era). The Composer/Key facet groups show the top ~12 values; selected values
+beyond that stay removable via the applied-filter chips.
 
 ## API contract
 

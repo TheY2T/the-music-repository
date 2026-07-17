@@ -81,6 +81,14 @@
       },
       "defaultVariant": "on"
     },
+    "learning.collections-hub": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "learning.collections-bookmarks": {
       "state": "ENABLED",
       "variants": {

@@ -240,10 +240,36 @@ function ToolsShelf({ tools, locale }: { tools: HubTool[]; locale: Locale }) {
   );
 }
 
-function readAxisFromUrl(): AxisKey {
+const AXIS_STORE_KEY = 'tmr.catalogue.hubAxis';
+
+function isAxis(value: string | null): value is AxisKey {
+  return (AXES as readonly string[]).includes(value ?? '');
+}
+
+/** The last-chosen axis for this session, so returning to the hub without a `?by=` keeps it. */
+function storedAxis(): AxisKey | null {
+  try {
+    const value = sessionStorage.getItem(AXIS_STORE_KEY);
+    return isAxis(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+function persistAxis(axis: AxisKey): void {
+  try {
+    sessionStorage.setItem(AXIS_STORE_KEY, axis);
+  } catch {
+    /* storage unavailable — axis memory is best-effort */
+  }
+}
+
+/** Seed the axis from the URL (`?by=`) first, then session memory, then the default. */
+function readInitialAxis(): AxisKey {
   if (typeof window === 'undefined') return 'instrument';
   const by = new URLSearchParams(window.location.search).get('by');
-  return (AXES as readonly string[]).includes(by ?? '') ? (by as AxisKey) : 'instrument';
+  if (isAxis(by)) return by;
+  return storedAxis() ?? 'instrument';
 }
 
 function Hub({
@@ -264,7 +290,7 @@ function Hub({
 
   // Read deep-link state after mount (avoids a hydration mismatch vs. the SSR default render).
   useEffect(() => {
-    setAxis(readAxisFromUrl());
+    setAxis(readInitialAxis());
     if (typeof window !== 'undefined') {
       const v = new URLSearchParams(window.location.search).get('view');
       if (v === 'browse') setView('browse');
@@ -297,6 +323,7 @@ function Hub({
 
   function changeAxis(next: AxisKey) {
     setAxis(next);
+    persistAxis(next);
     syncUrl(next, view);
   }
 

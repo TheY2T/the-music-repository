@@ -2,11 +2,31 @@ import { describe, expect, it } from 'vitest';
 import {
   type ContentItem,
   entitledRank,
+  normalizeKey,
   slugToLabel,
   tierRank,
   toContentSummaryView,
   toLockedContentDetailView,
 } from './content-item';
+
+describe('normalizeKey', () => {
+  it('keeps a clean key as-is', () => {
+    expect(normalizeKey('A minor')).toBe('A minor');
+    expect(normalizeKey('C major')).toBe('C major');
+  });
+
+  it('strips qualifiers after a paren, comma, or semicolon', () => {
+    expect(normalizeKey('B-flat major (opening), moving to E-flat major')).toBe('B-flat major');
+    expect(normalizeKey('E Dorian (commonly played in A minor / D Dorian too)')).toBe('E Dorian');
+    expect(normalizeKey('D major; modulates to A')).toBe('D major');
+  });
+
+  it('returns null for empty/nullish input', () => {
+    expect(normalizeKey(null)).toBeNull();
+    expect(normalizeKey(undefined)).toBeNull();
+    expect(normalizeKey('  ')).toBeNull();
+  });
+});
 
 function makeItem(overrides: Partial<ContentItem> = {}): ContentItem {
   const now = new Date('2026-01-01T00:00:00.000Z');
