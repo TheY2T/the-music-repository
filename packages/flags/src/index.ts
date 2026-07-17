@@ -35,6 +35,8 @@ export const FlagKeys = {
   SavedProgressions: 'personalization.saved-progressions',
   /** Catalogue redesign (ADR 0031) — curated-shelf hub + axis switcher + level facet/sort; off = flat grid. */
   CatalogueHub: 'catalogue.hub',
+  /** Signed-in learner dashboard (ADR 0031) — continue / recommended / saved (at /dashboard). */
+  LearnerDashboard: 'learning.dashboard',
   /** Phase 2 — gates collections (courses / learning paths) browse + admin. */
   Collections: 'learning.collections',
   /** Collections Library — faceted discovery (search/facets/sort/shelves) on the collections index. */
@@ -188,6 +190,7 @@ export const FlagDefaults = {
   [FlagKeys.Favorites]: true,
   [FlagKeys.SavedProgressions]: true,
   [FlagKeys.CatalogueHub]: true,
+  [FlagKeys.LearnerDashboard]: true,
   [FlagKeys.Collections]: true,
   [FlagKeys.CollectionDiscovery]: true,
   [FlagKeys.CollectionBookmarks]: true,

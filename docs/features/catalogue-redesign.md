@@ -1,7 +1,7 @@
 # Feature: Catalogue redesign — hub, axis switcher & shelves
 
-- **Phase:** Platform/UX · **Status:** Phases 1–2 shipped (hub shelves + axis switcher + level facet + sort; collections & tools federated onto the hub). The **Atlas** intersection mode was trialed and **reverted** (a count matrix gave weak content signal — see ADR 0031). Phases 4–5 planned.
-- **Flag key:** `catalogue.hub` — from `@TheY2T/tmr-flags`
+- **Phase:** Platform/UX · **Status:** Phases 1–2 + 4 shipped (hub shelves + axis switcher + level facet + sort; collections & tools federated; signed-in dashboard at `/dashboard`). The **Atlas** intersection mode (Phase 3) was trialed and **reverted** (a count matrix gave weak content signal — see ADR 0031). Phase 5 planned.
+- **Flag key:** `catalogue.hub` (hub) · `learning.dashboard` (signed-in dashboard) — from `@TheY2T/tmr-flags`
 - **ADR:** [0031](../adr/0031-catalogue-hub-redesign.md) · builds on [0023 collections](../adr/0023-collections-library.md), [0021 themes](../adr/0021-multi-theme-vintage-design-system.md), [0018 design system](../adr/0018-ui-component-library-atomic-design.md)
 
 ## Purpose
@@ -34,8 +34,12 @@ experiences — with the faceted grid retained underneath for precise narrowing.
   Instrument, Topic; a **sort** control (relevance / difficulty asc·desc / title); applied-filter chips
   with clear-all; recents; pagination. Opens pre-scoped when entered from a shelf.
 
-**Planned — "My Studio" band** (Phase 4, above the shelves when signed in): *Continue where you left off*,
-*Saved*, taxonomy-overlap recommendations. Anonymous users never see this band.
+**Signed-in dashboard** (`/dashboard` → `StudioDashboard`, gated on `learning.dashboard` &&
+authenticated — anonymous redirects to sign-in): the personal counterpart to the public catalogue,
+kept off the catalogue so browsing isn't conflated with personal state. Rows: *Pick up where you left
+off* (recently-viewed items from browse history), *More like {latest}* (the related-content endpoint on
+the latest item), and *Saved* (favorites); an empty state links to the catalogue. Surfaced as the first
+primary-nav item for signed-in users.
 
 Theming: **semantic tokens only** (3 aesthetics × light/dark, ADR 0021). Icons via the `Icon` atom
 (ADR 0019). All strings via `t(locale, key)` (en + zh-Hans, ADR 0017).

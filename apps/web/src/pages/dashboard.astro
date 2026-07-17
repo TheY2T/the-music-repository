@@ -1,0 +1,28 @@
+---
+import StudioDashboard from '@/components/StudioDashboard.tsx';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+// Personalized surface: requires the flag on and an authenticated user.
+if (!Astro.locals.flags.learnerDashboard) {
+  return Astro.redirect('/');
+}
+if (!Astro.locals.user) {
+  return Astro.redirect('/signin?redirect=/dashboard');
+}
+
+const locale = Astro.locals.locale;
+const showFavorites = Astro.locals.flags.favorites;
+---
+
+<BaseLayout title={`${t(locale, 'dashboard.title')} — ${t(locale, 'site.name')}`}>
+  <PageShell
+    title={t(locale, 'dashboard.title')}
+    subtitle={t(locale, 'dashboard.subtitle')}
+    back={{ href: localizedPath(locale, '/catalogue'), label: t(locale, 'common.backCatalogue') }}
+    maxWidth="max-w-6xl"
+  >
+    <StudioDashboard client:load locale={locale} showFavorites={showFavorites} />
+  </PageShell>
+</BaseLayout>

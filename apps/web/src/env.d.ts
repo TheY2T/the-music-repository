@@ -13,6 +13,7 @@ declare namespace App {
       favorites: boolean;
       savedProgressions: boolean;
       catalogueHub: boolean;
+      learnerDashboard: boolean;
       collections: boolean;
       collectionDiscovery: boolean;
       collectionBookmarks: boolean;

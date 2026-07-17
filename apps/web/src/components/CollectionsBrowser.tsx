@@ -9,7 +9,6 @@ import {
   EmptyState,
   type FacetGroup,
   FacetPanel,
-  Hero,
   Icon,
   Pagination,
   SearchField,
@@ -290,23 +289,28 @@ function Browser({
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {featured ? (
-        <Hero
-          className="border border-border bg-card"
-          eyebrow={t(locale, 'collections.featuredBadge')}
-          title={featured.title}
-          subtitle={featured.summary ?? undefined}
-          actions={
-            <a
-              href={localizedPath(locale, `/collections/${featured.slug}`)}
-              className={cn(buttonVariants({ size: 'sm' }))}
-            >
-              {t(locale, 'collections.startLearning')}
-              <Icon name="arrow-right" className="size-4" />
-            </a>
-          }
-        />
+        <div className="flex flex-col gap-3 rounded-lg border border-border bg-card p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="flex flex-col gap-1">
+            <p className="font-display text-xs font-semibold uppercase tracking-wider text-accent">
+              {t(locale, 'collections.featuredBadge')}
+            </p>
+            <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
+              {featured.title}
+            </h1>
+            {featured.summary ? (
+              <p className="max-w-prose text-sm text-muted-foreground">{featured.summary}</p>
+            ) : null}
+          </div>
+          <a
+            href={localizedPath(locale, `/collections/${featured.slug}`)}
+            className={cn(buttonVariants({ size: 'sm' }), 'shrink-0 self-start sm:self-auto')}
+          >
+            {t(locale, 'collections.startLearning')}
+            <Icon name="arrow-right" className="size-4" />
+          </a>
+        </div>
       ) : null}
 
       <div className="grid gap-8 md:grid-cols-[240px_1fr]">
@@ -376,9 +380,8 @@ function Browser({
 
           {isFetching && items.length === 0 ? (
             <CardGrid>
-              {Array.from({ length: 6 }).map((_, i) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: fixed-length skeletons.
-                <li key={i} className="space-y-3 rounded-lg border border-border p-0">
+              {['sk1', 'sk2', 'sk3', 'sk4', 'sk5', 'sk6'].map((key) => (
+                <li key={key} className="space-y-3 rounded-lg border border-border p-0">
                   <Skeleton className="aspect-[4/3] w-full rounded-b-none" />
                   <div className="space-y-2 p-4">
                     <Skeleton className="h-4 w-3/4" />

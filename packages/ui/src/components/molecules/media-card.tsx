@@ -47,7 +47,9 @@ export function MediaCard({
   return (
     <Card
       className={cn(
-        'relative overflow-hidden p-0 transition hover:-translate-y-0.5 hover:shadow-md',
+        // `flex h-full flex-col` makes every card fill its grid/shelf cell so siblings stay equal
+        // height regardless of summary length or whether a meta/footer slot is present.
+        'relative flex h-full flex-col overflow-hidden p-0 transition hover:-translate-y-0.5 hover:shadow-md',
         className,
       )}
     >
@@ -64,7 +66,7 @@ export function MediaCard({
         {badgeSlot ? <div className="absolute right-2 top-2 z-20">{badgeSlot}</div> : null}
       </div>
 
-      <div className="relative flex flex-col gap-2 p-4">
+      <div className="relative flex flex-1 flex-col gap-2 p-4">
         {actionSlot ? <div className="absolute right-3 top-3 z-20">{actionSlot}</div> : null}
 
         {typeLabel || difficultyLabel ? (

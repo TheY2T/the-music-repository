@@ -1,4 +1,5 @@
 import type * as React from 'react';
+import { Children } from 'react';
 import { cn } from '../../lib/utils';
 
 export interface FeaturedShelfProps {
@@ -22,8 +23,12 @@ export function FeaturedShelf({ title, action, children, className }: FeaturedSh
         </h2>
         {action ? <div className="shrink-0">{action}</div> : null}
       </div>
-      <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [&>*]:w-64 [&>*]:shrink-0 [&>*]:snap-start">
-        {children}
+      {/* Wrap each child in a fixed-width cell that stretches to the tallest, so cards (with `h-full`)
+          end up equal height across the row — the flex item is the cell, not the card itself. */}
+      <div className="flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto pb-2">
+        {Children.map(children, (child) => (
+          <div className="w-64 shrink-0 snap-start">{child}</div>
+        ))}
       </div>
     </section>
   );

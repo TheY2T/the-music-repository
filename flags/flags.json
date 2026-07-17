@@ -57,6 +57,14 @@
       },
       "defaultVariant": "on"
     },
+    "learning.dashboard": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "learning.collections": {
       "state": "ENABLED",
       "variants": {
