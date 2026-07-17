@@ -111,6 +111,7 @@ export {
   SheetTitle,
 } from './components/ui/sheet';
 export { Skeleton } from './components/ui/skeleton';
+export { Slider, type SliderProps } from './components/ui/slider';
 export {
   Table,
   TableBody,

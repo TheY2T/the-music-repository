@@ -1,0 +1,27 @@
+---
+import BackgroundSettings from '@/components/BackgroundSettings.tsx';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+// Personalization surface: gated on the flag, and (like the dashboard it configures) requires a user.
+if (!Astro.locals.flags.dashboardBackground) {
+  return Astro.redirect('/');
+}
+if (!Astro.locals.user) {
+  return Astro.redirect('/signin?redirect=/settings');
+}
+
+const locale = Astro.locals.locale;
+---
+
+<BaseLayout title={`${t(locale, 'settings.title')} — ${t(locale, 'site.name')}`}>
+  <PageShell
+    title={t(locale, 'settings.title')}
+    subtitle={t(locale, 'settings.subtitle')}
+    back={{ href: localizedPath(locale, '/dashboard'), label: t(locale, 'nav.dashboard') }}
+    maxWidth="max-w-3xl"
+  >
+    <BackgroundSettings client:only="react" locale={locale} />
+  </PageShell>
+</BaseLayout>

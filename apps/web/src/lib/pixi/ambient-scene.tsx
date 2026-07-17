@@ -15,6 +15,11 @@ extend({ Container, Graphics });
 const COUNT = 44;
 const noDraw = () => {};
 
+/** Optional strength (0–1) — scales mote count + opacity. Defaults to 1 (home-hero look). */
+interface AmbientProps extends PixiSceneBaseProps {
+  intensity?: number;
+}
+
 interface Mote {
   x: number;
   y: number;
@@ -32,12 +37,14 @@ function seeded(i: number, salt: number): number {
   return v - Math.floor(v);
 }
 
-function Field({ reducedMotion }: { reducedMotion: boolean }) {
+function Field({ reducedMotion, intensity = 1 }: { reducedMotion: boolean; intensity?: number }) {
   const { app, isInitialised } = useApplication();
   const colors = useThemeColors();
   const [size, setSize] = useState({ w: 0, h: 0 });
   const g = useRef<Graphics | null>(null);
   const motes = useRef<Mote[]>([]);
+  const strength = Math.max(0, Math.min(1, intensity));
+  const count = Math.max(6, Math.round(COUNT * strength));
 
   useEffect(() => {
     if (!isInitialised || !app?.canvas) {
@@ -55,17 +62,17 @@ function Field({ reducedMotion }: { reducedMotion: boolean }) {
     if (size.w === 0) {
       return;
     }
-    motes.current = Array.from({ length: COUNT }, (_, i) => ({
+    motes.current = Array.from({ length: count }, (_, i) => ({
       x: seeded(i, 1) * size.w,
       y: seeded(i, 2) * size.h,
       vy: 0.15 + seeded(i, 3) * 0.35,
       drift: 6 + seeded(i, 4) * 14,
       phase: seeded(i, 5) * Math.PI * 2,
       r: 1 + seeded(i, 6) * 3,
-      alpha: 0.12 + seeded(i, 7) * 0.28,
+      alpha: (0.12 + seeded(i, 7) * 0.28) * (0.4 + 0.6 * strength),
       warm: seeded(i, 8) > 0.5,
     }));
-  }, [size]);
+  }, [size, count, strength]);
 
   const redraw = useCallback(() => {
     const graphics = g.current;
@@ -112,7 +119,12 @@ function Field({ reducedMotion }: { reducedMotion: boolean }) {
   return <pixiGraphics ref={g} draw={noDraw} />;
 }
 
-export default function AmbientScene({ resizeTo, reducedMotion, resolution }: PixiSceneBaseProps) {
+export default function AmbientScene({
+  resizeTo,
+  reducedMotion,
+  resolution,
+  intensity,
+}: AmbientProps) {
   return (
     <Application
       resizeTo={resizeTo}
@@ -121,7 +133,7 @@ export default function AmbientScene({ resizeTo, reducedMotion, resolution }: Pi
       autoDensity
       antialias
     >
-      <Field reducedMotion={reducedMotion} />
+      <Field reducedMotion={reducedMotion} intensity={intensity} />
     </Application>
   );
 }

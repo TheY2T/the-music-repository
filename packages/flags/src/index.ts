@@ -37,6 +37,8 @@ export const FlagKeys = {
   CatalogueHub: 'catalogue.hub',
   /** Signed-in learner dashboard (ADR 0031) — continue / recommended / saved (at /dashboard). */
   LearnerDashboard: 'learning.dashboard',
+  /** Animated PixiJS dashboard background + its /settings controls (style picker + intensity). */
+  DashboardBackground: 'personalization.dashboard-background',
   /** Phase 2 — gates collections (courses / learning paths) browse + admin. */
   Collections: 'learning.collections',
   /** Collections Library — faceted discovery (search/facets/sort/shelves) on the collections index. */
@@ -193,6 +195,7 @@ export const FlagDefaults = {
   [FlagKeys.SavedProgressions]: true,
   [FlagKeys.CatalogueHub]: true,
   [FlagKeys.LearnerDashboard]: true,
+  [FlagKeys.DashboardBackground]: true,
   [FlagKeys.Collections]: true,
   [FlagKeys.CollectionDiscovery]: true,
   [FlagKeys.CollectionsHub]: true,

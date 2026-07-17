@@ -1,4 +1,5 @@
 ---
+import DashboardBackground from '@/components/DashboardBackground.tsx';
 import StudioDashboard from '@/components/StudioDashboard.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
@@ -14,15 +15,28 @@ if (!Astro.locals.user) {
 
 const locale = Astro.locals.locale;
 const showFavorites = Astro.locals.flags.favorites;
+const showBackground = Astro.locals.flags.dashboardBackground;
 ---
 
 <BaseLayout title={`${t(locale, 'dashboard.title')} — ${t(locale, 'site.name')}`}>
-  <PageShell
-    title={t(locale, 'dashboard.title')}
-    subtitle={t(locale, 'dashboard.subtitle')}
-    back={{ href: localizedPath(locale, '/catalogue'), label: t(locale, 'common.backCatalogue') }}
-    maxWidth="max-w-6xl"
-  >
-    <StudioDashboard client:load locale={locale} showFavorites={showFavorites} />
-  </PageShell>
+  <div class="relative">
+    {
+      showBackground && (
+        <DashboardBackground
+          client:only="react"
+          className="pointer-events-none absolute inset-0 z-0"
+        />
+      )
+    }
+    <div class="relative z-10">
+      <PageShell
+        title={t(locale, 'dashboard.title')}
+        subtitle={t(locale, 'dashboard.subtitle')}
+        back={{ href: localizedPath(locale, '/catalogue'), label: t(locale, 'common.backCatalogue') }}
+        maxWidth="max-w-6xl"
+      >
+        <StudioDashboard client:load locale={locale} showFavorites={showFavorites} />
+      </PageShell>
+    </div>
+  </div>
 </BaseLayout>

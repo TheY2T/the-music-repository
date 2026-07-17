@@ -86,6 +86,8 @@ export function buildAccountNav(ctx: NavContext): NavItem[] {
   if (flags.premium) items.push(makeItem(ctx, 'upgrade', '/upgrade', 'nav.premium', 'crown'));
   if (flags.classrooms)
     items.push(makeItem(ctx, 'classrooms', '/classrooms', 'nav.classrooms', 'graduation-cap'));
+  if (flags.dashboardBackground)
+    items.push(makeItem(ctx, 'settings', '/settings', 'nav.settings', 'sliders'));
   if (flags.adminCms && (user.role === 'admin' || user.role === 'editor')) {
     items.push(makeItem(ctx, 'admin', '/admin', 'nav.admin', 'settings'));
   }

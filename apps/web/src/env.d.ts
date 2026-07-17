@@ -14,6 +14,7 @@ declare namespace App {
       savedProgressions: boolean;
       catalogueHub: boolean;
       learnerDashboard: boolean;
+      dashboardBackground: boolean;
       collections: boolean;
       collectionDiscovery: boolean;
       collectionsHub: boolean;

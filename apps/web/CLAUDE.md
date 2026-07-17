@@ -384,6 +384,12 @@ React `Icon` share kebab names; a few diverge in Iconify and are aliased in `pac
   `useApplication().isInitialised` (`app.screen` throws before init); `autoDensity` + capped
   `resolution`; respect `prefers-reduced-motion`. Audio-reactive scenes read `getAnalyser()` from
   `src/lib/audio.ts` (master bus). Phase 1: `PianoKeyboard`/`GuitarFretboard`/`CircleOfFifths`.
+- **Decorative backgrounds** (ADR 0022, `docs/features/dashboard-background.md`): `ambient-scene`
+  (home hero) + `bg-waves`/`bg-staff`/`bg-roll` scenes back the personalizable dashboard backdrop.
+  `DashboardBackground.tsx` maps a saved style (`src/lib/dashboard-background.ts`, localStorage) → a
+  lazy scene and renders a `decorative` `PixiCanvas`; the `/settings` page (`BackgroundSettings.tsx`)
+  is a live preview + Apply over the same component (controlled via `style`/`intensity` props). Flag
+  `personalization.dashboard-background`.
 - **Gotcha:** `pixi.js`/`@pixi/react` are NOT in `optimizeDeps.include` (including them pulls a
   duplicate React into the Vitest optimizer). They're lazy-imported → Vite optimizes on first dev use
   (a one-time `504 Outdated Optimize Dep` that self-heals on reload; restart dev / `rm -rf

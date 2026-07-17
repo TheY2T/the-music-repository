@@ -9,6 +9,7 @@ import { Label } from './label';
 import { Progress } from './progress';
 import { Select } from './select';
 import { Separator } from './separator';
+import { Slider } from './slider';
 import { Textarea } from './textarea';
 
 const meta: Meta = {
@@ -81,6 +82,10 @@ export const FormControls: Story = {
       <label htmlFor="subscribe" className="flex items-center gap-2 text-sm">
         <Checkbox id="subscribe" defaultChecked /> Subscribe
       </label>
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="intensity">Intensity</Label>
+        <Slider id="intensity" defaultValue={65} />
+      </div>
     </div>
   ),
 };

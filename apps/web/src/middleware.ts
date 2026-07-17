@@ -133,6 +133,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagKeys.LearnerDashboard,
     FlagDefaults[FlagKeys.LearnerDashboard],
   );
+  const dashboardBackground = await client.getBooleanValue(
+    FlagKeys.DashboardBackground,
+    FlagDefaults[FlagKeys.DashboardBackground],
+  );
   const collections = await client.getBooleanValue(
     FlagKeys.Collections,
     FlagDefaults[FlagKeys.Collections],
@@ -404,6 +408,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     toolPractice,
     catalogueHub,
     learnerDashboard,
+    dashboardBackground,
     collections,
     collectionDiscovery,
     collectionsHub,

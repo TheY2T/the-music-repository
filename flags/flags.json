@@ -65,6 +65,14 @@
       },
       "defaultVariant": "on"
     },
+    "personalization.dashboard-background": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
+    },
     "learning.collections": {
       "state": "ENABLED",
       "variants": {
