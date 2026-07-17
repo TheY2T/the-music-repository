@@ -9,7 +9,6 @@
     ".": "./src/index.ts",
     "./lib/utils": "./src/lib/utils.ts",
     "./components/ui/*": "./src/components/ui/*.tsx",
-    "./music": "./src/components/organisms/music/index.ts",
     "./astro/*": "./src/astro/*"
   },
   "files": [
@@ -18,9 +17,7 @@
   "scripts": {
     "check-types": "tsc --noEmit",
     "lint": "biome check .",
-    "test": "vitest run --passWithNoTests",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@TheY2T/tmr-design-tokens": "workspace:*",

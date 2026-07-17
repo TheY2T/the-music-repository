@@ -1,0 +1,45 @@
+{
+  "name": "@TheY2T/tmr-storybook",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gen": "node scripts/gen-stories.mjs",
+    "dev": "node scripts/gen-stories.mjs && storybook dev -p 6006 --no-open",
+    "build-storybook": "node scripts/gen-stories.mjs && storybook build",
+    "lint": "biome check ."
+  },
+  "dependencies": {
+    "@TheY2T/tmr-api-client": "workspace:*",
+    "@TheY2T/tmr-common-ui": "workspace:*",
+    "@TheY2T/tmr-content-serde": "workspace:*",
+    "@TheY2T/tmr-design-tokens": "workspace:*",
+    "@TheY2T/tmr-flags": "workspace:*",
+    "@TheY2T/tmr-i18n": "workspace:*",
+    "@TheY2T/tmr-music-core": "workspace:*",
+    "@TheY2T/tmr-musickit-ui": "workspace:*",
+    "@TheY2T/tmr-ui": "workspace:*",
+    "@TheY2T/tmr-web-data": "workspace:*",
+    "@coderline/alphatab": "catalog:",
+    "@pixi/react": "catalog:",
+    "@tanstack/react-query": "catalog:",
+    "pixi.js": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "smplr": "^1.0.0"
+  },
+  "devDependencies": {
+    "@coderline/alphatab-vite": "catalog:",
+    "@storybook/react-vite": "catalog:",
+    "msw": "catalog:",
+    "msw-storybook-addon": "^2.0.5",
+    "@tailwindcss/typography": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "storybook": "catalog:",
+    "tailwindcss": "catalog:",
+    "tw-animate-css": "catalog:",
+    "typescript": "catalog:"
+  }
+}

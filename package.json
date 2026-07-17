@@ -23,7 +23,7 @@
     "infra:up": "docker compose -f infra/podman/compose.yaml up -d",
     "infra:down": "docker compose -f infra/podman/compose.yaml down",
     "app:up": "pkill -f 'astro.*dev' 2>/dev/null; pkill -f 'apps/api/dist/main.js' 2>/dev/null; docker compose -f infra/podman/compose.yaml --profile app up -d --build",
-    "app:down": "docker compose -f infra/podman/compose.yaml down; pkill -f 'astro.*dev' 2>/dev/null; pkill -f 'apps/api/dist/main.js' 2>/dev/null; true",
+    "app:down": "docker compose -f infra/podman/compose.yaml --profile app down --remove-orphans; pkill -f 'astro.*dev' 2>/dev/null; pkill -f 'apps/api/dist/main.js' 2>/dev/null; true",
     "app:seed": "docker compose -f infra/podman/compose.yaml run --rm init",
     "obs:up": "docker compose -f infra/podman/observability/compose.observability.yaml up -d",
     "obs:down": "docker compose -f infra/podman/observability/compose.observability.yaml down",

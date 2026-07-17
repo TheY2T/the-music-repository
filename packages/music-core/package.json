@@ -1,0 +1,50 @@
+{
+  "name": "@TheY2T/tmr-music-core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./pixi/use-webgl": "./src/pixi/use-webgl.ts",
+    "./pixi/use-theme-colors": "./src/pixi/use-theme-colors.ts",
+    "./pixi/*": "./src/pixi/*.tsx",
+    "./score/*": "./src/score/*.ts",
+    "./*": "./src/*.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "biome check .",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@TheY2T/tmr-ui": "workspace:*"
+  },
+  "peerDependencies": {
+    "@coderline/alphatab": "catalog:",
+    "@pixi/react": "catalog:",
+    "pixi.js": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "smplr": "^1.0.0"
+  },
+  "devDependencies": {
+    "@TheY2T/tmr-config-typescript": "workspace:*",
+    "@TheY2T/tmr-config-vitest": "workspace:*",
+    "@coderline/alphatab": "catalog:",
+    "@pixi/react": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "pixi.js": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "smplr": "^1.0.0",
+    "typescript": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "vitest": "catalog:"
+  }
+}

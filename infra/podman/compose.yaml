@@ -160,6 +160,17 @@ services:
     ports:
       - "4321:4321"
 
+  # Design-system Storybook (@TheY2T/tmr-ui) — a static build served by nginx on 6006. Self-contained
+  # (components are presentational, no API/DB), so it has no depends_on. Part of the `app` profile, so
+  # it comes up with `pnpm app:up` and is torn down by `pnpm app:down`.
+  storybook:
+    profiles: ["app"]
+    build:
+      context: ../..
+      dockerfile: packages/ui/Dockerfile
+    ports:
+      - "6006:6006"
+
 volumes:
   pgdata:
   meilidata:

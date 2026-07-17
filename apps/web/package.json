@@ -16,8 +16,12 @@
   },
   "dependencies": {
     "@TheY2T/tmr-api-client": "workspace:*",
+    "@TheY2T/tmr-common-ui": "workspace:*",
     "@TheY2T/tmr-content-serde": "workspace:*",
     "@TheY2T/tmr-design-tokens": "workspace:*",
+    "@TheY2T/tmr-music-core": "workspace:*",
+    "@TheY2T/tmr-musickit-ui": "workspace:*",
+    "@TheY2T/tmr-web-data": "workspace:*",
     "@dnd-kit/core": "catalog:",
     "@dnd-kit/sortable": "catalog:",
     "@dnd-kit/utilities": "catalog:",

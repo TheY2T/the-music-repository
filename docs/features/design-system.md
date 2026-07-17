@@ -2,7 +2,18 @@
 
 - **Phase:** Platform · **Status:** shipped
 - **Flag key:** none (foundational; not feature-flagged)
-- **ADR:** [0018](../adr/0018-ui-component-library-atomic-design.md)
+- **ADR:** [0018](../adr/0018-ui-component-library-atomic-design.md) ·
+  [0033](../adr/0033-musickit-ui-common-ui-web-shell.md) (web-as-shell extraction)
+
+> **Update (ADR 0033):** the organism/template/page layer + music logic were extracted out of
+> `apps/web` into four more raw-source packages, making the app a thin shell. Acyclic DAG:
+> `tmr-design-tokens → tmr-ui → tmr-music-core → tmr-web-data → tmr-musickit-ui → tmr-common-ui → apps/web`.
+> `@TheY2T/tmr-ui` stays the strictly-presentational atoms/molecules foundation described below;
+> `tmr-musickit-ui` (music/learning UI + the `ChordDiagram`/`StaffSequence` organisms), `tmr-common-ui`
+> (shell chrome + account/admin/billing/auth), `tmr-music-core` (theory/audio/pixi/score logic +
+> chord-shape data), and `tmr-web-data` (api wrappers, auth client, nav, `Flags`/`User`/`Locale` types)
+> are the new homes. The higher packages are "smart" (may fetch + call `t()` with `locale` by prop);
+> only `tmr-ui` remains i18n-by-prop and fetch-free.
 
 ## Purpose
 
@@ -86,9 +97,22 @@ music-notation SVG colors are the sole exception. Storybook's `preview.tsx` has 
 
 ## Storybook
 
-`pnpm --filter @TheY2T/tmr-ui storybook` (dev, port 6006) / `build-storybook`. Stories are co-located
-(`*.stories.tsx`) under `packages/ui/src`. A **Theme** toolbar toggle previews light/dark.
-Caveat: Storybook 9 warns about Vite 8 (from Astro 7) — a peer-range warning, not a build error.
+A single central host, **`@TheY2T/tmr-storybook`** (ADR 0033), aggregates the co-located `*.stories.tsx`
+from `tmr-ui`, `tmr-musickit-ui`, and `tmr-common-ui`. It surfaces components three ways:
+- **Per-component stories** — one navigable entry per component (e.g. `MusicKit UI/PianoKeyboard`,
+  `Common UI/Admin/Block Editor/BlockEditor`), auto-generated on `dev`/`build-storybook` by
+  `scripts/gen-stories.mjs` into `src/generated` (gitignored + regenerated, like api-client's orval
+  output — run `pnpm --filter @TheY2T/tmr-storybook gen` to refresh manually).
+- **Curated stories** — hand-written co-located ones (e.g. the organism gallery in `musickit-ui`).
+- **Two overview galleries** (`MusicKit UI/Gallery`, `Common UI/Gallery`) that render **every**
+  component in an error-bounded grid.
+
+Smart islands that need a live API/audio degrade to a graceful note (start the API with `pnpm dev`).
+Run `pnpm --filter @TheY2T/tmr-storybook dev` (port 6006; also started by `pnpm dev` alongside api + web) /
+`build-storybook`. **Aesthetic** + **Mode** toolbar toggles preview all 3 aesthetics × light/dark; a
+Providers decorator supplies the api-client React-Query context.
+Caveats: the alphaTab Vite plugin is omitted (it breaks Storybook's static build), so score components
+render only in the app; Storybook 9 warns about Vite 8 (from Astro 7) — a peer-range warning.
 
 ## Gotchas
 

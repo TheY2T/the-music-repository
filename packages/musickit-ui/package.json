@@ -1,0 +1,70 @@
+{
+  "name": "@TheY2T/tmr-musickit-ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./data/*": "./src/data/*.ts",
+    "./content/*": "./src/content/*.tsx",
+    "./score/*": "./src/score/*.tsx",
+    "./organisms": "./src/organisms/index.ts",
+    "./organisms/*": "./src/organisms/*",
+    "./*": "./src/*.tsx"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "biome check .",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@TheY2T/tmr-api-client": "workspace:*",
+    "@TheY2T/tmr-flags": "workspace:*",
+    "@TheY2T/tmr-i18n": "workspace:*",
+    "@TheY2T/tmr-music-core": "workspace:*",
+    "@TheY2T/tmr-ui": "workspace:*",
+    "@TheY2T/tmr-web-data": "workspace:*",
+    "@tanstack/react-query": "catalog:",
+    "astro-icon": "catalog:",
+    "class-variance-authority": "catalog:",
+    "clsx": "catalog:",
+    "lucide-react": "catalog:",
+    "marked": "catalog:",
+    "tailwind-merge": "catalog:"
+  },
+  "peerDependencies": {
+    "@coderline/alphatab": "catalog:",
+    "@pixi/react": "catalog:",
+    "astro": "catalog:",
+    "pixi.js": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "smplr": "^1.0.0"
+  },
+  "devDependencies": {
+    "@TheY2T/tmr-config-typescript": "workspace:*",
+    "@TheY2T/tmr-config-vitest": "workspace:*",
+    "@coderline/alphatab": "catalog:",
+    "@pixi/react": "catalog:",
+    "@storybook/react-vite": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "astro": "catalog:",
+    "happy-dom": "catalog:",
+    "pixi.js": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "smplr": "^1.0.0",
+    "typescript": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "vitest": "catalog:"
+  }
+}

@@ -24,9 +24,21 @@ export default defineConfig({
     // (Plugin lives in its own `@coderline/alphatab-vite` package; the main package's `/vite` subpath
     // is a broken re-export in 1.8.4.)
     plugins: [alphaTab(), tailwindcss()],
-    // The UI package ships raw source (incl. `.astro`), which Astro must transform rather than
-    // treat as an externalized node_modules dependency during SSR. See docs/features/design-system.md.
-    ssr: { noExternal: ['@TheY2T/tmr-ui'] },
+    // The shared UI packages ship raw source (incl. `.astro`), which Astro must transform rather
+    // than treat as externalized node_modules dependencies during SSR. See docs/features/design-system.md.
+    ssr: {
+      noExternal: [
+        '@TheY2T/tmr-ui',
+        '@TheY2T/tmr-common-ui',
+        '@TheY2T/tmr-musickit-ui',
+        '@TheY2T/tmr-music-core',
+        '@TheY2T/tmr-web-data',
+        // Raw-source ESM (extensionless .ts imports) — must be transformed, not externalized. It was
+        // auto-inlined when only apps/web imported it; now the noExternal UI packages import it too, and
+        // Vite externalizes a noExternal package's own deps unless they're listed here. See ADR 0033.
+        '@TheY2T/tmr-api-client',
+      ],
+    },
     // Pre-bundle lucide-react so the Vite dev server doesn't request every icon module individually
     // (barrel-import blowup — hundreds of requests / slow HMR). See docs/features/icons.md.
     // NOTE: pixi.js/@pixi/react and @coderline/alphatab are intentionally NOT pre-bundled here.

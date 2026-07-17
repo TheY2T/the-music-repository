@@ -1,8 +1,8 @@
 ---
-import DashboardBackground from '@/components/DashboardBackground.tsx';
-import StudioDashboard from '@/components/StudioDashboard.tsx';
+import DashboardBackground from '@TheY2T/tmr-common-ui/DashboardBackground';
+import StudioDashboard from '@TheY2T/tmr-common-ui/StudioDashboard';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import { t } from '@TheY2T/tmr-i18n';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 // Personalized surface: requires the flag on and an authenticated user.
@@ -33,7 +33,6 @@ const showMonetization = Astro.locals.flags.monetizationMessaging;
       <PageShell
         title={t(locale, 'dashboard.title')}
         subtitle={t(locale, 'dashboard.subtitle')}
-        back={{ href: localizedPath(locale, '/catalogue'), label: t(locale, 'common.backCatalogue') }}
         maxWidth="max-w-6xl"
       >
         <StudioDashboard

@@ -1,0 +1,244 @@
+import { getAudioContext, scheduleClick, scheduleTone } from '@TheY2T/tmr-music-core/audio';
+import { Button, Icon, Select } from '@TheY2T/tmr-ui';
+import { useEffect, useRef, useState } from 'react';
+
+const LOOKAHEAD_MS = 25;
+const SCHEDULE_AHEAD_S = 0.12;
+const BEATS_PER_BAR_CHOICES = [2, 3, 4, 6];
+const SUBDIVISIONS = [
+  { value: 1, label: 'Quarter' },
+  { value: 2, label: 'Eighths' },
+  { value: 3, label: 'Triplets' },
+  { value: 4, label: 'Sixteenths' },
+];
+const POLY_CHOICES = [
+  { value: 0, label: 'Off' },
+  { value: 2, label: '2' },
+  { value: 3, label: '3' },
+  { value: 4, label: '4' },
+  { value: 5, label: '5' },
+];
+
+export default function Metronome() {
+  const [bpm, setBpm] = useState(100);
+  const [beatsPerBar, setBeatsPerBar] = useState(4);
+  const [subdivision, setSubdivision] = useState(1);
+  const [poly, setPoly] = useState(0);
+  const [running, setRunning] = useState(false);
+  const [currentBeat, setCurrentBeat] = useState(-1);
+
+  const bpmRef = useRef(bpm);
+  const beatsRef = useRef(beatsPerBar);
+  const subRef = useRef(subdivision);
+  const nextNoteTimeRef = useRef(0);
+  const beatRef = useRef(0);
+  const subPosRef = useRef(0);
+  const tapsRef = useRef<number[]>([]);
+
+  // Tap tempo: average the last few tap intervals into a BPM.
+  function tap() {
+    const now = performance.now();
+    const taps = tapsRef.current;
+    if (taps.length && now - taps[taps.length - 1] > 2000) {
+      taps.length = 0; // long gap → start a new count
+    }
+    taps.push(now);
+    if (taps.length > 4) {
+      taps.shift();
+    }
+    if (taps.length >= 2) {
+      let sum = 0;
+      for (let i = 1; i < taps.length; i += 1) {
+        sum += taps[i] - taps[i - 1];
+      }
+      const detected = Math.round(60000 / (sum / (taps.length - 1)));
+      setBpm(Math.max(40, Math.min(240, detected)));
+    }
+  }
+
+  useEffect(() => {
+    bpmRef.current = bpm;
+  }, [bpm]);
+  useEffect(() => {
+    beatsRef.current = beatsPerBar;
+  }, [beatsPerBar]);
+  useEffect(() => {
+    subRef.current = subdivision;
+  }, [subdivision]);
+
+  // Main pulse + subdivisions.
+  useEffect(() => {
+    if (!running) {
+      return;
+    }
+    const ctx = getAudioContext();
+    if (!ctx) {
+      setRunning(false);
+      return;
+    }
+    nextNoteTimeRef.current = ctx.currentTime + 0.1;
+    beatRef.current = 0;
+    subPosRef.current = 0;
+
+    // Lookahead scheduler: schedule clicks slightly ahead so timing is sample-accurate.
+    function scheduler() {
+      const context = getAudioContext();
+      if (!context) {
+        return;
+      }
+      while (nextNoteTimeRef.current < context.currentTime + SCHEDULE_AHEAD_S) {
+        const time = nextNoteTimeRef.current;
+        const sub = subPosRef.current;
+        const beat = beatRef.current;
+        if (sub === 0) {
+          // Main beat: accented downbeat vs plain beat.
+          scheduleClick(time, beat === 0);
+          const delayMs = Math.max(0, (time - context.currentTime) * 1000);
+          window.setTimeout(() => setCurrentBeat(beat), delayMs);
+        } else {
+          // Subdivision tick — soft + high.
+          scheduleTone(2200, time, 0.03, { type: 'square', gain: 0.07 });
+        }
+        nextNoteTimeRef.current += 60 / bpmRef.current / subRef.current;
+        subPosRef.current = (sub + 1) % subRef.current;
+        if (subPosRef.current === 0) {
+          beatRef.current = (beat + 1) % beatsRef.current;
+        }
+      }
+    }
+
+    scheduler();
+    const timer = window.setInterval(scheduler, LOOKAHEAD_MS);
+    return () => {
+      window.clearInterval(timer);
+      setCurrentBeat(-1);
+    };
+  }, [running]);
+
+  // Polyrhythm layer: `poly` evenly-spaced ticks per bar, cross-cutting the main beats.
+  useEffect(() => {
+    if (!running || poly < 2) {
+      return;
+    }
+    const ctx = getAudioContext();
+    if (!ctx) {
+      return;
+    }
+    let next = ctx.currentTime + 0.1;
+    const sched = () => {
+      const context = getAudioContext();
+      if (!context) {
+        return;
+      }
+      const interval = (beatsRef.current * (60 / bpmRef.current)) / poly;
+      while (next < context.currentTime + SCHEDULE_AHEAD_S) {
+        scheduleTone(1568, next, 0.05, { type: 'triangle', gain: 0.14 });
+        next += interval;
+      }
+    };
+    sched();
+    const timer = window.setInterval(sched, LOOKAHEAD_MS);
+    return () => window.clearInterval(timer);
+  }, [running, poly]);
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-center gap-2">
+        {Array.from({ length: beatsPerBar }, (_, i) => (
+          <span
+            key={i}
+            className={`h-5 w-5 rounded-full border ${
+              currentBeat === i
+                ? i === 0
+                  ? 'border-blue-600 bg-blue-600'
+                  : 'border-blue-400 bg-blue-400'
+                : 'border-border bg-transparent'
+            }`}
+          />
+        ))}
+      </div>
+
+      <div className="flex flex-col items-center gap-2">
+        <div className="text-5xl font-bold tabular-nums" data-help="rhythm">
+          {bpm}
+          <span className="ml-2 text-lg font-normal text-muted-foreground">BPM</span>
+        </div>
+        <input
+          type="range"
+          min={40}
+          max={240}
+          value={bpm}
+          onChange={(e) => setBpm(Number(e.target.value))}
+          className="w-full max-w-md"
+          aria-label="Tempo (BPM)"
+        />
+      </div>
+
+      <div className="flex flex-wrap items-center justify-center gap-4">
+        <label className="flex items-center gap-2 text-sm">
+          Beats per bar
+          <Select
+            value={beatsPerBar}
+            onChange={(e) => setBeatsPerBar(Number(e.target.value))}
+            className="h-auto w-auto px-2 py-1"
+          >
+            {BEATS_PER_BAR_CHOICES.map((n) => (
+              <option key={n} value={n}>
+                {n}
+              </option>
+            ))}
+          </Select>
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          Subdivision
+          <Select
+            value={subdivision}
+            onChange={(e) => setSubdivision(Number(e.target.value))}
+            className="h-auto w-auto px-2 py-1"
+          >
+            {SUBDIVISIONS.map((s) => (
+              <option key={s.value} value={s.value}>
+                {s.label}
+              </option>
+            ))}
+          </Select>
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          Polyrhythm
+          <Select
+            value={poly}
+            onChange={(e) => setPoly(Number(e.target.value))}
+            className="h-auto w-auto px-2 py-1"
+          >
+            {POLY_CHOICES.map((p) => (
+              <option key={p.value} value={p.value}>
+                {p.value === 0 ? 'Off' : `${p.label}:${beatsPerBar}`}
+              </option>
+            ))}
+          </Select>
+        </label>
+        <Button type="button" variant="outline" onClick={tap}>
+          Tap tempo
+        </Button>
+        <Button
+          type="button"
+          variant={running ? 'outline' : 'default'}
+          className="px-6"
+          onClick={() => setRunning((r) => !r)}
+        >
+          {running ? (
+            <>
+              <Icon name="square" className="size-3 fill-current" />
+              Stop
+            </>
+          ) : (
+            <>
+              <Icon name="play" className="size-4" />
+              Start
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}

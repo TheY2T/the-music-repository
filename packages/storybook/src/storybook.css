@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+/* Design tokens + Tailwind theme mapping + `.dark` variant (same as apps/web/global.css). */
+@import "@TheY2T/tmr-design-tokens/index.css";
+
+/* Tailwind v4 scans only files it's pointed at — cover every UI package's source so the utility
+   classes used inside their components are generated in the Storybook build. */
+@source "../../ui/src";
+@source "../../common-ui/src";
+@source "../../musickit-ui/src";
+@source "../../music-core/src";
+@source "../src";

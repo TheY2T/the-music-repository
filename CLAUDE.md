@@ -34,12 +34,27 @@ Biome + thin ESLint · podman-compose deploy.
   (`en.json` is the key source of truth) **via `@TheY2T/tmr-i18n`'s `t(locale, key)`**;
   **UI components → `@TheY2T/tmr-ui`; design tokens → `@TheY2T/tmr-design-tokens`**; dependency
   versions → **pnpm catalogs** in `pnpm-workspace.yaml` (add a version once, reference `catalog:`).
-- **Build UI from the design system (web).** Compose `apps/web` UI from `@TheY2T/tmr-ui`
-  (Atomic Design: atoms = shadcn primitives, then molecules → organisms) and style with
-  `@TheY2T/tmr-design-tokens` — no bespoke raw-Tailwind chrome (buttons/cards/badges/inputs/page
-  shells) in `apps/web`. Both are **raw-source ESM** (not dual-build). Templates/pages stay in
-  `apps/web`. Library components are presentational + i18n-by-prop (never call `t()` inside). Follow
-  the **`add-ui-component`** skill. ADR 0018 · `docs/features/design-system.md`.
+- **`apps/web` is a thin shell; complex UI lives in packages (ADR 0033).** The web app keeps only
+  routes (`src/pages/**`), middleware/`Astro.locals`, flag-gating, `BaseLayout` + `global.css`, and
+  prop-passing. All islands come from the shared **raw-source ESM** UI packages, in an acyclic DAG:
+  `@TheY2T/tmr-design-tokens → tmr-ui → tmr-music-core → tmr-web-data → tmr-musickit-ui → tmr-common-ui → apps/web`.
+  - **`@TheY2T/tmr-ui`** — atoms (shadcn primitives) + molecules foundation. **Strictly presentational,
+    i18n-by-prop (never calls `t()`), never fetches.** Style with `@TheY2T/tmr-design-tokens`.
+  - **`@TheY2T/tmr-music-core`** — portable music logic: theory/audio/soundfont, the alphaTab score
+    engine, PixiJS scenes + the `PixiCanvas` boundary, hooks, and chord-shape data (`chord-shapes`,
+    `chord-library`, `staff-geometry`). Peers: react, pixi, alphatab, smplr.
+  - **`@TheY2T/tmr-web-data`** — the data seam: credentialed api-client wrappers, the Better Auth
+    browser client, `nav`, and the shared shell types (`Flags`/`User`/`Locale`). **No UI.** `App.Locals`
+    in `apps/web/src/env.d.ts` is derived from these types.
+  - **`@TheY2T/tmr-musickit-ui`** — ALL music/learning experiences: tool islands, score UI,
+    catalogue/collections/drills, and the music organisms (`ChordDiagram`, `StaffSequence` at
+    `@TheY2T/tmr-musickit-ui/organisms`).
+  - **`@TheY2T/tmr-common-ui`** — app-shell chrome + account/admin/billing/auth UI (header/footer,
+    switchers, dashboards, forms, admin block editor).
+  - **Smart packages:** `musickit-ui`/`common-ui` MAY consume `tmr-api-client` / `tmr-web-data` /
+    `tmr-i18n` and call `t(locale, key)` — but take `locale`/`flags`/`user` as **props**; never reach
+    for `Astro.locals`. No bespoke raw-Tailwind chrome in `apps/web`. Follow the **`add-ui-component`**
+    skill. ADR 0018/0033 · `docs/features/design-system.md`.
 - **Theme with tokens, not colors (web).** The site ships **3 vintage aesthetics × light/dark** (ADR
   0021) via `data-theme` (`hybrid`/`heritage`/`warm-minimal`) + the `.dark` class on `<html>`, switched
   by `ThemeSwitcher` in the global `SiteHeader`. Every component MUST use **semantic token utilities**

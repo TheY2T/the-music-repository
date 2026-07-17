@@ -1,6 +1,6 @@
 // @TheY2T/tmr-ui — atomic-design component library barrel.
-// Atoms (shadcn primitives) + molecules. Music organisms are exported separately from
-// "@TheY2T/tmr-ui/music"; structural Astro components from "@TheY2T/tmr-ui/astro/*".
+// Atoms (shadcn primitives) + molecules. Music organisms live in "@TheY2T/tmr-musickit-ui";
+// structural Astro components are exported from "@TheY2T/tmr-ui/astro/*".
 
 // Molecules
 export {

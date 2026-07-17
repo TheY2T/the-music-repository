@@ -10,6 +10,22 @@ Never re-derive raw-Tailwind chrome in `apps/web` — compose from the library. 
 ESM source** (no build step): edit `src`, imports resolve immediately (restart `astro dev` only after
 changing `exports`). ADR 0018.
 
+## Decide the package first (ADR 0033)
+
+`apps/web` is a **shell** — new UI goes into a package, not `apps/web/src/components`. Acyclic DAG:
+`tmr-design-tokens → tmr-ui → tmr-music-core → tmr-web-data → tmr-musickit-ui → tmr-common-ui → apps/web`.
+
+- **`@TheY2T/tmr-ui`** — atoms + molecules ONLY. **Strictly presentational, i18n-by-prop, never fetches.**
+- **`@TheY2T/tmr-musickit-ui`** — music/learning experiences (tool islands, score UI,
+  catalogue/collections/drills) + music organisms (`ChordDiagram`/`StaffSequence` at `/organisms`).
+- **`@TheY2T/tmr-common-ui`** — shell chrome + account/admin/billing/auth UI. May import musickit-ui.
+- **`@TheY2T/tmr-music-core`** — non-UI music logic (theory/audio/pixi/score) + chord-shape data.
+- **`@TheY2T/tmr-web-data`** — data seam (api wrappers, auth client, nav, `Flags`/`User`/`Locale` types).
+- `musickit-ui`/`common-ui` are **smart**: they MAY call `t(locale, key)` + fetch via `tmr-api-client` /
+  `tmr-web-data`, but take `locale`/`flags`/`user` as **props** — never read `Astro.locals`.
+- A NEW package needs an entry in `apps/web/astro.config.mjs` `ssr.noExternal` + a `@source` glob in
+  `apps/web/src/styles/global.css`.
+
 ## Decide the layer
 
 - **Atom** — an irreducible primitive (button, input, badge). These are **shadcn primitives** in
@@ -17,10 +33,10 @@ changing `exports`). ADR 0018.
   shadcn lacks. Do NOT wrap an existing shadcn primitive just to rename it.
 - **Molecule** — a small composition of atoms (`Field`, `SearchField`, `CardGrid`, `Chip`,
   `StatCard`, `PageHeader`) → `packages/ui/src/components/molecules/*`.
-- **Organism** — a larger reusable section. Domain-specific music primitives →
-  `packages/ui/src/components/organisms/music/*` (exported from `@TheY2T/tmr-ui/music`).
-- **NOT the library**: templates/pages (stay in `apps/web`: `BaseLayout.astro`, routes) and
-  components used in exactly one place (app-specific — keep them in `apps/web/src/components`).
+- **Organism** — a larger reusable section. Music-domain primitives →
+  `packages/musickit-ui/src/organisms/*` (exported from `@TheY2T/tmr-musickit-ui/organisms`); other
+  reusable sections → the fitting package above.
+- **NOT the library**: templates/pages (stay in `apps/web`: `BaseLayout.astro`, routes).
 
 ## 1. Add a shadcn atom (preferred for primitives)
 
@@ -60,8 +76,10 @@ Edit `packages/design-tokens/src/tokens.css` (both `:root` and `.dark`) and map 
 
 ## 4. Add a Storybook story
 
-Co-locate `*.stories.tsx` next to the component; cover key variants in light + dark (use the Theme
-toolbar). Run `pnpm --filter @TheY2T/tmr-ui storybook`.
+Co-locate `*.stories.tsx` next to the component (in whichever package it lives); cover key variants in
+light + dark (use the Aesthetic/Mode toolbars). The single central host **`@TheY2T/tmr-storybook`**
+aggregates every package's co-located stories plus the auto-galleries — run
+`pnpm --filter @TheY2T/tmr-storybook dev` (or `pnpm dev`, which starts it alongside the apps).
 
 ## 5. Use it in `apps/web`
 

@@ -9,6 +9,9 @@
    packages so utility classes used INSIDE their components are generated. If these globs are
    wrong, the library's styles silently go missing (see docs/features/design-system.md). */
 @source "../../../../packages/ui/src";
+@source "../../../../packages/common-ui/src";
+@source "../../../../packages/musickit-ui/src";
+@source "../../../../packages/music-core/src";
 @source "../../../../packages/design-tokens/src";
 
 body {

@@ -1,0 +1,68 @@
+---
+import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
+import Icon from '@TheY2T/tmr-ui/astro/Icon.astro';
+import type { NavItem } from '@TheY2T/tmr-web-data/nav';
+
+/**
+ * Global site footer — static (no interactivity). Brand blurb, Explore + Account link columns
+ * (reusing the same nav model as the header), a license/attribution note (content is PD / CC BY-SA),
+ * and a copyright line. Rendered by BaseLayout below the page slot.
+ */
+interface Props {
+  locale: Locale;
+  siteName: string;
+  primaryNav: NavItem[];
+  accountNav: NavItem[];
+  year: number;
+}
+const { locale, siteName, primaryNav, accountNav, year } = Astro.props;
+---
+
+<footer class="mt-16 border-t border-border bg-card/40">
+  <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 md:grid-cols-4">
+    <div class="md:col-span-2">
+      <a href={localizedPath(locale, '/')} class="flex items-center gap-2">
+        <span class="flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
+          <Icon name="music" class="size-4" />
+        </span>
+        <span class="font-display text-lg font-semibold tracking-tight text-foreground">{siteName}</span>
+      </a>
+      <p class="mt-4 max-w-sm text-sm text-muted-foreground">{t(locale, 'footer.tagline')}</p>
+    </div>
+
+    <nav aria-label={t(locale, 'footer.explore')}>
+      <h2 class="font-display text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        {t(locale, 'footer.explore')}
+      </h2>
+      <ul class="mt-3 flex flex-col gap-2 text-sm">
+        {primaryNav.map((item) => (
+          <li>
+            <a href={item.href} class="text-foreground/80 transition-colors hover:text-foreground">{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    {accountNav.length > 0 && (
+      <nav aria-label={t(locale, 'footer.account')}>
+        <h2 class="font-display text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          {t(locale, 'footer.account')}
+        </h2>
+        <ul class="mt-3 flex flex-col gap-2 text-sm">
+          {accountNav.map((item) => (
+            <li>
+              <a href={item.href} class="text-foreground/80 transition-colors hover:text-foreground">{item.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+  </div>
+
+  <div class="border-t border-border">
+    <div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+      <p>{t(locale, 'footer.licenseNote')}</p>
+      <p>© {year} {t(locale, 'footer.rights')} · {t(locale, 'footer.madeWith')}</p>
+    </div>
+  </div>
+</footer>

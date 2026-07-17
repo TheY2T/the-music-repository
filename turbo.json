@@ -17,6 +17,10 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".astro/**", "!.astro/types.d.ts"]
     },
+    "build-storybook": {
+      "dependsOn": ["^build"],
+      "outputs": ["storybook-static/**"]
+    },
     "dev": {
       "cache": false,
       "persistent": true

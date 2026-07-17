@@ -2,18 +2,42 @@
 
 Astro SSR + React islands + Tailwind v4 + shadcn/ui. See root `CLAUDE.md` for repo-wide rules.
 
+## `apps/web` is a SHELL (ADR 0033)
+
+Complex UI no longer lives here — it moved to shared raw-source ESM packages. This app keeps only the
+shell: routes, middleware/`Astro.locals`, flag-gating, `BaseLayout` + `global.css`, and prop-passing.
+Pages mount islands imported from the packages and pass `locale`/`flags`/`user` down as props.
+
+- **Music/learning UI** (tool islands, score UI, catalogue/collections/drills, music organisms) →
+  `@TheY2T/tmr-musickit-ui` (`@TheY2T/tmr-musickit-ui/organisms` for `ChordDiagram`/`StaffSequence`).
+- **Shell chrome + account/admin/billing/auth UI** → `@TheY2T/tmr-common-ui` (`SiteHeader`,
+  `@TheY2T/tmr-common-ui/astro/SiteFooter.astro`, `ThemeSwitcher`, dashboards, forms, admin block editor).
+- **Music logic** (theory/audio/soundfont, alphaTab engine, PixiJS scenes + `PixiCanvas`, hooks,
+  chord-shape data) → `@TheY2T/tmr-music-core`.
+- **Data seam** (api-client wrappers, `auth-client`, `nav`, `Flags`/`User`/`Locale` types) →
+  `@TheY2T/tmr-web-data`.
+
+Component/skill notes below still name components by their (unchanged) names — they now live in the
+packages above, not `src/components`.
+
 ## Structure
 
 ```
 src/
-  pages/*.astro        # routes (lowercase/kebab, [slug].astro for dynamic)
-  components/*.tsx      # React islands (PascalCase files) — compose from @TheY2T/tmr-ui
-  components/ui/button.tsx  # thin re-export of @TheY2T/tmr-ui Button (back-compat)
-  lib/utils.ts          # thin re-export of cn() from @TheY2T/tmr-ui
+  pages/*.astro        # routes (lowercase/kebab, [slug].astro) — thin shells; read Astro.locals,
+                       #   gate flags, mount a package island with props
+  layouts/BaseLayout.astro  # shell entry: global.css + pre-paint theme + composes common-ui chrome
+  components/ui/button.tsx  # thin re-export of @TheY2T/tmr-ui Button (back-compat shim)
+  lib/utils.ts          # thin re-export of cn() from @TheY2T/tmr-ui (back-compat shim)
+  lib/admin-guard.ts    # reads Astro.locals (stays in the app)
   styles/global.css     # Tailwind v4 (@import) + @import @TheY2T/tmr-design-tokens + @source globs
+                       #   (globs cover ui/common-ui/musickit-ui/music-core src)
   middleware.ts         # OpenFeature SSR eval → Astro.locals.flags (per request)
-  env.d.ts              # App.Locals typing
+  env.d.ts              # App.Locals typing — derived from @TheY2T/tmr-web-data (Flags/User/Locale)
 ```
+Adding a new package island to a route: add it to the package (follow `add-ui-component`), then import
+it in the `.astro` page and pass `locale`/`flags`/`user` props. Wiring for a NEW package: add it to
+`astro.config.mjs` `ssr.noExternal` and a `@source` glob in `global.css`.
 
 ## Design system (ADR 0018, `docs/features/design-system.md`)
 
@@ -355,8 +379,10 @@ src/
 Tailwind v4 is configured in CSS (`@import "tailwindcss"`), not a JS config. Design tokens + the
 `@theme inline` mapping + the `.dark` variant come from `@TheY2T/tmr-design-tokens` (imported in
 `global.css`); `@source` globs there make library utilities generate. shadcn config is
-`components.json` (aliases point at `@TheY2T/tmr-ui`). Component workbench:
-`pnpm --filter @TheY2T/tmr-ui storybook`.
+`components.json` (aliases point at `@TheY2T/tmr-ui`). Component workbench is the single central
+Storybook host **`@TheY2T/tmr-storybook`** (port 6006) — it aggregates the co-located stories from
+`tmr-ui` / `tmr-musickit-ui` / `tmr-common-ui` plus auto-galleries that render every component.
+Run `pnpm --filter @TheY2T/tmr-storybook dev` — also started by `pnpm dev` (turbo, alongside api + web).
 
 ### Theming — 3 aesthetics × light/dark (ADR 0021, `docs/features/design-system.md`)
 

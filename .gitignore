@@ -7,6 +7,7 @@ dist/
 .astro/
 .turbo/
 generated/
+storybook-static/
 .playwright-mcp/
 *.tsbuildinfo
 
@@ -40,3 +41,6 @@ apps/api/drizzle/meta/_journal_local.json
 **/test-results/
 **/.playwright/
 apps/web/e2e/.auth/
+
+# Storybook: MSW worker copied in by scripts/gen-stories.mjs
+packages/storybook/public/
