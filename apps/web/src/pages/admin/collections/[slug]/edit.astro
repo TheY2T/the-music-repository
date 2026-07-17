@@ -20,7 +20,7 @@ const locale = Astro.locals.locale;
   <PageShell
     title={t(locale, 'admin.editCollection')}
     back={{ href: localizedPath(locale, '/admin/collections'), label: t(locale, 'common.backCollections') }}
-    maxWidth="max-w-2xl"
+    maxWidth="max-w-5xl"
   >
     <CollectionForm
       client:load

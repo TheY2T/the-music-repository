@@ -1,6 +1,10 @@
 import type { CollectionItemInput, CollectionWriteInput } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
   Badge,
   Button,
   Card,
@@ -316,149 +320,159 @@ export default function CollectionForm({
           {notice}
         </p>
       ) : null}
-      {status ? (
-        <p className="flex items-center gap-2 text-sm text-muted-foreground">
-          {t(locale, 'colform.status')}
-          <Badge variant={status === 'published' ? 'success' : 'secondary'}>{status}</Badge>
-        </p>
-      ) : null}
-
       <form onSubmit={onSave} className="space-y-6">
-        <Card className="space-y-4 p-5">
-          <Field label={t(locale, 'colform.slug')} htmlFor="colform-slug">
+        {/* Title + summary are the document head; the workflow status sits alongside. */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 space-y-1">
             <Input
-              id="colform-slug"
-              value={form.slug}
-              readOnly={isEdit}
-              onChange={(e) => set('slug', e.target.value)}
-              placeholder="beginner-piano-path"
-            />
-          </Field>
-          <Field label={t(locale, 'colform.title')} htmlFor="colform-title">
-            <Input
-              id="colform-title"
+              aria-label={t(locale, 'colform.title')}
               value={form.title}
               onChange={(e) => set('title', e.target.value)}
+              placeholder={t(locale, 'colform.titlePlaceholder')}
+              className="h-auto border-0 bg-transparent px-0 py-1 font-display text-3xl font-semibold tracking-tight shadow-none focus-visible:ring-0"
             />
-          </Field>
-          <Field label={t(locale, 'colform.summary')} htmlFor="colform-summary">
             <Input
-              id="colform-summary"
+              aria-label={t(locale, 'colform.summary')}
               value={form.summary}
               onChange={(e) => set('summary', e.target.value)}
+              placeholder={t(locale, 'colform.summaryPlaceholder')}
+              className="h-auto border-0 bg-transparent px-0 text-base text-muted-foreground shadow-none focus-visible:ring-0"
             />
-          </Field>
-          <Field label={t(locale, 'colform.kind')} htmlFor="colform-kind">
-            <Select
-              id="colform-kind"
-              value={form.kind}
-              onChange={(e) => set('kind', e.target.value as CollectionWriteInput['kind'])}
-            >
-              {KINDS.map((k) => (
-                <option key={k} value={k}>
-                  {k}
-                </option>
-              ))}
-            </Select>
-          </Field>
-          {blockEditor ? (
-            <div className="space-y-1.5">
-              <span className="text-sm font-medium">{t(locale, 'colform.body')}</span>
-              {loaded ? (
-                <BlockEditor
-                  key={slug ?? 'new'}
-                  profile="minimal"
-                  locale={locale}
-                  initialDoc={null}
-                  initialBodyMdx={form.bodyMdx}
-                  initialEmbeds={[]}
-                  onChange={(c) => set('bodyMdx', c.bodyMdx)}
-                />
-              ) : null}
-            </div>
-          ) : (
-            <Field label={t(locale, 'colform.body')} htmlFor="colform-body">
-              <Textarea
-                id="colform-body"
-                className="h-28"
-                value={form.bodyMdx}
-                onChange={(e) => set('bodyMdx', e.target.value)}
-              />
-            </Field>
-          )}
-        </Card>
-
-        <Card className="space-y-4 p-5">
-          <p className="font-display font-semibold">{t(locale, 'colform.metaHeading')}</p>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label={t(locale, 'colform.curator')} htmlFor="colform-curator">
-              <Input
-                id="colform-curator"
-                value={form.curatorName}
-                onChange={(e) => set('curatorName', e.target.value)}
-              />
-            </Field>
-            <Field label={t(locale, 'colform.featured')}>
-              <SegmentedToggle<'yes' | 'no'>
-                options={[
-                  { value: 'no', label: t(locale, 'colform.no') },
-                  { value: 'yes', label: t(locale, 'colform.yes') },
-                ]}
-                value={form.featured ? 'yes' : 'no'}
-                onValueChange={(v) => set('featured', v === 'yes')}
-              />
-            </Field>
-            <Field label={t(locale, 'colform.difficultyFrom')} htmlFor="colform-dmin">
-              <Input
-                id="colform-dmin"
-                type="number"
-                value={form.difficultyMin}
-                onChange={(e) => set('difficultyMin', e.target.value)}
-              />
-            </Field>
-            <Field label={t(locale, 'colform.difficultyTo')} htmlFor="colform-dmax">
-              <Input
-                id="colform-dmax"
-                type="number"
-                value={form.difficultyMax}
-                onChange={(e) => set('difficultyMax', e.target.value)}
-              />
-            </Field>
-            <Field label={t(locale, 'colform.duration')} htmlFor="colform-mins">
-              <Input
-                id="colform-mins"
-                type="number"
-                value={form.estMinutes}
-                onChange={(e) => set('estMinutes', e.target.value)}
-              />
-            </Field>
-            <Field label={t(locale, 'colform.tags')} htmlFor="colform-tags">
-              <Input
-                id="colform-tags"
-                value={form.tags}
-                onChange={(e) => set('tags', e.target.value)}
-                placeholder="piano, baroque"
-              />
-            </Field>
           </div>
-          <Field label={t(locale, 'colform.curatorBio')} htmlFor="colform-bio">
+          {status ? (
+            <Badge variant={status === 'published' ? 'success' : 'secondary'}>{status}</Badge>
+          ) : null}
+        </div>
+
+        {/* Metadata as a collapsible properties strip, not a stack of cards. */}
+        <Accordion
+          type="multiple"
+          defaultValue={['properties']}
+          className="rounded-lg border border-border"
+        >
+          <AccordionItem value="properties" className="border-b-0 px-4">
+            <AccordionTrigger>{t(locale, 'colform.properties')}</AccordionTrigger>
+            <AccordionContent className="space-y-4 text-foreground">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label={t(locale, 'colform.slug')} htmlFor="colform-slug">
+                  <Input
+                    id="colform-slug"
+                    value={form.slug}
+                    readOnly={isEdit}
+                    onChange={(e) => set('slug', e.target.value)}
+                    placeholder="beginner-piano-path"
+                  />
+                </Field>
+                <Field label={t(locale, 'colform.kind')} htmlFor="colform-kind">
+                  <Select
+                    id="colform-kind"
+                    value={form.kind}
+                    onChange={(e) => set('kind', e.target.value as CollectionWriteInput['kind'])}
+                  >
+                    {KINDS.map((k) => (
+                      <option key={k} value={k}>
+                        {k}
+                      </option>
+                    ))}
+                  </Select>
+                </Field>
+                <Field label={t(locale, 'colform.curator')} htmlFor="colform-curator">
+                  <Input
+                    id="colform-curator"
+                    value={form.curatorName}
+                    onChange={(e) => set('curatorName', e.target.value)}
+                  />
+                </Field>
+                <Field label={t(locale, 'colform.featured')}>
+                  <SegmentedToggle<'yes' | 'no'>
+                    options={[
+                      { value: 'no', label: t(locale, 'colform.no') },
+                      { value: 'yes', label: t(locale, 'colform.yes') },
+                    ]}
+                    value={form.featured ? 'yes' : 'no'}
+                    onValueChange={(v) => set('featured', v === 'yes')}
+                  />
+                </Field>
+                <Field label={t(locale, 'colform.difficultyFrom')} htmlFor="colform-dmin">
+                  <Input
+                    id="colform-dmin"
+                    type="number"
+                    value={form.difficultyMin}
+                    onChange={(e) => set('difficultyMin', e.target.value)}
+                  />
+                </Field>
+                <Field label={t(locale, 'colform.difficultyTo')} htmlFor="colform-dmax">
+                  <Input
+                    id="colform-dmax"
+                    type="number"
+                    value={form.difficultyMax}
+                    onChange={(e) => set('difficultyMax', e.target.value)}
+                  />
+                </Field>
+                <Field label={t(locale, 'colform.duration')} htmlFor="colform-mins">
+                  <Input
+                    id="colform-mins"
+                    type="number"
+                    value={form.estMinutes}
+                    onChange={(e) => set('estMinutes', e.target.value)}
+                  />
+                </Field>
+                <Field label={t(locale, 'colform.tags')} htmlFor="colform-tags">
+                  <Input
+                    id="colform-tags"
+                    value={form.tags}
+                    onChange={(e) => set('tags', e.target.value)}
+                    placeholder="piano, baroque"
+                  />
+                </Field>
+              </div>
+              <Field label={t(locale, 'colform.curatorBio')} htmlFor="colform-bio">
+                <Textarea
+                  id="colform-bio"
+                  className="h-20"
+                  value={form.curatorBio}
+                  onChange={(e) => set('curatorBio', e.target.value)}
+                />
+              </Field>
+              <Field label={t(locale, 'colform.outcomes')} htmlFor="colform-outcomes">
+                <Textarea
+                  id="colform-outcomes"
+                  className="h-24"
+                  value={form.outcomes}
+                  onChange={(e) => set('outcomes', e.target.value)}
+                  placeholder={t(locale, 'colform.outcomesHelp')}
+                />
+              </Field>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        {/* Description (full-width). */}
+        {blockEditor ? (
+          <div className="space-y-2">
+            <span className="text-sm font-medium">{t(locale, 'colform.body')}</span>
+            {loaded ? (
+              <BlockEditor
+                key={slug ?? 'new'}
+                profile="minimal"
+                locale={locale}
+                initialDoc={null}
+                initialBodyMdx={form.bodyMdx}
+                initialEmbeds={[]}
+                onChange={(c) => set('bodyMdx', c.bodyMdx)}
+              />
+            ) : null}
+          </div>
+        ) : (
+          <Field label={t(locale, 'colform.body')} htmlFor="colform-body">
             <Textarea
-              id="colform-bio"
-              className="h-20"
-              value={form.curatorBio}
-              onChange={(e) => set('curatorBio', e.target.value)}
+              id="colform-body"
+              className="h-28"
+              value={form.bodyMdx}
+              onChange={(e) => set('bodyMdx', e.target.value)}
             />
           </Field>
-          <Field label={t(locale, 'colform.outcomes')} htmlFor="colform-outcomes">
-            <Textarea
-              id="colform-outcomes"
-              className="h-24"
-              value={form.outcomes}
-              onChange={(e) => set('outcomes', e.target.value)}
-              placeholder={t(locale, 'colform.outcomesHelp')}
-            />
-          </Field>
-        </Card>
+        )}
 
         <Card className="space-y-4 p-5">
           <Field label={t(locale, 'colform.ungroupedHelp')} htmlFor="colform-ungrouped">

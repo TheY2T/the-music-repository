@@ -1,4 +1,4 @@
-import type { CollectionSummary } from '@TheY2T/tmr-api-client';
+import type { CollectionSummary, CollectionWriteInput } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import { Badge, Icon, TableCell, TableHead } from '@TheY2T/tmr-ui';
 import { collectionsAdminApi } from '@/lib/admin-api';
@@ -9,6 +9,17 @@ import { statusText, statusVariant, titleize } from './manager-helpers';
 type Row = CollectionSummary;
 
 const STATUS_ORDER = ['review', 'draft', 'published'] as const;
+const KINDS = ['course', 'path', 'syllabus', 'songlist'] as const;
+
+function slugify(title: string): string {
+  return (
+    title
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'untitled'
+  );
+}
 
 function difficultyRange(locale: Locale, c: Row): string | undefined {
   if (c.difficultyMin == null) return undefined;
@@ -34,6 +45,57 @@ export function collectionManagerConfig(locale: Locale): EntityManagerConfig<Row
     editHref,
     newHref: localizedPath(locale, '/admin/collections/new'),
     newLabel: t(locale, 'acoll.newCollection'),
+    quickCreate: {
+      typeOptions: KINDS.map((k) => ({ value: k, label: titleize(k) })),
+      create: async ({ title, type }) => {
+        const slug = slugify(title);
+        await collectionsAdminApi.create({
+          slug,
+          title,
+          kind: (type ?? 'course') as CollectionWriteInput['kind'],
+          visibility: 'public',
+        });
+        return slug;
+      },
+    },
+    duplicate: async (c) => {
+      const detail = await collectionsAdminApi.get(c.slug);
+      const slug = `${c.slug}-copy`;
+      await collectionsAdminApi.create({
+        slug,
+        title: `Copy of ${c.title}`,
+        summary: detail.summary ?? undefined,
+        bodyMdx: detail.bodyMdx ?? undefined,
+        kind: detail.kind,
+        visibility: 'public',
+        featured: false,
+        difficultyMin: detail.difficultyMin ?? undefined,
+        difficultyMax: detail.difficultyMax ?? undefined,
+        estMinutes: detail.estMinutes ?? undefined,
+        curatorName: detail.curatorName ?? undefined,
+        curatorBio: detail.curatorBio ?? undefined,
+        tags: detail.tags ?? undefined,
+        outcomes: detail.outcomes ?? undefined,
+      });
+      await collectionsAdminApi.setSections(
+        slug,
+        detail.sections.map((s) => ({ title: s.title, description: s.description ?? undefined })),
+      );
+      const items = [
+        ...detail.items
+          .filter((e) => !e.sectionId)
+          .map((e) => ({ contentSlug: e.content.slug, curatorNote: e.curatorNote ?? undefined })),
+        ...detail.sections.flatMap((s, sectionIndex) =>
+          s.items.map((e) => ({
+            contentSlug: e.content.slug,
+            curatorNote: e.curatorNote ?? undefined,
+            sectionIndex,
+          })),
+        ),
+      ];
+      await collectionsAdminApi.setItems(slug, items);
+      return slug;
+    },
     searchPlaceholder: t(locale, 'acm.searchPlaceholder'),
     emptyLabel: t(locale, 'acm.empty'),
     loadError: (error) => t(locale, 'acoll.loadError', { error }),
