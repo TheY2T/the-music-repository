@@ -25,8 +25,7 @@ export function helpManagerConfig(locale: Locale): EntityManagerConfig<Row> {
     getKey: (topic) => topic.slug,
     getTitle: (topic) => topic.term,
     getSubtitle: (topic) => topic.slug,
-    editHref: (topic) =>
-      localizedPath(locale, `/admin/help/${encodeURIComponent(topic.slug)}/edit`),
+    editHref: (key) => localizedPath(locale, `/admin/help/${encodeURIComponent(key)}/edit`),
     newHref: localizedPath(locale, '/admin/help/new'),
     newLabel: t(locale, 'ahelp.newTopic'),
     searchPlaceholder: t(locale, 'acm.searchPlaceholder'),

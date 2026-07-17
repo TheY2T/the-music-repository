@@ -16,8 +16,17 @@
 >
 > The generic manager owns the shell, control bar, search, facets, pagination, selection, optimistic
 > status, and the drag board; each entity supplies a config (accessors, axes, card/table renderers,
-> optional board). Content still runs on its original bespoke `AdminContentManager` (the reference the
-> generic was extracted from) — a candidate to migrate onto `EntityManager` for a single implementation.
+> optional board).
+>
+> **Content migrated onto `EntityManager`** too, so there is now a single manager implementation; the
+> old bespoke `AdminContentManager` UI + `admin-content-shelves` module were removed.
+>
+> **Streamlined create (Phase 3):** the config gained optional `quickCreate` (title + type → slug →
+> draft → editor, via a dialog) and `duplicate` (clone metadata/body/taxonomy as a draft). "+ New" opens
+> the dialog when `quickCreate` is set (else links to `newHref`); a row's ⋯ menu offers Duplicate; and an
+> axis flagged `createType` shows a per-shelf "+ Add {type}" that opens quick-create prefilled. Wired for
+> content; collections/help keep their full-form `newHref`. Shelf edge scroll buttons were also added to
+> the shared `FeaturedShelf`.
 
 ## Context
 

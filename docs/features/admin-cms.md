@@ -25,7 +25,12 @@ taxonomy — all RBAC-gated and spec-first, with writes reindexed into search im
   - All status changes are **optimistic** (resync from the server on error) and hit the shared
     `POST /content/{slug}/status` endpoint. The client reads the whole list once and does all grouping,
     faceting, and filtering **in memory** (pure logic in `lib/admin-content-shelves.ts`).
-- **New content** button → `/admin/content/new`.
+- **Streamlined create** (Phase 3): **+ New** opens a **quick-create dialog** (title + type → derives a
+  slug → creates a draft → drops you into the editor) instead of the full form; each row's ⋯ menu has
+  **Duplicate** (clones metadata + body + taxonomy as a "Copy of…" draft); and on the **Type** axis each
+  shelf shows **+ Add {type}** (opens quick-create prefilled). These are generic `EntityManager`
+  capabilities (`quickCreate` / `duplicate` config); the full `/admin/content/new` form remains the
+  `newHref` fallback.
 - `/admin/content/new` and `/admin/content/[slug]/edit` — a `ContentForm` island: fields, a
   **Markdown body editor with live preview** (`marked`), taxonomy inputs (comma-separated slugs with
   datalist suggestions; unknown slugs are auto-created), and (edit mode) **Publish / Unpublish /

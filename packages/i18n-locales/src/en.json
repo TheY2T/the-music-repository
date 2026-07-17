@@ -141,6 +141,7 @@
   "catalogue.axis.format": "Format",
   "common.prev": "Prev",
   "common.next": "Next",
+  "common.close": "Close",
   "common.recentlyViewed": "Recently viewed",
   "common.recentsClear": "Clear",
 
@@ -561,6 +562,10 @@
   "acm.helpLinked": "Linked to an article",
   "acm.helpStandalone": "Standalone",
   "acm.helpColLinked": "Linked article",
+  "acm.create": "Create",
+  "acm.creating": "Creating…",
+  "acm.duplicate": "Duplicate",
+  "acm.addType": "Add {type}",
   "acm.viewHub": "Hub",
   "acm.viewTable": "Table",
   "acm.viewBoard": "Board",

@@ -15,9 +15,11 @@ export interface FeaturedShelfProps {
  * Titled horizontal scroller section (e.g. "Featured this week"). Children snap-scroll in a row that
  * scrolls within itself, so the page body never scrolls horizontally. Each child keeps a fixed width.
  *
- * When the row overflows, edge **scroll buttons** appear (right, and left once scrolled) to page through
- * it. They are decorative mouse conveniences (`aria-hidden`, not tabbable): the row is already keyboard-
- * accessible because tabbing to an off-screen card scrolls it into view.
+ * When the row overflows, an edge **fade** hints at more content and an edge **scroll button** pages
+ * through it (right, and left once scrolled). The button is opaque and sits above the cards (`z-20`), and
+ * the fade is `pointer-events-none`, so neither blocks a card's own controls (e.g. the favorite heart)
+ * from being clicked. Both are decorative mouse conveniences (`aria-hidden`, not tabbable) — the row is
+ * already keyboard-accessible because tabbing to an off-screen card scrolls it into view.
  */
 export function FeaturedShelf({ title, action, children, className }: FeaturedShelfProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -48,8 +50,9 @@ export function FeaturedShelf({ title, action, children, className }: FeaturedSh
     if (el) el.scrollBy({ left: direction * el.clientWidth * 0.85, behavior: 'smooth' });
   };
 
+  // Opaque + z-20 so card content never shows through or paints over it.
   const arrowClass =
-    'absolute top-1/2 z-10 hidden size-8 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/90 text-muted-foreground shadow-sm backdrop-blur transition hover:text-foreground sm:flex';
+    'absolute top-1/2 z-20 hidden size-8 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-md transition hover:text-foreground sm:flex';
 
   return (
     <section className={cn('flex flex-col gap-4', className)}>
@@ -70,6 +73,19 @@ export function FeaturedShelf({ title, action, children, className }: FeaturedSh
             <div className="w-64 shrink-0 snap-start">{child}</div>
           ))}
         </div>
+        {/* Edge fades (z-10, pointer-events-none) hint at more content beyond the visible row. */}
+        {!atStart ? (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-background to-transparent"
+          />
+        ) : null}
+        {!atEnd ? (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-background to-transparent"
+          />
+        ) : null}
         {!atStart ? (
           <button
             type="button"

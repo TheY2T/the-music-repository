@@ -141,6 +141,7 @@
   "catalogue.axis.format": "类型",
   "common.prev": "上一页",
   "common.next": "下一页",
+  "common.close": "关闭",
   "common.recentlyViewed": "最近浏览",
   "common.recentsClear": "清除",
 
@@ -561,6 +562,10 @@
   "acm.helpLinked": "已关联文章",
   "acm.helpStandalone": "独立",
   "acm.helpColLinked": "关联文章",
+  "acm.create": "创建",
+  "acm.creating": "创建中…",
+  "acm.duplicate": "复制",
+  "acm.addType": "新建{type}",
   "acm.viewHub": "中心",
   "acm.viewTable": "表格",
   "acm.viewBoard": "看板",

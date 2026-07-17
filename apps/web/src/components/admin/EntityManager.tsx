@@ -6,6 +6,11 @@ import {
   Card,
   Checkbox,
   cn,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -16,6 +21,7 @@ import {
   FacetPanel,
   FeaturedShelf,
   Icon,
+  Input,
   Pagination,
   SearchField,
   SegmentedToggle,
@@ -28,7 +34,14 @@ import {
   TableHeader,
   TableRow,
 } from '@TheY2T/tmr-ui';
-import { type DragEvent, type ReactNode, useEffect, useMemo, useState } from 'react';
+import {
+  type DragEvent,
+  type FormEvent,
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   buildColumns,
   countBuckets,
@@ -46,6 +59,16 @@ export interface EntityAxis<Row> {
   order: ShelfOrder<Row>;
   /** Localized shelf title for a value. */
   valueLabel: (value: string) => string;
+  /** When true, this axis's values are creatable types → each shelf shows a "+ Add {type}" action
+   * that opens quick-create prefilled (requires `quickCreate` with matching type values). */
+  createType?: boolean;
+}
+
+export interface EntityQuickCreate {
+  /** Type options shown as a select in the create dialog; omit for a title-only create. */
+  typeOptions?: { value: string; label: string }[];
+  /** Create a draft from the entered values; resolves to the new item's key (slug) to open in the editor. */
+  create: (values: { title: string; type?: string }) => Promise<string>;
 }
 
 export interface EntityFacet<Row> {
@@ -83,9 +106,14 @@ export interface EntityManagerConfig<Row> {
   getKey: (row: Row) => string;
   getTitle: (row: Row) => string;
   getSubtitle?: (row: Row) => string | undefined;
-  editHref: (row: Row) => string;
+  /** Editor URL for an item, by its key (slug). */
+  editHref: (key: string) => string;
   newHref: string;
   newLabel: string;
+  /** When present, "+ New" opens a quick-create dialog (title + optional type) instead of navigating. */
+  quickCreate?: EntityQuickCreate;
+  /** When present, a row's ⋯ menu offers "Duplicate"; resolves to the new item's key to open. */
+  duplicate?: (row: Row) => Promise<string>;
   searchPlaceholder: string;
   emptyLabel: string;
   loadError: (error: string) => string;
@@ -109,15 +137,17 @@ export interface EntityManagerConfig<Row> {
   board?: EntityBoard<Row>;
 }
 
-/** The ⋯ menu on a card/row: Edit, plus move-to-status when the entity has a board/lifecycle. */
+/** The ⋯ menu on a card/row: Edit, Duplicate, plus move-to-status when the entity has a lifecycle. */
 function ActionsMenu<Row>({
   row,
   config,
   onMove,
+  onDuplicate,
 }: {
   row: Row;
   config: EntityManagerConfig<Row>;
   onMove: (status: string) => void;
+  onDuplicate?: () => void;
 }) {
   const targets = config.board?.moveTargets(row) ?? [];
   return (
@@ -129,10 +159,18 @@ function ActionsMenu<Row>({
         <Icon name="more-horizontal" className="size-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-44">
-        <DropdownMenuItem onSelect={() => window.location.assign(config.editHref(row))}>
+        <DropdownMenuItem
+          onSelect={() => window.location.assign(config.editHref(config.getKey(row)))}
+        >
           <Icon name="pencil" className="size-4" />
           {t(config.locale, 'acm.edit')}
         </DropdownMenuItem>
+        {onDuplicate ? (
+          <DropdownMenuItem onSelect={onDuplicate}>
+            <Icon name="copy" className="size-4" />
+            {t(config.locale, 'acm.duplicate')}
+          </DropdownMenuItem>
+        ) : null}
         {targets.length ? (
           <DropdownMenuLabel>{t(config.locale, 'acm.moveTo')}</DropdownMenuLabel>
         ) : null}
@@ -150,6 +188,7 @@ function EntityCard<Row>({
   row,
   config,
   onMove,
+  onDuplicate,
   busy,
   draggable = false,
   onDragStart,
@@ -157,6 +196,7 @@ function EntityCard<Row>({
   row: Row;
   config: EntityManagerConfig<Row>;
   onMove: (status: string) => void;
+  onDuplicate?: () => void;
   busy: boolean;
   draggable?: boolean;
   onDragStart?: (e: DragEvent<HTMLDivElement>) => void;
@@ -174,9 +214,12 @@ function EntityCard<Row>({
     >
       <div className="flex items-start justify-between gap-2">
         {config.cardBadge?.(row) ?? <span />}
-        <ActionsMenu row={row} config={config} onMove={onMove} />
+        <ActionsMenu row={row} config={config} onMove={onMove} onDuplicate={onDuplicate} />
       </div>
-      <a href={config.editHref(row)} className="font-medium text-foreground hover:underline">
+      <a
+        href={config.editHref(config.getKey(row))}
+        className="font-medium text-foreground hover:underline"
+      >
         {config.getTitle(row)}
       </a>
       {subtitle ? <p className="truncate text-xs text-muted-foreground">{subtitle}</p> : null}
@@ -186,18 +229,23 @@ function EntityCard<Row>({
 }
 
 type MoveFn = (keys: string[], status: string) => void;
+type DuplicateFn<Row> = (row: Row) => void;
 
 function HubView<Row>({
   rows,
   axis,
   config,
   onMove,
+  onDuplicate,
+  onCreate,
   busy,
 }: {
   rows: Row[];
   axis: EntityAxis<Row>;
   config: EntityManagerConfig<Row>;
   onMove: MoveFn;
+  onDuplicate?: DuplicateFn<Row>;
+  onCreate?: (type: string) => void;
   busy: Set<string>;
 }) {
   const [q, setQ] = useState('');
@@ -206,6 +254,7 @@ function HubView<Row>({
     [rows, q, config],
   );
   const shelves = groupIntoShelves(filtered, axis.getValues, axis.order, config.defaultRowSort);
+  const canCreateType = Boolean(axis.createType && onCreate);
   return (
     <div className="space-y-6">
       <div className="max-w-sm">
@@ -224,6 +273,14 @@ function HubView<Row>({
             <FeaturedShelf
               key={shelf.key}
               title={`${axis.valueLabel(shelf.value)} · ${shelf.count}`}
+              action={
+                canCreateType ? (
+                  <Button variant="ghost" size="sm" onClick={() => onCreate?.(shelf.value)}>
+                    <Icon name="plus" className="size-4" />
+                    {t(config.locale, 'acm.addType', { type: axis.valueLabel(shelf.value) })}
+                  </Button>
+                ) : undefined
+              }
             >
               {shelf.rows.map((row) => (
                 <EntityCard
@@ -232,6 +289,7 @@ function HubView<Row>({
                   config={config}
                   busy={busy.has(config.getKey(row))}
                   onMove={(status) => onMove([config.getKey(row)], status)}
+                  onDuplicate={onDuplicate ? () => onDuplicate(row) : undefined}
                 />
               ))}
             </FeaturedShelf>
@@ -249,12 +307,14 @@ function BoardView<Row>({
   board,
   config,
   onMove,
+  onDuplicate,
   busy,
 }: {
   rows: Row[];
   board: EntityBoard<Row>;
   config: EntityManagerConfig<Row>;
   onMove: MoveFn;
+  onDuplicate?: DuplicateFn<Row>;
   busy: Set<string>;
 }) {
   const columns = buildColumns(
@@ -314,6 +374,7 @@ function BoardView<Row>({
                   e.dataTransfer.effectAllowed = 'move';
                 }}
                 onMove={(status) => onMove([config.getKey(row)], status)}
+                onDuplicate={onDuplicate ? () => onDuplicate(row) : undefined}
               />
             ))}
             {col.rows.length > limit ? (
@@ -338,11 +399,13 @@ function TableView<Row>({
   rows,
   config,
   onMove,
+  onDuplicate,
   busy,
 }: {
   rows: Row[];
   config: EntityManagerConfig<Row>;
   onMove: MoveFn;
+  onDuplicate?: DuplicateFn<Row>;
   busy: Set<string>;
 }) {
   const [q, setQ] = useState('');
@@ -520,7 +583,7 @@ function TableView<Row>({
                       ) : null}
                       <TableCell>
                         <a
-                          href={config.editHref(row)}
+                          href={config.editHref(key)}
                           className="font-medium text-foreground hover:underline"
                         >
                           {config.getTitle(row)}
@@ -535,6 +598,7 @@ function TableView<Row>({
                           row={row}
                           config={config}
                           onMove={(status) => onMove([key], status)}
+                          onDuplicate={onDuplicate ? () => onDuplicate(row) : undefined}
                         />
                       </TableCell>
                     </TableRow>
@@ -569,6 +633,86 @@ function readStored<T extends string>(key: string, allowed: readonly string[], f
   }
 }
 
+/** Quick-create dialog: title (+ optional type) → creates a draft → opens the editor. */
+function QuickCreateDialog<Row>({
+  config,
+  open,
+  initialType,
+  onOpenChange,
+  onCreated,
+}: {
+  config: EntityManagerConfig<Row>;
+  open: boolean;
+  initialType?: string;
+  onOpenChange: (open: boolean) => void;
+  onCreated: (key: string) => void;
+}) {
+  const quick = config.quickCreate;
+  const [title, setTitle] = useState('');
+  const [type, setType] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (open) {
+      setTitle('');
+      setType(initialType ?? quick?.typeOptions?.[0]?.value ?? '');
+      setError(null);
+      setBusy(false);
+    }
+  }, [open, initialType, quick]);
+
+  if (!quick) return null;
+
+  async function submit(e: FormEvent) {
+    e.preventDefault();
+    if (!quick || !title.trim() || busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const key = await quick.create({ title: title.trim(), type: type || undefined });
+      onCreated(key);
+    } catch (err) {
+      setError((err as Error).message);
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent closeLabel={t(config.locale, 'common.close')}>
+        <DialogHeader>
+          <DialogTitle>{config.newLabel}</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={submit} className="space-y-4">
+          <label className="block space-y-1 text-sm">
+            <span className="font-medium text-foreground">{t(config.locale, 'acl.colTitle')}</span>
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} autoFocus />
+          </label>
+          {quick.typeOptions ? (
+            <label className="block space-y-1 text-sm">
+              <span className="font-medium text-foreground">{t(config.locale, 'acl.colType')}</span>
+              <Select value={type} onChange={(e) => setType(e.target.value)}>
+                {quick.typeOptions.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </Select>
+            </label>
+          ) : null}
+          {error ? <p className="text-sm text-destructive">{error}</p> : null}
+          <DialogFooter>
+            <Button type="submit" disabled={!title.trim() || busy}>
+              {busy ? t(config.locale, 'acm.creating') : t(config.locale, 'acm.create')}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 /** Generic three-view admin manager (hub / table / board), driven by a per-entity config. */
 export function EntityManager<Row>({ config }: { config: EntityManagerConfig<Row> }) {
   const { locale, entity } = config;
@@ -581,6 +725,8 @@ export function EntityManager<Row>({ config }: { config: EntityManagerConfig<Row
   const [view, setView] = useState<ViewMode>(config.views[0]);
   const [axisKey, setAxisKey] = useState(config.defaultAxis);
   const [busy, setBusy] = useState<Set<string>>(new Set());
+  const [createOpen, setCreateOpen] = useState(false);
+  const [createType, setCreateType] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     setView(readStored(viewStore, config.views, config.views[0]));
@@ -638,6 +784,28 @@ export function EntityManager<Row>({ config }: { config: EntityManagerConfig<Row
     }
   }
 
+  function openCreate(type?: string) {
+    setCreateType(type);
+    setCreateOpen(true);
+  }
+  async function duplicateItem(row: Row) {
+    if (!config.duplicate) return;
+    const key = config.getKey(row);
+    setBusy((prev) => new Set([...prev, key]));
+    try {
+      const newKey = await config.duplicate(row);
+      window.location.assign(config.editHref(newKey));
+    } catch (e) {
+      setError((e as Error).message);
+      setBusy((prev) => {
+        const next = new Set(prev);
+        next.delete(key);
+        return next;
+      });
+    }
+  }
+  const duplicate = config.duplicate ? duplicateItem : undefined;
+
   if (error) {
     return <p className="text-sm text-destructive">{config.loadError(error)}</p>;
   }
@@ -686,26 +854,56 @@ export function EntityManager<Row>({ config }: { config: EntityManagerConfig<Row
               }))}
             />
           ) : null}
-          <a href={config.newHref} className={cn(buttonVariants({ size: 'sm' }))}>
-            <Icon name="plus" className="size-4" />
-            {config.newLabel}
-          </a>
+          {config.quickCreate ? (
+            <Button size="sm" onClick={() => openCreate()}>
+              <Icon name="plus" className="size-4" />
+              {config.newLabel}
+            </Button>
+          ) : (
+            <a href={config.newHref} className={cn(buttonVariants({ size: 'sm' }))}>
+              <Icon name="plus" className="size-4" />
+              {config.newLabel}
+            </a>
+          )}
         </div>
       </div>
 
       {view === 'hub' ? (
-        <HubView rows={rows} axis={axis} config={config} onMove={moveStatus} busy={busy} />
+        <HubView
+          rows={rows}
+          axis={axis}
+          config={config}
+          onMove={moveStatus}
+          onDuplicate={duplicate}
+          onCreate={config.quickCreate ? openCreate : undefined}
+          busy={busy}
+        />
       ) : view === 'board' && config.board ? (
         <BoardView
           rows={rows}
           board={config.board}
           config={config}
           onMove={moveStatus}
+          onDuplicate={duplicate}
           busy={busy}
         />
       ) : (
-        <TableView rows={rows} config={config} onMove={moveStatus} busy={busy} />
+        <TableView
+          rows={rows}
+          config={config}
+          onMove={moveStatus}
+          onDuplicate={duplicate}
+          busy={busy}
+        />
       )}
+
+      <QuickCreateDialog
+        config={config}
+        open={createOpen}
+        initialType={createType}
+        onOpenChange={setCreateOpen}
+        onCreated={(key) => window.location.assign(config.editHref(key))}
+      />
     </div>
   );
 }

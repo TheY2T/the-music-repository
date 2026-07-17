@@ -20,8 +20,8 @@ function difficultyRange(locale: Locale, c: Row): string | undefined {
 
 /** Config that drives the generic EntityManager for editorial collections. */
 export function collectionManagerConfig(locale: Locale): EntityManagerConfig<Row> {
-  const editHref = (c: Row) =>
-    localizedPath(locale, `/admin/collections/${encodeURIComponent(c.slug)}/edit`);
+  const editHref = (key: string) =>
+    localizedPath(locale, `/admin/collections/${encodeURIComponent(key)}/edit`);
   const facetValues = (key: 'era' | 'instrument' | 'genre') => (c: Row) => c.facets?.[key] ?? [];
 
   return {

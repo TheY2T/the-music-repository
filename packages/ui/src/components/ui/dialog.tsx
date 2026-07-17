@@ -2,6 +2,7 @@ import type * as React from 'react';
 import { createContext, useContext, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../../lib/utils';
+import { Icon } from './icon';
 
 interface DialogContextValue {
   onOpenChange: (open: boolean) => void;
@@ -47,11 +48,18 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
   );
 }
 
+export interface DialogContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Accessible label for the top-right close (X) button. Pass `null` to hide the X entirely. */
+  closeLabel?: string | null;
+}
+
 export function DialogContent({
   className,
   children,
+  closeLabel = 'Close',
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: DialogContentProps) {
+  const { onOpenChange } = useContext(DialogContext);
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard dismissal is handled by the Dialog Escape listener.
     <div
@@ -64,6 +72,16 @@ export function DialogContent({
       onClick={(event) => event.stopPropagation()}
       {...props}
     >
+      {closeLabel !== null ? (
+        <button
+          type="button"
+          aria-label={closeLabel}
+          onClick={() => onOpenChange(false)}
+          className="absolute right-3 top-3 inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <Icon name="x" className="size-4" />
+        </button>
+      ) : null}
       {children}
     </div>
   );

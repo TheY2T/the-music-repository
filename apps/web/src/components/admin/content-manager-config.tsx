@@ -1,4 +1,4 @@
-import type { ContentAdminSummary } from '@TheY2T/tmr-api-client';
+import type { ContentAdminSummary, ContentWriteInput } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import { Badge, Icon, TableCell, TableHead } from '@TheY2T/tmr-ui';
 import { adminApi } from '@/lib/admin-api';
@@ -41,6 +41,15 @@ function bandValues(c: Row): string[] {
   const band = levelBandOf(c.difficulty);
   return band ? [band] : [];
 }
+function slugify(title: string): string {
+  return (
+    title
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'untitled'
+  );
+}
 
 /** Config that drives the generic EntityManager for catalogue content. */
 export function contentManagerConfig(locale: Locale): EntityManagerConfig<Row> {
@@ -51,9 +60,49 @@ export function contentManagerConfig(locale: Locale): EntityManagerConfig<Row> {
     getKey: (c) => c.slug,
     getTitle: (c) => c.title,
     getSubtitle: (c) => c.slug,
-    editHref: (c) => localizedPath(locale, `/admin/content/${encodeURIComponent(c.slug)}/edit`),
+    editHref: (key) => localizedPath(locale, `/admin/content/${encodeURIComponent(key)}/edit`),
     newHref: localizedPath(locale, '/admin/content/new'),
     newLabel: t(locale, 'acl.newContent'),
+    quickCreate: {
+      typeOptions: Object.keys(TYPE_LABEL).map((v) => ({ value: v, label: typeText(locale, v) })),
+      create: async ({ title, type }) => {
+        const slug = slugify(title);
+        await adminApi.create({
+          slug,
+          title,
+          type: (type ?? 'lesson') as ContentWriteInput['type'],
+          genres: [],
+          instruments: [],
+          topics: [],
+          tags: [],
+        });
+        return slug;
+      },
+    },
+    duplicate: async (c) => {
+      const detail = await adminApi.get(c.slug);
+      const slug = `${c.slug}-copy`;
+      await adminApi.create({
+        slug,
+        title: `Copy of ${c.title}`,
+        type: detail.type,
+        summary: detail.summary ?? undefined,
+        difficulty: detail.difficulty ?? undefined,
+        visibility: detail.visibility,
+        tier: detail.tier ?? undefined,
+        bodyMdx: detail.bodyMdx ?? undefined,
+        source: detail.source ?? undefined,
+        attribution: detail.attribution ?? undefined,
+        license: detail.license ?? undefined,
+        genres: detail.genres.map((g) => g.slug),
+        instruments: detail.instruments.map((g) => g.slug),
+        topics: detail.topics.map((g) => g.slug),
+        tags: detail.tags.map((g) => g.slug),
+        details: detail.details ?? undefined,
+        embeds: detail.embeds ?? undefined,
+      });
+      return slug;
+    },
     searchPlaceholder: t(locale, 'acm.searchPlaceholder'),
     emptyLabel: t(locale, 'acm.empty'),
     loadError: (error) => t(locale, 'acl.loadError', { error }),
@@ -136,6 +185,7 @@ export function contentManagerConfig(locale: Locale): EntityManagerConfig<Row> {
         getValues: (c) => [c.type],
         order: byCountThenValue,
         valueLabel: (v) => typeText(locale, v),
+        createType: true,
       },
       {
         key: 'instrument',
