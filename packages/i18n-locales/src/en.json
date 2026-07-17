@@ -785,6 +785,7 @@
   "blockEditor.item.addSection": "Add section",
   "blockEditor.item.pick": "Search the catalogue…",
   "blockEditor.item.change": "Change",
+  "blockEditor.item.cancel": "Cancel",
   "blockEditor.item.remove": "Remove item",
   "blockEditor.item.note": "Curator note (optional)",
   "blockEditor.item.skills": "Focus skills (comma-separated)",

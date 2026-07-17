@@ -24,7 +24,7 @@ export default function ContentPreview({
       if (event.origin !== window.location.origin || !isPreviewMessage(event.data)) {
         return;
       }
-      setPayload(event.data.payload);
+      setPayload(event.data.payload as PreviewPayload);
     };
     window.addEventListener('message', onMessage);
     // Tell the parent we're ready to receive the current document.

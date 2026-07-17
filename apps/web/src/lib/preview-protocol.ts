@@ -7,7 +7,7 @@ import type { EmbedConfig } from '@TheY2T/tmr-content-serde';
 export const PREVIEW_MESSAGE = 'tmr:preview';
 export const PREVIEW_READY = 'tmr:preview-ready';
 
-/** The live document the preview renders — mirrors what the public detail page shows below the header. */
+/** The live document the content preview renders — mirrors the public detail page below the header. */
 export interface PreviewPayload {
   title: string;
   summary?: string;
@@ -15,9 +15,49 @@ export interface PreviewPayload {
   embeds: EmbedConfig[];
 }
 
+/** A collection item resolved for preview (title/type come from the catalogue). */
+export interface CollectionPreviewItem {
+  slug: string;
+  title: string;
+  type: string;
+  curatorNote?: string;
+  focusSkills?: string[];
+}
+
+export interface CollectionPreviewSection {
+  title: string;
+  description?: string;
+  items: CollectionPreviewItem[];
+}
+
+/** The live collection the collection preview renders (mirrors CollectionDetail). */
+export interface CollectionPreviewPayload {
+  title: string;
+  summary?: string;
+  bodyMdx: string;
+  kind: string;
+  featured: boolean;
+  curatorName?: string;
+  difficultyMin?: number;
+  difficultyMax?: number;
+  estMinutes?: number;
+  outcomes: string[];
+  ungrouped: CollectionPreviewItem[];
+  sections: CollectionPreviewSection[];
+}
+
+/** The live help topic the help preview renders (as shown in the Info View panel). */
+export interface HelpPreviewPayload {
+  term: string;
+  body: string;
+}
+
+/** Any preview payload — the pane forwards it opaquely; each renderer narrows its own shape. */
+export type AnyPreviewPayload = PreviewPayload | CollectionPreviewPayload | HelpPreviewPayload;
+
 export interface PreviewMessage {
   type: typeof PREVIEW_MESSAGE;
-  payload: PreviewPayload;
+  payload: AnyPreviewPayload;
 }
 
 export interface PreviewReadyMessage {

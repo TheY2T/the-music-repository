@@ -15,11 +15,18 @@ import {
   Select,
   Textarea,
 } from '@TheY2T/tmr-ui';
-import { type FormEvent, useEffect, useState } from 'react';
+import { type FormEvent, useEffect, useMemo, useState } from 'react';
 import { BlockEditor } from '@/components/admin/block-editor/BlockEditor';
 import type { CatalogueOption } from '@/components/admin/block-editor/editor-ui';
+import { PreviewPane } from '@/components/admin/block-editor/PreviewPane';
 import { adminApi, collectionsAdminApi } from '@/lib/admin-api';
-import { type CollectionDocData, collectionToDoc, docToCollection } from '@/lib/collection-doc';
+import {
+  type CollectionDocData,
+  type CollectionDocItem,
+  collectionToDoc,
+  docToCollection,
+} from '@/lib/collection-doc';
+import type { CollectionPreviewItem, CollectionPreviewPayload } from '@/lib/preview-protocol';
 
 const KINDS = ['course', 'path', 'syllabus', 'songlist'] as const;
 
@@ -56,11 +63,14 @@ export default function CollectionForm({
   slug,
   locale,
   blockEditor = false,
+  preview = false,
 }: {
   slug?: string;
   locale: Locale;
   /** Use the block editor (single authoring surface: prose + sections + items) — ADR 0030 / Phase B. */
   blockEditor?: boolean;
+  /** When true (+ blockEditor), show the opt-in side-by-side live preview. */
+  preview?: boolean;
 }) {
   const isEdit = Boolean(slug);
   const [form, setForm] = useState({ ...emptyForm });
@@ -68,6 +78,7 @@ export default function CollectionForm({
   const [docData, setDocData] = useState<CollectionDocData>(emptyDoc);
   const [initialDoc, setInitialDoc] = useState<PMDoc | null>(null);
   const [catalogue, setCatalogue] = useState<CatalogueOption[]>([]);
+  const [showPreview, setShowPreview] = useState(false);
   const [loaded, setLoaded] = useState(!isEdit);
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -236,6 +247,38 @@ export default function CollectionForm({
     }
   }
 
+  // Live-preview payload: resolve each item's title/type from the catalogue.
+  const previewPayload = useMemo<CollectionPreviewPayload>(() => {
+    const resolve = (it: CollectionDocItem): CollectionPreviewItem => {
+      const c = catalogue.find((o) => o.slug === it.contentSlug);
+      return {
+        slug: it.contentSlug,
+        title: c?.title ?? it.contentSlug,
+        type: c?.type ?? 'lesson',
+        curatorNote: it.curatorNote,
+        focusSkills: it.focusSkills,
+      };
+    };
+    return {
+      title: form.title,
+      summary: form.summary || undefined,
+      bodyMdx: docData.bodyMdx,
+      kind: form.kind,
+      featured: form.featured,
+      curatorName: form.curatorName || undefined,
+      difficultyMin: toInt(form.difficultyMin),
+      difficultyMax: toInt(form.difficultyMax),
+      estMinutes: toInt(form.estMinutes),
+      outcomes: splitLines(form.outcomes),
+      ungrouped: docData.ungrouped.map(resolve),
+      sections: docData.sections.map((s) => ({
+        title: s.title,
+        description: s.description,
+        items: s.items.map(resolve),
+      })),
+    };
+  }, [form, docData, catalogue]);
+
   return (
     <div className="space-y-6">
       {error ? (
@@ -383,22 +426,46 @@ export default function CollectionForm({
 
         {/* Contents — intro prose, sections (headings) and items authored in one editor. */}
         <div className="space-y-2">
-          <div className="space-y-0.5">
-            <span className="text-sm font-medium">{t(locale, 'colform.structureLabel')}</span>
-            <p className="text-xs text-muted-foreground">{t(locale, 'colform.structureHint')}</p>
+          <div className="flex items-start justify-between gap-2">
+            <div className="space-y-0.5">
+              <span className="text-sm font-medium">{t(locale, 'colform.structureLabel')}</span>
+              <p className="text-xs text-muted-foreground">{t(locale, 'colform.structureHint')}</p>
+            </div>
+            {blockEditor && preview ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                aria-pressed={showPreview}
+                onClick={() => setShowPreview((v) => !v)}
+              >
+                <Icon name={showPreview ? 'eye-off' : 'eye'} className="size-4" />
+                {showPreview ? t(locale, 'cform.hidePreview') : t(locale, 'cform.showPreview')}
+              </Button>
+            ) : null}
           </div>
           {blockEditor ? (
             loaded ? (
-              <BlockEditor
-                key={slug ?? 'new'}
-                profile="collection"
-                locale={locale}
-                initialDoc={initialDoc}
-                initialBodyMdx=""
-                initialEmbeds={[]}
-                catalogue={catalogue}
-                onChange={(c) => setDocData(docToCollection(c.doc))}
-              />
+              <div className={showPreview ? 'grid gap-4 lg:grid-cols-2' : ''}>
+                <BlockEditor
+                  key={slug ?? 'new'}
+                  profile="collection"
+                  locale={locale}
+                  initialDoc={initialDoc}
+                  initialBodyMdx=""
+                  initialEmbeds={[]}
+                  catalogue={catalogue}
+                  onChange={(c) => setDocData(docToCollection(c.doc))}
+                />
+                {preview && showPreview ? (
+                  <PreviewPane
+                    slug={slug ?? 'new'}
+                    locale={locale}
+                    route="/admin/preview/collection"
+                    payload={previewPayload}
+                  />
+                ) : null}
+              </div>
             ) : null
           ) : (
             <Textarea

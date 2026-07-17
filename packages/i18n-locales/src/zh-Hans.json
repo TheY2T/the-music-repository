@@ -785,6 +785,7 @@
   "blockEditor.item.addSection": "添加分区",
   "blockEditor.item.pick": "搜索目录…",
   "blockEditor.item.change": "更换",
+  "blockEditor.item.cancel": "取消",
   "blockEditor.item.remove": "移除条目",
   "blockEditor.item.note": "策展备注（可选）",
   "blockEditor.item.skills": "重点技能（用逗号分隔）",

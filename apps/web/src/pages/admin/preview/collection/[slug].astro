@@ -1,0 +1,18 @@
+---
+import CollectionPreview from '@/components/admin/block-editor/CollectionPreview.tsx';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { guardAdmin } from '@/lib/admin-guard';
+import { t } from '@TheY2T/tmr-i18n';
+
+// Draft preview surface for the collection editor (Phase C). Gated by guardAdmin; renders no DB data —
+// the editor pushes the live collection in via postMessage. `[slug]` only keys the iframe.
+const redirect = guardAdmin(Astro);
+if (redirect) {
+  return redirect;
+}
+const locale = Astro.locals.locale;
+---
+
+<BaseLayout title={`${t(locale, 'blockEditor.previewTitle')} — ${t(locale, 'site.name')}`}>
+  <CollectionPreview client:only="react" locale={locale} />
+</BaseLayout>

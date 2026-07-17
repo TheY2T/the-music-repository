@@ -1,27 +1,31 @@
 import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { cn, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
-import { isPreviewReady, PREVIEW_MESSAGE, type PreviewPayload } from '@/lib/preview-protocol';
+import { type AnyPreviewPayload, isPreviewReady, PREVIEW_MESSAGE } from '@/lib/preview-protocol';
 
 /**
  * Parent side of the live preview (ADR 0030): an iframe pointing at the authenticated draft route, fed
  * the live document over `postMessage` (debounced) once the frame signals it's ready. Full fidelity — the
- * frame renders the real page components + theme.
+ * frame renders the real page components + theme. Generic over the payload/route so content, collections
+ * and help topics all reuse it (each `route` has its own iframe renderer).
  */
 export function PreviewPane({
   payload,
   slug,
   locale,
+  route = '/admin/preview',
 }: {
-  payload: PreviewPayload;
+  payload: AnyPreviewPayload;
   slug: string;
   locale: Locale;
+  /** Base path of the draft preview route; `{route}/{slug}` is the iframe src. */
+  route?: string;
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [ready, setReady] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const src = `/admin/preview/${encodeURIComponent(slug)}`;
+  const src = `${route}/${encodeURIComponent(slug)}`;
 
   // Exit full-screen on Escape.
   useEffect(() => {
@@ -71,7 +75,9 @@ export function PreviewPane({
     <div
       className={cn(
         'flex flex-col overflow-hidden border border-border bg-card',
-        expanded ? 'fixed inset-0 z-50' : 'rounded-lg',
+        // Fill the grid cell (which stretches to the editor's height) so the preview matches it
+        // instead of cutting off at a fixed height.
+        expanded ? 'fixed inset-0 z-50' : 'h-full rounded-lg',
       )}
     >
       <div className="flex items-center justify-between gap-2 border-b border-border p-2 text-sm font-medium text-muted-foreground">
@@ -94,7 +100,7 @@ export function PreviewPane({
         src={src}
         title={t(locale, 'blockEditor.previewFrameTitle')}
         sandbox="allow-scripts allow-same-origin"
-        className={cn('w-full bg-background', expanded ? 'min-h-0 flex-1' : 'h-[36rem]')}
+        className={cn('w-full flex-1 bg-background', expanded ? 'min-h-0' : 'min-h-[36rem]')}
       />
     </div>
   );

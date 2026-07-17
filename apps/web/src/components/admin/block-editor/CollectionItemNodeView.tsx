@@ -19,6 +19,9 @@ export function CollectionItemNodeView(props: NodeViewProps) {
   ) as string[];
 
   const [query, setQuery] = useState('');
+  // "Change" opens the picker without discarding the current item, so an accidental click is reversible.
+  const [changing, setChanging] = useState(false);
+  const showPicker = !slug || changing;
   const picked = catalogue.find((c) => c.slug === slug);
   const needle = query.trim().toLowerCase();
   const matches = needle
@@ -46,7 +49,7 @@ export function CollectionItemNodeView(props: NodeViewProps) {
       className="my-3 rounded-lg border border-border bg-card p-3"
       contentEditable={false}
     >
-      {slug ? (
+      {!showPicker ? (
         <div className="space-y-2">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
@@ -68,7 +71,10 @@ export function CollectionItemNodeView(props: NodeViewProps) {
                 type="button"
                 size="sm"
                 variant="ghost"
-                onClick={() => props.updateAttributes({ contentSlug: '' })}
+                onClick={() => {
+                  setQuery('');
+                  setChanging(true);
+                }}
               >
                 {t(locale, 'blockEditor.item.change')}
               </Button>
@@ -103,7 +109,21 @@ export function CollectionItemNodeView(props: NodeViewProps) {
               // biome-ignore lint/a11y/noAutofocus: a freshly-inserted item card should let the author search immediately.
               autoFocus
             />
-            {remove}
+            {slug ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  setChanging(false);
+                  setQuery('');
+                }}
+              >
+                {t(locale, 'blockEditor.item.cancel')}
+              </Button>
+            ) : (
+              remove
+            )}
           </div>
           {needle ? (
             matches.length ? (
@@ -115,6 +135,7 @@ export function CollectionItemNodeView(props: NodeViewProps) {
                       onClick={() => {
                         props.updateAttributes({ contentSlug: c.slug });
                         setQuery('');
+                        setChanging(false);
                       }}
                       className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground"
                     >

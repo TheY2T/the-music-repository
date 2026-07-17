@@ -13,6 +13,7 @@ import {
 } from '@TheY2T/tmr-ui';
 import { type FormEvent, useEffect, useState } from 'react';
 import { BlockEditor } from '@/components/admin/block-editor/BlockEditor';
+import { PreviewPane } from '@/components/admin/block-editor/PreviewPane';
 import { getHelpTopic, helpAdminApi } from '@/lib/help-api';
 
 const emptyForm = { slug: '', term: '', body: '', linkSlug: '' };
@@ -21,13 +22,17 @@ export default function HelpTopicForm({
   slug,
   locale,
   blockEditor = false,
+  preview = false,
 }: {
   slug?: string;
   locale: Locale;
   /** Use the minimal block editor for the body (ADR 0030) instead of the Markdown textarea. */
   blockEditor?: boolean;
+  /** When true (+ blockEditor), show the opt-in Info-View live preview. */
+  preview?: boolean;
 }) {
   const isEdit = Boolean(slug);
+  const [showPreview, setShowPreview] = useState(false);
   const [form, setForm] = useState({ ...emptyForm });
   const [loaded, setLoaded] = useState(!isEdit);
   const [error, setError] = useState<string | null>(null);
@@ -153,17 +158,41 @@ export default function HelpTopicForm({
         {/* Body (full-width). */}
         {blockEditor ? (
           <div className="space-y-2">
-            <span className="text-sm font-medium">{t(locale, 'hform.bodyLabel')}</span>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-sm font-medium">{t(locale, 'hform.bodyLabel')}</span>
+              {preview ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  aria-pressed={showPreview}
+                  onClick={() => setShowPreview((v) => !v)}
+                >
+                  <Icon name={showPreview ? 'eye-off' : 'eye'} className="size-4" />
+                  {showPreview ? t(locale, 'cform.hidePreview') : t(locale, 'cform.showPreview')}
+                </Button>
+              ) : null}
+            </div>
             {loaded ? (
-              <BlockEditor
-                key={slug ?? 'new'}
-                profile="minimal"
-                locale={locale}
-                initialDoc={null}
-                initialBodyMdx={form.body}
-                initialEmbeds={[]}
-                onChange={(c) => set('body', c.bodyMdx)}
-              />
+              <div className={showPreview ? 'grid gap-4 lg:grid-cols-2' : ''}>
+                <BlockEditor
+                  key={slug ?? 'new'}
+                  profile="minimal"
+                  locale={locale}
+                  initialDoc={null}
+                  initialBodyMdx={form.body}
+                  initialEmbeds={[]}
+                  onChange={(c) => set('body', c.bodyMdx)}
+                />
+                {preview && showPreview ? (
+                  <PreviewPane
+                    slug={slug ?? 'new'}
+                    locale={locale}
+                    route="/admin/preview/help"
+                    payload={{ term: form.term, body: form.body }}
+                  />
+                ) : null}
+              </div>
             ) : null}
           </div>
         ) : (
