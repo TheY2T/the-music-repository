@@ -101,6 +101,30 @@ export class DrizzleContentAuthoring extends ContentAuthoring {
 
   async listAll(): Promise<ContentAdminRow[]> {
     const rows = await this.db.select().from(contentItems).orderBy(desc(contentItems.updatedAt));
+
+    // Batch the taxonomy joins (one query each, grouped in memory) rather than N+1 per row.
+    const [genreRows, instrumentRows] = await Promise.all([
+      this.db
+        .select({ contentId: contentGenres.contentId, slug: genres.slug })
+        .from(contentGenres)
+        .innerJoin(genres, eq(genres.id, contentGenres.genreId)),
+      this.db
+        .select({ contentId: contentInstruments.contentId, slug: instruments.slug })
+        .from(contentInstruments)
+        .innerJoin(instruments, eq(instruments.id, contentInstruments.instrumentId)),
+    ]);
+    const bySlug = (pairs: { contentId: string; slug: string }[]) => {
+      const map = new Map<string, string[]>();
+      for (const { contentId, slug } of pairs) {
+        const list = map.get(contentId) ?? [];
+        list.push(slug);
+        map.set(contentId, list);
+      }
+      return map;
+    };
+    const genresById = bySlug(genreRows);
+    const instrumentsById = bySlug(instrumentRows);
+
     return rows.map((r) => ({
       slug: r.slug,
       title: r.title,
@@ -109,6 +133,10 @@ export class DrizzleContentAuthoring extends ContentAuthoring {
       visibility: r.visibility,
       difficulty: r.difficulty ?? undefined,
       updatedAt: r.updatedAt.toISOString(),
+      tier: r.tier ?? undefined,
+      era: (r.details as ContentDetails | null)?.era ?? undefined,
+      genres: genresById.get(r.id) ?? [],
+      instruments: instrumentsById.get(r.id) ?? [],
     }));
   }
 

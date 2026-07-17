@@ -1798,6 +1798,46 @@
         }
       }
     },
+    "/content/{slug}/status": {
+      "post": {
+        "operationId": "setContentStatus",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "authoring"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContentStatusInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/content/{slug}/unpublish": {
       "post": {
         "operationId": "unpublishContent",
@@ -3118,12 +3158,12 @@
           "title",
           "kind",
           "visibility",
+          "status",
           "curationType",
           "itemCount",
           "featured",
           "popularity",
           "ratingCount",
-          "status",
           "items",
           "sections"
         ],
@@ -3152,6 +3192,14 @@
               "public",
               "authed",
               "private"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "review",
+              "published"
             ]
           },
           "curationType": {
@@ -3209,14 +3257,6 @@
           "ratingCount": {
             "type": "integer",
             "format": "int32"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "draft",
-              "review",
-              "published"
-            ]
           },
           "ownerId": {
             "type": "string"
@@ -3424,12 +3464,12 @@
           "title",
           "kind",
           "visibility",
+          "status",
           "curationType",
           "itemCount",
           "featured",
           "popularity",
           "ratingCount",
-          "status",
           "items",
           "sections",
           "percentComplete",
@@ -3461,6 +3501,14 @@
               "public",
               "authed",
               "private"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "review",
+              "published"
             ]
           },
           "curationType": {
@@ -3518,14 +3566,6 @@
           "ratingCount": {
             "type": "integer",
             "format": "int32"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "draft",
-              "review",
-              "published"
-            ]
           },
           "ownerId": {
             "type": "string"
@@ -3769,6 +3809,7 @@
           "title",
           "kind",
           "visibility",
+          "status",
           "curationType",
           "itemCount",
           "featured",
@@ -3800,6 +3841,14 @@
               "public",
               "authed",
               "private"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "review",
+              "published"
             ]
           },
           "curationType": {
@@ -3962,7 +4011,9 @@
           "type",
           "status",
           "visibility",
-          "updatedAt"
+          "updatedAt",
+          "genres",
+          "instruments"
         ],
         "properties": {
           "slug": {
@@ -4005,6 +4056,27 @@
           },
           "updatedAt": {
             "type": "string"
+          },
+          "tier": {
+            "type": "string",
+            "description": "Premium plan that unlocks the item (`premium`/`pro`), if any."
+          },
+          "era": {
+            "type": "string",
+            "description": "Historical era from `details.era`, if set."
+          },
+          "genres": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Taxonomy slugs — enough to drive admin axes/facets; labels derive client-side."
+          },
+          "instruments": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "description": "Admin list row (any status)."
@@ -4309,6 +4381,23 @@
           }
         },
         "description": "alphaTex source for a standalone score content item."
+      },
+      "ContentStatusInput": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "review",
+              "published"
+            ]
+          }
+        },
+        "description": "Body for a direct status change (used by the admin manager's board + status menu)."
       },
       "ContentSummary": {
         "type": "object",

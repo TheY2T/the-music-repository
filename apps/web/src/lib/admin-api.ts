@@ -49,6 +49,11 @@ export const adminApi = {
     request<ContentDetail>(`/content/${encodeURIComponent(slug)}/publish`, { method: 'POST' }),
   unpublish: (slug: string) =>
     request<ContentDetail>(`/content/${encodeURIComponent(slug)}/unpublish`, { method: 'POST' }),
+  setStatus: (slug: string, status: 'draft' | 'review' | 'published') =>
+    request<ContentDetail>(`/content/${encodeURIComponent(slug)}/status`, {
+      method: 'POST',
+      body: JSON.stringify({ status }),
+    }),
   remove: (slug: string) =>
     request<void>(`/content/${encodeURIComponent(slug)}`, { method: 'DELETE' }),
   requestMedia: (slug: string, body: MediaUploadRequest) =>

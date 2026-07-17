@@ -28,6 +28,7 @@ import {
   CreateTaxonomyDto,
   RequestMediaUploadDto,
   SetContentScoreDto,
+  SetContentStatusDto,
   UpdateContentDto,
 } from './dto/authoring.dto';
 
@@ -103,6 +104,13 @@ export class AuthoringController {
   @RequirePermissions({ content: ['publish'] })
   unpublish(@Param('slug') slug: string) {
     return this.setStatus.execute(slug, 'draft');
+  }
+
+  @Post('content/:slug/status')
+  @HttpCode(HttpStatus.OK)
+  @RequirePermissions({ content: ['publish'] })
+  status(@Param('slug') slug: string, @Body() body: SetContentStatusDto) {
+    return this.setStatus.execute(slug, body.status, this.currentUser.optional()?.id ?? null);
   }
 
   @Delete('content/:slug')

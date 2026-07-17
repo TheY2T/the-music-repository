@@ -76,7 +76,9 @@ beyond that stay removable via the applied-filter chips.
 
 ## Help topics
 
-Register Info View (`help_topic`) entries for the axis switcher ("Organise by…") and grade/level bands.
+The grade/level facet header carries `data-help="grade"` (via `FacetGroup.helpSlug` → `FacetPanel`), so
+hovering it opens the Info View panel explaining the 1–10 rating and its bands. The `grade` `help_topic`
+is seeded in `seed-data.ts`. The axis switcher is self-explanatory and has no help entry.
 
 ## Tests
 

@@ -16,6 +16,7 @@ export const ListCollectionsAdminResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -71,6 +72,7 @@ export const CreateCollectionResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -91,7 +93,6 @@ export const CreateCollectionResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
-  "status": zod.enum(['draft', 'review', 'published']),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -173,6 +174,7 @@ export const GetCollectionForEditResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -193,7 +195,6 @@ export const GetCollectionForEditResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
-  "status": zod.enum(['draft', 'review', 'published']),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -300,6 +301,7 @@ export const UpdateCollectionResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -320,7 +322,6 @@ export const UpdateCollectionResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
-  "status": zod.enum(['draft', 'review', 'published']),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -421,6 +422,7 @@ export const SetCollectionItemsResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -441,7 +443,6 @@ export const SetCollectionItemsResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
-  "status": zod.enum(['draft', 'review', 'published']),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -523,6 +524,7 @@ export const PublishCollectionResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -543,7 +545,6 @@ export const PublishCollectionResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
-  "status": zod.enum(['draft', 'review', 'published']),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -635,6 +636,7 @@ export const SetCollectionSectionsResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -655,7 +657,6 @@ export const SetCollectionSectionsResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
-  "status": zod.enum(['draft', 'review', 'published']),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -737,6 +738,7 @@ export const UnpublishCollectionResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -757,7 +759,6 @@ export const UnpublishCollectionResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
-  "status": zod.enum(['draft', 'review', 'published']),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -1312,6 +1313,7 @@ export const ListCollectionsResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -1350,6 +1352,7 @@ export const ListCollectionsForContentResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -1399,6 +1402,7 @@ export const SearchCollectionsResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -1476,6 +1480,7 @@ export const GetCollectionBySlugResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -1496,7 +1501,6 @@ export const GetCollectionBySlugResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
-  "status": zod.enum(['draft', 'review', 'published']),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -1591,6 +1595,7 @@ export const GetCollectionWithProgressResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -1611,7 +1616,6 @@ export const GetCollectionWithProgressResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
-  "status": zod.enum(['draft', 'review', 'published']),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -1697,7 +1701,11 @@ export const ListContentResponse = zod.object({
   "status": zod.enum(['draft', 'review', 'published']),
   "visibility": zod.enum(['public', 'authed', 'premium']),
   "difficulty": zod.number().optional(),
-  "updatedAt": zod.string()
+  "updatedAt": zod.string(),
+  "tier": zod.string().optional().describe('Premium plan that unlocks the item (`premium`\/`pro`), if any.'),
+  "era": zod.string().optional().describe('Historical era from `details.era`, if set.'),
+  "genres": zod.array(zod.string()).describe('Taxonomy slugs — enough to drive admin axes\/facets; labels derive client-side.'),
+  "instruments": zod.array(zod.string())
 }).describe('Admin list row (any status).'))
 })
 
@@ -2312,6 +2320,85 @@ export const SetContentScoreResponse = zod.object({
 }).describe('Full detail view of a catalogue item.')
 
 
+export const SetContentStatusParams = zod.object({
+  "slug": zod.string()
+})
+
+export const SetContentStatusBody = zod.object({
+  "status": zod.enum(['draft', 'review', 'published'])
+}).describe('Body for a direct status change (used by the admin manager\'s board + status menu).')
+
+export const SetContentStatusResponse = zod.object({
+  "slug": zod.string(),
+  "title": zod.string(),
+  "summary": zod.string().optional(),
+  "type": zod.enum(['lesson', 'song', 'score', 'exercise', 'technique', 'backing_track', 'tool_page']),
+  "difficulty": zod.number().optional(),
+  "visibility": zod.enum(['public', 'authed', 'premium']),
+  "tier": zod.string().optional().describe('For premium items: which plan unlocks it — \"premium\" or \"pro\".'),
+  "locked": zod.boolean().optional().describe('True when this is premium content the current viewer is not entitled to (body\/media withheld).'),
+  "genres": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "instruments": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "topics": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "bodyMdx": zod.string().optional(),
+  "source": zod.string().optional(),
+  "attribution": zod.string().optional(),
+  "license": zod.string().optional(),
+  "details": zod.object({
+  "key": zod.string().optional(),
+  "era": zod.string().optional(),
+  "form": zod.string().optional(),
+  "timeSignature": zod.string().optional(),
+  "composer": zod.string().optional(),
+  "composerDates": zod.string().optional(),
+  "composedYear": zod.string().optional()
+}).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
+  "embeds": zod.array(zod.object({
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "title": zod.string().optional().describe('Optional heading shown above the embed.'),
+  "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
+  "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
+  "scoreSlug": zod.string().optional().describe('`score`: reference an existing catalogue score by slug instead of inline `tex`.'),
+  "mode": zod.enum(['standard', 'tab']).optional().describe('`score`\/`scale-boxes`: engraving mode (piano-style `standard` vs guitar `tab`).'),
+  "tuning": zod.array(zod.number()).optional().describe('`score` (tab): open-string MIDI pitches so a pitched score renders as tablature.'),
+  "instrument": zod.string().optional().describe('Fretted\/keyboard instrument hint: `guitar` | `ukulele` | `bass` | `piano`.'),
+  "root": zod.string().optional().describe('`scale-boxes`\/`keyboard`: scale root note, e.g. `A`, `C#`.'),
+  "scale": zod.string().optional().describe('`scale-boxes`\/`keyboard`: scale id, e.g. `major`, `minor-pentatonic`, `blues`.'),
+  "key": zod.string().optional().describe('`progression`: key the Roman-numeral\/chord progression is in, e.g. `A`.'),
+  "chords": zod.array(zod.string()).optional().describe('`chord-diagrams`\/`progression`\/`chord-board`: chord symbols, e.g. `[\"C\",\"G\",\"Am\",\"F\"]`.'),
+  "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
+  "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
+  "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+}).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive tools to render below the prose (authored, from `details` JSONB).'),
+  "tags": zod.array(zod.object({
+  "slug": zod.string(),
+  "name": zod.string()
+}).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "media": zod.array(zod.object({
+  "id": zod.string(),
+  "kind": zod.enum(['score_pdf', 'audio', 'image', 'alphatex']),
+  "url": zod.string(),
+  "filename": zod.string(),
+  "mime": zod.string(),
+  "license": zod.string().optional(),
+  "attribution": zod.string().optional(),
+  "sourceUrl": zod.string().optional().describe('Provenance URL of the engraving (source edition or transcription reference).')
+}).describe('A media file attached to a content item, with a ready-to-use (presigned) URL.')),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+}).describe('Full detail view of a catalogue item.')
+
+
 export const UnpublishContentParams = zod.object({
   "slug": zod.string()
 })
@@ -2492,6 +2579,7 @@ export const ListMyCollectionsResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -2532,6 +2620,7 @@ export const CreateUserCollectionResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -2552,7 +2641,6 @@ export const CreateUserCollectionResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
-  "status": zod.enum(['draft', 'review', 'published']),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -2637,6 +2725,7 @@ export const GetMyCollectionResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -2657,7 +2746,6 @@ export const GetMyCollectionResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
-  "status": zod.enum(['draft', 'review', 'published']),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -2749,6 +2837,7 @@ export const UpdateUserCollectionResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -2769,7 +2858,6 @@ export const UpdateUserCollectionResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
-  "status": zod.enum(['draft', 'review', 'published']),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -2893,6 +2981,7 @@ export const SetUserCollectionItemsResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),
@@ -2913,7 +3002,6 @@ export const SetUserCollectionItemsResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
-  "status": zod.enum(['draft', 'review', 'published']),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -3245,6 +3333,7 @@ export const ListCollectionBookmarksResponse = zod.object({
   "summary": zod.string().optional(),
   "kind": zod.enum(['course', 'path', 'syllabus', 'songlist']),
   "visibility": zod.enum(['public', 'authed', 'private']),
+  "status": zod.enum(['draft', 'review', 'published']),
   "curationType": zod.enum(['editorial', 'user']),
   "itemCount": zod.number(),
   "featured": zod.boolean(),

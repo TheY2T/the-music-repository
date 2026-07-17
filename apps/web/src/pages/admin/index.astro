@@ -1,5 +1,5 @@
 ---
-import AdminContentList from '@/components/AdminContentList.tsx';
+import AdminContentManager from '@/components/AdminContentManager.tsx';
 import AdminNav from '@/components/AdminNav.tsx';
 import SignOutButton from '@/components/SignOutButton.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -37,7 +37,7 @@ const locale = Astro.locals.locale;
         <h2 class="font-display text-xl font-semibold tracking-tight">
           {t(locale, 'admin.content')}
         </h2>
-        <AdminContentList client:load locale={locale} />
+        <AdminContentManager client:load locale={locale} />
       </section>
     </div>
   </PageShell>

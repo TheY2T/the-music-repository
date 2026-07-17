@@ -6,7 +6,7 @@ import { ContentDetailReader } from '../content-detail-reader';
 import { ContentAuthoring } from '../ports/content-authoring.port';
 import { ContentRevisions } from '../ports/content-revisions.port';
 
-/** Publish (`published`) / unpublish (`draft`) a content item and reindex the catalogue. */
+/** Move a content item through its lifecycle (`draft`/`review`/`published`) and reindex the catalogue. */
 @Injectable()
 export class SetContentStatusUseCase {
   constructor(
@@ -18,7 +18,7 @@ export class SetContentStatusUseCase {
 
   async execute(
     slug: string,
-    status: 'published' | 'draft',
+    status: 'published' | 'draft' | 'review',
     authorId: string | null = null,
   ): Promise<ContentDetailView> {
     if (!(await this.authoring.exists(slug))) {

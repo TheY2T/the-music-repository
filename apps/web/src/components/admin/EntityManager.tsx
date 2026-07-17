@@ -1,0 +1,717 @@
+import type { Locale } from '@TheY2T/tmr-i18n';
+import { t } from '@TheY2T/tmr-i18n';
+import {
+  Button,
+  buttonVariants,
+  Card,
+  Checkbox,
+  cn,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+  EmptyState,
+  type FacetGroup,
+  FacetPanel,
+  FeaturedShelf,
+  Icon,
+  Pagination,
+  SearchField,
+  SegmentedToggle,
+  Select,
+  Skeleton,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@TheY2T/tmr-ui';
+import { type DragEvent, type ReactNode, useEffect, useMemo, useState } from 'react';
+import {
+  buildColumns,
+  countBuckets,
+  groupIntoShelves,
+  orderBuckets,
+  type ShelfOrder,
+} from '@/lib/admin-manager';
+
+export type ViewMode = 'hub' | 'table' | 'board';
+
+export interface EntityAxis<Row> {
+  key: string;
+  label: string;
+  getValues: (row: Row) => string[];
+  order: ShelfOrder<Row>;
+  /** Localized shelf title for a value. */
+  valueLabel: (value: string) => string;
+}
+
+export interface EntityFacet<Row> {
+  key: string;
+  label: string;
+  getValues: (row: Row) => string[];
+  valueLabel: (value: string) => string;
+  /** Optional fixed value order (status/level); omit for count-ordered. */
+  order?: readonly string[];
+}
+
+export interface EntitySort<Row> {
+  key: string;
+  label: string;
+  compare: (a: Row, b: Row) => number;
+}
+
+export interface EntityBoard<Row> {
+  columns: { status: string; label: string }[];
+  getStatus: (row: Row) => string;
+  /** Statuses offered in a row's ⋯ menu (typically all but the current). */
+  moveTargets: (row: Row) => { status: string; label: string }[];
+  /** Perform the status change server-side. The manager applies `applyStatus` optimistically first. */
+  setStatus: (keys: string[], status: string) => Promise<void>;
+  applyStatus: (row: Row, status: string) => Row;
+  /** Bulk status buttons shown when table rows are selected. */
+  bulkActions: { status: string; label: string }[];
+}
+
+export interface EntityManagerConfig<Row> {
+  /** Storage-key namespace + a stable identity for the entity. */
+  entity: string;
+  locale: Locale;
+  load: () => Promise<Row[]>;
+  getKey: (row: Row) => string;
+  getTitle: (row: Row) => string;
+  getSubtitle?: (row: Row) => string | undefined;
+  editHref: (row: Row) => string;
+  newHref: string;
+  newLabel: string;
+  searchPlaceholder: string;
+  emptyLabel: string;
+  loadError: (error: string) => string;
+  matchesQuery: (row: Row, q: string) => boolean;
+  /** Sort applied within shelves, board columns, and the unsorted table (newest-first, usually). */
+  defaultRowSort: (a: Row, b: Row) => number;
+  /** Top-left of a card (e.g. a status/kind badge); omit for none. */
+  cardBadge?: (row: Row) => ReactNode;
+  /** Meta line + tags under a card's title. */
+  cardMeta: (row: Row) => ReactNode;
+  /** Table cells after the title column and before the actions column. */
+  rowCells: (row: Row) => ReactNode;
+  /** Table header cells matching `rowCells`. */
+  headCells: ReactNode;
+  views: ViewMode[];
+  axes: EntityAxis<Row>[];
+  defaultAxis: string;
+  facets: EntityFacet<Row>[];
+  sorts: EntitySort<Row>[];
+  defaultSort: string;
+  board?: EntityBoard<Row>;
+}
+
+/** The ⋯ menu on a card/row: Edit, plus move-to-status when the entity has a board/lifecycle. */
+function ActionsMenu<Row>({
+  row,
+  config,
+  onMove,
+}: {
+  row: Row;
+  config: EntityManagerConfig<Row>;
+  onMove: (status: string) => void;
+}) {
+  const targets = config.board?.moveTargets(row) ?? [];
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        aria-label={t(config.locale, 'acm.actions')}
+        className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+      >
+        <Icon name="more-horizontal" className="size-4" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-44">
+        <DropdownMenuItem onSelect={() => window.location.assign(config.editHref(row))}>
+          <Icon name="pencil" className="size-4" />
+          {t(config.locale, 'acm.edit')}
+        </DropdownMenuItem>
+        {targets.length ? (
+          <DropdownMenuLabel>{t(config.locale, 'acm.moveTo')}</DropdownMenuLabel>
+        ) : null}
+        {targets.map((target) => (
+          <DropdownMenuItem key={target.status} onSelect={() => onMove(target.status)}>
+            {target.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+function EntityCard<Row>({
+  row,
+  config,
+  onMove,
+  busy,
+  draggable = false,
+  onDragStart,
+}: {
+  row: Row;
+  config: EntityManagerConfig<Row>;
+  onMove: (status: string) => void;
+  busy: boolean;
+  draggable?: boolean;
+  onDragStart?: (e: DragEvent<HTMLDivElement>) => void;
+}) {
+  const subtitle = config.getSubtitle?.(row);
+  return (
+    <Card
+      draggable={draggable}
+      onDragStart={onDragStart}
+      className={cn(
+        'flex h-full flex-col gap-2 p-4',
+        busy && 'pointer-events-none opacity-60',
+        draggable && 'cursor-grab active:cursor-grabbing',
+      )}
+    >
+      <div className="flex items-start justify-between gap-2">
+        {config.cardBadge?.(row) ?? <span />}
+        <ActionsMenu row={row} config={config} onMove={onMove} />
+      </div>
+      <a href={config.editHref(row)} className="font-medium text-foreground hover:underline">
+        {config.getTitle(row)}
+      </a>
+      {subtitle ? <p className="truncate text-xs text-muted-foreground">{subtitle}</p> : null}
+      {config.cardMeta(row)}
+    </Card>
+  );
+}
+
+type MoveFn = (keys: string[], status: string) => void;
+
+function HubView<Row>({
+  rows,
+  axis,
+  config,
+  onMove,
+  busy,
+}: {
+  rows: Row[];
+  axis: EntityAxis<Row>;
+  config: EntityManagerConfig<Row>;
+  onMove: MoveFn;
+  busy: Set<string>;
+}) {
+  const [q, setQ] = useState('');
+  const filtered = useMemo(
+    () => (q ? rows.filter((r) => config.matchesQuery(r, q)) : rows),
+    [rows, q, config],
+  );
+  const shelves = groupIntoShelves(filtered, axis.getValues, axis.order, config.defaultRowSort);
+  return (
+    <div className="space-y-6">
+      <div className="max-w-sm">
+        <SearchField
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          onClear={() => setQ('')}
+          placeholder={config.searchPlaceholder}
+        />
+      </div>
+      {shelves.length === 0 ? (
+        <EmptyState icon={<Icon name="book-open" className="size-6" />} title={config.emptyLabel} />
+      ) : (
+        <div className="space-y-8">
+          {shelves.map((shelf) => (
+            <FeaturedShelf
+              key={shelf.key}
+              title={`${axis.valueLabel(shelf.value)} · ${shelf.count}`}
+            >
+              {shelf.rows.map((row) => (
+                <EntityCard
+                  key={config.getKey(row)}
+                  row={row}
+                  config={config}
+                  busy={busy.has(config.getKey(row))}
+                  onMove={(status) => onMove([config.getKey(row)], status)}
+                />
+              ))}
+            </FeaturedShelf>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+const BOARD_PAGE = 10;
+
+function BoardView<Row>({
+  rows,
+  board,
+  config,
+  onMove,
+  busy,
+}: {
+  rows: Row[];
+  board: EntityBoard<Row>;
+  config: EntityManagerConfig<Row>;
+  onMove: MoveFn;
+  busy: Set<string>;
+}) {
+  const columns = buildColumns(
+    rows,
+    board.columns.map((c) => c.status),
+    board.getStatus,
+    config.defaultRowSort,
+  );
+  const label = (status: string) => board.columns.find((c) => c.status === status)?.label ?? status;
+  const [over, setOver] = useState<string | null>(null);
+  const [shown, setShown] = useState<Record<string, number>>({});
+  return (
+    <div
+      className="grid gap-4"
+      style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(0, 1fr))` }}
+    >
+      {columns.map((col) => {
+        const limit = shown[col.status] ?? BOARD_PAGE;
+        const visible = col.rows.slice(0, limit);
+        return (
+          // biome-ignore lint/a11y/noStaticElementInteractions: drag-and-drop is a pointer-only enhancement; each card's ⋯ menu is the keyboard-accessible way to change status.
+          <div
+            key={col.status}
+            onDragOver={(e) => {
+              e.preventDefault();
+              if (over !== col.status) setOver(col.status);
+            }}
+            onDragLeave={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                setOver((s) => (s === col.status ? null : s));
+              }
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              const key = e.dataTransfer.getData('text/plain');
+              setOver(null);
+              if (key) onMove([key], col.status);
+            }}
+            className={cn(
+              'flex flex-col gap-3 rounded-lg border border-border bg-muted/20 p-3',
+              over === col.status && 'ring-2 ring-ring',
+            )}
+          >
+            <h3 className="flex items-center justify-between font-display text-sm font-semibold text-foreground">
+              <span>{label(col.status)}</span>
+              <span className="tabular-nums text-muted-foreground">{col.count}</span>
+            </h3>
+            {visible.map((row) => (
+              <EntityCard
+                key={config.getKey(row)}
+                row={row}
+                config={config}
+                busy={busy.has(config.getKey(row))}
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData('text/plain', config.getKey(row));
+                  e.dataTransfer.effectAllowed = 'move';
+                }}
+                onMove={(status) => onMove([config.getKey(row)], status)}
+              />
+            ))}
+            {col.rows.length > limit ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShown((prev) => ({ ...prev, [col.status]: limit + BOARD_PAGE }))}
+              >
+                {t(config.locale, 'acm.showMore', { count: col.rows.length - limit })}
+              </Button>
+            ) : null}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+const TABLE_PAGE = 25;
+
+function TableView<Row>({
+  rows,
+  config,
+  onMove,
+  busy,
+}: {
+  rows: Row[];
+  config: EntityManagerConfig<Row>;
+  onMove: MoveFn;
+  busy: Set<string>;
+}) {
+  const [q, setQ] = useState('');
+  const [selectedFacets, setSelectedFacets] = useState<Record<string, string[]>>({});
+  const [sortKey, setSortKey] = useState(config.defaultSort);
+  const [page, setPage] = useState(1);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  const matches = (row: Row) => {
+    if (q && !config.matchesQuery(row, q)) return false;
+    return config.facets.every((facet) => {
+      const chosen = selectedFacets[facet.key];
+      if (!chosen || chosen.length === 0) return true;
+      return facet.getValues(row).some((v) => chosen.includes(v));
+    });
+  };
+  const sort = config.sorts.find((s) => s.key === sortKey) ?? config.sorts[0];
+  const filtered = useMemo(() => {
+    const list = rows.filter(matches);
+    return sort ? [...list].sort(sort.compare) : list;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rows, q, selectedFacets, sortKey]);
+  const pageCount = Math.max(1, Math.ceil(filtered.length / TABLE_PAGE));
+  const clampedPage = Math.min(page, pageCount);
+  const paged = filtered.slice((clampedPage - 1) * TABLE_PAGE, clampedPage * TABLE_PAGE);
+
+  const groups: FacetGroup[] = config.facets
+    .map((facet) => {
+      let buckets = countBuckets(rows.flatMap((r) => facet.getValues(r)));
+      if (facet.order) buckets = orderBuckets(buckets, facet.order);
+      const chosen = selectedFacets[facet.key] ?? [];
+      return {
+        key: facet.key,
+        label: facet.label,
+        options: buckets.map((b) => ({
+          value: b.value,
+          label: facet.valueLabel(b.value),
+          count: b.count,
+          selected: chosen.includes(b.value),
+        })),
+      };
+    })
+    .filter((g) => g.options.length > 0);
+
+  function toggleFacet(facetKey: string, value: string) {
+    setPage(1);
+    setSelectedFacets((prev) => {
+      const cur = prev[facetKey] ?? [];
+      const next = cur.includes(value) ? cur.filter((v) => v !== value) : [...cur, value];
+      return { ...prev, [facetKey]: next };
+    });
+  }
+
+  const allPagedSelected = paged.length > 0 && paged.every((r) => selected.has(config.getKey(r)));
+  function toggleAllPaged() {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (allPagedSelected) for (const r of paged) next.delete(config.getKey(r));
+      else for (const r of paged) next.add(config.getKey(r));
+      return next;
+    });
+  }
+  function toggleRow(key: string) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }
+  function bulk(status: string) {
+    const keys = [...selected];
+    setSelected(new Set());
+    onMove(keys, status);
+  }
+
+  const bulkActions = config.board?.bulkActions ?? [];
+
+  return (
+    <div className="grid gap-8 md:grid-cols-[240px_1fr]">
+      <aside className="space-y-6">
+        <SearchField
+          value={q}
+          onChange={(e) => {
+            setQ(e.target.value);
+            setPage(1);
+          }}
+          onClear={() => {
+            setQ('');
+            setPage(1);
+          }}
+          placeholder={config.searchPlaceholder}
+        />
+        <FacetPanel groups={groups} onToggle={toggleFacet} />
+      </aside>
+
+      <section className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            {t(config.locale, 'acm.results', { count: filtered.length })}
+          </p>
+          <label className="flex items-center gap-2 text-sm text-muted-foreground">
+            {t(config.locale, 'acm.sortLabel')}
+            <Select value={sortKey} onChange={(e) => setSortKey(e.target.value)} className="w-auto">
+              {config.sorts.map((s) => (
+                <option key={s.key} value={s.key}>
+                  {s.label}
+                </option>
+              ))}
+            </Select>
+          </label>
+        </div>
+
+        {selected.size > 0 && bulkActions.length > 0 ? (
+          <div className="flex flex-wrap items-center gap-2 rounded-md border border-border bg-muted/30 p-2 text-sm">
+            <span className="font-medium text-foreground">
+              {t(config.locale, 'acm.selectedCount', { count: selected.size })}
+            </span>
+            {bulkActions.map((action) => (
+              <Button
+                key={action.status}
+                size="sm"
+                variant="outline"
+                onClick={() => bulk(action.status)}
+              >
+                {action.label}
+              </Button>
+            ))}
+            <Button size="sm" variant="ghost" onClick={() => setSelected(new Set())}>
+              {t(config.locale, 'acm.clearSelection')}
+            </Button>
+          </div>
+        ) : null}
+
+        {filtered.length === 0 ? (
+          <EmptyState
+            icon={<Icon name="book-open" className="size-6" />}
+            title={config.emptyLabel}
+          />
+        ) : (
+          <Card className="overflow-hidden">
+            <Table>
+              <TableHeader className="bg-muted/40">
+                <TableRow className="hover:bg-transparent">
+                  {bulkActions.length > 0 ? (
+                    <TableHead className="w-10">
+                      <Checkbox
+                        checked={allPagedSelected}
+                        onChange={toggleAllPaged}
+                        aria-label={t(config.locale, 'acm.selectedCount', { count: selected.size })}
+                      />
+                    </TableHead>
+                  ) : null}
+                  <TableHead>{t(config.locale, 'acl.colTitle')}</TableHead>
+                  {config.headCells}
+                  <TableHead className="text-right" />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paged.map((row) => {
+                  const key = config.getKey(row);
+                  const subtitle = config.getSubtitle?.(row);
+                  return (
+                    <TableRow key={key} className={cn(busy.has(key) && 'opacity-60')}>
+                      {bulkActions.length > 0 ? (
+                        <TableCell>
+                          <Checkbox
+                            checked={selected.has(key)}
+                            onChange={() => toggleRow(key)}
+                            aria-label={t(config.locale, 'acm.selectRow', {
+                              title: config.getTitle(row),
+                            })}
+                          />
+                        </TableCell>
+                      ) : null}
+                      <TableCell>
+                        <a
+                          href={config.editHref(row)}
+                          className="font-medium text-foreground hover:underline"
+                        >
+                          {config.getTitle(row)}
+                        </a>
+                        {subtitle ? (
+                          <div className="text-xs text-muted-foreground">{subtitle}</div>
+                        ) : null}
+                      </TableCell>
+                      {config.rowCells(row)}
+                      <TableCell className="text-right">
+                        <ActionsMenu
+                          row={row}
+                          config={config}
+                          onMove={(status) => onMove([key], status)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </Card>
+        )}
+
+        {pageCount > 1 ? (
+          <Pagination
+            page={clampedPage}
+            pageCount={pageCount}
+            onPageChange={setPage}
+            prevLabel={t(config.locale, 'common.prev')}
+            nextLabel={t(config.locale, 'common.next')}
+          />
+        ) : null}
+      </section>
+    </div>
+  );
+}
+
+function readStored<T extends string>(key: string, allowed: readonly string[], fallback: T): T {
+  if (typeof window === 'undefined') return fallback;
+  try {
+    const value = sessionStorage.getItem(key);
+    return value && allowed.includes(value) ? (value as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+/** Generic three-view admin manager (hub / table / board), driven by a per-entity config. */
+export function EntityManager<Row>({ config }: { config: EntityManagerConfig<Row> }) {
+  const { locale, entity } = config;
+  const axisStore = `tmr.admin-${entity}.axis`;
+  const viewStore = `tmr.admin-${entity}.view`;
+  const axisKeys = config.axes.map((a) => a.key);
+
+  const [rows, setRows] = useState<Row[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [view, setView] = useState<ViewMode>(config.views[0]);
+  const [axisKey, setAxisKey] = useState(config.defaultAxis);
+  const [busy, setBusy] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    setView(readStored(viewStore, config.views, config.views[0]));
+    setAxisKey(readStored(axisStore, axisKeys, config.defaultAxis));
+    // Run once on mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    config
+      .load()
+      .then(setRows)
+      .catch((e: Error) => setError(e.message));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function changeView(next: ViewMode) {
+    setView(next);
+    try {
+      sessionStorage.setItem(viewStore, next);
+    } catch {
+      /* best-effort */
+    }
+  }
+  function changeAxis(next: string) {
+    setAxisKey(next);
+    try {
+      sessionStorage.setItem(axisStore, next);
+    } catch {
+      /* best-effort */
+    }
+  }
+
+  async function moveStatus(keys: string[], status: string) {
+    const board = config.board;
+    if (!board || keys.length === 0) return;
+    setBusy((prev) => new Set([...prev, ...keys]));
+    setRows(
+      (prev) =>
+        prev?.map((r) => (keys.includes(config.getKey(r)) ? board.applyStatus(r, status) : r)) ??
+        prev,
+    );
+    try {
+      await board.setStatus(keys, status);
+    } catch (e) {
+      setError((e as Error).message);
+      const fresh = await config.load().catch(() => null);
+      if (fresh) setRows(fresh);
+    } finally {
+      setBusy((prev) => {
+        const next = new Set(prev);
+        for (const k of keys) next.delete(k);
+        return next;
+      });
+    }
+  }
+
+  if (error) {
+    return <p className="text-sm text-destructive">{config.loadError(error)}</p>;
+  }
+  if (!rows) {
+    return (
+      <div className="space-y-4">
+        {['s1', 's2', 's3'].map((k) => (
+          <Skeleton key={k} className="h-40 w-full" />
+        ))}
+      </div>
+    );
+  }
+
+  const axis = config.axes.find((a) => a.key === axisKey) ?? config.axes[0];
+  const showAxisSwitcher = view === 'hub' && config.axes.length > 1;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          {showAxisSwitcher ? (
+            <>
+              <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                {t(locale, 'acm.organiseBy')}
+              </span>
+              <SegmentedToggle<string>
+                aria-label={t(locale, 'acm.organiseBy')}
+                value={axis.key}
+                onValueChange={changeAxis}
+                options={config.axes.map((a) => ({ value: a.key, label: a.label }))}
+              />
+            </>
+          ) : (
+            <span />
+          )}
+        </div>
+        <div className="flex items-center gap-3">
+          {config.views.length > 1 ? (
+            <SegmentedToggle<ViewMode>
+              aria-label={t(locale, 'acm.viewHub')}
+              value={view}
+              onValueChange={changeView}
+              options={config.views.map((v) => ({
+                value: v,
+                label: t(locale, VIEW_LABEL[v]),
+              }))}
+            />
+          ) : null}
+          <a href={config.newHref} className={cn(buttonVariants({ size: 'sm' }))}>
+            <Icon name="plus" className="size-4" />
+            {config.newLabel}
+          </a>
+        </div>
+      </div>
+
+      {view === 'hub' ? (
+        <HubView rows={rows} axis={axis} config={config} onMove={moveStatus} busy={busy} />
+      ) : view === 'board' && config.board ? (
+        <BoardView
+          rows={rows}
+          board={config.board}
+          config={config}
+          onMove={moveStatus}
+          busy={busy}
+        />
+      ) : (
+        <TableView rows={rows} config={config} onMove={moveStatus} busy={busy} />
+      )}
+    </div>
+  );
+}
+
+const VIEW_LABEL: Record<ViewMode, Parameters<typeof t>[1]> = {
+  hub: 'acm.viewHub',
+  table: 'acm.viewTable',
+  board: 'acm.viewBoard',
+};

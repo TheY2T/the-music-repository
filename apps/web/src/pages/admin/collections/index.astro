@@ -1,5 +1,5 @@
 ---
-import AdminCollectionList from '@/components/AdminCollectionList.tsx';
+import AdminCollectionManager from '@/components/AdminCollectionManager.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { guardAdmin } from '@/lib/admin-guard';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
@@ -21,6 +21,6 @@ const locale = Astro.locals.locale;
     back={{ href: localizedPath(locale, '/admin'), label: t(locale, 'common.backContent') }}
     maxWidth="max-w-5xl"
   >
-    <AdminCollectionList client:load locale={locale} />
+    <AdminCollectionManager client:load locale={locale} />
   </PageShell>
 </BaseLayout>

@@ -33,4 +33,12 @@ describe('SetContentStatusUseCase', () => {
     await useCase.execute('lesson-a', 'draft', 'author-1');
     expect(revisions.snapshot).not.toHaveBeenCalled();
   });
+
+  it('moves an item to review without snapshotting, but still reindexes', async () => {
+    const { useCase, authoring, revisions, reindex } = build();
+    await useCase.execute('lesson-a', 'review', 'author-1');
+    expect(authoring.setStatus).toHaveBeenCalledWith('lesson-a', 'review');
+    expect(revisions.snapshot).not.toHaveBeenCalled();
+    expect(reindex.reindex).toHaveBeenCalled();
+  });
 });

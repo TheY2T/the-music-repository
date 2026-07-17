@@ -78,8 +78,14 @@ src/
 
 - **Pages** under `pages/admin/` (list + `content/new` + `content/[slug]/edit`), each gated by
   `guardAdmin(Astro)` (`src/lib/admin-guard.ts`): checks the `admin.cms` flag + editor/admin role.
-- **Islands:** `AdminContentList.tsx`, `ContentForm.tsx` (Markdown editor + `marked` live preview,
-  taxonomy datalists, media uploader).
+- **Islands:** `AdminContentManager.tsx` (the content list — three-view Hub/Table/Board manager) +
+  `ContentForm.tsx` (block editor + taxonomy datalists + media uploader).
+- **Shared admin manager:** `components/admin/EntityManager.tsx` is a **generic, config-driven**
+  Hub/Table/Board manager (control bar + axis switcher + search + facets + bulk + optimistic status +
+  drag board) over pure helpers in `lib/admin-manager.ts`. Collections + help topics use it via
+  `*-manager-config.tsx`; content has its own richer `AdminContentManager` (candidate to migrate onto
+  `EntityManager` later). Each entity's list page mounts a thin `Admin<Entity>Manager` island that builds
+  the config client-side (configs hold functions/JSX, not serializable as Astro props).
 - **API calls** go through `src/lib/admin-api.ts` — a typed, credentialed fetch wrapper over the CMS
   endpoints (uses generated model types from `@TheY2T/tmr-api-client`). Media upload = request a
   presigned ticket, then `uploadToTicket` PUTs the file straight to MinIO.
@@ -107,7 +113,9 @@ src/
 - Personal: `/me/collections` (`SavedCollections` — Saved + My collections tabs) + `/me/collections/new`
   \| `/[slug]/edit` (`UserCollectionForm` — catalogue picker + reorder + per-item notes + public/private).
   Auth-gated (redirect to `/signin`). Account nav item added in `nav.ts`.
-- Admin: `/admin/collections/*` (guard + `learning.collections`) — `AdminCollectionList` +
+- Admin: `/admin/collections/*` (guard + `learning.collections`) — the **`EntityManager`** (see Admin CMS
+  below) via `AdminCollectionManager` + `collection-manager-config` (Hub/Table/Board over kind/status/
+  instrument/era; board = Draft/Published via publish/unpublish) +
   `CollectionForm` (full metadata + **sections editor** with `slug | note` item lines + ungrouped items;
   save = `update` → `setSections` → structured `setItems`). `collectionsAdminApi.setItems` takes
   `CollectionItemInput[]` and `setSections` takes `CollectionSectionInput[]`.
@@ -133,7 +141,9 @@ src/
   `data-help="<slug>"` on hover/focus via **document event delegation** (works across islands).
   Add `data-help` to any element; style comes from the global `[data-help]` rule. `src/lib/help-api.ts`
   has the public list/get + `helpAdminApi`.
-- Admin: `/admin/help/*` (`AdminHelpList` + `HelpTopicForm`). Gated on `learning.info-view`.
+- Admin: `/admin/help/*` — `AdminHelpManager` + `help-manager-config` (the shared `EntityManager` in a
+  reduced form: Hub grouped by Linked-to-article / Standalone + Table + search; no board/axis-switcher
+  since help topics have no status or taxonomy) + `HelpTopicForm`. Gated on `learning.info-view`.
 
 ## Interactive tools (Phase 3)
 

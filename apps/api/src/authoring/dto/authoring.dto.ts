@@ -3,6 +3,7 @@ import {
   CreateTaxonomyBody,
   RequestMediaUploadBody,
   SetContentScoreBody,
+  SetContentStatusBody,
   UpdateContentBody,
 } from '@TheY2T/tmr-contracts';
 import { createZodDto } from 'nestjs-zod';
@@ -15,4 +16,5 @@ export class CreateContentDto extends createZodDto(CreateContentBody) {}
 export class UpdateContentDto extends createZodDto(UpdateContentBody) {}
 export class RequestMediaUploadDto extends createZodDto(RequestMediaUploadBody) {}
 export class SetContentScoreDto extends createZodDto(SetContentScoreBody) {}
+export class SetContentStatusDto extends createZodDto(SetContentStatusBody) {}
 export class CreateTaxonomyDto extends createZodDto(CreateTaxonomyBody) {}

@@ -1,6 +1,7 @@
 ---
 import CatalogueBrowser from '@/components/CatalogueBrowser.tsx';
 import CatalogueHub from '@/components/CatalogueHub.tsx';
+import InfoView from '@/components/InfoView.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { enabledFlagshipToolSlugs } from '@/lib/tools-taxonomy';
 import { localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
@@ -10,6 +11,7 @@ const showFavorites = Astro.locals.flags.favorites && !!Astro.locals.user;
 const locale = Astro.locals.locale;
 const hub = Astro.locals.flags.catalogueHub;
 const showCollections = Astro.locals.flags.collections;
+const showInfoView = Astro.locals.flags.infoView;
 
 // Resolve the flagship tools enabled for this viewer (each gated by its own `tools.*` flag).
 const flags = Astro.locals.flags as unknown as Record<string, boolean>;
@@ -40,5 +42,6 @@ const tools = enabledFlagshipToolSlugs(flags).map((slug) => ({
         <CatalogueBrowser client:load showFavorites={showFavorites} locale={locale} />
       )
     }
+    {showInfoView && <InfoView client:idle />}
   </PageShell>
 </BaseLayout>

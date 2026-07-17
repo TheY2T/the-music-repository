@@ -109,6 +109,7 @@ export interface CollectionSummaryView {
   summary?: string;
   kind: string;
   visibility: string;
+  status: string;
   curationType: string;
   itemCount: number;
   featured: boolean;
@@ -143,7 +144,6 @@ export interface CollectionSectionView {
 }
 
 export interface CollectionDetailView extends CollectionSummaryView {
-  status: string;
   ownerId?: string;
   bodyMdx?: string;
   outcomes?: string[];
@@ -168,6 +168,7 @@ export function toCollectionSummaryView(
     summary: collection.summary ?? undefined,
     kind: collection.kind,
     visibility: collection.visibility,
+    status: collection.status,
     curationType: collection.curationType,
     itemCount: collection.itemSlugs.length,
     featured: collection.featured,

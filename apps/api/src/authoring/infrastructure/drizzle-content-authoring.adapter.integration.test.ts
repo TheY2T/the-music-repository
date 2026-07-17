@@ -119,6 +119,32 @@ describe('DrizzleContentAuthoring (Testcontainers Postgres)', () => {
     expect(row.details?.era).toBe('Baroque');
   });
 
+  it('listAll enriches rows with taxonomy, era, and tier for the admin manager', async () => {
+    await adapter.create({
+      ...base,
+      slug: 'admin-list-item',
+      title: 'Admin list item',
+      tier: 'premium',
+      difficulty: 5,
+      details: { era: 'Romantic' },
+      genres: ['blues', 'jazz'],
+      instruments: ['guitar'],
+    });
+
+    const rows = await adapter.listAll();
+    const row = rows.find((r) => r.slug === 'admin-list-item');
+    expect(row).toBeDefined();
+    expect(row?.tier).toBe('premium');
+    expect(row?.difficulty).toBe(5);
+    expect(row?.era).toBe('Romantic');
+    expect(row?.genres.sort()).toEqual(['blues', 'jazz']);
+    expect(row?.instruments).toEqual(['guitar']);
+    // An item with no taxonomy comes back with empty arrays, never undefined.
+    const bare = rows.find((r) => r.slug === 'write-path-item');
+    expect(bare?.genres).toEqual([]);
+    expect(bare?.instruments).toEqual([]);
+  });
+
   it('replaceAlphaTex keeps a single alphatex media asset across re-saves', async () => {
     const row = await rowFor('write-path-item');
     await adapter.replaceAlphaTex(

@@ -12,6 +12,8 @@ export interface FacetGroup {
   key: string;
   label: string;
   options: FacetOption[];
+  /** Optional Info View slug — sets `data-help` on the group heading so hovering it explains the facet. */
+  helpSlug?: string;
 }
 
 export interface FacetPanelProps {
@@ -29,7 +31,10 @@ export function FacetPanel({ groups, onToggle, className }: FacetPanelProps) {
     <div className={cn('flex flex-col gap-6', className)}>
       {groups.map((group) => (
         <section key={group.key}>
-          <h3 className="mb-2 font-display text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <h3
+            data-help={group.helpSlug}
+            className="mb-2 font-display text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+          >
             {group.label}
           </h3>
           <ul className="flex flex-col gap-0.5">

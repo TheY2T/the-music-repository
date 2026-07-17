@@ -183,6 +183,7 @@ export function CatalogueGrid({
       key: 'level',
       label: t(locale, 'catalogue.facetLevel'),
       options: levelOptions,
+      helpSlug: 'grade',
     },
     {
       key: 'genre',

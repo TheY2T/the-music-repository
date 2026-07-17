@@ -310,6 +310,16 @@ model ContentAdminSummary {
   visibility: Visibility;
   difficulty?: int32;
   updatedAt: string;
+
+  /** Premium plan that unlocks the item (`premium`/`pro`), if any. */
+  tier?: string;
+
+  /** Historical era from `details.era`, if set. */
+  era?: string;
+
+  /** Taxonomy slugs — enough to drive admin axes/facets; labels derive client-side. */
+  genres: string[];
+  instruments: string[];
 }
 
 model ContentAdminList {
@@ -380,6 +390,16 @@ op publishContent(@path slug: string): ContentDetail;
 @tag("authoring")
 @post
 op unpublishContent(@path slug: string): ContentDetail;
+
+/** Body for a direct status change (used by the admin manager's board + status menu). */
+model ContentStatusInput {
+  status: ContentStatus;
+}
+
+@route("/content/{slug}/status")
+@tag("authoring")
+@post
+op setContentStatus(@path slug: string, @body body: ContentStatusInput): ContentDetail;
 
 @route("/content/{slug}")
 @tag("authoring")
@@ -472,6 +492,7 @@ model CollectionSummary {
   summary?: string;
   kind: CollectionKind;
   visibility: CollectionVisibility;
+  status: ContentStatus;
   curationType: CollectionCuration;
   itemCount: int32;
   featured: boolean;
@@ -510,7 +531,6 @@ model CollectionSectionView {
 /** Full collection with its ordered items grouped into sections. */
 model CollectionDetail {
   ...CollectionSummary;
-  status: ContentStatus;
   ownerId?: string;
   bodyMdx?: string;
   outcomes?: string[];

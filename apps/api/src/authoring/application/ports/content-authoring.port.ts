@@ -41,6 +41,13 @@ export interface ContentAdminRow {
   visibility: string;
   difficulty?: number;
   updatedAt: string;
+  /** Premium plan that unlocks the item (`premium`/`pro`), if any. */
+  tier?: string;
+  /** Historical era from `details.era`, if set. */
+  era?: string;
+  /** Taxonomy slugs — enough to drive admin axes/facets; labels derive client-side. */
+  genres: string[];
+  instruments: string[];
 }
 
 export interface MediaRowInput {

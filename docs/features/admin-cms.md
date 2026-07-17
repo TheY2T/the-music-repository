@@ -10,8 +10,22 @@ taxonomy — all RBAC-gated and spec-first, with writes reindexed into search im
 
 ## UX behaviour
 
-- `/admin` — content table (all statuses) with status badges + **New content**. SSR-gated to
-  editor/admin (learners/anon are redirected).
+- `/admin` — the **content manager** (`AdminContentManager`), a three-view browser over all content
+  (any status), SSR-gated to editor/admin (learners/anon are redirected). One control bar drives all
+  views: an **organise-by axis switcher** (*All · Status · Type · Instrument · Genre · Era · Difficulty*)
+  and a **Hub | Table | Board** toggle (both remembered in `sessionStorage`). Status is the default axis.
+  - **Hub** — status shelves (default *review → draft → published*) of compact cards with inline **⋯
+    actions** (Edit, move to any status); a **search box** filters the rows before grouping (shelves
+    narrow and empty ones drop as you type); shelves show a right-edge **→** hint when they scroll.
+  - **Table** — search + facet rail (Status/Type/Level/Genre/Instrument/Era/Tier, counts) + sort +
+    **bulk-select** (batch publish / move to review / move to draft) + pagination.
+  - **Board** — a kanban of Draft / Review / Published columns; **drag a card between columns to change
+    its status** (the ⋯ menu is the keyboard-accessible equivalent). Long columns page in 10 at a time
+    via **Show more**.
+  - All status changes are **optimistic** (resync from the server on error) and hit the shared
+    `POST /content/{slug}/status` endpoint. The client reads the whole list once and does all grouping,
+    faceting, and filtering **in memory** (pure logic in `lib/admin-content-shelves.ts`).
+- **New content** button → `/admin/content/new`.
 - `/admin/content/new` and `/admin/content/[slug]/edit` — a `ContentForm` island: fields, a
   **Markdown body editor with live preview** (`marked`), taxonomy inputs (comma-separated slugs with
   datalist suggestions; unknown slugs are auto-created), and (edit mode) **Publish / Unpublish /
@@ -33,11 +47,12 @@ Paths from TypeSpec (`packages/api-spec/main.tsp`), tag `authoring`; generated h
 
 | Route | Permission | Notes |
 |---|---|---|
-| `GET /content` | `content:update` | admin list (any status) |
+| `GET /content` | `content:update` | admin list (any status); each row carries `tier · era · genres[] · instruments[]` for the manager's axes/facets |
 | `POST /content` | `content:create` | creates a draft (201) |
 | `GET /content/{slug}` | `content:update` | any-status detail for editing |
 | `PUT /content/{slug}` | `content:update` | replace + reindex |
-| `POST /content/{slug}/publish` \| `/unpublish` | `content:publish` | reindex |
+| `POST /content/{slug}/publish` \| `/unpublish` | `content:publish` | reindex; shortcuts for → published / → draft |
+| `POST /content/{slug}/status` | `content:publish` | body `{status}` (draft/review/published) — the manager's board + status menu; reindex |
 | `DELETE /content/{slug}` | `content:delete` | admin only; reindex (204) |
 | `POST /content/{slug}/media` | `media:create` | presigned PUT ticket (201) |
 | `GET /taxonomy/{dimension}` | `content:update` | genres/instruments/topics/tags |

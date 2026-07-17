@@ -1,5 +1,5 @@
 ---
-import AdminHelpList from '@/components/AdminHelpList.tsx';
+import AdminHelpManager from '@/components/AdminHelpManager.tsx';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { guardAdmin } from '@/lib/admin-guard';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
@@ -21,6 +21,6 @@ const locale = Astro.locals.locale;
     subtitle={t(locale, 'admin.helpSubtitle')}
     back={{ href: localizedPath(locale, '/admin'), label: t(locale, 'common.backContent') }}
   >
-    <AdminHelpList client:load locale={locale} />
+    <AdminHelpManager client:load locale={locale} />
   </PageShell>
 </BaseLayout>

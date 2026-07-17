@@ -216,6 +216,8 @@ function toSummaryView(hit: IndexDoc): CollectionSummaryView {
     summary: hit.summary ?? undefined,
     kind: hit.kind,
     visibility: hit.visibility,
+    // The search index only holds published collections, so status is always published here.
+    status: 'published',
     curationType: hit.curationType,
     itemCount: hit.itemCount,
     featured: hit.featured,

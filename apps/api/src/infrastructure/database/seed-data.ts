@@ -1464,4 +1464,9 @@ export const HELP_TOPICS: SeedHelpTopic[] = [
     body: 'The seven scales (Ionian…Locrian) built by starting the major scale on each of its degrees.',
     linkSlug: 'omt-modes-of-major',
   },
+  {
+    slug: 'grade',
+    term: 'Grade / level',
+    body: 'A rough **difficulty rating** from 1–10, grouped into bands: **Beginner** (1–3), **Intermediate** (4–6), **Advanced** (7–8), and **Expert** (9–10). Pick a band to match material to your current level.',
+  },
 ];
