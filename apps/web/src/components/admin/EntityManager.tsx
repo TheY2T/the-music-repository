@@ -108,6 +108,9 @@ export interface EntityManagerConfig<Row> {
   getSubtitle?: (row: Row) => string | undefined;
   /** Editor URL for an item, by its key (slug). */
   editHref: (key: string) => string;
+  /** Optional section title rendered on the header row (left of the primary "+ New" action). Omit
+   * when the page shell already provides the heading (e.g. the standalone collections/help pages). */
+  title?: string;
   newHref: string;
   newLabel: string;
   /** When present, "+ New" opens a quick-create dialog (title + optional type) instead of navigating. */
@@ -207,7 +210,10 @@ function EntityCard<Row>({
       draggable={draggable}
       onDragStart={onDragStart}
       className={cn(
-        'flex h-full flex-col gap-2 p-4',
+        'flex flex-col gap-2 p-4',
+        // Equal-height across a Hub shelf row; on the board a card keeps its natural height so a
+        // lone card doesn't stretch to fill the (tallest-column-matched) column.
+        !draggable && 'h-full',
         busy && 'pointer-events-none opacity-60',
         draggable && 'cursor-grab active:cursor-grabbing',
       )}
@@ -239,6 +245,7 @@ function HubView<Row>({
   onDuplicate,
   onCreate,
   busy,
+  query,
 }: {
   rows: Row[];
   axis: EntityAxis<Row>;
@@ -247,24 +254,17 @@ function HubView<Row>({
   onDuplicate?: DuplicateFn<Row>;
   onCreate?: (type: string) => void;
   busy: Set<string>;
+  /** Text filter from the control bar — applied before grouping into shelves. */
+  query: string;
 }) {
-  const [q, setQ] = useState('');
   const filtered = useMemo(
-    () => (q ? rows.filter((r) => config.matchesQuery(r, q)) : rows),
-    [rows, q, config],
+    () => (query ? rows.filter((r) => config.matchesQuery(r, query)) : rows),
+    [rows, query, config],
   );
   const shelves = groupIntoShelves(filtered, axis.getValues, axis.order, config.defaultRowSort);
   const canCreateType = Boolean(axis.createType && onCreate);
   return (
     <div className="space-y-6">
-      <div className="max-w-sm">
-        <SearchField
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          onClear={() => setQ('')}
-          placeholder={config.searchPlaceholder}
-        />
-      </div>
       {shelves.length === 0 ? (
         <EmptyState icon={<Icon name="book-open" className="size-6" />} title={config.emptyLabel} />
       ) : (
@@ -309,6 +309,7 @@ function BoardView<Row>({
   onMove,
   onDuplicate,
   busy,
+  query,
 }: {
   rows: Row[];
   board: EntityBoard<Row>;
@@ -316,16 +317,22 @@ function BoardView<Row>({
   onMove: MoveFn;
   onDuplicate?: DuplicateFn<Row>;
   busy: Set<string>;
+  /** Text filter from the control bar — applied across all columns. */
+  query: string;
 }) {
+  const [over, setOver] = useState<string | null>(null);
+  const [shown, setShown] = useState<Record<string, number>>({});
+  const filtered = useMemo(
+    () => (query ? rows.filter((r) => config.matchesQuery(r, query)) : rows),
+    [rows, query, config],
+  );
   const columns = buildColumns(
-    rows,
+    filtered,
     board.columns.map((c) => c.status),
     board.getStatus,
     config.defaultRowSort,
   );
   const label = (status: string) => board.columns.find((c) => c.status === status)?.label ?? status;
-  const [over, setOver] = useState<string | null>(null);
-  const [shown, setShown] = useState<Record<string, number>>({});
   return (
     <div
       className="grid gap-4"
@@ -401,21 +408,28 @@ function TableView<Row>({
   onMove,
   onDuplicate,
   busy,
+  query,
+  sortKey,
 }: {
   rows: Row[];
   config: EntityManagerConfig<Row>;
   onMove: MoveFn;
   onDuplicate?: DuplicateFn<Row>;
   busy: Set<string>;
+  /** Text filter + sort key, both owned by the control bar. */
+  query: string;
+  sortKey: string;
 }) {
-  const [q, setQ] = useState('');
   const [selectedFacets, setSelectedFacets] = useState<Record<string, string[]>>({});
-  const [sortKey, setSortKey] = useState(config.defaultSort);
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
+  // Control-bar search/sort reset paging.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => setPage(1), [query, sortKey]);
+
   const matches = (row: Row) => {
-    if (q && !config.matchesQuery(row, q)) return false;
+    if (query && !config.matchesQuery(row, query)) return false;
     return config.facets.every((facet) => {
       const chosen = selectedFacets[facet.key];
       if (!chosen || chosen.length === 0) return true;
@@ -427,7 +441,7 @@ function TableView<Row>({
     const list = rows.filter(matches);
     return sort ? [...list].sort(sort.compare) : list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rows, q, selectedFacets, sortKey]);
+  }, [rows, query, selectedFacets, sortKey]);
   const pageCount = Math.max(1, Math.ceil(filtered.length / TABLE_PAGE));
   const clampedPage = Math.min(page, pageCount);
   const paged = filtered.slice((clampedPage - 1) * TABLE_PAGE, clampedPage * TABLE_PAGE);
@@ -487,37 +501,13 @@ function TableView<Row>({
   return (
     <div className="grid gap-8 md:grid-cols-[240px_1fr]">
       <aside className="space-y-6">
-        <SearchField
-          value={q}
-          onChange={(e) => {
-            setQ(e.target.value);
-            setPage(1);
-          }}
-          onClear={() => {
-            setQ('');
-            setPage(1);
-          }}
-          placeholder={config.searchPlaceholder}
-        />
         <FacetPanel groups={groups} onToggle={toggleFacet} />
       </aside>
 
       <section className="space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-muted-foreground">
-            {t(config.locale, 'acm.results', { count: filtered.length })}
-          </p>
-          <label className="flex items-center gap-2 text-sm text-muted-foreground">
-            {t(config.locale, 'acm.sortLabel')}
-            <Select value={sortKey} onChange={(e) => setSortKey(e.target.value)} className="w-auto">
-              {config.sorts.map((s) => (
-                <option key={s.key} value={s.key}>
-                  {s.label}
-                </option>
-              ))}
-            </Select>
-          </label>
-        </div>
+        <p className="text-sm text-muted-foreground">
+          {t(config.locale, 'acm.results', { count: filtered.length })}
+        </p>
 
         {selected.size > 0 && bulkActions.length > 0 ? (
           <div className="flex flex-wrap items-center gap-2 rounded-md border border-border bg-muted/30 p-2 text-sm">
@@ -727,6 +717,9 @@ export function EntityManager<Row>({ config }: { config: EntityManagerConfig<Row
   const [busy, setBusy] = useState<Set<string>>(new Set());
   const [createOpen, setCreateOpen] = useState(false);
   const [createType, setCreateType] = useState<string | undefined>(undefined);
+  // Search + sort live in the control bar and drive the board/table views.
+  const [query, setQuery] = useState('');
+  const [sortKey, setSortKey] = useState(config.defaultSort);
 
   useEffect(() => {
     setView(readStored(viewStore, config.views, config.views[0]));
@@ -806,12 +799,43 @@ export function EntityManager<Row>({ config }: { config: EntityManagerConfig<Row
   }
   const duplicate = config.duplicate ? duplicateItem : undefined;
 
+  // Primary action lives on the header row (not the toolbar) — a create CTA, not a filter.
+  const newAction = config.quickCreate ? (
+    <Button size="sm" onClick={() => openCreate()}>
+      <Icon name="plus" className="size-4" />
+      {config.newLabel}
+    </Button>
+  ) : (
+    <a href={config.newHref} className={cn(buttonVariants({ size: 'sm' }))}>
+      <Icon name="plus" className="size-4" />
+      {config.newLabel}
+    </a>
+  );
+  const header = (
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      {config.title ? (
+        <h2 className="font-display text-xl font-semibold tracking-tight text-foreground">
+          {config.title}
+        </h2>
+      ) : (
+        <span />
+      )}
+      {newAction}
+    </div>
+  );
+
   if (error) {
-    return <p className="text-sm text-destructive">{config.loadError(error)}</p>;
+    return (
+      <div className="space-y-6">
+        {header}
+        <p className="text-sm text-destructive">{config.loadError(error)}</p>
+      </div>
+    );
   }
   if (!rows) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-6">
+        {header}
         {['s1', 's2', 's3'].map((k) => (
           <Skeleton key={k} className="h-40 w-full" />
         ))}
@@ -824,25 +848,49 @@ export function EntityManager<Row>({ config }: { config: EntityManagerConfig<Row
 
   return (
     <div className="space-y-6">
+      {header}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2">
-          {showAxisSwitcher ? (
-            <>
-              <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-                {t(locale, 'acm.organiseBy')}
-              </span>
-              <SegmentedToggle<string>
-                aria-label={t(locale, 'acm.organiseBy')}
-                value={axis.key}
-                onValueChange={changeAxis}
-                options={config.axes.map((a) => ({ value: a.key, label: a.label }))}
-              />
-            </>
-          ) : (
-            <span />
-          )}
+        <div className="w-full sm:max-w-sm">
+          <SearchField
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onClear={() => setQuery('')}
+            placeholder={config.searchPlaceholder}
+          />
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          {showAxisSwitcher ? (
+            <label className="flex items-center gap-2 text-sm text-muted-foreground">
+              {t(locale, 'acm.organiseBy')}
+              <Select
+                value={axis.key}
+                onChange={(e) => changeAxis(e.target.value)}
+                className="w-auto"
+              >
+                {config.axes.map((a) => (
+                  <option key={a.key} value={a.key}>
+                    {a.label}
+                  </option>
+                ))}
+              </Select>
+            </label>
+          ) : null}
+          {view === 'table' ? (
+            <label className="flex items-center gap-2 text-sm text-muted-foreground">
+              {t(locale, 'acm.sortLabel')}
+              <Select
+                value={sortKey}
+                onChange={(e) => setSortKey(e.target.value)}
+                className="w-auto"
+              >
+                {config.sorts.map((s) => (
+                  <option key={s.key} value={s.key}>
+                    {s.label}
+                  </option>
+                ))}
+              </Select>
+            </label>
+          ) : null}
           {config.views.length > 1 ? (
             <SegmentedToggle<ViewMode>
               aria-label={t(locale, 'acm.viewHub')}
@@ -854,17 +902,6 @@ export function EntityManager<Row>({ config }: { config: EntityManagerConfig<Row
               }))}
             />
           ) : null}
-          {config.quickCreate ? (
-            <Button size="sm" onClick={() => openCreate()}>
-              <Icon name="plus" className="size-4" />
-              {config.newLabel}
-            </Button>
-          ) : (
-            <a href={config.newHref} className={cn(buttonVariants({ size: 'sm' }))}>
-              <Icon name="plus" className="size-4" />
-              {config.newLabel}
-            </a>
-          )}
         </div>
       </div>
 
@@ -877,6 +914,7 @@ export function EntityManager<Row>({ config }: { config: EntityManagerConfig<Row
           onDuplicate={duplicate}
           onCreate={config.quickCreate ? openCreate : undefined}
           busy={busy}
+          query={query}
         />
       ) : view === 'board' && config.board ? (
         <BoardView
@@ -886,6 +924,7 @@ export function EntityManager<Row>({ config }: { config: EntityManagerConfig<Row
           onMove={moveStatus}
           onDuplicate={duplicate}
           busy={busy}
+          query={query}
         />
       ) : (
         <TableView
@@ -894,6 +933,8 @@ export function EntityManager<Row>({ config }: { config: EntityManagerConfig<Row
           onMove={moveStatus}
           onDuplicate={duplicate}
           busy={busy}
+          query={query}
+          sortKey={sortKey}
         />
       )}
 

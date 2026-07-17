@@ -16,6 +16,7 @@ import {
   Icon,
   type IconName,
 } from '@TheY2T/tmr-ui';
+import { Extension } from '@tiptap/core';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
 import Table from '@tiptap/extension-table';
@@ -52,16 +53,33 @@ export interface BlockEditorProps {
   onChange?: (change: BlockEditorChange) => void;
 }
 
+/**
+ * StarterKit's history binds undo/redo via `Mod` (= Cmd on macOS), so plain Ctrl+Z/Ctrl+Y don't fire
+ * on a Mac. Bind the Ctrl variants explicitly, in addition to the platform defaults.
+ */
+const UndoRedoShortcuts = Extension.create({
+  name: 'undoRedoShortcuts',
+  addKeyboardShortcuts() {
+    return {
+      'Ctrl-z': () => this.editor.commands.undo(),
+      'Ctrl-y': () => this.editor.commands.redo(),
+      'Ctrl-Shift-z': () => this.editor.commands.redo(),
+    };
+  },
+});
+
 /** A toolbar button; `active` reflects the current mark/node so the control shows state. */
 function ToolbarButton({
   icon,
   label,
   active,
+  disabled,
   onClick,
 }: {
   icon: IconName;
   label: string;
   active?: boolean;
+  disabled?: boolean;
   onClick: () => void;
 }) {
   return (
@@ -71,6 +89,7 @@ function ToolbarButton({
       variant={active ? 'secondary' : 'ghost'}
       aria-label={label}
       aria-pressed={active}
+      disabled={disabled}
       onClick={onClick}
     >
       <Icon name={icon} className="size-4" />
@@ -114,6 +133,7 @@ export function BlockEditor({
     immediatelyRender: false,
     extensions: [
       StarterKit,
+      UndoRedoShortcuts,
       Link.configure({ openOnClick: false }),
       Table.configure({ resizable: false }),
       TableRow,
@@ -183,6 +203,19 @@ export function BlockEditor({
     <EditorUiContext.Provider value={ui}>
       <div className="rounded-lg border border-border bg-card">
         <div className="flex flex-wrap items-center gap-1 border-b border-border p-2">
+          <ToolbarButton
+            icon="undo"
+            label={t(locale, 'blockEditor.undo')}
+            disabled={!editor?.can().undo()}
+            onClick={() => editor?.chain().focus().undo().run()}
+          />
+          <ToolbarButton
+            icon="redo"
+            label={t(locale, 'blockEditor.redo')}
+            disabled={!editor?.can().redo()}
+            onClick={() => editor?.chain().focus().redo().run()}
+          />
+          <span className="mx-1 h-5 w-px bg-border" aria-hidden />
           <ToolbarButton
             icon="bold"
             label={t(locale, 'blockEditor.bold')}

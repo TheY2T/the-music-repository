@@ -34,9 +34,6 @@ const locale = Astro.locals.locale;
       />
 
       <section id="admin-content" class="space-y-4">
-        <h2 class="font-display text-xl font-semibold tracking-tight">
-          {t(locale, 'admin.content')}
-        </h2>
         <AdminContentManager client:load locale={locale} />
       </section>
     </div>

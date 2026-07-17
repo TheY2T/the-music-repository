@@ -1,7 +1,18 @@
 import type { ContentWriteInput, MediaUploadRequestKind } from '@TheY2T/tmr-api-client';
-import type { EmbedConfig, PMDoc } from '@TheY2T/tmr-content-serde';
+import type { EmbedConfig } from '@TheY2T/tmr-content-serde';
 import { type Locale, t } from '@TheY2T/tmr-i18n';
-import { Button, Card, Field, Icon, Input, Select, Textarea } from '@TheY2T/tmr-ui';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  Button,
+  Field,
+  Icon,
+  Input,
+  Select,
+  Textarea,
+} from '@TheY2T/tmr-ui';
 import { marked } from 'marked';
 import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BlockEditor, type BlockEditorChange } from '@/components/admin/block-editor/BlockEditor';
@@ -123,6 +134,8 @@ export default function ContentForm({
   // Standalone-score editor (type === 'score'): alphaTex source, loaded from the alphatex media asset.
   const [scoreTex, setScoreTex] = useState('');
   const [autosave, setAutosave] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  // The WYSIWYG editor is already a faithful render, so the side-by-side preview is opt-in.
+  const [showPreview, setShowPreview] = useState(false);
   const autosaveArmed = useRef(false);
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -341,127 +354,152 @@ export default function ContentForm({
         </p>
       ) : null}
 
-      <form onSubmit={onSave} className="grid gap-6 md:grid-cols-2">
-        <Card className="space-y-4 p-5">
-          <h2 className="font-display text-lg font-semibold tracking-tight">
-            {t(locale, 'cform.sectionDetails')}
-          </h2>
-          <Field label={t(locale, 'cform.slug')} htmlFor="cform-slug">
-            <Input
-              id="cform-slug"
-              value={form.slug}
-              readOnly={isEdit}
-              onChange={(e) => set('slug', e.target.value)}
-              placeholder={t(locale, 'cform.slugPlaceholder')}
-            />
-          </Field>
-          <Field label={t(locale, 'cform.title')} htmlFor="cform-title">
-            <Input
-              id="cform-title"
-              value={form.title}
-              onChange={(e) => set('title', e.target.value)}
-            />
-          </Field>
-          <Field label={t(locale, 'cform.summary')} htmlFor="cform-summary">
-            <Input
-              id="cform-summary"
-              value={form.summary}
-              onChange={(e) => set('summary', e.target.value)}
-            />
-          </Field>
-          <div className="grid grid-cols-2 gap-3">
-            <Field label={t(locale, 'cform.type')} htmlFor="cform-type">
-              <Select
-                id="cform-type"
-                value={form.type}
-                onChange={(e) => set('type', e.target.value as ContentWriteInput['type'])}
-              >
-                {CONTENT_TYPES.map((code) => (
-                  <option key={code} value={code}>
-                    {t(locale, TYPE_LABEL_KEYS[code])}
-                  </option>
+      <form onSubmit={onSave} className="space-y-6">
+        {/* Title + summary read as the document head, not form fields (Notion-style). */}
+        <div className="space-y-1">
+          <Input
+            aria-label={t(locale, 'cform.title')}
+            value={form.title}
+            onChange={(e) => set('title', e.target.value)}
+            placeholder={t(locale, 'cform.titlePlaceholder')}
+            className="h-auto border-0 bg-transparent px-0 py-1 font-display text-3xl font-semibold tracking-tight shadow-none focus-visible:ring-0"
+          />
+          <Input
+            aria-label={t(locale, 'cform.summary')}
+            value={form.summary}
+            onChange={(e) => set('summary', e.target.value)}
+            placeholder={t(locale, 'cform.summaryPlaceholder')}
+            className="h-auto border-0 bg-transparent px-0 text-base text-muted-foreground shadow-none focus-visible:ring-0"
+          />
+        </div>
+
+        {/* Metadata as a collapsible properties strip (default open), not a separate form card. */}
+        <Accordion
+          type="multiple"
+          defaultValue={['properties']}
+          className="rounded-lg border border-border"
+        >
+          <AccordionItem value="properties" className="border-b-0 px-4">
+            <AccordionTrigger>{t(locale, 'cform.properties')}</AccordionTrigger>
+            <AccordionContent className="text-foreground">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label={t(locale, 'cform.slug')} htmlFor="cform-slug">
+                  <Input
+                    id="cform-slug"
+                    value={form.slug}
+                    readOnly={isEdit}
+                    onChange={(e) => set('slug', e.target.value)}
+                    placeholder={t(locale, 'cform.slugPlaceholder')}
+                  />
+                </Field>
+                <Field label={t(locale, 'cform.difficulty')} htmlFor="cform-difficulty">
+                  <Input
+                    id="cform-difficulty"
+                    type="number"
+                    min={1}
+                    max={10}
+                    value={form.difficulty}
+                    onChange={(e) => set('difficulty', e.target.value)}
+                  />
+                </Field>
+                <Field label={t(locale, 'cform.type')} htmlFor="cform-type">
+                  <Select
+                    id="cform-type"
+                    value={form.type}
+                    onChange={(e) => set('type', e.target.value as ContentWriteInput['type'])}
+                  >
+                    {CONTENT_TYPES.map((code) => (
+                      <option key={code} value={code}>
+                        {t(locale, TYPE_LABEL_KEYS[code])}
+                      </option>
+                    ))}
+                  </Select>
+                </Field>
+                <Field label={t(locale, 'cform.visibility')} htmlFor="cform-visibility">
+                  <Select
+                    id="cform-visibility"
+                    value={form.visibility}
+                    onChange={(e) =>
+                      set('visibility', e.target.value as ContentWriteInput['visibility'])
+                    }
+                  >
+                    {VISIBILITIES.map((v) => (
+                      <option key={v} value={v}>
+                        {t(locale, VISIBILITY_LABEL_KEYS[v])}
+                      </option>
+                    ))}
+                  </Select>
+                </Field>
+                {form.visibility === 'premium' ? (
+                  <Field label={t(locale, 'cform.tier')} htmlFor="cform-tier">
+                    <Select
+                      id="cform-tier"
+                      value={form.tier}
+                      onChange={(e) => set('tier', e.target.value)}
+                    >
+                      <option value="premium">{t(locale, 'cform.tierPremium')}</option>
+                      <option value="pro">{t(locale, 'cform.tierPro')}</option>
+                    </Select>
+                  </Field>
+                ) : null}
+                {TAXONOMY_DIMS.map((dim) => (
+                  <Field
+                    key={dim}
+                    label={t(locale, 'cform.taxonomyLabel', {
+                      dim: t(locale, DIM_LABEL_KEYS[dim]),
+                    })}
+                    htmlFor={`cform-${dim}`}
+                  >
+                    <Input
+                      id={`cform-${dim}`}
+                      list={`opts-${dim}`}
+                      value={form[dim]}
+                      onChange={(e) => set(dim, e.target.value)}
+                    />
+                    <datalist id={`opts-${dim}`}>
+                      {options[dim].map((o) => (
+                        <option key={o} value={o} />
+                      ))}
+                    </datalist>
+                  </Field>
                 ))}
-              </Select>
-            </Field>
-            <Field label={t(locale, 'cform.visibility')} htmlFor="cform-visibility">
-              <Select
-                id="cform-visibility"
-                value={form.visibility}
-                onChange={(e) =>
-                  set('visibility', e.target.value as ContentWriteInput['visibility'])
-                }
-              >
-                {VISIBILITIES.map((v) => (
-                  <option key={v} value={v}>
-                    {t(locale, VISIBILITY_LABEL_KEYS[v])}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-          </div>
-          {form.visibility === 'premium' ? (
-            <Field label={t(locale, 'cform.tier')} htmlFor="cform-tier">
-              <Select
-                id="cform-tier"
-                value={form.tier}
-                onChange={(e) => set('tier', e.target.value)}
-              >
-                <option value="premium">{t(locale, 'cform.tierPremium')}</option>
-                <option value="pro">{t(locale, 'cform.tierPro')}</option>
-              </Select>
-            </Field>
-          ) : null}
-          <Field label={t(locale, 'cform.difficulty')} htmlFor="cform-difficulty">
-            <Input
-              id="cform-difficulty"
-              type="number"
-              min={1}
-              max={10}
-              value={form.difficulty}
-              onChange={(e) => set('difficulty', e.target.value)}
-            />
-          </Field>
-          {TAXONOMY_DIMS.map((dim) => (
-            <Field
-              key={dim}
-              label={t(locale, 'cform.taxonomyLabel', { dim: t(locale, DIM_LABEL_KEYS[dim]) })}
-              htmlFor={`cform-${dim}`}
-            >
-              <Input
-                id={`cform-${dim}`}
-                list={`opts-${dim}`}
-                value={form[dim]}
-                onChange={(e) => set(dim, e.target.value)}
-              />
-              <datalist id={`opts-${dim}`}>
-                {options[dim].map((o) => (
-                  <option key={o} value={o} />
-                ))}
-              </datalist>
-            </Field>
-          ))}
-          <div className="grid grid-cols-2 gap-3">
-            <Field label={t(locale, 'cform.attribution')} htmlFor="cform-attribution">
-              <Input
-                id="cform-attribution"
-                value={form.attribution}
-                onChange={(e) => set('attribution', e.target.value)}
-              />
-            </Field>
-            <Field label={t(locale, 'cform.license')} htmlFor="cform-license">
-              <Input
-                id="cform-license"
-                value={form.license}
-                onChange={(e) => set('license', e.target.value)}
-              />
-            </Field>
-          </div>
-        </Card>
+                <Field label={t(locale, 'cform.attribution')} htmlFor="cform-attribution">
+                  <Input
+                    id="cform-attribution"
+                    value={form.attribution}
+                    onChange={(e) => set('attribution', e.target.value)}
+                  />
+                </Field>
+                <Field label={t(locale, 'cform.license')} htmlFor="cform-license">
+                  <Input
+                    id="cform-license"
+                    value={form.license}
+                    onChange={(e) => set('license', e.target.value)}
+                  />
+                </Field>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
         {blockEditor ? (
-          <div className="md:col-span-2 space-y-1.5">
-            <span className="text-sm font-medium">{t(locale, 'cform.bodyEditor')}</span>
-            <div className={preview ? 'grid gap-4 lg:grid-cols-2' : ''}>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-sm font-medium">{t(locale, 'cform.bodyEditor')}</span>
+              {preview ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  aria-pressed={showPreview}
+                  onClick={() => setShowPreview((v) => !v)}
+                >
+                  <Icon name={showPreview ? 'eye-off' : 'eye'} className="size-4" />
+                  {showPreview ? t(locale, 'cform.hidePreview') : t(locale, 'cform.showPreview')}
+                </Button>
+              ) : null}
+            </div>
+            <div className={showPreview ? 'grid gap-4 lg:grid-cols-2' : ''}>
               {loaded ? (
                 <BlockEditor
                   key={`${slug ?? 'new'}-${reloadKey}`}
@@ -473,7 +511,7 @@ export default function ContentForm({
                   onChange={setEditorOut}
                 />
               ) : null}
-              {preview ? (
+              {preview && showPreview ? (
                 <PreviewPane
                   slug={slug ?? 'new'}
                   locale={locale}
@@ -488,7 +526,7 @@ export default function ContentForm({
             </div>
           </div>
         ) : (
-          <Card className="flex flex-col gap-3 p-5">
+          <div className="flex flex-col gap-3">
             <Field label={t(locale, 'cform.body')} htmlFor="cform-body">
               <Textarea
                 id="cform-body"
@@ -505,10 +543,10 @@ export default function ContentForm({
                 dangerouslySetInnerHTML={{ __html: previewHtml }}
               />
             </div>
-          </Card>
+          </div>
         )}
 
-        <div className="md:col-span-2 flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 border-t border-border pt-4">
           <Button type="submit" disabled={busy}>
             <Icon name="check" className="size-4" />
             {isEdit ? t(locale, 'cform.saveChanges') : t(locale, 'cform.create')}
@@ -565,80 +603,84 @@ export default function ContentForm({
       </form>
 
       {isEdit && slug ? (
-        <Card className="space-y-3 p-5">
-          <h2 className="font-display text-lg font-semibold tracking-tight">
-            {t(locale, 'cform.media')}
-          </h2>
-          <input
-            type="file"
-            className="text-sm text-muted-foreground file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent/15 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-accent hover:file:bg-accent/25"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                onUpload(file);
-              }
-              e.target.value = '';
-            }}
-          />
-          {media.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t(locale, 'cform.noMedia')}</p>
-          ) : (
-            <ul className="space-y-1.5 text-sm">
-              {media.map((m) => (
-                <li key={m.id} className="flex items-center gap-2">
-                  <Icon name="external-link" className="size-4 text-muted-foreground" />
-                  <a
-                    href={m.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="font-medium text-foreground underline-offset-4 hover:text-accent hover:underline"
-                  >
-                    {m.filename}
-                  </a>
-                  <span className="text-muted-foreground">({m.kind})</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Card>
-      ) : null}
-
-      {isEdit && slug && form.type === 'score' ? (
-        <Card className="space-y-3 p-5">
-          <h2 className="font-display text-lg font-semibold tracking-tight">
-            {t(locale, 'cform.scoreHeading')}
-          </h2>
-          <p className="text-sm text-muted-foreground">{t(locale, 'cform.scoreHelp')}</p>
-          <div className="grid gap-4 lg:grid-cols-2">
-            <Textarea
-              className="h-72 font-mono text-sm"
-              value={scoreTex}
-              onChange={(e) => setScoreTex(e.target.value)}
-              placeholder={'\\title "Etude"\n.\n:4 c d e f | g a b c5'}
-            />
-            <div className="rounded-lg border border-border bg-card p-2">
-              {scoreTex.trim() ? (
-                <AlphaTexScore tex={scoreTex} locale={locale} />
+        <Accordion
+          type="multiple"
+          defaultValue={[]}
+          className="rounded-lg border border-border [&>*]:px-4"
+        >
+          <AccordionItem value="media">
+            <AccordionTrigger>{t(locale, 'cform.media')}</AccordionTrigger>
+            <AccordionContent className="space-y-3 text-foreground">
+              <input
+                type="file"
+                className="text-sm text-muted-foreground file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent/15 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-accent hover:file:bg-accent/25"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    onUpload(file);
+                  }
+                  e.target.value = '';
+                }}
+              />
+              {media.length === 0 ? (
+                <p className="text-sm text-muted-foreground">{t(locale, 'cform.noMedia')}</p>
               ) : (
-                <p className="p-4 text-sm text-muted-foreground">
-                  {t(locale, 'cform.scorePreviewEmpty')}
-                </p>
+                <ul className="space-y-1.5 text-sm">
+                  {media.map((m) => (
+                    <li key={m.id} className="flex items-center gap-2">
+                      <Icon name="external-link" className="size-4 text-muted-foreground" />
+                      <a
+                        href={m.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-medium text-foreground underline-offset-4 hover:text-accent hover:underline"
+                      >
+                        {m.filename}
+                      </a>
+                      <span className="text-muted-foreground">({m.kind})</span>
+                    </li>
+                  ))}
+                </ul>
               )}
-            </div>
-          </div>
-          <div>
-            <Button
-              type="button"
-              disabled={busy || !scoreTex.trim()}
-              onClick={() =>
-                act(() => adminApi.setScore(slug, scoreTex), t(locale, 'cform.scoreSaved'))
-              }
-            >
-              <Icon name="check" className="size-4" />
-              {t(locale, 'cform.scoreSave')}
-            </Button>
-          </div>
-        </Card>
+            </AccordionContent>
+          </AccordionItem>
+
+          {form.type === 'score' ? (
+            <AccordionItem value="score" className="border-b-0">
+              <AccordionTrigger>{t(locale, 'cform.scoreHeading')}</AccordionTrigger>
+              <AccordionContent className="space-y-3 text-foreground">
+                <p className="text-sm text-muted-foreground">{t(locale, 'cform.scoreHelp')}</p>
+                <div className="grid gap-4 lg:grid-cols-2">
+                  <Textarea
+                    className="h-72 font-mono text-sm"
+                    value={scoreTex}
+                    onChange={(e) => setScoreTex(e.target.value)}
+                    placeholder={'\\title "Etude"\n.\n:4 c d e f | g a b c5'}
+                  />
+                  <div className="rounded-lg border border-border bg-card p-2">
+                    {scoreTex.trim() ? (
+                      <AlphaTexScore tex={scoreTex} locale={locale} />
+                    ) : (
+                      <p className="p-4 text-sm text-muted-foreground">
+                        {t(locale, 'cform.scorePreviewEmpty')}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  disabled={busy || !scoreTex.trim()}
+                  onClick={() =>
+                    act(() => adminApi.setScore(slug, scoreTex), t(locale, 'cform.scoreSaved'))
+                  }
+                >
+                  <Icon name="check" className="size-4" />
+                  {t(locale, 'cform.scoreSave')}
+                </Button>
+              </AccordionContent>
+            </AccordionItem>
+          ) : null}
+        </Accordion>
       ) : null}
 
       {revisions && isEdit && slug ? (

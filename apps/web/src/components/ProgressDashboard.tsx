@@ -1,12 +1,32 @@
 import type { ProgressSummary } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
-import { Button, Card, EmptyState, Field, Icon, Input, Progress, StatTile } from '@TheY2T/tmr-ui';
+import {
+  Button,
+  buttonVariants,
+  Card,
+  cn,
+  EmptyState,
+  Field,
+  Icon,
+  Input,
+  Progress,
+  StatTile,
+} from '@TheY2T/tmr-ui';
 import { type FormEvent, useEffect, useState } from 'react';
+import { listSavedCollectionSlugs } from '@/lib/collections-api';
 import { getProgress, logPractice } from '@/lib/progress-api';
 
-export default function ProgressDashboard({ locale }: { locale: Locale }) {
+export default function ProgressDashboard({
+  locale,
+  includeSaved = false,
+}: {
+  locale: Locale;
+  /** Also list collections the learner has bookmarked (even at 0 progress) — gated on the bookmarks flag. */
+  includeSaved?: boolean;
+}) {
   const [summary, setSummary] = useState<ProgressSummary | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [saved, setSaved] = useState<Set<string>>(new Set());
   const [minutes, setMinutes] = useState('20');
   const [busy, setBusy] = useState(false);
 
@@ -16,6 +36,11 @@ export default function ProgressDashboard({ locale }: { locale: Locale }) {
       setLoaded(true);
     });
   }, []);
+
+  useEffect(() => {
+    if (!includeSaved) return;
+    listSavedCollectionSlugs().then((slugs) => setSaved(new Set(slugs)));
+  }, [includeSaved]);
 
   async function onLog(event: FormEvent) {
     event.preventDefault();
@@ -44,6 +69,13 @@ export default function ProgressDashboard({ locale }: { locale: Locale }) {
   }
 
   const streak = summary.currentStreakDays;
+  // "My progress" lists the collections the learner is actually engaged with — ones they've started
+  // (≥1 completed item) plus, when bookmarks are enabled, ones they've saved. A collection they've
+  // never touched isn't progress, it's the catalogue. In-progress collections sort ahead of
+  // saved-but-unstarted ones (stable within each group).
+  const myCollections = summary.collections
+    .filter((collection) => collection.completedItems > 0 || saved.has(collection.slug))
+    .sort((a, b) => Number(b.completedItems > 0) - Number(a.completedItems > 0));
 
   return (
     <div className="space-y-8">
@@ -71,11 +103,24 @@ export default function ProgressDashboard({ locale }: { locale: Locale }) {
         <h2 className="font-display text-xl font-semibold tracking-tight">
           {t(locale, 'prog.collections')}
         </h2>
-        {summary.collections.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{t(locale, 'prog.noCollections')}</p>
+        {myCollections.length === 0 ? (
+          <EmptyState
+            icon={<Icon name="library" className="size-6" />}
+            title={t(locale, 'prog.noCollections')}
+            description={t(locale, 'prog.noCollectionsDesc')}
+            action={
+              <a
+                href={localizedPath(locale, '/collections')}
+                className={cn(buttonVariants({ size: 'sm' }))}
+              >
+                <Icon name="compass" className="size-4" />
+                {t(locale, 'prog.noCollectionsCta')}
+              </a>
+            }
+          />
         ) : (
           <ul className="space-y-4">
-            {summary.collections.map((collection) => {
+            {myCollections.map((collection) => {
               const percent =
                 collection.totalItems === 0
                   ? 0

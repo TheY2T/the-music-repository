@@ -1,10 +1,13 @@
 import type * as React from 'react';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '../../lib/utils';
 
 interface DropdownMenuContextValue {
   open: boolean;
   setOpen: (open: boolean) => void;
+  rootRef: React.RefObject<HTMLDivElement | null>;
+  contentRef: React.RefObject<HTMLDivElement | null>;
 }
 
 const DropdownMenuContext = createContext<DropdownMenuContextValue | null>(null);
@@ -42,12 +45,16 @@ export function DropdownMenu({
     if (!controlled) setUncontrolledOpen(next);
     onOpenChange?.(next);
   };
-  const ref = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isOpen) return;
     const onPointerDown = (event: PointerEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) setOpen(false);
+      const target = event.target as Node;
+      // The content is portaled outside the root, so an outside-click test must exempt both.
+      if (rootRef.current?.contains(target) || contentRef.current?.contains(target)) return;
+      setOpen(false);
     };
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setOpen(false);
@@ -62,8 +69,8 @@ export function DropdownMenu({
   }, [isOpen]);
 
   return (
-    <DropdownMenuContext.Provider value={{ open: isOpen, setOpen }}>
-      <div ref={ref} className={cn('relative inline-block text-left', className)} style={style}>
+    <DropdownMenuContext.Provider value={{ open: isOpen, setOpen, rootRef, contentRef }}>
+      <div ref={rootRef} className={cn('relative inline-block text-left', className)} style={style}>
         {children}
       </div>
     </DropdownMenuContext.Provider>
@@ -97,22 +104,62 @@ export function DropdownMenuContent({
   className,
   align = 'end',
   children,
+  style,
   ...props
 }: DropdownMenuContentProps) {
-  const { open } = useDropdownMenuContext();
-  if (!open) return null;
-  return (
+  const { open, setOpen, rootRef, contentRef } = useDropdownMenuContext();
+  // Portaled to <body> and fixed-positioned from the trigger's rect, so no `overflow` ancestor (e.g.
+  // a horizontally-scrolling shelf) can clip it. Positioned once on open + on resize.
+  const [pos, setPos] = useState<{ top: number; left?: number; right?: number } | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const measure = () => {
+      const root = rootRef.current;
+      if (!root) return;
+      const rect = root.getBoundingClientRect();
+      const top = rect.bottom + 8; // matches the previous mt-2 gap
+      setPos(
+        align === 'end' ? { top, right: window.innerWidth - rect.right } : { top, left: rect.left },
+      );
+    };
+    measure();
+    // Close on scroll rather than re-anchoring — the trigger can scroll out of view (e.g. a shelf),
+    // and a detached menu chasing it looks broken. Ignore scrolls inside the menu's own content.
+    const onScroll = (event: Event) => {
+      if (contentRef.current?.contains(event.target as Node)) return;
+      setOpen(false);
+    };
+    window.addEventListener('scroll', onScroll, true);
+    window.addEventListener('resize', measure);
+    return () => {
+      window.removeEventListener('scroll', onScroll, true);
+      window.removeEventListener('resize', measure);
+    };
+  }, [open, align, rootRef, contentRef, setOpen]);
+
+  if (!open || typeof document === 'undefined') return null;
+  return createPortal(
     <div
+      ref={contentRef}
       role="menu"
       className={cn(
-        'absolute z-50 mt-2 min-w-[8rem] rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-lg',
-        align === 'end' ? 'right-0' : 'left-0',
+        'fixed z-50 min-w-[8rem] rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-lg',
         className,
       )}
+      // Hidden for the first frame until measured, so it never flashes at (0,0).
+      style={{
+        top: pos?.top,
+        left: pos?.left,
+        right: pos?.right,
+        visibility: pos ? 'visible' : 'hidden',
+        ...style,
+      }}
       {...props}
     >
       {children}
-    </div>
+    </div>,
+    document.body,
   );
 }
 

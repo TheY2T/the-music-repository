@@ -61,6 +61,7 @@ export function contentManagerConfig(locale: Locale): EntityManagerConfig<Row> {
     getTitle: (c) => c.title,
     getSubtitle: (c) => c.slug,
     editHref: (key) => localizedPath(locale, `/admin/content/${encodeURIComponent(key)}/edit`),
+    title: t(locale, 'admin.content'),
     newHref: localizedPath(locale, '/admin/content/new'),
     newLabel: t(locale, 'acl.newContent'),
     quickCreate: {
