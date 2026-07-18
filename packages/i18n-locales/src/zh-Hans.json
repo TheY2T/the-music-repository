@@ -910,6 +910,7 @@
   "localeadmin.new": "新建文本",
   "localeadmin.addLocale": "添加语言",
   "localeadmin.addString": "添加字符串",
+  "localeadmin.addStringBody": "为每种语言输入一个值——这将为所有语言创建该键。",
   "localeadmin.newLocaleTitle": "添加语言",
   "localeadmin.fieldCode": "代码",
   "localeadmin.fieldLabel": "名称",

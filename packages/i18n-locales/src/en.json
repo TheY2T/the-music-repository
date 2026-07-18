@@ -910,6 +910,7 @@
   "localeadmin.new": "New string",
   "localeadmin.addLocale": "Add locale",
   "localeadmin.addString": "Add string",
+  "localeadmin.addStringBody": "Enter a value for every locale — this creates the key across all of them.",
   "localeadmin.newLocaleTitle": "Add a locale",
   "localeadmin.fieldCode": "Code",
   "localeadmin.fieldLabel": "Label",

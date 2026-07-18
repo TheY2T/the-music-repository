@@ -135,4 +135,33 @@ describe('AdminLocaleManager island', () => {
       expect(createLocaleMock).toHaveBeenCalledWith({ code: 'fr', label: 'Français' }),
     );
   });
+
+  it('Add string requires a value for every locale and creates the key across all', async () => {
+    listMock.mockResolvedValue([row()]);
+    render(<AdminLocaleManager locale="en" />);
+    await screen.findByText('nav.catalogue');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add string' }));
+    const dialog = await screen.findByRole('dialog');
+    const create = within(dialog).getByRole('button', { name: 'Create' });
+
+    fireEvent.change(within(dialog).getByPlaceholderText('domain.thing'), {
+      target: { value: 'foo.bar' },
+    });
+    // One locale filled, the other blank → still disabled (all locales required).
+    const textareas = within(dialog)
+      .getAllByRole('textbox')
+      .filter((el) => el.tagName === 'TEXTAREA');
+    expect(textareas).toHaveLength(2);
+    fireEvent.change(textareas[0], { target: { value: 'Foo' } });
+    expect(create).toBeDisabled();
+
+    fireEvent.change(textareas[1], { target: { value: '福' } });
+    expect(create).toBeEnabled();
+
+    fireEvent.click(create);
+    await waitFor(() => expect(createMock).toHaveBeenCalledTimes(2));
+    expect(createMock).toHaveBeenCalledWith({ locale: 'en', key: 'foo.bar', value: 'Foo' });
+    expect(createMock).toHaveBeenCalledWith({ locale: 'zh-Hans', key: 'foo.bar', value: '福' });
+  });
 });

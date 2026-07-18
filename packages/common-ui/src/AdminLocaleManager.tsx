@@ -717,7 +717,7 @@ function KeyEditorDialog({
   );
 }
 
-/** Create a brand-new key with its first locale translation. */
+/** Create a brand-new key with a value for EVERY defined locale (one field per locale). */
 function AddStringDialog({
   locale,
   locales,
@@ -733,24 +733,29 @@ function AddStringDialog({
   onCreated: () => void;
   onError: (message: string) => void;
 }) {
-  const first = locales[0]?.code ?? LOCALES[0];
-  const [loc, setLoc] = useState<string>(first);
+  const options = locales.length ? locales : LOCALES.map((code) => ({ code, label: code }));
   const [key, setKey] = useState('');
-  const [value, setValue] = useState('');
+  const [values, setValues] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   useEffect(() => {
     if (open) {
-      setLoc(locales[0]?.code ?? LOCALES[0]);
       setKey('');
-      setValue('');
+      setValues({});
     }
-  }, [open, locales]);
+  }, [open]);
+
+  // Every defined locale must have a value (a new key is created across all locales at once).
+  const complete = key.trim().length > 0 && options.every((l) => (values[l.code] ?? '').trim());
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     try {
-      await localeAdminApi.create({ locale: loc, key: key.trim(), value });
+      await Promise.all(
+        options.map((l) =>
+          localeAdminApi.create({ locale: l.code, key: key.trim(), value: values[l.code] ?? '' }),
+        ),
+      );
       onCreated();
     } catch (err) {
       onError(t(locale, 'localeadmin.saveError', { error: (err as Error).message }));
@@ -759,27 +764,14 @@ function AddStringDialog({
     }
   }
 
-  const options = locales.length ? locales : LOCALES.map((code) => ({ code, label: code }));
-
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent closeLabel={t(locale, 'localeadmin.cancel')}>
         <DialogHeader>
           <DialogTitle>{t(locale, 'localeadmin.addString')}</DialogTitle>
+          <DialogDescription>{t(locale, 'localeadmin.addStringBody')}</DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} className="space-y-4">
-          <label className="block space-y-1 text-sm">
-            <span className="font-medium text-foreground">
-              {t(locale, 'localeadmin.fieldLocale')}
-            </span>
-            <Select value={loc} onChange={(e) => setLoc(e.target.value)}>
-              {options.map((l) => (
-                <option key={l.code} value={l.code}>
-                  {l.label}
-                </option>
-              ))}
-            </Select>
-          </label>
           <label className="block space-y-1 text-sm">
             <span className="font-medium text-foreground">{t(locale, 'localeadmin.fieldKey')}</span>
             <Input
@@ -789,17 +781,23 @@ function AddStringDialog({
               className="font-mono"
             />
           </label>
-          <label className="block space-y-1 text-sm">
-            <span className="font-medium text-foreground">
-              {t(locale, 'localeadmin.fieldValue')}
-            </span>
-            <Textarea value={value} onChange={(e) => setValue(e.target.value)} rows={3} />
-          </label>
+          <div className="max-h-[50vh] space-y-3 overflow-y-auto pr-1">
+            {options.map((l) => (
+              <label key={l.code} className="block space-y-1 text-sm">
+                <span className="font-medium text-foreground">{l.label}</span>
+                <Textarea
+                  rows={2}
+                  value={values[l.code] ?? ''}
+                  onChange={(e) => setValues((v) => ({ ...v, [l.code]: e.target.value }))}
+                />
+              </label>
+            ))}
+          </div>
           <DialogFooter>
             <Button
               type="submit"
               title={t(locale, 'localeadmin.tipAddString')}
-              disabled={busy || !key.trim() || !value}
+              disabled={busy || !complete}
             >
               {t(locale, 'localeadmin.create')}
             </Button>
