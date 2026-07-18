@@ -2,7 +2,7 @@ import { expect, test } from './fixtures';
 // @ts-expect-error — .mjs sibling without types.
 import { authFile } from './mocks/data.mjs';
 
-// The admin localization CMS (ADR 0034): a signed-in admin opens /admin/localization/general and manages
+// The admin localization CMS (ADR 0034): a signed-in admin opens /admin/localization and manages
 // the DB-backed UI strings. The messages endpoint is stubbed here (mock mode has no real API); the real
 // publish→live cache-bust is exercised against the live stack. Anonymous visitors are bounced to sign-in.
 const SEED_ROW = {
@@ -19,8 +19,8 @@ const SEED_ROW = {
 
 test.describe('admin locale strings', () => {
   test('redirects an anonymous visitor to sign-in', async ({ page }) => {
-    await page.goto('/admin/localization/general');
-    await expect(page).toHaveURL(/\/signin\?redirect=\/admin\/localization\/general/);
+    await page.goto('/admin/localization');
+    await expect(page).toHaveURL(/\/signin\?redirect=\/admin\/localization/);
   });
 
   test('an admin sees and can search the string catalogue', async ({ browser }) => {
@@ -35,8 +35,8 @@ test.describe('admin locale strings', () => {
       await route.fulfill({ json: { items: [SEED_ROW] } });
     });
 
-    await page.goto('/admin/localization/general');
-    await expect(page).toHaveURL(/\/admin\/localization\/general\/?$/);
+    await page.goto('/admin/localization');
+    await expect(page).toHaveURL(/\/admin\/localization\/?$/);
     await expect(page.getByText('nav.catalogue')).toBeVisible();
 
     // Opening the delete confirmation reveals a type-to-confirm gate.

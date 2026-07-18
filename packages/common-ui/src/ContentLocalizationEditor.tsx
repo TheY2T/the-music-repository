@@ -1,6 +1,5 @@
 import { type Locale, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import {
-  Badge,
   Button,
   Icon,
   Input,
@@ -39,11 +38,12 @@ function fieldLabelKey(field: string): MessageKey {
 }
 
 /**
- * Full-page content-localization editor (ADR 0034, Phase 2) — the same shape as the content/collection
- * editors. Loads one entity's base (English) fields, then lets an admin translate them into each locale via
- * a locale tab strip: plain fields use inputs, body fields use the WYSIWYG block editor, and the English
- * original is shown for reference. "Save & publish" upserts the changed translations and publishes them so
- * they overlay live reads. i18n-by-prop.
+ * Content-localization panel (ADR 0034, Phase 2) — embedded as a section inside the content / collection /
+ * help editors so an admin translates an item right where they edit it. Loads the entity's base (English)
+ * fields, then translates them into each locale via a locale tab strip: plain fields use inputs, body fields
+ * use the WYSIWYG block editor, and the English original is shown for reference. "Save & publish" upserts the
+ * changed translations and publishes them so they overlay live reads (independent of the base entity's own
+ * save). Self-contained (fetches by slug); i18n-by-prop.
  */
 export default function ContentLocalizationEditor({
   locale,
@@ -196,12 +196,7 @@ export default function ContentLocalizationEditor({
         </p>
       ) : null}
 
-      {/* Document head: the base item this localization targets. */}
-      <div className="space-y-1">
-        <h2 className="font-display text-2xl font-semibold tracking-tight">{loaded.title}</h2>
-        <p className="font-mono text-xs text-muted-foreground">{loaded.slug}</p>
-        <p className="text-sm text-muted-foreground">{t(locale, 'loc.editorSubtitle')}</p>
-      </div>
+      <p className="text-sm text-muted-foreground">{t(locale, 'loc.editorSubtitle')}</p>
 
       {targetLocales.length === 0 ? (
         <p className="rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground">
@@ -213,9 +208,6 @@ export default function ContentLocalizationEditor({
             {targetLocales.map((loc) => (
               <TabsTrigger key={loc.code} value={loc.code}>
                 {loc.label}
-                <Badge variant="outline" className="ml-2 uppercase">
-                  {loc.code}
-                </Badge>
               </TabsTrigger>
             ))}
           </TabsList>

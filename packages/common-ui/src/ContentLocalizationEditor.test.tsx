@@ -44,7 +44,7 @@ describe('ContentLocalizationEditor', () => {
     publishMock.mockReset().mockResolvedValue(1);
   });
 
-  it('shows the base item + a locale tab and saves + publishes a translated field', async () => {
+  it('shows the base fields + a locale tab and saves + publishes a translated field', async () => {
     render(
       <ContentLocalizationEditor
         locale="en"
@@ -53,11 +53,10 @@ describe('ContentLocalizationEditor', () => {
         blockEditor={false}
       />,
     );
-    // Base head + English reference shown (the field block renders once locales load).
-    await screen.findByRole('heading', { name: '12-Bar Blues in A' });
+    // English reference shown once the entity + locales load (no separate doc head — the host editor owns it).
     await screen.findByText('A blues');
     // A tab for the one target (non-en) locale.
-    expect(screen.getByRole('tab', { name: /中文/ })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: '中文' })).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'A调12小节布鲁斯' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save & publish' }));

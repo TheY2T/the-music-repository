@@ -15,6 +15,7 @@ import { getHelpTopic, helpAdminApi } from '@TheY2T/tmr-web-data/help-api';
 import { type FormEvent, useEffect, useState } from 'react';
 import { BlockEditor } from './admin/block-editor/BlockEditor';
 import { PreviewPane } from './admin/block-editor/PreviewPane';
+import ContentLocalizationEditor from './ContentLocalizationEditor';
 
 const emptyForm = { slug: '', term: '', body: '', linkSlug: '' };
 
@@ -23,6 +24,7 @@ export default function HelpTopicForm({
   locale,
   blockEditor = false,
   preview = false,
+  localeStrings = false,
 }: {
   slug?: string;
   locale: Locale;
@@ -30,6 +32,8 @@ export default function HelpTopicForm({
   blockEditor?: boolean;
   /** When true (+ blockEditor), show the opt-in Info-View live preview. */
   preview?: boolean;
+  /** When true (+ edit mode), show the per-locale content localization section (ADR 0034). */
+  localeStrings?: boolean;
 }) {
   const isEdit = Boolean(slug);
   const [showPreview, setShowPreview] = useState(false);
@@ -237,6 +241,26 @@ export default function HelpTopicForm({
           ) : null}
         </div>
       </form>
+
+      {isEdit && slug && localeStrings ? (
+        <Accordion
+          type="multiple"
+          defaultValue={[]}
+          className="rounded-lg border border-border [&>*]:px-4"
+        >
+          <AccordionItem value="localization" className="border-b-0">
+            <AccordionTrigger>{t(locale, 'loc.sectionHeading')}</AccordionTrigger>
+            <AccordionContent className="text-foreground">
+              <ContentLocalizationEditor
+                locale={locale}
+                entityType="help"
+                slug={slug}
+                blockEditor={blockEditor}
+              />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      ) : null}
     </div>
   );
 }

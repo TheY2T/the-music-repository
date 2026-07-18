@@ -50,7 +50,7 @@ export default function AdminNav({
   if (showLocaleStrings) {
     tiles.push({
       href: localizedPath(locale, '/admin/localization'),
-      icon: 'languages',
+      icon: 'globe',
       title: t(locale, 'admin.localization'),
       description: t(locale, 'admin.localizationDesc'),
     });

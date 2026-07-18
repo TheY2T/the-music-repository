@@ -20,6 +20,7 @@ import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } fro
 import { BlockEditor, type BlockEditorChange } from './admin/block-editor/BlockEditor';
 import { PreviewPane } from './admin/block-editor/PreviewPane';
 import { RevisionsPanel } from './admin/RevisionsPanel';
+import ContentLocalizationEditor from './ContentLocalizationEditor';
 
 const CONTENT_TYPES = [
   'lesson',
@@ -100,6 +101,7 @@ export default function ContentForm({
   preview = false,
   revisions = false,
   interactive = false,
+  localeStrings = false,
 }: {
   slug?: string;
   locale: Locale;
@@ -111,6 +113,8 @@ export default function ContentForm({
   revisions?: boolean;
   /** Whether embedded tools render interactively in the editor (mirrors learning.interactive-scores). */
   interactive?: boolean;
+  /** When true (+ edit mode), show the per-locale content localization section (ADR 0034). */
+  localeStrings?: boolean;
 }) {
   const isEdit = Boolean(slug);
   const [form, setForm] = useState({ ...emptyForm });
@@ -680,6 +684,27 @@ export default function ContentForm({
               </AccordionContent>
             </AccordionItem>
           ) : null}
+        </Accordion>
+      ) : null}
+
+      {isEdit && slug && localeStrings ? (
+        <Accordion
+          type="multiple"
+          defaultValue={[]}
+          className="rounded-lg border border-border [&>*]:px-4"
+        >
+          <AccordionItem value="localization" className="border-b-0">
+            <AccordionTrigger>{t(locale, 'loc.sectionHeading')}</AccordionTrigger>
+            <AccordionContent className="text-foreground">
+              <ContentLocalizationEditor
+                locale={locale}
+                entityType="content"
+                slug={slug}
+                blockEditor={blockEditor}
+                interactive={interactive}
+              />
+            </AccordionContent>
+          </AccordionItem>
         </Accordion>
       ) : null}
 
