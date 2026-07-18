@@ -21,6 +21,7 @@ import { ProgressModule } from './progress/progress.module';
 import { ProgressionsModule } from './progressions/progressions.module';
 import { RedemptionModule } from './redemption/redemption.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { TranslationsModule } from './translations/translations.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     ReviewsModule,
     AttemptsModule,
     I18nModule,
+    TranslationsModule,
   ],
 })
 export class AppModule {}

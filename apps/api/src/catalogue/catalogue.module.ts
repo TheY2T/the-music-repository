@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { EntitlementsModule } from '../entitlements/entitlements.module';
+import { TranslationsModule } from '../translations/translations.module';
 import { CatalogueSearch } from './application/ports/catalogue-search.port';
 import { ContentRepository } from './application/ports/content-repository.port';
 import { MediaLibrary } from './application/ports/media-library.port';
@@ -18,7 +19,7 @@ import { S3MediaLibrary } from './infrastructure/s3-media-library.adapter';
  * adapter here to change tech.
  */
 @Module({
-  imports: [EntitlementsModule],
+  imports: [EntitlementsModule, TranslationsModule],
   controllers: [CatalogueController],
   providers: [
     SearchCatalogueUseCase,

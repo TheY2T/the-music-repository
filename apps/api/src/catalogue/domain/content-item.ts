@@ -121,6 +121,40 @@ export interface ContentItem {
   media: MediaAssetMeta[];
 }
 
+/**
+ * Overlay published per-locale translations onto a content item's text fields (ADR 0034, Phase 2).
+ * `overlay` is a field→value map: `title` / `summary` / `bodyMdx`, and `details.<field>` for detail
+ * facts. Absent fields keep their base (English) value. Returns a new item; a no-op for an empty overlay.
+ */
+export function applyContentOverlay(
+  item: ContentItem,
+  overlay: Record<string, string>,
+): ContentItem {
+  const keys = Object.keys(overlay);
+  if (keys.length === 0) {
+    return item;
+  }
+  const next: ContentItem = { ...item };
+  if (overlay.title !== undefined) {
+    next.title = overlay.title;
+  }
+  if (overlay.summary !== undefined) {
+    next.summary = overlay.summary;
+  }
+  if (overlay.bodyMdx !== undefined) {
+    next.bodyMdx = overlay.bodyMdx;
+  }
+  const detailKeys = keys.filter((k) => k.startsWith('details.'));
+  if (detailKeys.length > 0 && next.details) {
+    const details: Record<string, unknown> = { ...next.details };
+    for (const key of detailKeys) {
+      details[key.slice('details.'.length)] = overlay[key];
+    }
+    next.details = details as ContentDetails;
+  }
+  return next;
+}
+
 // --- Read models (match the API contract shapes) ---
 export interface ContentSummaryView {
   slug: string;

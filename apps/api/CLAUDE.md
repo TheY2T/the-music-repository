@@ -115,6 +115,12 @@ the API had **no** i18n responsibility — it now owns the string catalogue.
   `@RequireFlagsEnabled(FlagKeys.LocaleStrings)`.
 - **Seed:** `seed-i18n.ts` upserts `en.json`/`zh-Hans.json` as published `seeded` rows (idempotent). Only
   published, non-deleted rows are served; publishing bumps `i18n_versions` (the web cache-bust signal).
+- **Content translations (Phase 2, `src/translations/`):** per-locale overlay of catalogue **content**
+  fields (`entity_translations`). `ContentTranslations` overlay port (exported; injected by the catalogue
+  read use-cases to overlay `title`/`summary`/`bodyMdx` when a read carries `?locale=`, falling back to
+  base) + `EntityTranslationAuthoring` write side (`/admin/translations`, draft→publish→revisions + soft
+  delete). No Catalogue↔Translations cycle: translation publish does **not** reindex yet, so Meilisearch
+  search stays base-locale until the per-locale index slice lands.
 
 ## Monetization & Phase-6 (DEFERRED — flags OFF, ships free/public-domain)
 

@@ -43,19 +43,26 @@ export class CatalogueController {
   @Get('items')
   @ResolveOptionalAuth()
   async search(@Query() query: RawQuery) {
+    // Search text comes from Meilisearch, which is not yet per-locale (Phase 2B), so `locale` is accepted
+    // but not overlaid here — detail/related localize below.
     return this.searchCatalogue.execute(normalizeQuery(query), await this.resolveViewerRank());
   }
 
   @Get('items/:slug')
   @ResolveOptionalAuth()
-  async detail(@Param('slug') slug: string) {
-    return this.getContent.execute(slug, await this.resolveViewerRank());
+  async detail(@Param('slug') slug: string, @Query('locale') locale?: string) {
+    return this.getContent.execute(slug, await this.resolveViewerRank(), localeOf(locale));
   }
 
   @Get('items/:slug/related')
-  async related(@Param('slug') slug: string) {
-    return { items: await this.getRelated.execute(slug) };
+  async related(@Param('slug') slug: string, @Query('locale') locale?: string) {
+    return { items: await this.getRelated.execute(slug, localeOf(locale)) };
   }
+}
+
+/** Normalize the `locale` query param: undefined for absent/base (`en`), else the locale id. */
+function localeOf(locale: string | undefined): string | undefined {
+  return locale && locale !== 'en' ? locale : undefined;
 }
 
 function toArray(value: string | string[] | undefined): string[] {

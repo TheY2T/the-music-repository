@@ -14,6 +14,15 @@ import { DrizzleUiMessageCatalogue } from './drizzle-ui-message-catalogue.adapte
 // behave. Requires a Docker/podman socket (opt-in via `test:integration`). See ADR 0020/0034.
 const MIGRATIONS = join(process.cwd(), 'drizzle');
 
+/** Assert an array had a first element (list() returns a possibly-empty array). */
+function first<T>(rows: T[]): T {
+  const row = rows[0];
+  if (row === undefined) {
+    throw new Error('expected at least one row');
+  }
+  return row;
+}
+
 describe('Drizzle UI-message adapters (Testcontainers Postgres)', () => {
   let container: StartedPostgreSqlContainer;
   let client: ReturnType<typeof postgres>;
@@ -57,7 +66,7 @@ describe('Drizzle UI-message adapters (Testcontainers Postgres)', () => {
   });
 
   it('edits are drafts until re-published, then bump the version', async () => {
-    const [row] = await authoring.list({ locale: 'en', search: 'greeting' });
+    const row = first(await authoring.list({ locale: 'en', search: 'greeting' }));
     await authoring.updateDraft(row.id, 'Howdy');
 
     const stillOld = await catalogue.snapshot('en');
@@ -70,16 +79,18 @@ describe('Drizzle UI-message adapters (Testcontainers Postgres)', () => {
   });
 
   it('soft-deletes then restores, toggling catalogue membership on publish', async () => {
-    const [row] = await authoring.list({ locale: 'en', search: 'greeting' });
+    const row = first(await authoring.list({ locale: 'en', search: 'greeting' }));
     await authoring.softDelete(row.id);
     await authoring.publish('en');
     expect((await catalogue.snapshot('en')).messages.greeting).toBeUndefined();
 
-    const [deleted] = await authoring.list({
-      locale: 'en',
-      search: 'greeting',
-      includeDeleted: true,
-    });
+    const deleted = first(
+      await authoring.list({
+        locale: 'en',
+        search: 'greeting',
+        includeDeleted: true,
+      }),
+    );
     expect(deleted.deleted).toBe(true);
     await authoring.restore(deleted.id);
     await authoring.publish('en');
@@ -87,7 +98,7 @@ describe('Drizzle UI-message adapters (Testcontainers Postgres)', () => {
   });
 
   it('records a revision history for every change', async () => {
-    const [row] = await authoring.list({ locale: 'en', search: 'greeting' });
+    const row = first(await authoring.list({ locale: 'en', search: 'greeting' }));
     const history = await authoring.listRevisions(row.id);
     const actions = history.map((r) => r.action);
     expect(actions).toContain('create');

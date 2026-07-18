@@ -1056,6 +1056,134 @@ export const CreateRedeemCodeResponse = zod.object({
 
 
 /**
+ * List content-field translations for the admin editor (optionally filtered).
+ */
+export const ListTranslationsQueryParams = zod.object({
+  "entityType": zod.string().optional(),
+  "entityId": zod.string().optional(),
+  "locale": zod.string().optional(),
+  "includeDeleted": zod.boolean().optional()
+})
+
+export const ListTranslationsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "entityType": zod.string(),
+  "entityId": zod.string(),
+  "locale": zod.string(),
+  "field": zod.string(),
+  "draftValue": zod.string().optional(),
+  "publishedValue": zod.string().optional(),
+  "status": zod.string(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional()
+}))
+})
+
+
+/**
+ * Create or edit a field translation's draft.
+ */
+export const UpsertTranslationBody = zod.object({
+  "entityType": zod.string(),
+  "entityId": zod.string(),
+  "locale": zod.string(),
+  "field": zod.string(),
+  "value": zod.string()
+}).describe('Upsert a field translation — create the row or edit its draft.')
+
+export const UpsertTranslationResponse = zod.object({
+  "id": zod.string(),
+  "entityType": zod.string(),
+  "entityId": zod.string(),
+  "locale": zod.string(),
+  "field": zod.string(),
+  "draftValue": zod.string().optional(),
+  "publishedValue": zod.string().optional(),
+  "status": zod.string(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional()
+})
+
+
+/**
+ * Publish pending translation drafts (for an entity, or all) → they overlay live reads.
+ */
+export const PublishTranslationsBody = zod.object({
+  "entityType": zod.string().optional(),
+  "entityId": zod.string().optional()
+}).describe('Publish pending translation drafts for an entity (or all when omitted).')
+
+export const PublishTranslationsResponse = zod.object({
+  "published": zod.number()
+})
+
+
+/**
+ * Soft-delete a translation (restorable); returns the updated row.
+ */
+export const DeleteTranslationParams = zod.object({
+  "id": zod.string()
+})
+
+export const DeleteTranslationResponse = zod.object({
+  "id": zod.string(),
+  "entityType": zod.string(),
+  "entityId": zod.string(),
+  "locale": zod.string(),
+  "field": zod.string(),
+  "draftValue": zod.string().optional(),
+  "publishedValue": zod.string().optional(),
+  "status": zod.string(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional()
+})
+
+
+/**
+ * Restore a soft-deleted translation.
+ */
+export const RestoreTranslationParams = zod.object({
+  "id": zod.string()
+})
+
+export const RestoreTranslationResponse = zod.object({
+  "id": zod.string(),
+  "entityType": zod.string(),
+  "entityId": zod.string(),
+  "locale": zod.string(),
+  "field": zod.string(),
+  "draftValue": zod.string().optional(),
+  "publishedValue": zod.string().optional(),
+  "status": zod.string(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional()
+})
+
+
+/**
+ * A translation's change history (newest first).
+ */
+export const ListTranslationRevisionsParams = zod.object({
+  "id": zod.string()
+})
+
+export const ListTranslationRevisionsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "action": zod.string(),
+  "value": zod.string().optional(),
+  "editedBy": zod.string().optional(),
+  "editedAt": zod.string()
+}))
+})
+
+
+/**
  * Browse & search the catalogue with faceted filters.
  */
 export const SearchCatalogueQueryParams = zod.object({
@@ -1072,7 +1200,8 @@ export const SearchCatalogueQueryParams = zod.object({
   "difficultyMax": zod.number().optional().describe('Inclusive upper bound on difficulty (1..10) — used by the level-band facet.'),
   "sort": zod.string().optional().describe('Result ordering: `relevance` (default) | `difficulty-asc` | `difficulty-desc` | `title-asc`.'),
   "page": zod.number().optional(),
-  "pageSize": zod.number().optional()
+  "pageSize": zod.number().optional(),
+  "locale": zod.string().optional().describe('Locale to overlay published content translations for (e.g. `zh-Hans`); default\/absent = base.')
 })
 
 export const SearchCatalogueResponse = zod.object({
@@ -1153,6 +1282,10 @@ export const GetContentBySlugParams = zod.object({
   "slug": zod.string()
 })
 
+export const GetContentBySlugQueryParams = zod.object({
+  "locale": zod.string().optional()
+})
+
 export const GetContentBySlugResponse = zod.object({
   "slug": zod.string(),
   "title": zod.string(),
@@ -1226,6 +1359,10 @@ export const GetContentBySlugResponse = zod.object({
 
 export const GetRelatedContentParams = zod.object({
   "slug": zod.string()
+})
+
+export const GetRelatedContentQueryParams = zod.object({
+  "locale": zod.string().optional()
 })
 
 export const GetRelatedContentResponse = zod.object({

@@ -44,3 +44,6 @@ apps/web/e2e/.auth/
 
 # Storybook: MSW worker copied in by scripts/gen-stories.mjs
 packages/storybook/public/
+
+# Personal Claude Code settings (not shared)
+.claude/settings.local.json

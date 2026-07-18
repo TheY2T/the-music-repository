@@ -777,6 +777,230 @@
         }
       }
     },
+    "/admin/translations": {
+      "get": {
+        "operationId": "listTranslations",
+        "description": "List content-field translations for the admin editor (optionally filtered).",
+        "parameters": [
+          {
+            "name": "entityType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "includeDeleted",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityTranslationList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ]
+      },
+      "put": {
+        "operationId": "upsertTranslation",
+        "description": "Create or edit a field translation's draft.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityTranslationRow"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TranslationUpsertInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/translations/publish": {
+      "post": {
+        "operationId": "publishTranslations",
+        "description": "Publish pending translation drafts (for an entity, or all) → they overlay live reads.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranslationPublishResult"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TranslationPublishInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/translations/{id}": {
+      "delete": {
+        "operationId": "deleteTranslation",
+        "description": "Soft-delete a translation (restorable); returns the updated row.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityTranslationRow"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ]
+      }
+    },
+    "/admin/translations/{id}/restore": {
+      "post": {
+        "operationId": "restoreTranslation",
+        "description": "Restore a soft-deleted translation.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityTranslationRow"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ]
+      }
+    },
+    "/admin/translations/{id}/revisions": {
+      "get": {
+        "operationId": "listTranslationRevisions",
+        "description": "A translation's change history (newest first).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranslationRevisionList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ]
+      }
+    },
     "/catalogue/items": {
       "get": {
         "operationId": "searchCatalogue",
@@ -942,6 +1166,16 @@
               "format": "int32"
             },
             "explode": false
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "description": "Locale to overlay published content translations for (e.g. `zh-Hans`); default/absent = base.",
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
           }
         ],
         "responses": {
@@ -973,6 +1207,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
           }
         ],
         "responses": {
@@ -1013,6 +1256,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
           }
         ],
         "responses": {
@@ -5240,6 +5492,68 @@
           }
         }
       },
+      "EntityTranslationList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EntityTranslationRow"
+            }
+          }
+        }
+      },
+      "EntityTranslationRow": {
+        "type": "object",
+        "required": [
+          "id",
+          "entityType",
+          "entityId",
+          "locale",
+          "field",
+          "status",
+          "deleted",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "draftValue": {
+            "type": "string"
+          },
+          "publishedValue": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "updatedBy": {
+            "type": "string"
+          }
+        }
+      },
       "FacetValue": {
         "type": "object",
         "required": [
@@ -6109,6 +6423,97 @@
           }
         },
         "description": "Transfer ownership to a current member (owner only)."
+      },
+      "TranslationPublishInput": {
+        "type": "object",
+        "properties": {
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          }
+        },
+        "description": "Publish pending translation drafts for an entity (or all when omitted)."
+      },
+      "TranslationPublishResult": {
+        "type": "object",
+        "required": [
+          "published"
+        ],
+        "properties": {
+          "published": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "TranslationRevisionList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TranslationRevisionSummary"
+            }
+          }
+        }
+      },
+      "TranslationRevisionSummary": {
+        "type": "object",
+        "required": [
+          "id",
+          "action",
+          "editedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "editedBy": {
+            "type": "string"
+          },
+          "editedAt": {
+            "type": "string"
+          }
+        }
+      },
+      "TranslationUpsertInput": {
+        "type": "object",
+        "required": [
+          "entityType",
+          "entityId",
+          "locale",
+          "field",
+          "value"
+        ],
+        "properties": {
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "description": "Upsert a field translation — create the row or edit its draft."
       },
       "UiMessageAdminList": {
         "type": "object",

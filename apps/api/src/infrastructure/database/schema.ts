@@ -532,3 +532,41 @@ export const i18nVersions = pgTable('i18n_versions', {
   version: text('version').notNull(),
   publishedAt: timestamp('published_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
+// --- Content translations (Phase 2, ADR 0034): per-locale translations of catalogue/collection/help
+//     *content* fields (title, summary, body…). Unlike ui_messages there is no seed baseline — content
+//     translations are authored in the CMS. Only published, non-deleted rows overlay the base row at read
+//     time (missing → base/English). Polymorphic by (entityType, entityId) — no hard FK. ---
+export const entityTranslations = pgTable(
+  'entity_translations',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    entityType: text('entity_type').notNull(), // content | collection | help
+    entityId: uuid('entity_id').notNull(),
+    locale: text('locale').notNull(),
+    field: text('field').notNull(), // title | summary | bodyMdx | …
+    draftValue: text('draft_value'),
+    publishedValue: text('published_value'),
+    status: text('status').notNull().default('draft'), // draft | published
+    deletedAt: timestamp('deleted_at', { withTimezone: true }), // soft delete (restorable)
+    updatedBy: text('updated_by'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    unique('entity_translations_target_uq').on(t.entityType, t.entityId, t.locale, t.field),
+    index('entity_translations_lookup_idx').on(t.entityType, t.entityId, t.locale),
+  ],
+);
+
+/** Append-only history of every content-translation change — for diff + restore. */
+export const entityTranslationRevisions = pgTable('entity_translation_revisions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  translationId: uuid('translation_id')
+    .notNull()
+    .references(() => entityTranslations.id, { onDelete: 'cascade' }),
+  value: text('value'),
+  action: text('action').notNull(), // create | update | delete | restore
+  editedBy: text('edited_by'),
+  editedAt: timestamp('edited_at', { withTimezone: true }).notNull().defaultNow(),
+});

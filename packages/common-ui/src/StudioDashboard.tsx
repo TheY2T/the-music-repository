@@ -51,7 +51,7 @@ function Dashboard({
   }
 
   const topRecent = recents[0];
-  const { data: relatedData } = useGetRelatedContent(topRecent?.slug ?? '', {
+  const { data: relatedData } = useGetRelatedContent(topRecent?.slug ?? '', undefined, {
     query: { enabled: !!topRecent },
   });
   const recentSlugs = new Set(recents.map((r) => r.slug));

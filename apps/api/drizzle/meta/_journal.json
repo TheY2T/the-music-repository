@@ -169,6 +169,13 @@
       "when": 1784379995486,
       "tag": "0023_complete_earthquake",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1784382903742,
+      "tag": "0024_lovely_junta",
+      "breakpoints": true
     }
   ]
 }

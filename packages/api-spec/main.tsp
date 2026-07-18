@@ -245,13 +245,15 @@ op searchCatalogue(
   @query sort?: string,
   @query page?: int32,
   @query pageSize?: int32,
+  /** Locale to overlay published content translations for (e.g. `zh-Hans`); default/absent = base. */
+  @query locale?: string,
 ): CatalogueList;
 
 /** Fetch a single catalogue item (with taxonomy + presigned media) by slug. */
 @route("/catalogue/items/{slug}")
 @tag("catalogue")
 @get
-op getContentBySlug(@path slug: string): ContentDetail | {
+op getContentBySlug(@path slug: string, @query locale?: string): ContentDetail | {
   @statusCode statusCode: 404;
   @body body: ProblemDetails;
 };
@@ -264,7 +266,7 @@ model RelatedContent {
 @route("/catalogue/items/{slug}/related")
 @tag("catalogue")
 @get
-op getRelatedContent(@path slug: string): RelatedContent;
+op getRelatedContent(@path slug: string, @query locale?: string): RelatedContent;
 
 // ===================== Admin CMS (Slice 2b) =====================
 // RBAC-gated authoring surface. Enforcement lives in NestJS guards; the contract documents shapes.
@@ -1627,3 +1629,101 @@ op restoreUiMessageRevision(@path id: string, @path revisionId: string): UiMessa
 @tag("localization")
 @post
 op publishUiMessages(@body body: PublishLocaleInput): LocaleVersions;
+
+// ===================== Content translations (ADR 0034, Phase 2) =====================
+// Per-locale translations of catalogue/collection/help *content* fields (title/summary/body…). Overlaid
+// onto read responses when a request carries `?locale=`; authored here (RBAC-gated, draft→publish→
+// revisions + soft delete). Only published, non-deleted rows overlay; missing fields fall back to base.
+
+model EntityTranslationRow {
+  id: string;
+  entityType: string; // content | collection | help
+  entityId: string;
+  locale: string;
+  field: string; // title | summary | bodyMdx | …
+  draftValue?: string;
+  publishedValue?: string;
+  status: string; // draft | published
+  deleted: boolean;
+  updatedAt: string;
+  updatedBy?: string;
+}
+
+model EntityTranslationList {
+  items: EntityTranslationRow[];
+}
+
+/** Upsert a field translation — create the row or edit its draft. */
+model TranslationUpsertInput {
+  entityType: string;
+  entityId: string;
+  locale: string;
+  field: string;
+  value: string;
+}
+
+model TranslationRevisionSummary {
+  id: string;
+  action: string; // create | update | delete | restore
+  value?: string;
+  editedBy?: string;
+  editedAt: string;
+}
+
+model TranslationRevisionList {
+  items: TranslationRevisionSummary[];
+}
+
+/** Publish pending translation drafts for an entity (or all when omitted). */
+model TranslationPublishInput {
+  entityType?: string;
+  entityId?: string;
+}
+
+model TranslationPublishResult {
+  published: int32;
+}
+
+/** List content-field translations for the admin editor (optionally filtered). */
+@route("/admin/translations")
+@tag("localization")
+@get
+op listTranslations(
+  @query entityType?: string,
+  @query entityId?: string,
+  @query locale?: string,
+  @query includeDeleted?: boolean,
+): EntityTranslationList;
+
+/** Create or edit a field translation's draft. */
+@route("/admin/translations")
+@tag("localization")
+@put
+op upsertTranslation(@body body: TranslationUpsertInput): EntityTranslationRow;
+
+/** Soft-delete a translation (restorable); returns the updated row. */
+@route("/admin/translations/{id}")
+@tag("localization")
+@delete
+op deleteTranslation(@path id: string): EntityTranslationRow | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+/** Restore a soft-deleted translation. */
+@route("/admin/translations/{id}/restore")
+@tag("localization")
+@post
+op restoreTranslation(@path id: string): EntityTranslationRow;
+
+/** A translation's change history (newest first). */
+@route("/admin/translations/{id}/revisions")
+@tag("localization")
+@get
+op listTranslationRevisions(@path id: string): TranslationRevisionList;
+
+/** Publish pending translation drafts (for an entity, or all) → they overlay live reads. */
+@route("/admin/translations/publish")
+@tag("localization")
+@post
+op publishTranslations(@body body: TranslationPublishInput): TranslationPublishResult;

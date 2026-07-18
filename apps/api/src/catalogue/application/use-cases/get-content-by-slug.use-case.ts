@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { ContentTranslations } from '../../../translations/application/ports/content-translations.port';
 import {
+  applyContentOverlay,
   type ContentDetailView,
   type MediaView,
   tierRank,
@@ -15,15 +17,20 @@ export class GetContentBySlugUseCase {
   constructor(
     private readonly repository: ContentRepository,
     private readonly media: MediaLibrary,
+    private readonly translations: ContentTranslations,
   ) {}
 
   /** `viewerRank` = the viewer's highest entitlement tier rank (Infinity for staff / gating off).
-   * A premium item below the viewer's rank returns a locked preview (metadata only). */
-  async execute(slug: string, viewerRank: number): Promise<ContentDetailView> {
-    const item = await this.repository.getBySlug(slug);
-    if (item?.status !== 'published') {
+   * A premium item below the viewer's rank returns a locked preview (metadata only).
+   * `locale` overlays published content translations over the base fields (absent → base). */
+  async execute(slug: string, viewerRank: number, locale?: string): Promise<ContentDetailView> {
+    const base = await this.repository.getBySlug(slug);
+    if (base?.status !== 'published') {
       throw new ContentNotFoundError(slug);
     }
+    const item = locale
+      ? applyContentOverlay(base, await this.translations.overlay('content', base.id, locale))
+      : base;
 
     // Premium content the viewer's tier can't unlock: metadata only, no body/media (never presigned).
     if (item.visibility === 'premium' && viewerRank < tierRank(item.tier)) {

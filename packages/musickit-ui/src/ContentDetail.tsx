@@ -32,6 +32,12 @@ import AnimatedCoverArt from './AnimatedCoverArt';
 import ContentBody from './content/ContentBody';
 import ScorePlayer from './ScorePlayer';
 
+/** The `locale` query param for content reads — omitted for the base locale (`en`) so it isn't sent
+ *  (and the query cache key stays stable) when no translation overlay is needed (ADR 0034 Phase 2). */
+function localeParam(locale: Locale): string | undefined {
+  return locale === 'en' ? undefined : locale;
+}
+
 /** Localized label for a premium tier (`premium`/`pro`/`institution`; unknown → premium). */
 function tierLabel(locale: Locale, tier?: string | null): string {
   const key: MessageKey =
@@ -119,7 +125,7 @@ function AppearsInCollections({ slug, locale }: { slug: string; locale: Locale }
 }
 
 function RelatedSection({ slug, locale }: { slug: string; locale: Locale }) {
-  const { data } = useGetRelatedContent(slug);
+  const { data } = useGetRelatedContent(slug, { locale: localeParam(locale) });
   const items = data?.status === 200 ? (data.data.items as ContentSummary[]) : [];
   if (!items.length) {
     return null;
@@ -163,7 +169,7 @@ function Detail({
   interactiveScores: boolean;
   showMonetization: boolean;
 }) {
-  const { data, isLoading } = useGetContentBySlug(slug);
+  const { data, isLoading } = useGetContentBySlug(slug, { locale: localeParam(locale) });
   // customFetch returns non-2xx as data (not a throw), so narrow on the 200 status.
   const item = data?.status === 200 ? (data.data as ContentDetailDto) : undefined;
 
