@@ -3,6 +3,22 @@
 Guidance for AI agents (and humans) working in this monorepo. Keep it current: update it whenever
 a convention, command, or gotcha changes. Per-app notes live in `apps/*/CLAUDE.md`.
 
+## Claude Code tooling (how guidance is organized)
+
+This root file holds the **always-relevant** conventions. Deeper/situational guidance is split so it
+loads only when it's needed:
+
+- **Skills** (`.claude/skills/`, invoke `/name`): `add-endpoint`, `add-feature`, `add-adr`,
+  `add-feature-doc`, `author-content`, `add-score`, `manage-flags`, `add-ui-component`, `add-pixi-tool`,
+  `add-translations`, `add-tests`, `embed-tool`, `run-local` — step-by-step workflows for repeated tasks.
+- **Path-scoped rules** (`.claude/rules/*.md`, load when you touch matching files): `api-hexagonal`,
+  `web-features`, `interactive-tools`, `scores`, `pixi`, `design-system`, `testing`, `content-authoring`,
+  `flags`, `i18n`.
+- **Per-package `CLAUDE.md`** (load when working in that package): `packages/{music-core,musickit-ui,ui,
+  nest-platform}`. Other packages are covered by this file + the rules.
+- **App notes:** `apps/api/CLAUDE.md`, `apps/web/CLAUDE.md`. **Docs:** ADRs in `docs/adr/`, one feature
+  doc per feature in `docs/features/`.
+
 ## What this is
 
 A music-learning **repository/catalogue website** (piano & guitar first). Content is

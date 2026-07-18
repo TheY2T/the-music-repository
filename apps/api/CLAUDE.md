@@ -37,41 +37,23 @@ the controller drops empties. MinIO presigned URLs use `S3_PUBLIC_ENDPOINT` so t
 - Schema: `src/infrastructure/database/schema.ts`. Client: `DatabaseModule` (token `DATABASE`).
 - Only `infrastructure/` adapters may import Drizzle. Map ORM rows ↔ domain in a mapper.
 - `pnpm --filter @TheY2T/tmr-api db:generate` after schema changes; migrations live in `drizzle/`.
-- **Catalogue content** (rich `body_mdx` + `details` JSONB facts + curated `related` + interactive
-  `embeds`) is authored as one Markdown file per item in `src/infrastructure/database/content/<slug>.md`;
-  run `pnpm --filter @TheY2T/tmr-api content:build` to regenerate the build-safe `seed-content.ts` bundle
-  the seed consumes. Era is a Meilisearch facet derived from `details.era` (no SQL taxonomy table).
-  A fenced ```embeds block in the body (JSON array of `ContentEmbed`) renders **preconfigured interactive
-  tools** below the prose — stored in `details.embeds`, spec-first (`ContentEmbed` in TypeSpec), rendered
-  by the web `ContentEmbeds`; the build fails on bad JSON / unknown tool. Follow the **`embed-tool`**
-  skill (ADR 0028). See `docs/features/catalogue.md` + `docs/features/content-embeds.md`.
-- **Collections** (`src/collections/`, ADR 0023) are authored the same way:
-  `content/collections/<slug>.md` (frontmatter + `## Outcomes` + `## Section:` blocks with
-  `- slug (note: …; skills: […])` items) → `pnpm --filter @TheY2T/tmr-api collections:build` →
-  `seed-collections.ts`. A collection is rich metadata + `collection_sections` + `collection_items`
-  (own uuid PK, `section_id`, `curator_note`, `focus_skills`). The domain `Collection.itemSlugs` MUST stay
-  a **flattened, section-ordered** list — the progress module reads it. Ports: `CollectionRepository`,
-  `CollectionBookmarks`, `CollectionRatings`, `CollectionSearchIndex` (Meili `collections` index,
-  reindexed on seed + writes; private user collections never indexed), + a thin `LearnerProgress`
-  (reads `content_progress` — avoids a cycle with `ProgressModule`). User-collection ownership is enforced
-  in the use-cases (403), not the path. See `docs/features/collections.md`.
 
-## Scores (alphaTex, ADR 0027; was MusicXML/Verovio, ADR 0024)
+## Content authoring (catalogue, collections, scores)
 
-Sheet music is authored file-based like the catalogue: `content/scores/<slug>.alphatex` (alphaTab's
-native notation format, the single source of truth) + `<slug>.meta.json` (provenance/licensing —
-`ScoreMeta`: `origin` `openscore|kern|hand-authored`, `source`, `sourceUrl`, `license`, `attribution`,
-optional `displayMode` `standard|tab`) → `pnpm --filter @TheY2T/tmr-api scores:build` → committed
-`seed-scores.ts` (`SCORE_ALPHATEX` + `SCORE_META`). The seed uploads each as an **`alphatex`** media
-asset and records the engraving's license/attribution/`source_url` (not the piece's). The web
-`ScorePlayer` renders + plays it with **alphaTab** and exports the PDF client-side (`api.print()`); no
-stored PDF. `scores:validate` re-parses each alphaTex via alphaTab — both `.alphatex` media files **and**
-every inline `score` embed `tex` in a content article's ```embeds block (structure gate; visual proofing
-is in the browser). **Legacy MusicXML** converts losslessly via `scores:migrate` (`musicxml-to-alphatex.mjs`,
-alphaTab's own importer→AlphaTexExporter). Author new scores with the **`add-score`** skill.
-**Licensing:** ship only CC0 (OpenScore) or hand-authored (ours); never MuseScore/musetrainer uploads,
-the unlicensed CCARH kern, or ODbL/anti-LLM ABC. Full sourcing matrix + status in
-`docs/features/scores.md`.
+All authored as **files → `*:build` → committed seed bundle → `db:seed`**. Full workflow is the
+**`author-content`** skill (+ `.claude/rules/content-authoring.md`); scores have the **`add-score`** skill.
+- **Catalogue** — `src/infrastructure/database/content/<slug>.md` → `content:build` → `seed-content.ts`.
+  Rich `body_mdx` + `details` JSONB + curated `related` + a fenced ```embeds block (preconfigured tools,
+  spec-first `ContentEmbed`; **`embed-tool`** skill, ADR 0028). Era = Meili facet from `details.era` (no SQL
+  taxonomy). `docs/features/{catalogue,content-embeds}.md`.
+- **Collections** (`src/collections/`, ADR 0023) — `content/collections/<slug>.md` → `collections:build`.
+  `Collection.itemSlugs` MUST stay **flattened, section-ordered** (progress reads it). Ports:
+  `CollectionRepository`/`CollectionBookmarks`/`CollectionRatings`/`CollectionSearchIndex` + thin
+  `LearnerProgress` (reads `content_progress`, avoids a `ProgressModule` cycle); private user collections
+  never indexed; ownership enforced in use-cases (403). `docs/features/collections.md`.
+- **Scores** (alphaTex, ADR 0027) — `content/scores/<slug>.alphatex` + `.meta.json` → `scores:build`.
+  Gotchas + licensing in `.claude/rules/scores.md`; `scores:validate` gates structure; `scores:migrate`
+  converts legacy MusicXML losslessly. `docs/features/scores.md`.
 
 ## Feature flags
 
@@ -121,69 +103,26 @@ write-side features:
 - **List responses wrap in `{ items }`** to match the contract; `POST .../publish` sets `@HttpCode(200)`
   (Nest defaults POST to 201).
 
-## Monetization / entitlements (Phase 6, ADR 0015)
+## Monetization & Phase-6 (DEFERRED — flags OFF, ships free/public-domain)
 
-> **Deferred: `monetization.premium` defaults OFF** (both the flagd config and `FlagDefaults`), so the
-> whole system is dormant and all content is free/public-domain — `resolveViewerRank` short-circuits to
-> Infinity ⇒ nothing is ever locked, and the `@RequireFlagsEnabled(Premium)` routes (checkout,
-> billing-portal, classroom **grant-premium**) 404. Turn the flag on only once premium content exists.
-> The web-only `monetization.messaging` flag separately gates all premium *copy/CTAs* (see
-> `apps/web/CLAUDE.md`).
+`monetization.premium` defaults **OFF** ⇒ the whole entitlement system is dormant (`resolveViewerRank` →
+Infinity, nothing locks) and the `@RequireFlagsEnabled(Premium)` routes 404. Turn it on only once premium
+content exists. The web-only `monetization.messaging` flag separately gates premium copy/CTAs
+(`apps/web/CLAUDE.md`). Each area is a write-side feature following the CMS template above; full detail in
+its feature doc — read that before editing:
 
-Premium gating lives in `src/entitlements/`. `Entitlements` port (`getPremium`/`grantPremium`/
-`revokePremium`) ← `DrizzleEntitlements` (`entitlements` table); request-scoped `PremiumAccessService`
-combines `CurrentUser` + `Entitlements` into **entitled = staff OR active premium grant**.
-`SubscriptionController` exposes `/me/subscription` (get/activate/cancel — a **mock checkout**), gated by
-`monetization.premium` via **method-level** `@RequireFlagsEnabled` (class-level drops route mapping).
+- **Entitlements / subscription** (`src/entitlements/`, ADR 0015) — `Entitlements` port ←
+  `DrizzleEntitlements`; tiered locked-preview (`tier` `premium`/`pro`, `TIER_RANK`). `docs/features/monetization.md`.
+- **Billing** (`src/billing/`, ADR 0016) — `CheckoutGateway` port, mock by default / Stripe when keyed;
+  `/me/checkout` + unauthenticated `/billing/webhook`. `docs/features/billing.md`.
+- **Classrooms** (`src/classrooms/`, `education.classrooms`) — `docs/features/classrooms.md`.
+- **Redeem codes + audit log** (`src/redemption/`) — `docs/features/redemption.md`.
+- **Mail** (`src/mail/`) — `MailSender` port, `LogMailSender` (dev/CI) / `SmtpMailSender` when `SMTP_URL` set.
 
-- **Catalogue gating** = locked preview, **tiered** (ADR 0015 + 6B): content has a `tier`
-  (`premium`/`pro`; null = premium). The controller resolves the viewer's **rank** (`entitledRank` over
-  `PremiumAccessService.viewerEntitlement().keys`, or Infinity for staff / flag off) and passes it into
-  `SearchCatalogue`/`GetContentBySlug`, which lock a premium item when `viewerRank < tierRank(item.tier)`
-  — so `premium` unlocks `premium` but not `pro`. Ranks live in the catalogue domain (`TIER_RANK`).
-  `Entitlements.grant(key)`/`activeKeys` are the tier-aware primitives (`grantPremium` = `grant('premium')`).
-- **Reading the viewer on public routes:** the catalogue is anonymous, so use `ResolveOptionalAuth()`
-  (wraps the library's `@OptionalAuth()`) — resolves the session when present, never rejects anon. Plain
-  `@RequireAuth()` still can't populate `CurrentUser` on an otherwise-public route.
-- **New flag keys need flagd reloaded** (`docker compose … restart flagd`) or `@RequireFlagsEnabled`
-  route-gates 404 while the imperative `getBooleanValue(default)` path still works.
-- The seed upsert updates `visibility`; mark premium items with `visibility: 'premium'` in `seed-data.ts`.
-
-**Mail (`src/mail/`):** `MailSender` port bound by `MailModule`'s factory to `LogMailSender` (dev/CI —
-logs, no delivery) or `SmtpMailSender` (nodemailer) when `SMTP_URL` is set. Inject the port anywhere
-(e.g. classroom invitations). Env: `SMTP_URL`, `MAIL_FROM`.
-
-**Billing (Stripe checkout + webhook, `src/billing/`, ADR 0016):** `CheckoutGateway` port bound by a
-factory to `MockCheckoutGateway` (default) or `StripeCheckoutGateway` (when `STRIPE_SECRET_KEY` is set).
-`POST /me/checkout` (in TypeSpec, `@RequireAuth` + `monetization.premium`) takes a `{ plan }`
-(`premium`/`pro`) — the plan is recorded on `checkout_sessions.entitlement_key`, and the webhook grants
-that tier via `Entitlements.grant(key)`. Stripe selects the price by plan (`STRIPE_PRICE_ID` /
-`STRIPE_PRO_PRICE_ID`). Subscription **status** reflects any active tier; **cancel revokes all tiers**.
-It returns a redirect URL;
-`POST /billing/webhook` (NOT in TypeSpec — inbound provider endpoint like Better Auth, unauthenticated)
-verifies + normalizes the event and calls the existing `Entitlements.grantPremium`/`revokePremium`.
-Idempotency via `WebhookLedger` (`processed_webhooks`); session↔user via `CheckoutSessionStore`
-(`checkout_sessions`). **Raw-body caveat:** Stripe signature verification needs the exact bytes, but
-`bodyParser:false` + Better Auth mean `req.rawBody` isn't captured — the controller re-serializes the
-parsed body (fine for the mock, which skips signatures; add raw-body capture when real keys land). See
-`docs/features/billing.md`.
-
-**Classrooms (teacher mode, `src/classrooms/`, flag `education.classrooms`):** `ClassroomsRepository`
-← `DrizzleClassrooms` (`classrooms` + `classroom_members`); use-cases in one `classrooms.use-cases.ts`;
-codes via `crypto.randomInt`. `GrantClassroomPremiumUseCase` imports the `Entitlements` port
-(EntitlementsModule) → `grantPremium(memberId, 'classroom')` per member. **Auto-grant:** `JoinClassroom`
-grants premium to a new joiner when the class is `premiumGranted`. **Roster:** leave (owner blocked),
-remove-member (owner), archive (owner; `archived_at`, filtered from `findByCode`/`listForUser`),
-transfer-ownership (owner → a member). **Assignments + progress:** `classroom_assignments` table;
-owner assigns content by slug; `GET /classrooms/{id}/progress` joins assignments × members ×
-`content_progress` for per-student `completedCount/total` (no cross-module coupling). Same flag gotchas
-as monetization (method-level `@RequireFlagsEnabled`, reload flagd). See `docs/features/classrooms.md`.
-
-**Gift/redeem codes (`src/redemption/`, 6B) + entitlement audit log:** `RedeemCodeStore` ←
-`DrizzleRedeemCodeStore` (`redeem_codes`); atomic `consume` (`UPDATE ... WHERE uses_remaining > 0
-RETURNING`). `CreateRedeemCode` is staff-only (checks `CurrentUser` roles → 403 `NOT_STAFF`); `RedeemCode`
-→ `Entitlements.grantPremium(_, 'redeem', expiresAt)`. `DrizzleEntitlements` appends to `entitlement_events`
-on every grant/revoke (all sources captured); `GET /me/entitlements/history`. See `docs/features/redemption.md`.
+**Recurring gotchas across all of these:** gate deferred routes with **method-level**
+`@RequireFlagsEnabled` (class-level drops route mapping) and **reload flagd** after a new key
+(`.claude/rules/flags.md`); read the viewer on public routes with `ResolveOptionalAuth()` (never
+`@RequireAuth()`); Stripe signature verification needs raw bytes that `bodyParser:false` doesn't capture.
 
 ## Config
 

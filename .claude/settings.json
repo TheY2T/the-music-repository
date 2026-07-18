@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git stash list:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(tree:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm format:*)",
+      "Bash(pnpm check-types:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm --filter @TheY2T/tmr-api build:*)",
+      "Bash(pnpm --filter @TheY2T/tmr-api lint:*)",
+      "Bash(pnpm --filter @TheY2T/tmr-api check-types:*)",
+      "Bash(pnpm --filter @TheY2T/tmr-api test:*)",
+      "Bash(pnpm --filter @TheY2T/tmr-web build:*)",
+      "Bash(pnpm --filter @TheY2T/tmr-web lint:*)",
+      "Bash(pnpm --filter @TheY2T/tmr-web check-types:*)",
+      "Bash(pnpm --filter @TheY2T/tmr-web test:*)",
+      "Bash(docker compose -f infra/podman/compose.yaml ps:*)",
+      "Bash(docker compose -f infra/podman/compose.yaml logs:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

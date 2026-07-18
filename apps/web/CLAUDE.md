@@ -1,459 +1,100 @@
 # CLAUDE.md — apps/web (Astro)
 
-Astro SSR + React islands + Tailwind v4 + shadcn/ui. See root `CLAUDE.md` for repo-wide rules.
+Astro SSR + React islands + Tailwind v4 + shadcn. See root `CLAUDE.md` for repo-wide rules. This file is
+the **shell playbook**; situational detail loads from `.claude/rules/*` and `docs/features/*`.
 
 ## `apps/web` is a SHELL (ADR 0033)
 
-Complex UI no longer lives here — it moved to shared raw-source ESM packages. This app keeps only the
-shell: routes, middleware/`Astro.locals`, flag-gating, `BaseLayout` + `global.css`, and prop-passing.
-Pages mount islands imported from the packages and pass `locale`/`flags`/`user` down as props.
+Complex UI lives in shared raw-source ESM packages, not here. This app keeps only: routes, middleware /
+`Astro.locals`, flag-gating, `BaseLayout` + `global.css`, and prop-passing. Pages mount package islands and
+pass `locale`/`flags`/`user` down as **props**. **`Astro.locals` never leaves `apps/web`.**
 
 - **Music/learning UI** (tool islands, score UI, catalogue/collections/drills, music organisms) →
-  `@TheY2T/tmr-musickit-ui` (`@TheY2T/tmr-musickit-ui/organisms` for `ChordDiagram`/`StaffSequence`).
+  `@TheY2T/tmr-musickit-ui` (`/organisms` for `ChordDiagram`/`StaffSequence`).
 - **Shell chrome + account/admin/billing/auth UI** → `@TheY2T/tmr-common-ui` (`SiteHeader`,
-  `@TheY2T/tmr-common-ui/astro/SiteFooter.astro`, `ThemeSwitcher`, dashboards, forms, admin block editor).
-- **Music logic** (theory/audio/soundfont, alphaTab engine, PixiJS scenes + `PixiCanvas`, hooks,
-  chord-shape data) → `@TheY2T/tmr-music-core`.
+  `astro/SiteFooter.astro`, `ThemeSwitcher`, dashboards, forms, admin block editor).
+- **Music logic** (theory/audio/soundfont, alphaTab engine, PixiJS scenes + `PixiCanvas`, chord data) →
+  `@TheY2T/tmr-music-core`.
 - **Data seam** (api-client wrappers, `auth-client`, `nav`, `Flags`/`User`/`Locale` types) →
   `@TheY2T/tmr-web-data`.
-
-Component/skill notes below still name components by their (unchanged) names — they now live in the
-packages above, not `src/components`.
 
 ## Structure
 
 ```
 src/
-  pages/*.astro        # routes (lowercase/kebab, [slug].astro) — thin shells; read Astro.locals,
+  pages/*.astro        # routes (lowercase/kebab, [slug].astro) — thin shells: read Astro.locals,
                        #   gate flags, mount a package island with props
   layouts/BaseLayout.astro  # shell entry: global.css + pre-paint theme + composes common-ui chrome
-  components/ui/button.tsx  # thin re-export of @TheY2T/tmr-ui Button (back-compat shim)
-  lib/utils.ts          # thin re-export of cn() from @TheY2T/tmr-ui (back-compat shim)
-  lib/admin-guard.ts    # reads Astro.locals (stays in the app)
-  styles/global.css     # Tailwind v4 (@import) + @import @TheY2T/tmr-design-tokens + @source globs
-                       #   (globs cover ui/common-ui/musickit-ui/music-core src)
-  middleware.ts         # OpenFeature SSR eval → Astro.locals.flags (per request)
-  env.d.ts              # App.Locals typing — derived from @TheY2T/tmr-web-data (Flags/User/Locale)
+  lib/admin-guard.ts   # reads Astro.locals (stays in the app)
+  styles/global.css    # Tailwind v4 (@import) + @import @TheY2T/tmr-design-tokens + @source globs
+  middleware.ts        # OpenFeature SSR eval → Astro.locals.flags; locale + session resolution
+  env.d.ts             # App.Locals typing — derived from @TheY2T/tmr-web-data (Flags/User/Locale)
 ```
-Adding a new package island to a route: add it to the package (follow `add-ui-component`), then import
-it in the `.astro` page and pass `locale`/`flags`/`user` props. Wiring for a NEW package: add it to
-`astro.config.mjs` `ssr.noExternal` and a `@source` glob in `global.css`.
 
-## Design system (ADR 0018, `docs/features/design-system.md`)
+Adding a package island to a route: add it to the package (**`add-ui-component`**), import it in the
+`.astro` page, pass `locale`/`flags`/`user` props. **Wiring a NEW package:** add it to `astro.config.mjs`
+`ssr.noExternal` **and** a `@source` glob in `global.css` (else its utilities don't generate).
 
-- **Build UI from `@TheY2T/tmr-ui`** (Atomic Design): atoms (shadcn primitives) → molecules
-  (`Field`, `Card`, `Badge`, `SearchField`, `CardGrid`, `StatCard`, `PageHeader`, `SegmentedToggle`,
-  …) → organisms. Music primitives (`StaffSequence`, `ChordDiagram`, `GUITAR_CHORDS`) from
-  `@TheY2T/tmr-ui/music`. No bespoke raw-Tailwind chrome — compose from the library.
-- **Page shell:** wrap page content in `PageShell` (`@TheY2T/tmr-ui/astro/PageShell.astro`) INSIDE
-  `BaseLayout` — it renders the `mx-auto max-w-* p-8` container + back-link/title/subtitle/actions.
-- **Tokens:** `@TheY2T/tmr-design-tokens` (imported by `global.css`); tokens generate as Tailwind
-  utilities. `global.css` has `@source` globs pointing at the packages — if styles vanish, check them.
-- **i18n-by-prop:** library components take localized strings as props (never call `t()`); pass
-  `t(locale, key)` results in. Add/extend components via the **`add-ui-component`** skill.
-- **Icons (ADR 0019, `docs/features/icons.md`):** no raw emoji/glyphs — use `<Icon name=… />` from
-  `@TheY2T/tmr-ui` in islands and `@TheY2T/tmr-ui/astro/Icon.astro` in `.astro` (both Lucide; add via
-  the registry in `packages/ui/src/components/ui/icon.tsx`). `PageShell` back-links draw their own
-  `arrow-left`. Music-notation glyphs (`♯♭♮♪♩`), hand-drawn rests, and guitar `○`/`×` + strum `↓↑·`
-  markers stay unicode — they are notation, not icons.
+## Conventions (details in rules)
 
-## Localization / i18n (ADR 0017, `docs/features/i18n.md`)
+- **Design system** (`.claude/rules/design-system.md`, ADR 0018) — build from `@TheY2T/tmr-ui`
+  atoms/molecules; wrap page content in `PageShell` inside `BaseLayout`; **theme with semantic token
+  utilities only** (no hardcoded palette colours); **icons via the `Icon` atom** (no emoji/glyphs).
+- **i18n** (`.claude/rules/i18n.md`, ADR 0017) — no hardcoded UI strings; render via `t(locale, key)`;
+  pass `locale` into islands as a plain prop; `/zh/…` URL-prefix routing.
+- **Islands** — one island root per interactive unit (React context doesn't cross islands); hydrate
+  minimally (`client:load` only where immediately interactive; else `client:visible`/`idle`); static
+  markup stays in `.astro`.
 
-- **No hardcoded UI strings.** Every user-facing string goes through `t(locale, key)` from
-  `@TheY2T/tmr-i18n`. Keys live in `@TheY2T/tmr-i18n-locales` (`en.json` = source of truth for keys →
-  `type MessageKey`; `zh-Hans.json` = Simplified Chinese, missing → falls back to English). Add keys via
-  the **`add-translations`** skill.
-- **Locale** is resolved per request in `middleware.ts` → `Astro.locals.locale` (URL prefix > cookie >
-  Accept-Language). `/zh/…` is rewritten to the canonical page path (single page-file set); the browser
-  URL stays `/zh/…`. Gated by `platform.i18n`.
-- **Pages** use `src/layouts/BaseLayout.astro` (owns `<html lang>`, dark-mode script, hreflang, and the
-  `LanguageSwitcher` top bar) — never write a bare `<html>`/`<head>`. Build internal links with
-  `localizedPath(locale, '/path')` so a zh page stays Chinese; build `<title>` inline as
-  `` `${t(locale, 'x.title')} — ${t(locale, 'site.name')}` ``.
-- **Islands** take `locale: Locale` as a plain prop (deterministic from the URL → no hydration flash;
-  React context can't cross islands) and call `t(locale, key)`. Tools share `tool.<slug>.title/summary`.
-- **Left as-is:** music-theory tokens, technical names, and API/DB data (catalogue titles, taxonomy).
-  Backend/DB-content i18n is deferred (see the feature doc).
+## Feature areas (read the doc before editing)
 
-## Islands rules
+Each feature has a `docs/features/*.md`; the shell-level gotchas are in `.claude/rules/web-features.md`
+(auth SSR origin / redirect-loop trap, monetization dual-flag). Mount a package island + gate on the flag
+(+ login where noted); pass `showX` flags derived in the page frontmatter.
 
-- **One island root per interactive unit.** Context-dependent shadcn (Dialog, Select, Tabs, Toast)
-  must be composed inside a single `.tsx` island — React context does not cross island boundaries.
-- Hydrate minimally: `client:load` only where immediately interactive; else `client:visible`/`idle`.
-- Static markup stays in `.astro`.
+| Area | Flag | Doc |
+|---|---|---|
+| Auth (sign-in gate) | `auth.enabled` | `auth.md` (ADR 0013) |
+| Admin CMS | `admin.cms` (+ block-editor) | `admin-cms.md`, `block-editor.md` |
+| Favorites | `personalization.favorites` | `favorites.md` |
+| Collections | `learning.collections*` | `collections.md` |
+| Progress + tool practice | `learning.progress`, `.tool-practice` | `progress.md` |
+| Info View (help) | `learning.info-view` | `info-view.md` |
+| Monetization (DEFERRED) | `monetization.premium` / `.messaging` | `monetization.md` |
+| Classrooms | `education.classrooms` | `classrooms.md` |
 
-## Auth (Slice 2, ADR 0013)
+## Interactive tools, scores & Pixi
 
-- **Client:** `src/lib/auth-client.ts` (`createAuthClient` → `authClient.signIn/signOut/useSession`).
-  Points at the API (`PUBLIC_API_BASE_URL`), `credentials: 'include'` (cross-origin cookie in dev).
-- **SSR session:** `src/middleware.ts` forwards the request cookie to the API's `get-session` and sets
-  `Astro.locals.user` (null when anonymous). Gate a page with
-  `if (!Astro.locals.user) return Astro.redirect('/signin?redirect=…')`.
-- **SSR API origin (containers):** the middleware's session check runs server-side, so it uses
-  `API_INTERNAL_URL` (→ `http://api:3000` in compose) and only falls back to the browser's
-  `PUBLIC_API_BASE_URL` (`http://localhost:3000`) for host dev. Inside the web container
-  `localhost:3000` is the web container itself — without `API_INTERNAL_URL` the session check always
-  fails and every gated page bounces to `/signin` even after a valid sign-in.
-- **Same-site cookie (dev):** web `:4321` and API `:3000` share the site (cookies ignore port), so the
-  `SameSite=Lax` session cookie reaches both. The gate is UX-only — the API re-authorizes mutations.
-- Sign-in island: `SignInForm.tsx`; sign-out: `SignOutButton.tsx`; gated page: `pages/admin/index.astro`.
+- **Tools** — client-only, one `/tools/<slug>` route per `tools.*` flag; reuse `music-core`'s
+  `music-theory`/`audio`/`soundfont`. See `.claude/rules/interactive-tools.md`,
+  `docs/features/interactive-tools.md`, and the **`embed-tool`** skill (every tool + how to embed one).
+- **Scores** — alphaTab is the single engine (ADR 0027). Gotchas in `.claude/rules/scores.md`; author with
+  **`add-score`**. Notation-bearing tools generate alphaTex, not hand-authored `StaffSequence`.
+- **PixiJS** — client-only WebGL via the `PixiCanvas` boundary. See `.claude/rules/pixi.md` +
+  **`add-pixi-tool`**. Decorative dashboard backgrounds: `docs/features/dashboard-background.md`.
+- **Drills** — `DrillSession` over `music-core/drills`; `docs/features/drill-engine.md`.
 
-## Admin CMS (Slice 2b)
+## Styling / theming (ADR 0021, `.claude/rules/design-system.md`)
 
-- **Pages** under `pages/admin/` (list + `content/new` + `content/[slug]/edit`), each gated by
-  `guardAdmin(Astro)` (`src/lib/admin-guard.ts`): checks the `admin.cms` flag + editor/admin role.
-- **Islands:** `AdminContentManager.tsx` (the content list — three-view Hub/Table/Board manager) +
-  `ContentForm.tsx` (block editor + taxonomy datalists + media uploader).
-- **Shared admin manager:** `components/admin/EntityManager.tsx` is a **generic, config-driven**
-  Hub/Table/Board manager (control bar + axis switcher + search + facets + bulk + optimistic status +
-  drag board) over pure helpers in `lib/admin-manager.ts`. Collections + help topics use it via
-  `*-manager-config.tsx`; content has its own richer `AdminContentManager` (candidate to migrate onto
-  `EntityManager` later). Each entity's list page mounts a thin `Admin<Entity>Manager` island that builds
-  the config client-side (configs hold functions/JSX, not serializable as Astro props).
-- **API calls** go through `src/lib/admin-api.ts` — a typed, credentialed fetch wrapper over the CMS
-  endpoints (uses generated model types from `@TheY2T/tmr-api-client`). Media upload = request a
-  presigned ticket, then `uploadToTicket` PUTs the file straight to MinIO.
-- The generated `customFetch` mutator sends `credentials: 'include'` so authed hooks carry the cookie.
+Tailwind v4 in CSS (`@import "tailwindcss"`), not a JS config. Tokens + `@theme inline` + the `.dark`
+variant come from `@TheY2T/tmr-design-tokens` (imported in `global.css`); its `@source` globs make library
+utilities generate — **if styles vanish, check them**. Two `<html>` hooks set pre-paint in `BaseLayout`:
+aesthetic → `data-theme="hybrid|heritage|warm-minimal"` and mode → `.dark`; switched by `ThemeSwitcher`.
+Storybook host: `@TheY2T/tmr-storybook` (port 6006).
 
-## Favorites (Slice 2c)
+**Global chrome:** `BaseLayout.astro` renders `SiteHeader` + `SiteFooter.astro`. Nav is derived per-request
+in `src/lib/nav.ts` (`buildPrimaryNav`/`buildAccountNav` from `Astro.locals`) — **add a nav destination
+there, not inline per-page.**
 
-- **`src/lib/favorites-api.ts`** — credentialed list/add/remove helpers.
-- **`FavoriteHeart.tsx`** (presentational, optimistic) is reused by the catalogue grid
-  (`CatalogueBrowser` owns a favorited-slug `Set`, seeded via `listFavoriteSlugs`) and the detail-page
-  island **`FavoriteButton.tsx`**. **`MyFavorites.tsx`** backs `/me/favorites`.
-- Hearts/pages are gated on `Astro.locals.flags.favorites && !!Astro.locals.user` (props passed from
-  the page frontmatter). Anonymous users see no hearts.
+## Feature flags & testing
 
-## Collections Library (Phase 2 → Library)
-
-- Public: `/collections` (`CollectionsBrowser` — featured hero + facets + sort + search via
-  `useSearchCollections`, rich `CollectionCard`s) + `/collections/[slug]` (`CollectionDetail` —
-  cover/curator/stat-tiles/outcomes/`bodyMdx`/chaptered sections/per-item notes + resume). Gated on
-  `learning.collections`; pages pass flag-derived `showProgress/showSave/showRating` (flag && `!!user`).
-- Engagement islands: `SaveCollectionButton` (optimistic bookmark), `CollectionRating` (`StarRating`
-  widget). Reads via generated hooks; **mutations via `src/lib/collections-api.ts`** (credentialed, like
-  `favorites-api`). Per-item completion reuses `progress-api`. Flags: `learning.collections-discovery/
-  -bookmarks/-ratings`, `learning.user-collections`; progress reuses `learning.progress`.
-- Personal: `/me/collections` (`SavedCollections` — Saved + My collections tabs) + `/me/collections/new`
-  \| `/[slug]/edit` (`UserCollectionForm` — catalogue picker + reorder + per-item notes + public/private).
-  Auth-gated (redirect to `/signin`). Account nav item added in `nav.ts`.
-- Admin: `/admin/collections/*` (guard + `learning.collections`) — the **`EntityManager`** (see Admin CMS
-  below) via `AdminCollectionManager` + `collection-manager-config` (Hub/Table/Board over kind/status/
-  instrument/era; board = Draft/Published via publish/unpublish) +
-  `CollectionForm` (full metadata + **sections editor** with `slug | note` item lines + ungrouped items;
-  save = `update` → `setSections` → structured `setItems`). `collectionsAdminApi.setItems` takes
-  `CollectionItemInput[]` and `setSections` takes `CollectionSectionInput[]`.
-- Cross-link: `ContentDetail` shows "Appears in collections" via `useListCollectionsForContent`. Home:
-  `HomePage` has a featured-collections shelf (`useSearchCollections({ featured: true })`).
-- UI: `StarRating` molecule + `MediaCard` `metaSlot`/`footerSlot` in `@TheY2T/tmr-ui`. Islands with hooks
-  (e.g. `StarRating`) are covered by E2E, not unit tests (dup-React).
-
-## Progress (Phase 2)
-
-- `src/lib/progress-api.ts` — credentialed get/mark/log helpers.
-- `CompleteButton.tsx` (detail-page toggle) + `ProgressDashboard.tsx` (`/me/progress`: stats,
-  per-collection bars, log-practice form). Gated on `learning.progress` + login.
-- **Tool practice logging:** `ToolPracticeLogger.tsx` — an invisible `client:load` island on every
-  `/tools/*` page that counts **tab-visible** time and flushes whole minutes via `logPractice()`
-  (`POST /me/practice`), feeding the dashboard's streak + practice minutes. Each page computes
-  `logPracticeEnabled = flags.toolPractice && flags.progress && !!user` and renders the island only
-  then (`learning.tool-practice` flag). Wired identically into all tool pages next to `<InfoView>`.
-
-## Info View (Phase 2)
-
-- `InfoView.tsx` — persistent, dismissible help panel; preloads `/help-topics` and resolves
-  `data-help="<slug>"` on hover/focus via **document event delegation** (works across islands).
-  Add `data-help` to any element; style comes from the global `[data-help]` rule. `src/lib/help-api.ts`
-  has the public list/get + `helpAdminApi`.
-- Admin: `/admin/help/*` — `AdminHelpManager` + `help-manager-config` (the shared `EntityManager` in a
-  reduced form: Hub grouped by Linked-to-article / Standalone + Table + search; no board/axis-switcher
-  since help topics have no status or taxonomy) + `HelpTopicForm`. Gated on `learning.info-view`.
-
-## Interactive tools (Phase 3)
-
-- Client-side only — no API. `src/lib/music-theory.ts` (pure 12-TET helpers) + `src/lib/audio.ts`
-  (dependency-free Web Audio player + `scheduleClick` for the metronome's lookahead scheduler).
-- Fifteen tools live under `pages/tools/` (keyboard, fretboard, circle of fifths, scale explorer,
-  chord builder, chord identifier, mode explorer, progression builder, metronome, tuner, interval
-  explorer, staff reader, ear trainer, beat sequencer, sight-reading), each gated on its `tools.*` flag
-  (redirect to `/tools` when off). New tools drop into the `/tools` hub the same way. Tool terms carry
-  `data-help` to feed the Info View. `StaffSequence` renders a row of notes for the staff/sight-reading tools.
-
-## Play-along (Phase 5)
-
-- Backing-track generator at `/tools/backing-track` (gated on `tools.backing-track`). Client-side only,
-  reusing `src/lib/audio.ts` + `music-theory.ts`. `BackingTrack.tsx` runs a lookahead scheduler (same
-  pattern as the metronome/sequencer) that arranges drums + walking bass + comping chords from a
-  progression (`{rootOffset, intervals, roman, suffix}` per bar) × key × tempo, all changeable live via
-  refs; per-part mute checkboxes. New primitive: `scheduleTone(freq, atTime, duration, {type, gain})` in
-  `audio.ts` for precisely-timed bass/chord notes.
-- Voicing library at `/tools/voicings` (gated on `tools.voicings`). `VoicingLibrary.tsx` builds standard
-  voicings (close, inversions, drop-2/3, shell for 7ths; open for triads) via pure array math local to
-  the component (`invert`/`drop`) and renders each on a fixed 3-octave keyboard diagram with lit + named
-  tones + play/arpeggiate.
-- Notation player at `/tools/player` (gated on `tools.notation-player`). `NotationPlayer.tsx` renders a
-  PD melody via `StaffSequence` (which gained a backward-compatible `activeIndex` prop for the cursor)
-  and steps a recursive `setTimeout` cursor in sync with `playTone`; tempo / loop / section read from
-  refs so they change live. No notation library.
-- Lick library at `/tools/licks` (gated on `tools.licks`). `LickLibrary.tsx` holds curated licks
-  (`Step[]` of `{string, fret}`) rendered as interactive tab (column highlight during playback);
-  fret→pitch via `STANDARD_TUNING`, playback via `playTone` on a ref-driven `setTimeout`. Tab notes may
-  carry `bend`/`slideTo` (rendered `7b` / `5/7`, played via `playGlide`).
-- The notation player transposes via `staffPlacement(midi, flats)` (music-theory) — `StaffSequence`
-  renders the returned `accidental` (♯/♭) glyph. `audio.ts` has `playGlide(from, to, dur)` for
-  bends/slides. `StaffSequence` also takes an optional per-note `beats` → draws note-value glyphs
-  (open/filled head, stem, flag, dot); a `rest` note draws a hand-drawn SVG rest (quarter/half/eighth —
-  **not** unicode glyphs, which render as tofu in the system font). Omit `beats`/`rest` and notes render
-  as plain heads (backward-compatible). Lick tab notes also support `legatoTo` (`5h7`/`7p5`); the lick
-  library has a **speed trainer** (loop + tempo ramp).
-- Chord diagrams at `/tools/chord-diagrams` (gated on `tools.chord-diagrams`) — `ChordDiagrams.tsx`
-  renders curated open/barre guitar shapes as SVG fret grids (low E left), click to strum. It **exports**
-  `GUITAR_CHORDS`, `ChordShape`, `ChordDiagram`, and `strumChord(frets, direction)` for reuse.
-- Strumming trainer at `/tools/strumming` (gated on `tools.strumming`) — `StrummingTrainer.tsx` loops a
-  strum pattern (↓/↑/· eighth slots) over a chord, reusing the chord exports. The notation player has a
-  **Click** metronome toggle (independent beat timer via `scheduleClick`).
-- Fingerpicking trainer at `/tools/fingerpicking` (`tools.fingerpicking`) — `FingerpickingTrainer.tsx`
-  loops per-string picking patterns (bass/alt-bass + treble) over a chord, reusing the chord exports.
-- Arpeggio player at `/tools/arpeggio` (`tools.arpeggio`) — `ArpeggioPlayer.tsx` loops a chord's tones
-  one-at-a-time in a chosen direction (up/down/up-down).
-- Backlog tools (from `docs/backlog.md`): Chord analyzer `/tools/analyzer` (`tools.analyzer`,
-  `analyzeChordInKey`) and Transposer & capo `/tools/transposer` (`tools.transposer`, `capoSuggestions`).
-  The analyzer also does **reharmonization** (`reharmonizations` in `music-theory.ts` — per-chord
-  tritone sub / relative maj-min / secondary dominant / modal interchange, hear + apply) and **saves
-  progressions to the account** when signed in: `src/lib/progressions-api.ts` (credentialed
-  `/me/progressions` PUT/GET/DELETE) behind the `personalization.saved-progressions` flag; the
-  `analyzer.astro` page passes `syncEnabled = savedProgressions && !!user` and `ChordAnalyzer` branches
-  between the API and `saved-progressions.ts` (localStorage) accordingly. See
-  `docs/features/saved-progressions.md`. Backend: `apps/api/src/progressions/` (`ProgressionLibrary`
-  port + Drizzle `saved_progressions`).
-- **Web MIDI:** `src/lib/use-midi-input.ts` (`useMidiInput` hook, built-in Web MIDI types, no dep) is
-  wired into `PianoKeyboard` (live notes highlight + sound) and `ChordIdentifier` (held notes ∪ manual
-  toggles → live detection). Reuse the hook elsewhere (ear-trainers). Verify MIDI in Playwright by
-  mocking `navigator.requestMIDIAccess` via `addInitScript` (`browser_run_code_unsafe`) then dispatching
-  `onmidimessage`.
-- Bass-line generator `/tools/bassline` (`tools.bassline`) — roots / root-fifth / walking bass over a
-  progression (`scheduleTone` sine bass + hihat).
-- Ear-trainer answers by MIDI (play the 2 notes → interval); Metronome has subdivisions + a polyrhythm
-  layer. More backlog tools: melodic/rhythm dictation, groove library, solfège, key-signature quiz
-  (`tools.melodic-dictation` / `.rhythm-dictation` / `.grooves` / `.solfege` / `.key-quiz`). All reuse
-  `music-theory.ts` / `StaffSequence` / `audio.ts`. See `docs/backlog.md` for what's done vs open.
-- Progression play-along at `/tools/progression-player` (`tools.progression-player`) — loops a chord
-  progression one bar per chord (reuses the chord exports + `strumChord`).
-- Rhythm trainer at `/tools/rhythm` (`tools.rhythm`) — `RhythmTrainer.tsx` plays a one-bar rhythm over a
-  click, reusing `StaffSequence`'s note-value glyphs on the middle line.
-- CAGED explorer `/tools/caged` (`tools.caged`) — 5 movable shapes for a major chord (C-major data +
-  uniform transpose). Scale positions `/tools/scale-boxes` (`tools.scale-boxes`) — fretboard box window.
-  Song player `/tools/song` (`tools.song`) — melody (StaffSequence) + per-bar `strumChord` accompaniment.
-  Progression ear-training `/tools/progression-ear` (`tools.progression-ear`) — `diatonicChords` quiz.
-  Chord ear-training `/tools/chord-quality-ear` (`tools.chord-quality-ear`) — name a chord's quality.
-  Fretboard quiz `/tools/fret-quiz` (`tools.fret-quiz`) — name a highlighted fret.
-- **Dependency-free "heavy" tools:** MusicXML import `/tools/musicxml` (`tools.musicxml`) — `DOMParser`
-  → `StaffSequence`. Multi-voice engraving `/tools/multi-voice` (`tools.multi-voice`) — self-contained
-  stacked-notehead staff of diatonic triads. Practice player `/tools/practice-player`
-  (`tools.practice-player`) — `HTMLAudioElement.playbackRate` + `preservesPitch` (pitch-preserving) +
-  A–B loop, on a locally-loaded file. See `docs/features/play-along.md`.
-- **Integrative + library tools (latest backlog batch):** Interval-construction quiz `/tools/interval-quiz`
-  (`tools.interval-quiz`). Practice room `/tools/practice-room` (`tools.practice-room`) — a looping
-  band (drums + walking bass + comping) over a progression with the current chord diagram + beat cursor,
-  reusing `scheduleDrum`/`scheduleTone` + the chord-diagram exports. The metronome gained **tap-tempo**;
-  the chord analyzer saves/loads named progressions to `localStorage` via `src/lib/saved-progressions.ts`
-  (`tmr.savedProgressions`).
-- **Scores — alphaTab is the SINGLE engine (ADR 0027; replaced Verovio):**
-  - **`ScorePlayer.tsx`** (flag `learning.interactive-scores`) is the one score component, over a slim
-    `ScoreEngine` interface (`src/lib/score/`) with just `AlphaTabScoreEngine` (`alphatab-engine.ts`,
-    `@coderline/alphatab`, cataloged + pinned EXACT, lazy dynamic-import, types namespaced as
-    `model.Score`). `resolveDisplayMode(instruments)` (`loop.ts`) picks **`standard`** (piano — standard
-    notation + an integrated media-player bar: play/pause, tempo, scrub, click-to-hear, click-to-seek,
-    **drag-to-select a beat-precise passage** (Play plays it once & stops; Loop repeats it), a **right-click
-    loop menu**, metronome, count-in, print) or **`tab`** (guitar — notation + tablature). **Both modes use
-    the SAME shell-owned interaction** (`enableUserInteraction:false` for both; alphaTab's native selection
-    is off) so piano + guitar controls stay in sync — only the engraving differs. `ScoreMeta.displayMode`
-    overrides. `ScorePlayer` takes `url` (catalogue) OR `tex` (inline, for the tool playgrounds). Flag off = basic play/tempo.
-  - **alphaTab owns playback** (its AlphaSynth + SONiVOX soundfont): cursor, section loop
-    (`highlightPlaybackRange`+`applyPlaybackRangeFromHighlight`+`isLooping`), `playbackSpeed`,
-    metronome/count-in volumes, `hitTest`→`tickPosition` seek. Selections are **beat-precise** — drag
-    across the score → `hitTest` beat ticks → `orderTicks`/`highlightRange`; on release `applyRange`
-    resolves them via a `beatsByTick` index → `highlightPlaybackRange`+`applyPlaybackRangeFromHighlight`,
-    **bounding playback + cueing the start** (so Play plays the passage once & stops; `onEnded` re-cues).
-    `setLooping` toggles repeat; `clearRange`/`loopWhole` restore/loop the whole piece. Passages can
-    start/end mid-bar. smplr is kept only for click-to-hear + the keyboard tool.
-  - **GOTCHA — "blank score" is usually not a bug:** alphaTab lazy-renders (`ScrollMode.Continuous`), so
-    an off-screen score has **0 `<svg>`** until scrolled into view. Also: keep the `await fetch` OUT of the
-    engine-load effect (split fetch→state / load-sync) or the container can detach mid-load; and the first
-    `applyResources`-on-ready is skipped (already applied at load) so its `render()` can't blank the paint.
-    PDF = `api.print()`. **PlayerState comparison uses the numeric literal `1`** (`at.synth.PlayerState`
-    is undefined in the browser build). The right-click loop menu (design-system `DropdownMenu`, extended
-    with controlled `open` + a `style` anchor) needs **`z-index > 1000`** — alphaTab's `.at-cursors`
-    overlay is `z-index:1000` and otherwise paints over the opaque menu, making it look translucent.
-  - **Assets self-hosted, no CDN.** The `@coderline/alphatab-vite` plugin (in `astro.config.mjs`; the
-    main package's `/vite` subpath is broken in 1.8.4) copies Bravura → `/font` + soundfont →
-    `/soundfont/sonivox.sf2`; the engine points `core.fontDirectory`/`player.soundFont` there. alphaTab
-    is **client-only** (Worker+AudioWorklet), always `api.destroy()` on unmount, and NOT in optimizeDeps.
-  - **Theme:** notation glyph colors aren't CSS-reactive — `use-alphatab-theme.ts` reads tokens as hex →
-    `display.resources` + re-render on theme change. Cursor/selection overlays are DOM, themed via
-    `.at-cursor-*`/`.at-selection` CSS (scoped under `.tmr-score`).
-  - **"rendered by alphaTab" footer** is hidden by a `MutationObserver` in the engine (alphaTab has no
-    setting to disable it). MPL-2.0 doesn't require it; source attribution stays in the credit line.
-  - **`/tools/score`** (`ScoreRenderer.tsx`) = alphaTex playground (edit/upload → `ScorePlayer tex=`,
-    standard/tab toggle); **`/tools/musicxml`** (`MusicXmlImport.tsx`) = paste MusicXML → alphaTab imports
-    it. Both are thin editors over `ScorePlayer` now (no Verovio, no hand-rolled parser).
-  - Scores authored in `apps/api` as alphaTex (`content/scores/*.alphatex`) — see `docs/features/scores.md`
-    + the **`add-score`** skill. **Guitar/bass/ukulele render as standard notation + tab:** the sources
-    are pitched, so for `tab` mode the engine makes the staff stringed (`tabTuningFor(instruments)` +
-    per-note fret assignment, octave-aware for guitar/bass). Auto-tab is playable, not the composer's
-    exact fingering — author `.alphatex` with `fret.string` to pin fingerings.
-  - **Notation tools on alphaTab (ADR 0027).** The tools that used to hand-author notation as
-    note-name/beat arrays or fret data via `StaffSequence` now generate alphaTex (helpers in
-    `lib/score/alphatex.ts`: `melodyToAlphaTex`/`tabToAlphaTex`/`rhythmToAlphaTex`/`midiToAlphaTexPitch`)
-    and render it: **NotationPlayer/SongPlayer/RhythmTrainer** via `ScorePlayer` (they need tempo/loop/
-    metronome); **MultiVoiceStaff/LickLibrary** + the reveal surfaces of **Solfege/MelodicDictation/
-    SightReading/RhythmDictation** via the lighter **`AlphaTexScore`** island (`components/score/`,
-    persistent engine — swaps score via `engine.reload` for cheap regeneration). Per-note labels
-    (do-re-mi / scale degrees / note names) use alphaTex `\lyrics`. `StaffSequence` is **retired** from
-    `apps/web` (still in `@TheY2T/tmr-ui` for Storybook). **ScaleBoxes + ScaleExplorer are NOT on
-    alphaTab** — a fretboard-box grid and degree chips aren't staff notation (alphaTab has no
-    fretboard-diagram view); they keep their bespoke SVG/DOM.
-  - **Content embeds (ADR 0028).** Catalogue articles render **preconfigured** tools below the prose via
-    an authored `embeds` array (`ContentDetail.embeds`). `components/content/ContentEmbeds.tsx` maps each
-    embed → a lazy-loaded island (`score`→`ScorePlayer` inline tex, `scale-boxes`, `keyboard`,
-    `chord-diagrams`, `progression`, `circle-of-fifths`); pure resolution (note→pc, chord lookup, tuning)
-    in `lib/embeds.ts`. Embeddable tools take **optional initial-state props** (defaults = their `/tools`
-    page). `ChordDiagram` (`@TheY2T/tmr-ui/music`) derives string count from `chord.frets.length` (guitar
-    6 / ukulele 4). Authored in `apps/api` content `.md` (```embeds block); see `docs/features/content-embeds.md`
-    + the **`embed-tool`** skill.
-  - **Keyboard + note service (ADR 0025).** `/tools/keyboard` and `/tools/soundfont` are ONE island —
-    `PianoKeyboard.tsx` — with selectable sizes (`lib/keyboard.ts`: `KEYBOARD_SIZES` 25–88, default 61),
-    octave-shift + horizontal scroll, sustain (note-on/off), MIDI velocity, and QWERTY play
-    (`qwertyMap`). `src/lib/soundfont.ts` is the **shared note service**: a per-instrument registry with
-    `loadInstrument`/`noteOn`/`noteOff`/`playNote` (back-compat one-shot) that **lazily `import('smplr')`**,
-    routes through the `audio.ts` master bus (`getDestination`), plumbs velocity, and falls back to the
-    oscillator (`audio.ts` `oscNoteOn/oscNoteOff`, or `playTone`) so it always sounds offline. The
-    play-a-note theory tools (chord/scale/ear) call `playNote`; scheduled/arranged tools keep
-    `scheduleTone`/`scheduleDrum`. Always release notes on blur/unmount (`releaseAll`) so none hang.
-  - **Vite gotcha:** after `pnpm add`-ing a browser library (`@coderline/alphatab`/smplr), the running
-    Astro dev server must be restarted (or `rm -rf apps/web/node_modules/.vite`) so Vite re-optimizes
-    deps — otherwise islands fail to hydrate with `504 Outdated Optimize Dep` / `_jsxDEV is not a function`.
-
-## Trainers / drills (Phase 4)
-
-- SRS drills at `/drills` (gated on `trainers.srs` + login). UI moved to packages (ADR 0033):
-  legacy self-grade decks live in `@TheY2T/tmr-musickit-ui/drill-decks` (card key + `play(card)` +
-  `answer(card)`); `@TheY2T/tmr-web-data/reviews-api` calls the SM-2 backend; `DrillsHub` + `ReviewSession`
-  islands. The server only stores scheduling state (see ADR 0014) — add a deck without touching the backend.
-- **Drill engine (objective grading, flag `trainers.drill-engine`)** supersedes the self-grade flashcard:
-  `/drills/{deck}` + `/drills/review` render `@TheY2T/tmr-musickit-ui/DrillSession` when the flag is on
-  (else `ReviewSession`). It generates + objectively checks answers, fires Tier-1 rewards
-  (`trainers.celebrations`), and records attempts via `@TheY2T/tmr-web-data/drills-api` to the
-  `apps/api/src/attempts/` context. Engine core + generators live in `@TheY2T/tmr-music-core/drills/`.
-  See `docs/features/drill-engine.md`.
-
-## Monetization / premium (Phase 6)
-
-- **Monetization is DEFERRED — both flags default OFF, so everything ships free/public-domain.** Two
-  independent flags:
-  - **`monetization.premium`** (feature): the entitlement engine — locking, `/upgrade` checkout,
-    grant-premium. OFF ⇒ the API returns nothing locked (`resolveViewerRank` → Infinity), checkout
-    endpoints 404, store pages redirect. Turn on only once premium content actually exists.
-  - **`monetization.messaging`** (`monetizationMessaging` in locals): any user-facing *mention* of
-    premium / unlocking / paid — premium badges, "upgrade to unlock" CTAs, the Premium nav link, home
-    upgrade section, the classrooms grant-premium control. OFF ⇒ the app never references paid content.
-  - Pages pass a **`showMonetization`** prop (= `flags.monetizationMessaging`) into
-    `CatalogueBrowser`/`CatalogueHub`/`ContentDetail`; the badge renders only when `item.locked &&
-    showMonetization`. The nav link + home CTA + classrooms grant require `premium && monetizationMessaging`.
-- `src/lib/subscription-api.ts` — credentialed `getSubscription`/`activatePremium`/`cancelPremium`.
-- `UpgradePanel.tsx` backs `/upgrade` (gated on `premium` flag + login) — a **mock checkout** (Free →
-  Activate → Premium active/Cancel; staff see a note, no button).
-- Premium gating is driven by the API's `item.locked` (only ever true when `monetization.premium` is on):
-  a 🔒 Premium badge on catalogue cards (`CatalogueBrowser`) and a locked upgrade panel on the detail
-  page (`ContentDetail`), both further gated by `showMonetization`. No client-side entitlement logic —
-  the API decides. Home shows a "Premium" link only when `premium && monetizationMessaging` + login.
-- **Classrooms (teacher mode, `education.classrooms`):** `src/lib/classrooms-api.ts` +
-  `ClassroomsManager.tsx` on `/classrooms` (login + flag gated). The "Manage" panel does create / join
-  by code / roster (remove member, make-owner) / grant premium / **assign content by slug** / **class
-  progress** (per-student completedCount) / archive / leave. Home shows a "Classrooms" link. See
-  `docs/features/classrooms.md`.
-
-## Feature flags
-
-- **SSR:** `src/middleware.ts` sets the flagd provider and evaluates flags per request into
-  `Astro.locals.flags`. Pass values into islands as **props** so first paint matches the server.
-- **Island:** `src/components/FlagBanner.tsx` shows the react-sdk pattern (`OpenFeatureProvider` +
-  `useFlag`). Phase 3 swaps the seeded InMemoryProvider for the OFREP web provider (live updates).
-
-## Styling
-
-Tailwind v4 is configured in CSS (`@import "tailwindcss"`), not a JS config. Design tokens + the
-`@theme inline` mapping + the `.dark` variant come from `@TheY2T/tmr-design-tokens` (imported in
-`global.css`); `@source` globs there make library utilities generate. shadcn config is
-`components.json` (aliases point at `@TheY2T/tmr-ui`). Component workbench is the single central
-Storybook host **`@TheY2T/tmr-storybook`** (port 6006) — it aggregates the co-located stories from
-`tmr-ui` / `tmr-musickit-ui` / `tmr-common-ui` plus auto-galleries that render every component.
-Run `pnpm --filter @TheY2T/tmr-storybook dev` — also started by `pnpm dev` (turbo, alongside api + web).
-
-### Theming — 3 aesthetics × light/dark (ADR 0021, `docs/features/design-system.md`)
-
-Two independent hooks on `<html>`: **aesthetic → `data-theme="hybrid|heritage|warm-minimal"`**
-(default `hybrid`, set statically in `BaseLayout` + restored pre-paint from `localStorage['tmr.aesthetic']`)
-and **mode → the `.dark` class** (`localStorage['theme']`, else OS pref) — both set pre-paint in
-`BaseLayout.astro` to avoid a flash. Switch via `src/components/ThemeSwitcher.tsx` (in `SiteHeader`).
-**Compose from semantic token utilities ONLY** (`bg-background/bg-card/bg-primary/bg-muted/bg-accent`,
-`text-foreground/text-muted-foreground`, `border-border`, `font-display/font-body`) — hardcoded
-palette colors (`bg-amber-500`, `text-red-500`, hex) do NOT re-theme. Music-notation SVG colors are the
-sole exception. Six palettes + per-aesthetic fonts (`@fontsource`) + texture live in the tokens package.
-
-### Global chrome
-
-`BaseLayout.astro` renders `SiteHeader` (`src/components/SiteHeader.tsx` — one island: wordmark, nav,
-search, `ThemeSwitcher`, `LanguageSwitcher`, account dropdown, mobile `Sheet` drawer) + `SiteFooter.astro`.
-Nav is derived per-request in `src/lib/nav.ts` (`buildPrimaryNav`/`buildAccountNav` from `Astro.locals`
-flags+user) and passed in. Add a nav destination there, not inline per-page. The `.astro` `Icon` and the
-React `Icon` share kebab names; a few diverge in Iconify and are aliased in `packages/ui/src/astro/Icon.astro`.
-
-## PixiJS visualization layer (ADR 0022, `docs/features/pixi-visualization.md`)
-
-- **Client-only WebGL** for the *visual/animated* parts of interactive tools (PixiJS v8 +
-  `@pixi/react` v8, cataloged so one copy resolves). Reach for it only when SVG/Canvas2D/CSS would
-  drop frames (audio-reactive, particles, 60fps cursor); **static/few-shape stays SVG/DOM**.
-- **One boundary — `src/components/PixiCanvas.tsx`.** Every Pixi surface goes through it: it lazy-
-  imports the scene (`() => import('@/lib/pixi/<name>-scene')`), renders the accessible DOM
-  `fallback` during SSR + first client render (hydration-safe), then upgrades to a transparent
-  `role="img"` canvas after mount; the `fallback` stays in the DOM (visually hidden) as the real
-  control surface. WebGL absent → fallback stays.
-- **Accessible fallback is mandatory** — a parallel, operable DOM control set (buttons/SVG, keyboard
-  nav, `aria-label`s). The canvas is never the sole interaction surface.
-- **Theme with tokens, not colours.** Read colours via `useThemeColors()` (`src/lib/pixi/use-theme-
-  colors.ts`) → `0xRRGGBB` ints, re-read on `ThemeSwitcher` change; keep canvases transparent
-  (`backgroundAlpha={0}`) and draw surfaces with `Graphics` (Pixi's `background` doesn't re-tint).
-- **Scene rules:** `extend()` only the classes used (inside the lazy module); gate render on
-  `useApplication().isInitialised` (`app.screen` throws before init); `autoDensity` + capped
-  `resolution`; respect `prefers-reduced-motion`. Audio-reactive scenes read `getAnalyser()` from
-  `src/lib/audio.ts` (master bus). Phase 1: `PianoKeyboard`/`GuitarFretboard`/`CircleOfFifths`.
-- **Decorative backgrounds** (ADR 0022, `docs/features/dashboard-background.md`): `ambient-scene`
-  (home hero) + `bg-waves`/`bg-staff`/`bg-roll` scenes back the personalizable dashboard backdrop.
-  `DashboardBackground.tsx` maps a saved style (`src/lib/dashboard-background.ts`, localStorage) → a
-  lazy scene and renders a `decorative` `PixiCanvas`; the `/settings` page (`BackgroundSettings.tsx`)
-  is a live preview + Apply over the same component (controlled via `style`/`intensity` props). Flag
-  `personalization.dashboard-background`.
-- **Gotcha:** `pixi.js`/`@pixi/react` are NOT in `optimizeDeps.include` (including them pulls a
-  duplicate React into the Vitest optimizer). They're lazy-imported → Vite optimizes on first dev use
-  (a one-time `504 Outdated Optimize Dep` that self-heals on reload; restart dev / `rm -rf
-  node_modules/.vite` if it sticks). Island hook-components can't be unit-tested under `getViteConfig`
-  (pre-existing duplicate-React); cover islands with a Playwright E2E smoke instead.
-
-## Testing (ADR 0020, `docs/features/testing.md`)
-
-- **Unit/component** (Vitest, `getViteConfig` + happy-dom): `src/**/*.test.ts(x)`. Test pure `lib/*`
-  (e.g. `music-theory`), api-client wrappers (mock `fetch`), `middleware.ts` (mock OpenFeature), and
-  islands via `@testing-library/react` — pass `locale` as a prop, render the island **root**. `.astro`
-  components are covered by E2E, not unit tests.
-- **E2E** (Playwright, `e2e/*.spec.ts`): runs against the production build. **Mock mode** (default) uses
-  an MSW SSR preload + browser routes (flags fall back to defaults); **live mode** (`TMR_E2E_MODE=live`)
-  hits the real stack. `TMR_E2E_MOCK_SERVICES=all|<subset>` mocks all or some services. Auth via
-  reusable per-role `storageState` (`e2e/auth.setup.ts`). Follow the **`add-tests`** skill.
-- E2E specs are excluded from Vitest + `astro check`; clean up `test-results/`, `playwright-report/`,
-  `e2e/.auth/` after runs (git-ignored).
+- **Flags** (`.claude/rules/flags.md`, **`manage-flags`**) — `middleware.ts` evaluates per request into
+  `Astro.locals.flags`; **pass values into islands as props** so first paint matches the server.
+- **Testing** (`.claude/rules/testing.md`, ADR 0020) — Vitest unit/component (i18n-by-prop, render the
+  island root; `.astro` covered by E2E) + Playwright E2E (mock default / `TMR_E2E_MODE=live`). Islands that
+  hit the duplicate-React optimizer (Pixi/`smplr`) are E2E-only. Clean up test artifacts after runs.
 
 ## Commands
 
-`pnpm --filter @TheY2T/tmr-web dev|build|preview|check-types|lint|test` ·
-`pnpm --filter @TheY2T/tmr-web test:e2e` (or root `pnpm test:e2e` / `test:e2e:live`)
+`pnpm --filter @TheY2T/tmr-web dev|build|preview|check-types|lint|test|test:e2e` (or root `pnpm test:e2e` /
+`test:e2e:live`). Local run + troubleshooting: **`run-local`** skill.
