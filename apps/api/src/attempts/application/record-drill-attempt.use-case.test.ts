@@ -71,4 +71,28 @@ describe('RecordDrillAttemptUseCase', () => {
     const result = await useCase.execute('user-1', { ...base, accuracy: 1, correct: true });
     expect(result.isPersonalBest).toBe(true);
   });
+
+  it('reports the deck level and flags a level-up when mastery crosses a tier', async () => {
+    const { useCase, attempts } = build();
+    // Before this attempt: two correct (mastery 1.0 → expert already). No level-up.
+    attempts.listDeck.mockResolvedValue([
+      { deck: 'intervals', accuracy: 1, correct: true },
+      { deck: 'intervals', accuracy: 1, correct: true },
+    ]);
+    const steady = await useCase.execute('user-1', { ...base, accuracy: 1, correct: true });
+    expect(steady.level).toBe('expert');
+    expect(steady.leveledUp).toBe(false);
+
+    // A climbing run: the EWMA crosses the 0.7 (intermediate) threshold on the final attempt.
+    attempts.listDeck.mockResolvedValue([
+      { deck: 'intervals', accuracy: 0, correct: false },
+      { deck: 'intervals', accuracy: 0, correct: false },
+      { deck: 'intervals', accuracy: 1, correct: true },
+      { deck: 'intervals', accuracy: 1, correct: true },
+      { deck: 'intervals', accuracy: 1, correct: true },
+      { deck: 'intervals', accuracy: 1, correct: true },
+    ]);
+    const climbing = await useCase.execute('user-1', { ...base, accuracy: 1, correct: true });
+    expect(climbing.leveledUp).toBe(true);
+  });
 });

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { GradeCardUseCase } from '../../reviews/application/review.use-cases';
 import type { ReviewState } from '../../reviews/domain/sm2';
 import { accuracyToQuality } from '../domain/grade';
-import { masteryScore } from '../domain/mastery';
+import { type AttemptOutcome, levelRank, masteryScore, masteryToLevel } from '../domain/mastery';
 import { AttemptLog, type AttemptRecord } from './ports/attempt-log';
 
 /** The deck's "comfortable" response budget — a faster full-correct answer earns Easy over Good. */
@@ -14,6 +14,10 @@ export interface DrillAttemptResult {
   state: ReviewState;
   quality: number;
   isPersonalBest: boolean;
+  /** The deck's mastery level after this attempt. */
+  level: string;
+  /** True when this attempt advanced the deck to a higher mastery level. */
+  leveledUp: boolean;
 }
 
 /**
@@ -38,12 +42,23 @@ export class RecordDrillAttemptUseCase {
     });
     const state = await this.gradeCard.execute(userId, attempt.deck, attempt.card, quality);
 
-    return { state, quality, isPersonalBest: await this.isPersonalBest(userId, attempt.deck) };
+    // Read the deck's attempts (including the one just recorded) once, and derive the reward signals.
+    const outcomes = await this.attempts.listDeck(userId, attempt.deck);
+    const after = masteryScore(outcomes);
+    const before = masteryScore(outcomes.slice(0, -1));
+    const level = masteryToLevel(after);
+
+    return {
+      state,
+      quality,
+      isPersonalBest: this.isPersonalBest(outcomes),
+      level,
+      leveledUp: levelRank(level) > levelRank(masteryToLevel(before)),
+    };
   }
 
   /** A new best = this attempt pushed the deck's rolling mastery strictly above its prior peak. */
-  private async isPersonalBest(userId: string, deck: string): Promise<boolean> {
-    const outcomes = await this.attempts.listDeck(userId, deck);
+  private isPersonalBest(outcomes: AttemptOutcome[]): boolean {
     if (outcomes.length < MIN_ATTEMPTS_FOR_BEST) {
       return false;
     }

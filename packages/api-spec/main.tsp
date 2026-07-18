@@ -1047,6 +1047,10 @@ model DrillAttemptResult {
   quality: int32;
   /** True when this attempt set a new best rolling accuracy for the deck. */
   isPersonalBest: boolean;
+  /** The deck's mastery level after this attempt (beginner…expert). */
+  level: string;
+  /** True when this attempt advanced the deck to a higher mastery level. */
+  leveledUp: boolean;
 }
 
 /** Rolling mastery for one deck/skill, computed from the attempt log. */

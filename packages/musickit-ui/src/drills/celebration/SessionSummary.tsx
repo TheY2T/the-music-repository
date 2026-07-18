@@ -4,6 +4,7 @@ import { usePrefersReducedMotion } from '@TheY2T/tmr-music-core/pixi/use-webgl';
 import { Button, cn, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
 import { starsForAccuracy } from './celebration-tiers';
+import LevelUpFanfare from './LevelUpFanfare';
 
 /** Count from 0 → target over ~600ms; instant under reduced motion. No `performance.now` (SSR-safe). */
 function useCountUp(target: number, reduced: boolean): number {
@@ -37,12 +38,15 @@ export default function SessionSummary({
   reviewed,
   correctCount,
   personalBest,
+  leveledUpTo,
   locale,
   celebrations = true,
 }: {
   reviewed: number;
   correctCount: number;
   personalBest: boolean;
+  /** The highest mastery level reached during the session, if any deck levelled up. */
+  leveledUpTo?: string | null;
   locale: Locale;
   celebrations?: boolean;
 }) {
@@ -88,6 +92,8 @@ export default function SessionSummary({
         {t(locale, 'drill.reviewedCount', { count: shownCount })} ·{' '}
         {t(locale, 'drill.accuracy', { percent: shownAccuracy })}
       </p>
+
+      {leveledUpTo ? <LevelUpFanfare level={leveledUpTo} locale={locale} /> : null}
 
       {personalBest ? (
         <p className="flex items-center justify-center gap-1 font-semibold text-warning">

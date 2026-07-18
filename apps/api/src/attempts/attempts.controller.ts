@@ -36,7 +36,7 @@ export class AttemptsController {
   @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.DrillEngine }] })
   @RequireAuth()
   async record(@Body() body: RecordDrillAttemptDto) {
-    const { state, quality, isPersonalBest } = await this.recordAttempt.execute(
+    const { state, quality, isPersonalBest, level, leveledUp } = await this.recordAttempt.execute(
       this.currentUser.require().id,
       {
         deck: body.deck,
@@ -47,7 +47,7 @@ export class AttemptsController {
         responseMs: body.responseMs,
       },
     );
-    return { state: toWire(body.card, state), quality, isPersonalBest };
+    return { state: toWire(body.card, state), quality, isPersonalBest, level, leveledUp };
   }
 
   @Get('me/drills/stats')

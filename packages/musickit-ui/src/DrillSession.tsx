@@ -2,7 +2,17 @@ import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import type { DrillItem } from '@TheY2T/tmr-music-core/drills/drill-types';
 import { DRILL_GENERATORS, findGenerator } from '@TheY2T/tmr-music-core/drills/generators';
 import { playRewardChime, playWrongCue } from '@TheY2T/tmr-music-core/drills/reward-chime';
-import { Button, buttonVariants, Card, cn, EmptyState, Icon, Progress } from '@TheY2T/tmr-ui';
+import {
+  Button,
+  buttonVariants,
+  Card,
+  cn,
+  EmptyState,
+  Icon,
+  Progress,
+  Toaster,
+  toast,
+} from '@TheY2T/tmr-ui';
 import { recordDrillAttempt } from '@TheY2T/tmr-web-data/drills-api';
 import { getDeckReviews } from '@TheY2T/tmr-web-data/reviews-api';
 import { useEffect, useRef, useState } from 'react';
@@ -16,6 +26,7 @@ import InstrumentInput from './drills/inputs/InstrumentInput';
 import MultipleChoiceInput from './drills/inputs/MultipleChoiceInput';
 import PitchMicInput from './drills/inputs/PitchMicInput';
 import RhythmTapInput from './drills/inputs/RhythmTapInput';
+import { LEVEL_MESSAGE_KEY } from './drills/levels';
 
 const SESSION_LIMIT = 12;
 const SOUND_PREF_KEY = 'tmr.drill.sound';
@@ -55,6 +66,7 @@ export default function DrillSession({
   const [reviewed, setReviewed] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [personalBest, setPersonalBest] = useState(false);
+  const [leveledUpTo, setLeveledUpTo] = useState<string | null>(null);
   const [combo, setCombo] = useState(0);
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | 'combo' | null>(null);
   const [scorePop, setScorePop] = useState<{ points: number | null; trigger: number }>({
@@ -170,6 +182,11 @@ export default function DrillSession({
     if (result?.isPersonalBest) {
       setPersonalBest(true);
     }
+    if (result?.leveledUp) {
+      setLeveledUpTo(result.level);
+      const levelLabel = t(locale, LEVEL_MESSAGE_KEY[result.level] ?? 'drill.level.beginner');
+      toast.success(t(locale, 'drill.celebrate.levelUp', { level: levelLabel }));
+    }
   }
 
   if (!queue) {
@@ -197,6 +214,7 @@ export default function DrillSession({
         reviewed={reviewed}
         correctCount={correctCount}
         personalBest={personalBest}
+        leveledUpTo={leveledUpTo}
         locale={locale}
         celebrations={celebrations}
       />
@@ -207,6 +225,7 @@ export default function DrillSession({
 
   return (
     <div className="space-y-6">
+      <Toaster />
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-2 text-sm text-muted-foreground">
           <span>

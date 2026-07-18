@@ -1,7 +1,8 @@
 # Feature: Drill engine (objective grading + rewards)
 
-- **Phase:** P (drills expansion) · **Status:** Phases 0–4 shipped (multiple-choice, ear-identify,
-  play-instrument, pitch/mic, rhythm-tap; ear progressions/cadences; Tier-1/2/3 rewards)
+- **Phase:** P (drills expansion) · **Status:** Complete — Phases 0–5 shipped (multiple-choice,
+  ear-identify, play-instrument, pitch/mic, rhythm-tap; ear progressions/cadences; mastery dashboard;
+  Tier-1/2/3/4 rewards)
 - **Flags** (`@TheY2T/tmr-flags`): `trainers.drill-engine` (master gate; off = legacy self-grade
   `ReviewSession`), `trainers.celebrations` (reward mechanics), and the per-modality gates
   `trainers.play-instrument` / `trainers.ear` / `trainers.pitch-mic` / `trainers.rhythm-tap` (later phases).
@@ -57,7 +58,12 @@ gold `combo` burst (a `kind` on `drill-feedback-scene`). **Tier 3 (session compl
 replaces the old static "Session complete" text with a 1–3 **star rating** on accuracy (`starsForAccuracy`),
 counting-up stats, an optional personal-best callout (`isPersonalBest` from the recorded attempt), and a
 `confetti-scene` fall behind it. Tier 4 (level-up/mastery/streak-milestone) lands in Phase 5. Every reward
-degrades to a static outcome under `prefers-reduced-motion`; audio is opt-out and persisted (`tmr.drill.sound`).
+degrades to a static outcome under `prefers-reduced-motion`; audio is opt-out and persisted (`tmr.drill.sound`). **Tier 4 (progression):**
+`RecordDrillAttemptUseCase` returns `level` + `leveledUp` (mastery before vs after the attempt); DrillSession
+fires a level-up `toast()` and the `SessionSummary` reveals a `LevelUpFanfare` + `AchievementBadge`. A
+streak-day milestone (7/30/100/365) toasts once on the hub (localStorage-guarded). **Mastery UI:** the hub
+(`DrillsHub`) shows a per-deck mastery bar + tier badge (`AchievementBadge`, beginner→expert) from
+`getDrillStats`.
 
 ## Data model
 

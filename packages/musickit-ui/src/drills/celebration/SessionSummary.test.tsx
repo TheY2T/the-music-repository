@@ -40,6 +40,20 @@ describe('SessionSummary (Tier-3)', () => {
     expect(screen.getByText('New personal best!')).toBeInTheDocument();
   });
 
+  it('shows a level-up fanfare when a deck advanced a tier', () => {
+    mockReducedMotion(true);
+    render(
+      <SessionSummary
+        reviewed={10}
+        correctCount={10}
+        personalBest={false}
+        leveledUpTo="advanced"
+        locale="en"
+      />,
+    );
+    expect(screen.getByText(/Level up: Advanced/)).toBeInTheDocument();
+  });
+
   it('renders final stats immediately under reduced motion (count-up disabled)', () => {
     mockReducedMotion(true);
     render(<SessionSummary reviewed={8} correctCount={6} personalBest={false} locale="en" />);

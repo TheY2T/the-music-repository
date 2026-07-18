@@ -3112,7 +3112,9 @@ export const RecordDrillAttemptResponse = zod.object({
   "dueAt": zod.string()
 }).describe('SM-2 scheduling state for a single card.'),
   "quality": zod.number(),
-  "isPersonalBest": zod.boolean().describe('True when this attempt set a new best rolling accuracy for the deck.')
+  "isPersonalBest": zod.boolean().describe('True when this attempt set a new best rolling accuracy for the deck.'),
+  "level": zod.string().describe('The deck\'s mastery level after this attempt (beginner…expert).'),
+  "leveledUp": zod.boolean().describe('True when this attempt advanced the deck to a higher mastery level.')
 }).describe('The result of recording an attempt: the SM-2 state after grading + the applied quality.')
 
 

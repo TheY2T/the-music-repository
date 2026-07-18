@@ -4783,7 +4783,9 @@
         "required": [
           "state",
           "quality",
-          "isPersonalBest"
+          "isPersonalBest",
+          "level",
+          "leveledUp"
         ],
         "properties": {
           "state": {
@@ -4796,6 +4798,14 @@
           "isPersonalBest": {
             "type": "boolean",
             "description": "True when this attempt set a new best rolling accuracy for the deck."
+          },
+          "level": {
+            "type": "string",
+            "description": "The deck's mastery level after this attempt (beginner…expert)."
+          },
+          "leveledUp": {
+            "type": "boolean",
+            "description": "True when this attempt advanced the deck to a higher mastery level."
           }
         },
         "description": "The result of recording an attempt: the SM-2 state after grading + the applied quality."

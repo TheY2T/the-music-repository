@@ -45,6 +45,13 @@ export function masteryToLevel(mastery: number): Level {
     ?.level as Level;
 }
 
+const LEVEL_ORDER: Level[] = ['beginner', 'intermediate', 'advanced', 'expert'];
+
+/** Ordinal rank of a level (beginner = 0 … expert = 3) — for detecting advancement. */
+export function levelRank(level: Level): number {
+  return LEVEL_ORDER.indexOf(level);
+}
+
 /** Fold a deck's attempts (chronological) into a mastery summary. */
 export function summarizeDeck(deck: string, outcomes: AttemptOutcome[]): SkillMastery {
   const attempts = outcomes.length;
