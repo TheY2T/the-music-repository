@@ -1,5 +1,5 @@
 ---
-import AdminTranslationManager from '@TheY2T/tmr-common-ui/AdminTranslationManager';
+import LocalizationHub from '@TheY2T/tmr-common-ui/LocalizationHub';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { guardAdmin } from '@/lib/admin-guard';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
@@ -15,13 +15,13 @@ if (!Astro.locals.flags.localeStrings) {
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'transadmin.title')} — ${t(locale, 'nav.admin')}`}>
+<BaseLayout title={`${t(locale, 'loc.hubTitle')} — ${t(locale, 'nav.admin')}`}>
   <PageShell
-    title={t(locale, 'transadmin.title')}
-    subtitle={t(locale, 'transadmin.subtitle')}
+    title={t(locale, 'loc.hubTitle')}
+    subtitle={t(locale, 'loc.hubSubtitle')}
     back={{ href: localizedPath(locale, '/admin'), label: t(locale, 'common.backContent') }}
-    maxWidth="max-w-6xl"
+    maxWidth="max-w-5xl"
   >
-    <AdminTranslationManager client:load locale={locale} />
+    <LocalizationHub locale={locale} />
   </PageShell>
 </BaseLayout>

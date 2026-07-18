@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { DEFAULT_PAGE_SIZES } from '../../hooks/use-pagination';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './accordion';
 import { Avatar, AvatarFallback, AvatarImage } from './avatar';
 import {
@@ -29,6 +30,7 @@ import {
   DropdownMenuTrigger,
 } from './dropdown-menu';
 import { Pagination } from './pagination';
+import { PaginationBar } from './pagination-bar';
 import {
   Sheet,
   SheetClose,
@@ -234,6 +236,35 @@ export const PaginationStory: Story = {
   render: () => {
     const [page, setPage] = useState(3);
     return <Pagination page={page} pageCount={12} onPageChange={setPage} />;
+  },
+};
+
+export const PaginationBarStory: Story = {
+  name: 'PaginationBar',
+  render: () => {
+    const total = 237;
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const pageCount = Math.max(1, Math.ceil(total / pageSize));
+    const clampedPage = Math.min(page, pageCount);
+    return (
+      <PaginationBar
+        page={clampedPage}
+        pageCount={pageCount}
+        pageSize={pageSize}
+        pageSizes={DEFAULT_PAGE_SIZES}
+        rangeFrom={(clampedPage - 1) * pageSize + 1}
+        rangeTo={Math.min(clampedPage * pageSize, total)}
+        total={total}
+        onPageChange={setPage}
+        onPageSizeChange={(size) => {
+          setPageSize(size);
+          setPage(1);
+        }}
+        perPageLabel="Per page"
+        showingLabel={`Showing ${(clampedPage - 1) * pageSize + 1}–${Math.min(clampedPage * pageSize, total)} of ${total}`}
+      />
+    );
   },
 };
 

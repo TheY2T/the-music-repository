@@ -9,52 +9,37 @@ interface Tile {
 }
 
 /**
- * At-a-glance admin navigation tiles. Presentational + static (no client directive needed) —
- * Astro renders it server-side to plain HTML. Flag gating is decided by the page and passed in.
+ * Landing grid for the Localization section (ADR 0034): navigation cards for the general-site interface
+ * strings and the per-area content localization (catalogue / collections / help). Presentational + static
+ * (no client directive) — Astro renders it server-side. Mirrors `AdminNav`'s card design for consistency.
  */
-export default function AdminNav({
-  locale,
-  showCollections,
-  showHelp,
-  showLocaleStrings,
-}: {
-  locale: Locale;
-  showCollections: boolean;
-  showHelp: boolean;
-  showLocaleStrings?: boolean;
-}) {
+export default function LocalizationHub({ locale }: { locale: Locale }) {
   const tiles: Tile[] = [
     {
-      href: '#admin-content',
-      icon: 'book-open',
-      title: t(locale, 'admin.content'),
-      description: t(locale, 'admin.contentDesc'),
+      href: localizedPath(locale, '/admin/localization/general'),
+      icon: 'globe',
+      title: t(locale, 'loc.general'),
+      description: t(locale, 'loc.generalDesc'),
+    },
+    {
+      href: localizedPath(locale, '/admin/localization/catalogue'),
+      icon: 'library',
+      title: t(locale, 'loc.catalogue'),
+      description: t(locale, 'loc.catalogueDesc'),
+    },
+    {
+      href: localizedPath(locale, '/admin/localization/collections'),
+      icon: 'list-music',
+      title: t(locale, 'loc.collections'),
+      description: t(locale, 'loc.collectionsDesc'),
+    },
+    {
+      href: localizedPath(locale, '/admin/localization/help'),
+      icon: 'info',
+      title: t(locale, 'loc.help'),
+      description: t(locale, 'loc.helpDesc'),
     },
   ];
-  if (showCollections) {
-    tiles.push({
-      href: localizedPath(locale, '/admin/collections'),
-      icon: 'list-music',
-      title: t(locale, 'admin.collections'),
-      description: t(locale, 'admin.collectionsDesc'),
-    });
-  }
-  if (showHelp) {
-    tiles.push({
-      href: localizedPath(locale, '/admin/help'),
-      icon: 'info',
-      title: t(locale, 'admin.helpTopics'),
-      description: t(locale, 'admin.helpSubtitle'),
-    });
-  }
-  if (showLocaleStrings) {
-    tiles.push({
-      href: localizedPath(locale, '/admin/localization'),
-      icon: 'languages',
-      title: t(locale, 'admin.localization'),
-      description: t(locale, 'admin.localizationDesc'),
-    });
-  }
 
   return (
     <nav className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

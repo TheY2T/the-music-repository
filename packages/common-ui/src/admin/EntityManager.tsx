@@ -22,7 +22,7 @@ import {
   FeaturedShelf,
   Icon,
   Input,
-  Pagination,
+  PaginationBar,
   SearchField,
   SegmentedToggle,
   Select,
@@ -33,6 +33,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  usePagination,
 } from '@TheY2T/tmr-ui';
 import {
   buildColumns,
@@ -400,8 +401,6 @@ function BoardView<Row>({
   );
 }
 
-const TABLE_PAGE = 25;
-
 function TableView<Row>({
   rows,
   config,
@@ -421,12 +420,7 @@ function TableView<Row>({
   sortKey: string;
 }) {
   const [selectedFacets, setSelectedFacets] = useState<Record<string, string[]>>({});
-  const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<Set<string>>(new Set());
-
-  // Control-bar search/sort reset paging.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => setPage(1), [query, sortKey]);
 
   const matches = (row: Row) => {
     if (query && !config.matchesQuery(row, query)) return false;
@@ -442,9 +436,21 @@ function TableView<Row>({
     return sort ? [...list].sort(sort.compare) : list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows, query, selectedFacets, sortKey]);
-  const pageCount = Math.max(1, Math.ceil(filtered.length / TABLE_PAGE));
-  const clampedPage = Math.min(page, pageCount);
-  const paged = filtered.slice((clampedPage - 1) * TABLE_PAGE, clampedPage * TABLE_PAGE);
+  // Search/sort/facets reset paging; page size follows the shared standard (10/25/50/100/200).
+  const {
+    page: clampedPage,
+    setPage,
+    pageSize,
+    setPageSize,
+    pageCount,
+    pageItems: paged,
+    total,
+    rangeFrom,
+    rangeTo,
+    pageSizes,
+  } = usePagination(filtered, {
+    resetKey: `${query}|${sortKey}|${JSON.stringify(selectedFacets)}`,
+  });
 
   const groups: FacetGroup[] = config.facets
     .map((facet) => {
@@ -599,11 +605,23 @@ function TableView<Row>({
           </Card>
         )}
 
-        {pageCount > 1 ? (
-          <Pagination
+        {filtered.length > 0 ? (
+          <PaginationBar
             page={clampedPage}
             pageCount={pageCount}
+            pageSize={pageSize}
+            pageSizes={pageSizes}
+            rangeFrom={rangeFrom}
+            rangeTo={rangeTo}
+            total={total}
             onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+            perPageLabel={t(config.locale, 'common.perPage')}
+            showingLabel={t(config.locale, 'common.showing', {
+              from: rangeFrom,
+              to: rangeTo,
+              total,
+            })}
             prevLabel={t(config.locale, 'common.prev')}
             nextLabel={t(config.locale, 'common.next')}
           />

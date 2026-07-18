@@ -9,8 +9,10 @@ import {
   Field,
   Icon,
   Input,
+  PaginationBar,
   Progress,
   StatTile,
+  usePagination,
 } from '@TheY2T/tmr-ui';
 import { listSavedCollectionSlugs } from '@TheY2T/tmr-web-data/collections-api';
 import { getProgress, logPractice } from '@TheY2T/tmr-web-data/progress-api';
@@ -56,6 +58,16 @@ export default function ProgressDashboard({
     setBusy(false);
   }
 
+  // "My progress" lists the collections the learner is actually engaged with — ones they've started
+  // (≥1 completed item) plus, when bookmarks are enabled, ones they've saved. A collection they've
+  // never touched isn't progress, it's the catalogue. In-progress collections sort ahead of
+  // saved-but-unstarted ones (stable within each group). Computed before the loading guards so the
+  // pagination hook runs unconditionally (Rules of Hooks).
+  const myCollections = (summary?.collections ?? [])
+    .filter((collection) => collection.completedItems > 0 || saved.has(collection.slug))
+    .sort((a, b) => Number(b.completedItems > 0) - Number(a.completedItems > 0));
+  const pg = usePagination(myCollections, { initialPageSize: 25 });
+
   if (!loaded) {
     return <p className="text-sm text-muted-foreground">{t(locale, 'prog.loading')}</p>;
   }
@@ -69,13 +81,6 @@ export default function ProgressDashboard({
   }
 
   const streak = summary.currentStreakDays;
-  // "My progress" lists the collections the learner is actually engaged with — ones they've started
-  // (≥1 completed item) plus, when bookmarks are enabled, ones they've saved. A collection they've
-  // never touched isn't progress, it's the catalogue. In-progress collections sort ahead of
-  // saved-but-unstarted ones (stable within each group).
-  const myCollections = summary.collections
-    .filter((collection) => collection.completedItems > 0 || saved.has(collection.slug))
-    .sort((a, b) => Number(b.completedItems > 0) - Number(a.completedItems > 0));
 
   return (
     <div className="space-y-8">
@@ -119,30 +124,51 @@ export default function ProgressDashboard({
             }
           />
         ) : (
-          <ul className="space-y-4">
-            {myCollections.map((collection) => {
-              const percent =
-                collection.totalItems === 0
-                  ? 0
-                  : Math.round((collection.completedItems / collection.totalItems) * 100);
-              return (
-                <li key={collection.slug} className="space-y-1.5">
-                  <div className="flex items-center justify-between gap-2 text-sm">
-                    <a
-                      href={localizedPath(locale, `/collections/${collection.slug}`)}
-                      className="font-medium text-foreground hover:text-accent hover:underline"
-                    >
-                      {collection.title}
-                    </a>
-                    <span className="tabular-nums text-muted-foreground">
-                      {collection.completedItems}/{collection.totalItems}
-                    </span>
-                  </div>
-                  <Progress value={percent} />
-                </li>
-              );
-            })}
-          </ul>
+          <>
+            <ul className="space-y-4">
+              {pg.pageItems.map((collection) => {
+                const percent =
+                  collection.totalItems === 0
+                    ? 0
+                    : Math.round((collection.completedItems / collection.totalItems) * 100);
+                return (
+                  <li key={collection.slug} className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-2 text-sm">
+                      <a
+                        href={localizedPath(locale, `/collections/${collection.slug}`)}
+                        className="font-medium text-foreground hover:text-accent hover:underline"
+                      >
+                        {collection.title}
+                      </a>
+                      <span className="tabular-nums text-muted-foreground">
+                        {collection.completedItems}/{collection.totalItems}
+                      </span>
+                    </div>
+                    <Progress value={percent} />
+                  </li>
+                );
+              })}
+            </ul>
+            <PaginationBar
+              page={pg.page}
+              pageCount={pg.pageCount}
+              pageSize={pg.pageSize}
+              pageSizes={pg.pageSizes}
+              rangeFrom={pg.rangeFrom}
+              rangeTo={pg.rangeTo}
+              total={pg.total}
+              onPageChange={pg.setPage}
+              onPageSizeChange={pg.setPageSize}
+              perPageLabel={t(locale, 'common.perPage')}
+              showingLabel={t(locale, 'common.showing', {
+                from: pg.rangeFrom,
+                to: pg.rangeTo,
+                total: pg.total,
+              })}
+              prevLabel={t(locale, 'common.prev')}
+              nextLabel={t(locale, 'common.next')}
+            />
+          </>
         )}
       </section>
 

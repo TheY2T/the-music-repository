@@ -15,11 +15,11 @@ if (!Astro.locals.flags.localeStrings) {
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'localeadmin.title')} — ${t(locale, 'nav.admin')}`}>
+<BaseLayout title={`${t(locale, 'loc.general')} — ${t(locale, 'nav.admin')}`}>
   <PageShell
-    title={t(locale, 'localeadmin.title')}
-    subtitle={t(locale, 'localeadmin.subtitle')}
-    back={{ href: localizedPath(locale, '/admin'), label: t(locale, 'common.backContent') }}
+    title={t(locale, 'loc.general')}
+    subtitle={t(locale, 'loc.generalDesc')}
+    back={{ href: localizedPath(locale, '/admin/localization'), label: t(locale, 'loc.backHub') }}
     maxWidth="max-w-6xl"
   >
     <AdminLocaleManager client:load locale={locale} />

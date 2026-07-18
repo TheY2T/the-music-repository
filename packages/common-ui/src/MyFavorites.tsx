@@ -8,7 +8,9 @@ import {
   EmptyState,
   Icon,
   MediaCard,
+  PaginationBar,
   Skeleton,
+  usePagination,
 } from '@TheY2T/tmr-ui';
 import { listFavorites } from '@TheY2T/tmr-web-data/favorites-api';
 import { useEffect, useState } from 'react';
@@ -32,6 +34,8 @@ export default function MyFavorites({
   useEffect(() => {
     listFavorites().then(setItems);
   }, []);
+
+  const pg = usePagination(items ?? [], { initialPageSize: 25 });
 
   if (!items) {
     return (
@@ -68,32 +72,53 @@ export default function MyFavorites({
   }
 
   return (
-    <CardGrid>
-      {items.map((item) => (
-        <li key={item.slug}>
-          <MediaCard
-            title={item.title}
-            href={localizedPath(locale, `/catalogue/${item.slug}`)}
-            summary={item.summary ?? undefined}
-            typeLabel={item.type}
-            difficultyLabel={
-              item.difficulty
-                ? t(locale, 'myfav.grade', { difficulty: item.difficulty })
-                : undefined
-            }
-            seed={item.slug}
-            tags={[...item.genres, ...item.instruments].map((r) => r.name)}
-            badgeSlot={
-              item.locked && showMonetization ? (
-                <Badge variant="warning">
-                  <Icon name="lock" className="size-3" />
-                  {tierLabel(locale, item.tier)}
-                </Badge>
-              ) : undefined
-            }
-          />
-        </li>
-      ))}
-    </CardGrid>
+    <div className="space-y-4">
+      <CardGrid>
+        {pg.pageItems.map((item) => (
+          <li key={item.slug}>
+            <MediaCard
+              title={item.title}
+              href={localizedPath(locale, `/catalogue/${item.slug}`)}
+              summary={item.summary ?? undefined}
+              typeLabel={item.type}
+              difficultyLabel={
+                item.difficulty
+                  ? t(locale, 'myfav.grade', { difficulty: item.difficulty })
+                  : undefined
+              }
+              seed={item.slug}
+              tags={[...item.genres, ...item.instruments].map((r) => r.name)}
+              badgeSlot={
+                item.locked && showMonetization ? (
+                  <Badge variant="warning">
+                    <Icon name="lock" className="size-3" />
+                    {tierLabel(locale, item.tier)}
+                  </Badge>
+                ) : undefined
+              }
+            />
+          </li>
+        ))}
+      </CardGrid>
+      <PaginationBar
+        page={pg.page}
+        pageCount={pg.pageCount}
+        pageSize={pg.pageSize}
+        pageSizes={pg.pageSizes}
+        rangeFrom={pg.rangeFrom}
+        rangeTo={pg.rangeTo}
+        total={pg.total}
+        onPageChange={pg.setPage}
+        onPageSizeChange={pg.setPageSize}
+        perPageLabel={t(locale, 'common.perPage')}
+        showingLabel={t(locale, 'common.showing', {
+          from: pg.rangeFrom,
+          to: pg.rangeTo,
+          total: pg.total,
+        })}
+        prevLabel={t(locale, 'common.prev')}
+        nextLabel={t(locale, 'common.next')}
+      />
+    </div>
   );
 }

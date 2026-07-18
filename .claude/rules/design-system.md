@@ -39,6 +39,16 @@ No raw emoji/glyphs. Use `<Icon name="lock" className="size-4" />` from `@TheY2T
 `packages/ui/src/components/ui/icon.tsx`). Never bake glyphs into i18n strings. Music-notation glyphs
 (`♯♭♮♪♩`), hand-drawn rests, and guitar `○`/`×` + strum `↓↑·` markers stay unicode — they are notation.
 
+## Data tables & long lists — always paginate
+
+Every `Table` and every unbounded list/grid (length grows with data) MUST paginate with the shared
+standard — never render a full unbounded array. Use **`usePagination(items, { resetKey })`** +
+**`PaginationBar`** from `@TheY2T/tmr-ui` (rows-per-page `Select` + "Showing X–Y of N" + numbered pager).
+`DEFAULT_PAGE_SIZES` = `[10, 25, 50, 100, 200]` (default 10; `initialPageSize: 25` for card grids). Call
+the hook **before any early return** (pass `items ?? []` while loading); render `pageItems`; pass labels
+i18n-by-prop (`common.perPage`/`common.showing`/`common.prev`/`common.next`). `EntityManager`'s table view
+and `AdminLocaleManager` are the reference. Follow the **`add-ui-component`** skill.
+
 ## Islands
 
 One island root per interactive unit — context-dependent shadcn (Dialog/Select/Tabs/Toast) must be

@@ -12,7 +12,7 @@ import {
   Icon,
   Input,
   Label,
-  Pagination,
+  PaginationBar,
   SearchField,
   Select,
   Table,
@@ -22,6 +22,7 @@ import {
   TableHeader,
   TableRow,
   Textarea,
+  usePagination,
 } from '@TheY2T/tmr-ui';
 import {
   type LocaleInfo,
@@ -30,8 +31,6 @@ import {
   type UiMessageRow,
 } from '@TheY2T/tmr-web-data/i18n-api';
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
-
-const PAGE_SIZES = [10, 25, 50, 100, 200] as const;
 
 /** One key's locale rows folded into a single table row. */
 interface KeyGroup {
@@ -92,8 +91,6 @@ export default function AdminLocaleManager({ locale }: { locale: Locale }) {
   const [deletedOnly, setDeletedOnly] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState<number>(10);
 
   const [editing, setEditing] = useState<KeyGroup | null>(null);
   const [addStringOpen, setAddStringOpen] = useState(false);
@@ -151,13 +148,20 @@ export default function AdminLocaleManager({ locale }: { locale: Locale }) {
     });
   }, [groups, deferredSearch, deletedOnly, statusFilter]);
 
-  const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
-  const clampedPage = Math.min(page, pageCount);
-  const pageGroups = filtered.slice((clampedPage - 1) * pageSize, clampedPage * pageSize);
-
-  useEffect(() => {
-    setPage(1);
-  }, [deferredSearch, statusFilter, deletedOnly, pageSize]);
+  const {
+    page: clampedPage,
+    setPage,
+    pageSize,
+    setPageSize,
+    pageCount,
+    pageItems: pageGroups,
+    total,
+    rangeFrom,
+    rangeTo,
+    pageSizes,
+  } = usePagination(filtered, {
+    resetKey: `${deferredSearch}|${statusFilter}|${deletedOnly}`,
+  });
 
   async function publish() {
     setPublishing(true);
@@ -172,10 +176,6 @@ export default function AdminLocaleManager({ locale }: { locale: Locale }) {
       setPublishing(false);
     }
   }
-
-  const total = filtered.length;
-  const rangeFrom = total === 0 ? 0 : (clampedPage - 1) * pageSize + 1;
-  const rangeTo = Math.min(clampedPage * pageSize, total);
 
   return (
     <div className="space-y-4">
@@ -333,35 +333,21 @@ export default function AdminLocaleManager({ locale }: { locale: Locale }) {
         </Table>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Label className="flex items-center gap-2">
-            {t(locale, 'localeadmin.perPage')}
-            <Select
-              value={String(pageSize)}
-              onChange={(e) => setPageSize(Number(e.target.value))}
-              aria-label={t(locale, 'localeadmin.perPage')}
-              className="w-auto"
-            >
-              {PAGE_SIZES.map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </Select>
-          </Label>
-          <span>{t(locale, 'localeadmin.showing', { from: rangeFrom, to: rangeTo, total })}</span>
-        </div>
-        {pageCount > 1 ? (
-          <Pagination
-            page={clampedPage}
-            pageCount={pageCount}
-            onPageChange={setPage}
-            prevLabel={t(locale, 'common.prev')}
-            nextLabel={t(locale, 'common.next')}
-          />
-        ) : null}
-      </div>
+      <PaginationBar
+        page={clampedPage}
+        pageCount={pageCount}
+        pageSize={pageSize}
+        pageSizes={pageSizes}
+        rangeFrom={rangeFrom}
+        rangeTo={rangeTo}
+        total={total}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+        perPageLabel={t(locale, 'common.perPage')}
+        showingLabel={t(locale, 'common.showing', { from: rangeFrom, to: rangeTo, total })}
+        prevLabel={t(locale, 'common.prev')}
+        nextLabel={t(locale, 'common.next')}
+      />
 
       <KeyEditorDialog
         locale={locale}

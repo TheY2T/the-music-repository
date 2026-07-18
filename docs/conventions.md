@@ -52,7 +52,7 @@ filesystems otherwise pass locally but break Linux containers).
 - **No hardcoded user-facing strings** in `apps/web`. Every UI string goes through `t(locale, key)` from
   `@TheY2T/tmr-i18n`; the locale comes from `Astro.locals.locale` and is passed into islands as a plain
   `locale` prop (never React context — it can't cross island boundaries).
-- **String values are DB-backed and edited in the admin CMS** (`/admin/locale-strings`, ADR 0034) with no
+- **String values are DB-backed and edited in the admin CMS** (`/admin/localization/general`, ADR 0034) with no
   redeploy. **Message keys** are typed + seeded from `@TheY2T/tmr-i18n-locales` (`en.json` = key type
   source + seed; `zh-Hans.json` = Simplified Chinese seed). A new code-referenced key is added there once
   (widens `MessageKey`, seeds); wording is then CMS-editable. Naming: `domain.thing` (camelCase after the

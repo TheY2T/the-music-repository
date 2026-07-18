@@ -96,6 +96,7 @@ export { Icon, type IconName, type IconProps } from './components/ui/icon';
 export { Input, type InputProps } from './components/ui/input';
 export { Label, type LabelProps } from './components/ui/label';
 export { Pagination, type PaginationProps } from './components/ui/pagination';
+export { PaginationBar, type PaginationBarProps } from './components/ui/pagination-bar';
 export { Progress, type ProgressProps } from './components/ui/progress';
 export { Select, type SelectProps } from './components/ui/select';
 export { Separator, type SeparatorProps } from './components/ui/separator';
@@ -134,4 +135,9 @@ export {
 export { Textarea, type TextareaProps } from './components/ui/textarea';
 export { Toaster, toast } from './components/ui/toast';
 export { Tooltip, type TooltipProps } from './components/ui/tooltip';
+export {
+  DEFAULT_PAGE_SIZES,
+  type UsePaginationResult,
+  usePagination,
+} from './hooks/use-pagination';
 export { cn } from './lib/utils';

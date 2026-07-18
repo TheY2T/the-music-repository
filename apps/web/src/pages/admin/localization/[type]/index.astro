@@ -1,0 +1,41 @@
+---
+import ContentLocalizationList from '@TheY2T/tmr-common-ui/ContentLocalizationList';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { guardAdmin } from '@/lib/admin-guard';
+import { localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+const redirect = guardAdmin(Astro);
+if (redirect) {
+  return redirect;
+}
+if (!Astro.locals.flags.localeStrings) {
+  return Astro.redirect('/admin');
+}
+const locale = Astro.locals.locale;
+const { type } = Astro.params;
+
+// URL segment → translatable entity type + its section label.
+const TYPES = {
+  catalogue: { entityType: 'content', sectionKey: 'loc.catalogue' },
+  collections: { entityType: 'collection', sectionKey: 'loc.collections' },
+  help: { entityType: 'help', sectionKey: 'loc.help' },
+} as const;
+const config = type ? TYPES[type as keyof typeof TYPES] : undefined;
+if (!config) {
+  return Astro.redirect('/admin/localization');
+}
+const section = t(locale, config.sectionKey as MessageKey);
+const title = t(locale, 'loc.listTitle', { section });
+---
+
+<BaseLayout title={`${title} — ${t(locale, 'nav.admin')}`}>
+  <PageShell
+    title={title}
+    subtitle={t(locale, 'loc.listSubtitle')}
+    back={{ href: localizedPath(locale, '/admin/localization'), label: t(locale, 'loc.backHub') }}
+    maxWidth="max-w-6xl"
+  >
+    <ContentLocalizationList client:load locale={locale} entityType={config.entityType} />
+  </PageShell>
+</BaseLayout>

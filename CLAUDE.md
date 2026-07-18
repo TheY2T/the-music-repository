@@ -85,7 +85,7 @@ Biome + thin ESLint · podman-compose deploy.
   (`♯♭♮♪♩`) are the sole exception. Follow **`add-ui-component`**. ADR 0018/0019 · `docs/features/icons.md`.
 - **Localize UI strings (web).** No hardcoded user-facing text in `apps/web` — render via
   `t(Astro.locals.locale, key)` and pass `locale` into islands as a prop. String **values are DB-backed
-  and edited in the admin CMS** (`/admin/locale-strings`) with no redeploy (ADR 0034); the in-repo
+  and edited in the admin CMS** (`/admin/localization`) with no redeploy (ADR 0034); the in-repo
   `@TheY2T/tmr-i18n-locales` JSON is the DB **seed** + compile-time `MessageKey` type + fallback, so a
   brand-new code-referenced key still gets added there once. URL-prefix routing (`/zh/…`), gated by
   `platform.i18n`. Follow the **`add-translations`** skill. ADR 0017/0034.

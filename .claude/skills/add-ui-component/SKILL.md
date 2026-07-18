@@ -69,6 +69,44 @@ Then export it from the right barrel:
 - atom/molecule → `packages/ui/src/index.ts`
 - music organism → `packages/ui/src/components/organisms/music/index.ts`
 
+## Data tables & long lists — ALWAYS paginate
+
+Every `Table` and every unbounded list/grid (one whose length grows with data — search results,
+favorites, collections, admin rows) MUST paginate with the shared standard. Never render a full
+unbounded array. Use the two shared primitives from `@TheY2T/tmr-ui`:
+
+- **`usePagination(items, { pageSizes?, initialPageSize?, resetKey? })`** — client-side slicing. Returns
+  `{ page, setPage, pageSize, setPageSize, pageCount, pageItems, total, rangeFrom, rangeTo, pageSizes }`.
+  Call it **unconditionally, before any early `return`** (Rules of Hooks) — for a list that loads async,
+  pass `items ?? []`. Pass the active search/filter value as `resetKey` so changing it snaps to page 1.
+- **`PaginationBar`** — the standard footer: a rows-per-page `Select` + "Showing X–Y of N" + the numbered
+  `Pagination` pager (which only shows when `pageCount > 1`). Presentational / i18n-by-prop — pass
+  `perPageLabel={t(locale,'common.perPage')}`, `showingLabel={t(locale,'common.showing',{from,to,total})}`,
+  `prevLabel`/`nextLabel` (`common.prev`/`common.next`).
+
+Standard rows-per-page options are `DEFAULT_PAGE_SIZES` = `[10, 25, 50, 100, 200]` (default 10; pass
+`initialPageSize: 25` for card grids). Render `pageItems` (not the full array) and drop `<PaginationBar>`
+below the table/grid, guarded by a non-empty check so it hides on the empty state:
+
+```tsx
+const pg = usePagination(filtered, { resetKey: deferredSearch });
+// …render pg.pageItems…
+{filtered.length > 0 ? (
+  <PaginationBar
+    page={pg.page} pageCount={pg.pageCount} pageSize={pg.pageSize} pageSizes={pg.pageSizes}
+    rangeFrom={pg.rangeFrom} rangeTo={pg.rangeTo} total={pg.total}
+    onPageChange={pg.setPage} onPageSizeChange={pg.setPageSize}
+    perPageLabel={t(locale, 'common.perPage')}
+    showingLabel={t(locale, 'common.showing', { from: pg.rangeFrom, to: pg.rangeTo, total: pg.total })}
+    prevLabel={t(locale, 'common.prev')} nextLabel={t(locale, 'common.next')}
+  />
+) : null}
+```
+
+Server-paginated lists (a `pageSize=` query param + `pageCount` from a total, e.g. `CatalogueBrowser`)
+keep their own fetch loop but still render `<PaginationBar>` for the same look. `EntityManager`'s table
+view already wires this — new admin managers inherit it for free. Reference: `AdminLocaleManager`.
+
 ## 3. Add a design token
 
 Edit `packages/design-tokens/src/tokens.css` (both `:root` and `.dark`) and map it in `theme.css`

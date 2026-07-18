@@ -8,11 +8,13 @@ import {
   EmptyState,
   Icon,
   MediaCard,
+  PaginationBar,
   Skeleton,
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
+  usePagination,
 } from '@TheY2T/tmr-ui';
 import { listMyCollections, listSavedCollections } from '@TheY2T/tmr-web-data/collections-api';
 import { useEffect, useState } from 'react';
@@ -30,38 +32,61 @@ function Grid({
   showVisibility?: boolean;
   showEdit?: boolean;
 }) {
+  const pg = usePagination(collections, { initialPageSize: 25 });
+
   if (!collections.length) {
     return <EmptyState icon={<Icon name="bookmark" className="size-6" />} title={emptyLabel} />;
   }
   return (
-    <CardGrid>
-      {collections.map((c) => (
-        <li key={c.slug} className="space-y-2">
-          <MediaCard
-            title={c.title}
-            href={localizedPath(locale, `/collections/${c.slug}`)}
-            summary={c.summary ?? undefined}
-            typeLabel={c.kind}
-            difficultyLabel={`${c.itemCount} ${t(locale, c.itemCount === 1 ? 'collections.itemOne' : 'collections.itemOther')}`}
-            seed={c.slug}
-            badgeSlot={
-              showVisibility && c.visibility === 'private' ? (
-                <Badge variant="secondary">{t(locale, 'collections.privateBadge')}</Badge>
-              ) : undefined
-            }
-          />
-          {showEdit ? (
-            <a
-              href={localizedPath(locale, `/me/collections/${c.slug}/edit`)}
-              className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'w-full')}
-            >
-              <Icon name="pencil" className="size-4" />
-              {t(locale, 'ucoll.edit')}
-            </a>
-          ) : null}
-        </li>
-      ))}
-    </CardGrid>
+    <div className="space-y-4">
+      <CardGrid>
+        {pg.pageItems.map((c) => (
+          <li key={c.slug} className="space-y-2">
+            <MediaCard
+              title={c.title}
+              href={localizedPath(locale, `/collections/${c.slug}`)}
+              summary={c.summary ?? undefined}
+              typeLabel={c.kind}
+              difficultyLabel={`${c.itemCount} ${t(locale, c.itemCount === 1 ? 'collections.itemOne' : 'collections.itemOther')}`}
+              seed={c.slug}
+              badgeSlot={
+                showVisibility && c.visibility === 'private' ? (
+                  <Badge variant="secondary">{t(locale, 'collections.privateBadge')}</Badge>
+                ) : undefined
+              }
+            />
+            {showEdit ? (
+              <a
+                href={localizedPath(locale, `/me/collections/${c.slug}/edit`)}
+                className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'w-full')}
+              >
+                <Icon name="pencil" className="size-4" />
+                {t(locale, 'ucoll.edit')}
+              </a>
+            ) : null}
+          </li>
+        ))}
+      </CardGrid>
+      <PaginationBar
+        page={pg.page}
+        pageCount={pg.pageCount}
+        pageSize={pg.pageSize}
+        pageSizes={pg.pageSizes}
+        rangeFrom={pg.rangeFrom}
+        rangeTo={pg.rangeTo}
+        total={pg.total}
+        onPageChange={pg.setPage}
+        onPageSizeChange={pg.setPageSize}
+        perPageLabel={t(locale, 'common.perPage')}
+        showingLabel={t(locale, 'common.showing', {
+          from: pg.rangeFrom,
+          to: pg.rangeTo,
+          total: pg.total,
+        })}
+        prevLabel={t(locale, 'common.prev')}
+        nextLabel={t(locale, 'common.next')}
+      />
+    </div>
   );
 }
 

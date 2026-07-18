@@ -13,10 +13,12 @@ compile-time key type + fallback.
 ## 1. Add / change the string — two paths
 
 **A. Change wording or a translation for an existing key, or add a runtime-only string** (no code change,
-no redeploy): do it in the **admin CMS** at `/admin/locale-strings` — the table is grouped by key; edit a
-key to manage all its locales, or **Add string** / **Import** a key→value JSON, then **Publish**. Live
-within seconds. Admins can also **create new locales** and **export** a locale's strings (filterable by
-origin) here. A brand-new locale is translatable/servable immediately, but wiring it into URL routing +
+no redeploy): do it in the **admin CMS** — the **Localization** section (`/admin/localization`) → **General
+site** (`/admin/localization/general`, UI strings). The table is grouped by key; edit a key to manage all
+its locales, or **Add string** / **Import** a key→value JSON, then **Publish**. Live within seconds. Admins
+can also **create new locales** and **export** a locale's strings (filterable by origin) here. To translate
+**content** (catalogue / collection / help item text) instead of UI strings, use the other Localization
+cards → a per-item full-page editor (`ContentLocalizationEditor`) with locale tabs + the block editor. A brand-new locale is translatable/servable immediately, but wiring it into URL routing +
 the switcher is still a deploy (see §Adding a language). This is the normal path for copy + translation work.
 
 **B. Add a brand-new key that typed code references** (`t(locale, 'new.key')` in a page/island): add it
