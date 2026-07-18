@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ContentRepository } from '../../catalogue/application/ports/content-repository.port';
-import { toContentSummaryView } from '../../catalogue/domain/content-item';
+import { applyContentOverlay, toContentSummaryView } from '../../catalogue/domain/content-item';
+import { ContentTranslations } from '../../translations/application/ports/content-translations.port';
 import {
+  applyCollectionOverlay,
   type Collection,
   type CollectionDetailView,
   type CollectionEntryView,
@@ -19,14 +21,29 @@ import {
  */
 @Injectable()
 export class CollectionDetailAssembler {
-  constructor(private readonly content: ContentRepository) {}
+  constructor(
+    private readonly content: ContentRepository,
+    private readonly translations: ContentTranslations,
+  ) {}
+
+  /** Overlay the collection's own fields for `locale` (its items are localized in `resolveEntries`). */
+  private async localizeCollection(collection: Collection, locale?: string): Promise<Collection> {
+    if (!locale) {
+      return collection;
+    }
+    return applyCollectionOverlay(
+      collection,
+      await this.translations.overlay('collection', collection.id, locale),
+    );
+  }
 
   async assemble(
     collection: Collection,
-    options: { publishedOnly: boolean; rating?: CollectionRatingAggregate },
+    options: { publishedOnly: boolean; rating?: CollectionRatingAggregate; locale?: string },
   ): Promise<CollectionDetailView> {
-    const entries = await this.resolveEntries(collection, options.publishedOnly);
-    return this.toDetail(collection, entries, options.rating);
+    const localized = await this.localizeCollection(collection, options.locale);
+    const entries = await this.resolveEntries(localized, options.publishedOnly, options.locale);
+    return this.toDetail(localized, entries, options.rating);
   }
 
   /** Like `assemble`, but flags per-item completion and computes overall progress + next-up. */
@@ -36,14 +53,16 @@ export class CollectionDetailAssembler {
       publishedOnly: boolean;
       completedSlugs: string[];
       rating?: CollectionRatingAggregate;
+      locale?: string;
     },
   ): Promise<CollectionProgressDetailView> {
+    const localized = await this.localizeCollection(collection, options.locale);
     const completed = new Set(options.completedSlugs);
-    const entries = await this.resolveEntries(collection, options.publishedOnly);
+    const entries = await this.resolveEntries(localized, options.publishedOnly, options.locale);
     for (const entry of entries) {
       entry.completed = completed.has(entry.content.slug);
     }
-    const detail = this.toDetail(collection, entries, options.rating);
+    const detail = this.toDetail(localized, entries, options.rating);
     const completedCount = entries.filter((e) => e.completed).length;
     const nextUp = entries.find((e) => !e.completed);
     return {
@@ -54,33 +73,47 @@ export class CollectionDetailAssembler {
     };
   }
 
-  /** Resolve slugs → summaries in flattened (section-ordered) order, dropping missing/unpublished. */
+  /** Resolve slugs → summaries in flattened (section-ordered) order, dropping missing/unpublished.
+   *  When `locale` is set, item titles/summaries are overlaid with published content translations. */
   private async resolveEntries(
     collection: Collection,
     publishedOnly: boolean,
+    locale?: string,
   ): Promise<CollectionEntryView[]> {
     const metaBySlug = new Map<string, CollectionItemMeta>(
       collection.items.map((item) => [item.contentSlug, item]),
     );
-    const entries: CollectionEntryView[] = [];
+    const resolved: { item: Awaited<ReturnType<ContentRepository['getBySlug']>>; slug: string }[] =
+      [];
     for (const slug of collection.itemSlugs) {
       const item = await this.content.getBySlug(slug);
-      if (!item) {
+      if (!item || (publishedOnly && item.status !== 'published')) {
         continue;
       }
-      if (publishedOnly && item.status !== 'published') {
-        continue;
-      }
+      resolved.push({ item, slug });
+    }
+
+    const overlays = locale
+      ? await this.translations.overlayMany(
+          'content',
+          resolved.map((r) => r.item?.id).filter((id): id is string => Boolean(id)),
+          locale,
+        )
+      : new Map<string, Record<string, string>>();
+
+    return resolved.map(({ item, slug }, position) => {
+      const localized =
+        item && locale ? applyContentOverlay(item, overlays.get(item.id) ?? {}) : item;
       const meta = metaBySlug.get(slug);
-      entries.push({
-        position: entries.length,
-        content: toContentSummaryView(item),
+      return {
+        position,
+        // biome-ignore lint/style/noNonNullAssertion: filtered to defined items above
+        content: toContentSummaryView(localized!),
         sectionId: meta?.sectionId ?? undefined,
         curatorNote: meta?.curatorNote ?? undefined,
         focusSkills: meta?.focusSkills ?? undefined,
-      });
-    }
-    return entries;
+      };
+    });
   }
 
   private toDetail(

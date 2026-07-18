@@ -153,8 +153,13 @@ function Section({
   );
 }
 
+/** The `locale` read param — omitted for the base locale (`en`) so the query key stays stable. */
+function localeParam(locale: Locale): string | undefined {
+  return locale === 'en' ? undefined : locale;
+}
+
 function Detail({ slug, locale, flags }: { slug: string; locale: Locale; flags: Flags }) {
-  const { data, isLoading } = useGetCollectionWithProgress(slug);
+  const { data, isLoading } = useGetCollectionWithProgress(slug, { locale: localeParam(locale) });
   const collection = data?.status === 200 ? (data.data as CollectionProgressDetail) : undefined;
 
   const [completedSet, setCompletedSet] = useState<Set<string>>(new Set());

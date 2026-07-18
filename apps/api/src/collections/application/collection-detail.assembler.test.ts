@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { ContentRepository } from '../../catalogue/application/ports/content-repository.port';
 import type { ContentItem } from '../../catalogue/domain/content-item';
+import type { ContentTranslations } from '../../translations/application/ports/content-translations.port';
 import type { Collection } from '../domain/collection';
 import { CollectionDetailAssembler } from './collection-detail.assembler';
 
@@ -34,6 +35,17 @@ function repo(items: Record<string, ContentItem>): ContentRepository {
     getBySlug: (slug: string) => Promise.resolve(items[slug] ?? null),
   } as unknown as ContentRepository;
 }
+
+/** A no-op ContentTranslations stub (these tests exercise the base, un-localized path). */
+function noTranslations(): ContentTranslations {
+  return {
+    overlay: () => Promise.resolve({}),
+    overlayMany: () => Promise.resolve(new Map()),
+  } as unknown as ContentTranslations;
+}
+
+const assemblerFor = (items: Record<string, ContentItem>) =>
+  new CollectionDetailAssembler(repo(items), noTranslations());
 
 function collection(overrides: Partial<Collection> = {}): Collection {
   return {
@@ -70,7 +82,7 @@ function collection(overrides: Partial<Collection> = {}): Collection {
 
 describe('CollectionDetailAssembler', () => {
   it('groups resolved items into their sections, carrying per-item notes', async () => {
-    const assembler = new CollectionDetailAssembler(repo({ a: content('a'), b: content('b') }));
+    const assembler = assemblerFor({ a: content('a'), b: content('b') });
     const col = collection({
       itemSlugs: ['a', 'b'],
       sections: [
@@ -92,9 +104,7 @@ describe('CollectionDetailAssembler', () => {
   });
 
   it('drops unpublished/missing items and renumbers positions in published views', async () => {
-    const assembler = new CollectionDetailAssembler(
-      repo({ a: content('a'), b: content('b', 'draft') }),
-    );
+    const assembler = assemblerFor({ a: content('a'), b: content('b', 'draft') });
     const col = collection({
       itemSlugs: ['a', 'b', 'gone'],
       items: [
@@ -112,9 +122,7 @@ describe('CollectionDetailAssembler', () => {
   });
 
   it('computes completion, percent and the next incomplete item', async () => {
-    const assembler = new CollectionDetailAssembler(
-      repo({ a: content('a'), b: content('b'), c: content('c') }),
-    );
+    const assembler = assemblerFor({ a: content('a'), b: content('b'), c: content('c') });
     const col = collection({
       itemSlugs: ['a', 'b', 'c'],
       items: ['a', 'b', 'c'].map((s) => ({
@@ -133,5 +141,23 @@ describe('CollectionDetailAssembler', () => {
     expect(view.completedCount).toBe(1);
     expect(view.percentComplete).toBe(33);
     expect(view.nextUpSlug).toBe('b');
+  });
+
+  it('overlays the collection’s own fields and its item summaries for a locale', async () => {
+    const translations = {
+      overlay: () => Promise.resolve({ title: 'Cours', summary: 'Résumé' }),
+      overlayMany: () => Promise.resolve(new Map([['a', { title: 'Leçon A' }]])),
+    } as unknown as ContentTranslations;
+    const assembler = new CollectionDetailAssembler(repo({ a: content('a') }), translations);
+    const col = collection({
+      itemSlugs: ['a'],
+      items: [{ contentSlug: 'a', sectionId: null, curatorNote: null, focusSkills: null }],
+    });
+
+    const view = await assembler.assemble(col, { publishedOnly: true, locale: 'fr' });
+
+    expect(view.title).toBe('Cours');
+    expect(view.summary).toBe('Résumé');
+    expect(view.items[0]?.content.title).toBe('Leçon A');
   });
 });

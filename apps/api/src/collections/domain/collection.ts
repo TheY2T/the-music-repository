@@ -61,6 +61,47 @@ export interface Collection {
   items: CollectionItemMeta[]; // flattened, section-ordered
 }
 
+/**
+ * Overlay published per-locale translations onto a collection's text fields (ADR 0034, Phase 2).
+ * `overlay` is a field→value map: `title` / `summary` / `bodyMdx` / `curatorBio`, plus
+ * `section.<id>.title` / `section.<id>.description` for each section. Absent fields keep their base
+ * (English) value. Returns a new collection; a no-op for an empty overlay.
+ */
+export function applyCollectionOverlay(
+  collection: Collection,
+  overlay: Record<string, string>,
+): Collection {
+  if (Object.keys(overlay).length === 0) {
+    return collection;
+  }
+  const next: Collection = { ...collection };
+  if (overlay.title !== undefined) {
+    next.title = overlay.title;
+  }
+  if (overlay.summary !== undefined) {
+    next.summary = overlay.summary;
+  }
+  if (overlay.bodyMdx !== undefined) {
+    next.bodyMdx = overlay.bodyMdx;
+  }
+  if (overlay.curatorBio !== undefined) {
+    next.curatorBio = overlay.curatorBio;
+  }
+  const touchesSections = next.sections.some(
+    (s) =>
+      overlay[`section.${s.id}.title`] !== undefined ||
+      overlay[`section.${s.id}.description`] !== undefined,
+  );
+  if (touchesSections) {
+    next.sections = next.sections.map((s) => ({
+      ...s,
+      title: overlay[`section.${s.id}.title`] ?? s.title,
+      description: overlay[`section.${s.id}.description`] ?? s.description,
+    }));
+  }
+  return next;
+}
+
 export interface CollectionWriteData {
   slug: string;
   title: string;

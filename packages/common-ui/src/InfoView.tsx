@@ -13,15 +13,16 @@ const DISMISS_KEY = 'infoview-dismissed';
  * `click` is included alongside `mouseover`/`focusin` so it also works on touch/trackpad (tap), where
  * there is no hover.
  */
-export default function InfoView() {
+export default function InfoView({ locale }: { locale?: string } = {}) {
   const [topics, setTopics] = useState<Map<string, HelpTopic>>(new Map());
   const [active, setActive] = useState<HelpTopic | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     setDismissed(localStorage.getItem(DISMISS_KEY) === '1');
-    listHelpTopics().then((list) => setTopics(new Map(list.map((t) => [t.slug, t]))));
-  }, []);
+    // `locale` overlays published term/body translations (ADR 0034); omit for the base language.
+    listHelpTopics(locale).then((list) => setTopics(new Map(list.map((t) => [t.slug, t]))));
+  }, [locale]);
 
   useEffect(() => {
     function onContext(event: Event) {

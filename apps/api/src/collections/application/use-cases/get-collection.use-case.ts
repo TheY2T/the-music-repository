@@ -13,14 +13,15 @@ export class GetCollectionBySlugUseCase {
     private readonly ratings: CollectionRatings,
   ) {}
 
-  /** Public: a published collection with its published items (renumbered), grouped into sections. */
-  async execute(slug: string): Promise<CollectionDetailView> {
+  /** Public: a published collection with its published items (renumbered), grouped into sections.
+   *  `locale` overlays published collection + item translations (absent → base). */
+  async execute(slug: string, locale?: string): Promise<CollectionDetailView> {
     const collection = await this.repository.getBySlug(slug);
     if (collection?.status !== 'published' || collection.visibility === 'private') {
       throw new CollectionNotFoundError(slug);
     }
     const rating = (await this.ratings.getAggregate([slug])).get(slug);
-    return this.assembler.assemble(collection, { publishedOnly: true, rating });
+    return this.assembler.assemble(collection, { publishedOnly: true, rating, locale });
   }
 }
 

@@ -9,6 +9,7 @@ type HelpTopicRow = typeof helpTopics.$inferSelect;
 
 function toView(row: HelpTopicRow): HelpTopicView {
   return {
+    id: row.id,
     slug: row.slug,
     term: row.term,
     body: row.body,

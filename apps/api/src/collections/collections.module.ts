@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { CatalogueModule } from '../catalogue/catalogue.module';
+import { TranslationsModule } from '../translations/translations.module';
 import { CollectionDetailAssembler } from './application/collection-detail.assembler';
 import { CollectionBookmarks } from './application/ports/collection-bookmarks.port';
 import { CollectionRatings } from './application/ports/collection-ratings.port';
@@ -58,7 +59,7 @@ import { MeilisearchCollectionSearch } from './infrastructure/meilisearch-collec
  * `CollectionRepository` (consumed by the progress module).
  */
 @Module({
-  imports: [CatalogueModule, AuthModule],
+  imports: [CatalogueModule, AuthModule, TranslationsModule],
   controllers: [
     CollectionsController,
     CollectionsPersonalController,

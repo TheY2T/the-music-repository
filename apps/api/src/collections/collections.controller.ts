@@ -42,14 +42,18 @@ export class CollectionsController {
   }
 
   @Get(':slug')
-  detail(@Param('slug') slug: string) {
-    return this.getCollection.execute(slug);
+  detail(@Param('slug') slug: string, @Query('locale') locale?: string) {
+    return this.getCollection.execute(slug, collectionLocale(locale));
   }
 
   @Get(':slug/progress')
   @ResolveOptionalAuth()
-  progress(@Param('slug') slug: string) {
-    return this.getWithProgress.execute(slug, this.currentUser.optional()?.id ?? null);
+  progress(@Param('slug') slug: string, @Query('locale') locale?: string) {
+    return this.getWithProgress.execute(
+      slug,
+      this.currentUser.optional()?.id ?? null,
+      collectionLocale(locale),
+    );
   }
 
   @Post(':slug/open')
@@ -71,6 +75,11 @@ function toInt(value: string | string[] | undefined, fallback: number): number {
   const raw = Array.isArray(value) ? value[0] : value;
   const parsed = raw != null ? Number.parseInt(raw, 10) : Number.NaN;
   return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+/** The `locale` query param: undefined for the base locale (`en`), else the locale id (ADR 0034). */
+function collectionLocale(locale: string | undefined): string | undefined {
+  return locale && locale !== 'en' ? locale : undefined;
 }
 
 function normalizeQuery(query: RawQuery): CollectionSearchQuery {

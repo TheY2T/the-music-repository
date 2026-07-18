@@ -2,10 +2,12 @@ import type { HelpTopic, HelpTopicWriteInput } from '@TheY2T/tmr-api-client';
 
 const API_BASE = import.meta.env.PUBLIC_API_BASE_URL ?? 'http://localhost:3000';
 
-/** All help topics (public). Empty on error so the Info View degrades quietly. */
-export async function listHelpTopics(): Promise<HelpTopic[]> {
+/** All help topics (public). Empty on error so the Info View degrades quietly. `locale` overlays
+ *  published term/body translations (ADR 0034); omit/`en` for the base language. */
+export async function listHelpTopics(locale?: string): Promise<HelpTopic[]> {
   try {
-    const response = await fetch(`${API_BASE}/help-topics`);
+    const query = locale && locale !== 'en' ? `?locale=${encodeURIComponent(locale)}` : '';
+    const response = await fetch(`${API_BASE}/help-topics${query}`);
     if (!response.ok) {
       return [];
     }

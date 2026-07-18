@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { TranslationsModule } from '../translations/translations.module';
 import {
   CreateHelpTopicUseCase,
   DeleteHelpTopicUseCase,
@@ -13,6 +14,7 @@ import { DrizzleHelpTopicRepository } from './infrastructure/drizzle-help-topic.
 
 /** Info View / help-topics feature (Phase 2, hexagonal). */
 @Module({
+  imports: [TranslationsModule],
   controllers: [HelpController, HelpAuthoringController],
   providers: [
     ListHelpTopicsUseCase,

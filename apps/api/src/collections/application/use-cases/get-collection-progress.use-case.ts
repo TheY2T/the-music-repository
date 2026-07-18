@@ -19,7 +19,11 @@ export class GetCollectionWithProgressUseCase {
     private readonly progress: LearnerProgress,
   ) {}
 
-  async execute(slug: string, userId: string | null): Promise<CollectionProgressDetailView> {
+  async execute(
+    slug: string,
+    userId: string | null,
+    locale?: string,
+  ): Promise<CollectionProgressDetailView> {
     const collection = await this.repository.getBySlug(slug);
     if (collection?.status !== 'published' || collection.visibility === 'private') {
       throw new CollectionNotFoundError(slug);
@@ -32,6 +36,7 @@ export class GetCollectionWithProgressUseCase {
       publishedOnly: true,
       completedSlugs,
       rating,
+      locale,
     });
   }
 }

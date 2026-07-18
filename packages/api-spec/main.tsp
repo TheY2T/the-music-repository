@@ -621,13 +621,13 @@ model CollectionRatingResult {
 @route("/collections")
 @tag("collections")
 @get
-op listCollections(): CollectionList;
+op listCollections(@query locale?: string): CollectionList;
 
 /** A published collection with ordered items. */
 @route("/collections/{slug}")
 @tag("collections")
 @get
-op getCollectionBySlug(@path slug: string): CollectionDetail | {
+op getCollectionBySlug(@path slug: string, @query locale?: string): CollectionDetail | {
   @statusCode statusCode: 404;
   @body body: ProblemDetails;
 };
@@ -695,7 +695,7 @@ op setCollectionSections(@path slug: string, @body body: CollectionSectionsInput
 @route("/collections/{slug}/progress")
 @tag("collections")
 @get
-op getCollectionWithProgress(@path slug: string): CollectionProgressDetail | {
+op getCollectionWithProgress(@path slug: string, @query locale?: string): CollectionProgressDetail | {
   @statusCode statusCode: 404;
   @body body: ProblemDetails;
 };
@@ -1119,12 +1119,12 @@ model HelpTopicWriteInput {
 @route("/help-topics")
 @tag("help")
 @get
-op listHelpTopics(): HelpTopicList;
+op listHelpTopics(@query locale?: string): HelpTopicList;
 
 @route("/help-topics/{slug}")
 @tag("help")
 @get
-op getHelpTopic(@path slug: string): HelpTopic | {
+op getHelpTopic(@path slug: string, @query locale?: string): HelpTopic | {
   @statusCode statusCode: 404;
   @body body: ProblemDetails;
 };

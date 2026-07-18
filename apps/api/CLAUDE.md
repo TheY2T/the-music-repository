@@ -120,12 +120,14 @@ the API had **no** i18n responsibility — it now owns the string catalogue.
   `POST /admin/i18n/import` (bulk key→value upsert as drafts; auto-registers a new locale). The registry
   is a **superset** of the routing `LOCALES` — a new locale is translatable/servable via the DB but URL
   routing + the switcher still need a code deploy.
-- **Content translations (Phase 2, `src/translations/`):** per-locale overlay of catalogue **content**
-  fields (`entity_translations`). `ContentTranslations` overlay port (exported; injected by the catalogue
-  read use-cases to overlay `title`/`summary`/`bodyMdx` when a read carries `?locale=`, falling back to
-  base) + `EntityTranslationAuthoring` write side (`/admin/translations`, draft→publish→revisions + soft
-  delete). No Catalogue↔Translations cycle: translation publish does **not** reindex yet, so Meilisearch
-  search stays base-locale until the per-locale index slice lands.
+- **Content translations (Phase 2, `src/translations/`):** per-locale overlay of **content** fields
+  (`entity_translations`). `ContentTranslations` overlay port (exported; injected into the **catalogue**,
+  **collections** (via `CollectionDetailAssembler`), and **help** read paths to overlay text fields when a
+  read carries `?locale=`, falling back to base) + `EntityTranslationAuthoring` write side
+  (`/admin/translations`, draft→publish→revisions + soft delete). Overlays applied by pure
+  `apply*Overlay` domain helpers. Any read module that overlays imports `TranslationsModule`. No
+  Catalogue↔Translations cycle: translation publish does **not** reindex, so Meilisearch search stays
+  base-locale until the per-locale index slice lands.
 
 ## Monetization & Phase-6 (DEFERRED — flags OFF, ships free/public-domain)
 

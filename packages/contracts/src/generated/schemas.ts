@@ -1643,6 +1643,10 @@ export const TransferClassroomOwnershipResponse = zod.void()
 /**
  * Browse published collections.
  */
+export const ListCollectionsQueryParams = zod.object({
+  "locale": zod.string().optional()
+})
+
 export const ListCollectionsResponse = zod.object({
   "items": zod.array(zod.object({
   "slug": zod.string(),
@@ -1811,6 +1815,10 @@ export const GetCollectionBySlugParams = zod.object({
   "slug": zod.string()
 })
 
+export const GetCollectionBySlugQueryParams = zod.object({
+  "locale": zod.string().optional()
+})
+
 export const GetCollectionBySlugResponse = zod.object({
   "slug": zod.string(),
   "title": zod.string(),
@@ -1924,6 +1932,10 @@ export const RecordCollectionOpenResponse = zod.void()
  */
 export const GetCollectionWithProgressParams = zod.object({
   "slug": zod.string()
+})
+
+export const GetCollectionWithProgressQueryParams = zod.object({
+  "locale": zod.string().optional()
 })
 
 export const GetCollectionWithProgressResponse = zod.object({
@@ -2831,6 +2843,10 @@ export const GetHealthResponse = zod.object({
 /**
  * All help topics (the web preloads these to answer hovers without per-term fetches).
  */
+export const ListHelpTopicsQueryParams = zod.object({
+  "locale": zod.string().optional()
+})
+
 export const ListHelpTopicsResponse = zod.object({
   "items": zod.array(zod.object({
   "slug": zod.string(),
@@ -2843,6 +2859,10 @@ export const ListHelpTopicsResponse = zod.object({
 
 export const GetHelpTopicParams = zod.object({
   "slug": zod.string()
+})
+
+export const GetHelpTopicQueryParams = zod.object({
+  "locale": zod.string().optional()
 })
 
 export const GetHelpTopicResponse = zod.object({
