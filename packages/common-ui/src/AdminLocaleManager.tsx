@@ -23,7 +23,12 @@ import {
   TableRow,
   Textarea,
 } from '@TheY2T/tmr-ui';
-import { localeAdminApi, type UiMessageRow } from '@TheY2T/tmr-web-data/i18n-api';
+import {
+  type LocaleInfo,
+  listLocales,
+  localeAdminApi,
+  type UiMessageRow,
+} from '@TheY2T/tmr-web-data/i18n-api';
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
 
 const PAGE_SIZES = [10, 25, 50, 100, 200] as const;
@@ -88,16 +93,25 @@ export default function AdminLocaleManager({ locale }: { locale: Locale }) {
   const [publishing, setPublishing] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState<number>(50);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   const [editing, setEditing] = useState<KeyGroup | null>(null);
-  const [addOpen, setAddOpen] = useState(false);
+  const [addStringOpen, setAddStringOpen] = useState(false);
+  const [newLocaleOpen, setNewLocaleOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [availableLocales, setAvailableLocales] = useState<LocaleInfo[]>([]);
 
   // Always fetch every locale + deleted rows; grouping + filtering + paging happen client-side.
   const reload = useCallback(async () => {
     setError(null);
     try {
-      setRows(await localeAdminApi.list({ includeDeleted: true }));
+      const [items, locs] = await Promise.all([
+        localeAdminApi.list({ includeDeleted: true }),
+        listLocales(),
+      ]);
+      setRows(items);
+      setAvailableLocales(locs);
     } catch (err) {
       setError(t(locale, 'localeadmin.loadError', { error: (err as Error).message }));
       setRows([]);
@@ -166,17 +180,41 @@ export default function AdminLocaleManager({ locale }: { locale: Locale }) {
   return (
     <div className="space-y-4">
       {/* Title + subtitle come from the page's PageShell header — no duplicate heading here. */}
-      <div className="flex items-center justify-end gap-2">
+      <div className="flex flex-wrap items-center justify-end gap-2">
         <Button
           variant="outline"
-          title={t(locale, 'localeadmin.tipAddLocale')}
-          onClick={() => setAddOpen(true)}
+          title={t(locale, 'localeadmin.tipNewLocale')}
+          onClick={() => setNewLocaleOpen(true)}
         >
-          <Icon name="plus" className="size-4" />
+          <Icon name="globe" className="size-4" />
           {t(locale, 'localeadmin.addLocale')}
         </Button>
-        <Button title={t(locale, 'localeadmin.tipPublish')} onClick={publish} disabled={publishing}>
+        <Button
+          variant="outline"
+          title={t(locale, 'localeadmin.tipAddString')}
+          onClick={() => setAddStringOpen(true)}
+        >
+          <Icon name="plus" className="size-4" />
+          {t(locale, 'localeadmin.addString')}
+        </Button>
+        <Button
+          variant="outline"
+          title={t(locale, 'localeadmin.tipImport')}
+          onClick={() => setImportOpen(true)}
+        >
           <Icon name="upload" className="size-4" />
+          {t(locale, 'localeadmin.import')}
+        </Button>
+        <Button
+          variant="outline"
+          title={t(locale, 'localeadmin.tipExport')}
+          onClick={() => setExportOpen(true)}
+        >
+          <Icon name="download" className="size-4" />
+          {t(locale, 'localeadmin.export')}
+        </Button>
+        <Button title={t(locale, 'localeadmin.tipPublish')} onClick={publish} disabled={publishing}>
+          <Icon name="check" className="size-4" />
           {publishing ? t(locale, 'localeadmin.publishing') : t(locale, 'localeadmin.publish')}
         </Button>
       </div>
@@ -328,6 +366,7 @@ export default function AdminLocaleManager({ locale }: { locale: Locale }) {
       <KeyEditorDialog
         locale={locale}
         group={editing}
+        locales={availableLocales}
         onClose={() => setEditing(null)}
         onSaved={() => {
           setEditing(null);
@@ -336,15 +375,45 @@ export default function AdminLocaleManager({ locale }: { locale: Locale }) {
         }}
         onError={setError}
       />
-      <AddLocaleDialog
+      <AddStringDialog
         locale={locale}
-        open={addOpen}
-        onClose={() => setAddOpen(false)}
+        locales={availableLocales}
+        open={addStringOpen}
+        onClose={() => setAddStringOpen(false)}
         onCreated={() => {
-          setAddOpen(false);
+          setAddStringOpen(false);
           void reload();
         }}
         onError={setError}
+      />
+      <NewLocaleDialog
+        locale={locale}
+        open={newLocaleOpen}
+        onClose={() => setNewLocaleOpen(false)}
+        onCreated={() => {
+          setNewLocaleOpen(false);
+          void reload();
+        }}
+        onError={setError}
+      />
+      <ImportDialog
+        locale={locale}
+        locales={availableLocales}
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+        onImported={(count) => {
+          setImportOpen(false);
+          setNotice(t(locale, 'localeadmin.importDone', { count }));
+          void reload();
+        }}
+        onError={setError}
+      />
+      <ExportDialog
+        locale={locale}
+        locales={availableLocales}
+        rows={rows ?? []}
+        open={exportOpen}
+        onClose={() => setExportOpen(false)}
       />
     </div>
   );
@@ -372,12 +441,14 @@ interface NewEntry {
 function KeyEditorDialog({
   locale,
   group,
+  locales,
   onClose,
   onSaved,
   onError,
 }: {
   locale: Locale;
   group: KeyGroup | null;
+  locales: LocaleInfo[];
   onClose: () => void;
   onSaved: () => void;
   onError: (message: string) => void;
@@ -421,7 +492,7 @@ function KeyEditorDialog({
     ...deleted.map((e) => e.locale),
     ...added.map((e) => e.locale),
   ]);
-  const missing = LOCALES.filter((l) => !present.has(l));
+  const missing = locales.filter((l) => !present.has(l.code));
 
   function stageNew() {
     if (!addLocale || !addValue.trim()) {
@@ -465,7 +536,8 @@ function KeyEditorDialog({
     }
   }
 
-  const localeName = (id: string) => LOCALE_LABELS[id as Locale] ?? id;
+  const localeName = (id: string) =>
+    locales.find((l) => l.code === id)?.label ?? LOCALE_LABELS[id as Locale] ?? id;
 
   return (
     <Dialog open={group !== null} onOpenChange={(o) => !o && onClose()}>
@@ -598,8 +670,8 @@ function KeyEditorDialog({
                 >
                   <option value="">{t(locale, 'localeadmin.fieldLocale')}</option>
                   {missing.map((l) => (
-                    <option key={l} value={l}>
-                      {LOCALE_LABELS[l]}
+                    <option key={l.code} value={l.code}>
+                      {l.label}
                     </option>
                   ))}
                 </Select>
@@ -646,30 +718,33 @@ function KeyEditorDialog({
 }
 
 /** Create a brand-new key with its first locale translation. */
-function AddLocaleDialog({
+function AddStringDialog({
   locale,
+  locales,
   open,
   onClose,
   onCreated,
   onError,
 }: {
   locale: Locale;
+  locales: LocaleInfo[];
   open: boolean;
   onClose: () => void;
   onCreated: () => void;
   onError: (message: string) => void;
 }) {
-  const [loc, setLoc] = useState<string>(LOCALES[0]);
+  const first = locales[0]?.code ?? LOCALES[0];
+  const [loc, setLoc] = useState<string>(first);
   const [key, setKey] = useState('');
   const [value, setValue] = useState('');
   const [busy, setBusy] = useState(false);
   useEffect(() => {
     if (open) {
-      setLoc(LOCALES[0]);
+      setLoc(locales[0]?.code ?? LOCALES[0]);
       setKey('');
       setValue('');
     }
-  }, [open]);
+  }, [open, locales]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -684,11 +759,13 @@ function AddLocaleDialog({
     }
   }
 
+  const options = locales.length ? locales : LOCALES.map((code) => ({ code, label: code }));
+
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent closeLabel={t(locale, 'localeadmin.cancel')}>
         <DialogHeader>
-          <DialogTitle>{t(locale, 'localeadmin.addLocale')}</DialogTitle>
+          <DialogTitle>{t(locale, 'localeadmin.addString')}</DialogTitle>
         </DialogHeader>
         <form onSubmit={submit} className="space-y-4">
           <label className="block space-y-1 text-sm">
@@ -696,9 +773,9 @@ function AddLocaleDialog({
               {t(locale, 'localeadmin.fieldLocale')}
             </span>
             <Select value={loc} onChange={(e) => setLoc(e.target.value)}>
-              {LOCALES.map((l) => (
-                <option key={l} value={l}>
-                  {LOCALE_LABELS[l]}
+              {options.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.label}
                 </option>
               ))}
             </Select>
@@ -721,13 +798,309 @@ function AddLocaleDialog({
           <DialogFooter>
             <Button
               type="submit"
-              title={t(locale, 'localeadmin.tipAddLocale')}
+              title={t(locale, 'localeadmin.tipAddString')}
               disabled={busy || !key.trim() || !value}
             >
               {t(locale, 'localeadmin.create')}
             </Button>
           </DialogFooter>
         </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/** Register a brand-new locale (code + label) so its strings can be authored/imported. */
+function NewLocaleDialog({
+  locale,
+  open,
+  onClose,
+  onCreated,
+  onError,
+}: {
+  locale: Locale;
+  open: boolean;
+  onClose: () => void;
+  onCreated: () => void;
+  onError: (message: string) => void;
+}) {
+  const [code, setCode] = useState('');
+  const [label, setLabel] = useState('');
+  const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    if (open) {
+      setCode('');
+      setLabel('');
+    }
+  }, [open]);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      await localeAdminApi.createLocale({ code: code.trim(), label: label.trim() });
+      onCreated();
+    } catch (err) {
+      onError(t(locale, 'localeadmin.saveError', { error: (err as Error).message }));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent closeLabel={t(locale, 'localeadmin.cancel')}>
+        <DialogHeader>
+          <DialogTitle>{t(locale, 'localeadmin.newLocaleTitle')}</DialogTitle>
+          <DialogDescription>{t(locale, 'localeadmin.localeHint')}</DialogDescription>
+        </DialogHeader>
+        <form onSubmit={submit} className="space-y-4">
+          <label className="block space-y-1 text-sm">
+            <span className="font-medium text-foreground">
+              {t(locale, 'localeadmin.fieldCode')}
+            </span>
+            <Input
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              placeholder={t(locale, 'localeadmin.codePlaceholder')}
+              className="font-mono"
+            />
+          </label>
+          <label className="block space-y-1 text-sm">
+            <span className="font-medium text-foreground">
+              {t(locale, 'localeadmin.fieldLabel')}
+            </span>
+            <Input
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="Français"
+            />
+          </label>
+          <DialogFooter>
+            <Button
+              type="submit"
+              title={t(locale, 'localeadmin.tipNewLocale')}
+              disabled={busy || !code.trim() || !label.trim()}
+            >
+              {t(locale, 'localeadmin.create')}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/** Import a locale's strings from a flat key→value JSON file (upserted as drafts). */
+function ImportDialog({
+  locale,
+  locales,
+  open,
+  onClose,
+  onImported,
+  onError,
+}: {
+  locale: Locale;
+  locales: LocaleInfo[];
+  open: boolean;
+  onClose: () => void;
+  onImported: (count: number) => void;
+  onError: (message: string) => void;
+}) {
+  const [loc, setLoc] = useState<string>(locales[0]?.code ?? LOCALES[0]);
+  const [entries, setEntries] = useState<Record<string, string> | null>(null);
+  const [fileName, setFileName] = useState('');
+  const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    if (open) {
+      setLoc(locales[0]?.code ?? LOCALES[0]);
+      setEntries(null);
+      setFileName('');
+    }
+  }, [open, locales]);
+
+  async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) {
+      return;
+    }
+    setFileName(file.name);
+    try {
+      const parsed = JSON.parse(await file.text()) as unknown;
+      if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+        throw new Error('not an object');
+      }
+      const map: Record<string, string> = {};
+      for (const [key, value] of Object.entries(parsed as Record<string, unknown>)) {
+        map[key] = String(value);
+      }
+      setEntries(map);
+    } catch {
+      setEntries(null);
+      onError(t(locale, 'localeadmin.badFile'));
+    }
+  }
+
+  async function submit() {
+    if (!entries) {
+      return;
+    }
+    setBusy(true);
+    try {
+      const count = await localeAdminApi.importStrings({ locale: loc, entries });
+      onImported(count);
+    } catch (err) {
+      onError(t(locale, 'localeadmin.saveError', { error: (err as Error).message }));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const options = locales.length ? locales : LOCALES.map((code) => ({ code, label: code }));
+  const count = entries ? Object.keys(entries).length : 0;
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent closeLabel={t(locale, 'localeadmin.cancel')}>
+        <DialogHeader>
+          <DialogTitle>{t(locale, 'localeadmin.importTitle')}</DialogTitle>
+          <DialogDescription>{t(locale, 'localeadmin.importBody')}</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <label className="block space-y-1 text-sm">
+            <span className="font-medium text-foreground">
+              {t(locale, 'localeadmin.fieldLocale')}
+            </span>
+            <Select value={loc} onChange={(e) => setLoc(e.target.value)}>
+              {options.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.label}
+                </option>
+              ))}
+            </Select>
+          </label>
+          <label className="block space-y-1 text-sm">
+            <span className="font-medium text-foreground">
+              {t(locale, 'localeadmin.importFile')}
+            </span>
+            <Input type="file" accept="application/json,.json" onChange={onFile} />
+          </label>
+          {entries ? (
+            <p className="text-sm text-muted-foreground">
+              {fileName} · {t(locale, 'localeadmin.count', { count })}
+            </p>
+          ) : null}
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" title={t(locale, 'localeadmin.tipCancel')} onClick={onClose}>
+            {t(locale, 'localeadmin.cancel')}
+          </Button>
+          <Button
+            title={t(locale, 'localeadmin.tipImport')}
+            disabled={busy || !entries}
+            onClick={() => void submit()}
+          >
+            {t(locale, 'localeadmin.import')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/** Export a locale's strings as a key→value JSON download, optionally filtered by origin. */
+function ExportDialog({
+  locale,
+  locales,
+  rows,
+  open,
+  onClose,
+}: {
+  locale: Locale;
+  locales: LocaleInfo[];
+  rows: UiMessageRow[];
+  open: boolean;
+  onClose: () => void;
+}) {
+  const [loc, setLoc] = useState<string>(locales[0]?.code ?? LOCALES[0]);
+  const [origin, setOrigin] = useState<'all' | 'baseline' | 'runtime'>('all');
+  useEffect(() => {
+    if (open) {
+      setLoc(locales[0]?.code ?? LOCALES[0]);
+      setOrigin('all');
+    }
+  }, [open, locales]);
+
+  function exportJson() {
+    const map: Record<string, string> = {};
+    for (const r of rows) {
+      if (r.locale !== loc || r.deleted) {
+        continue;
+      }
+      if (origin === 'baseline' && !r.seeded) {
+        continue;
+      }
+      if (origin === 'runtime' && r.seeded) {
+        continue;
+      }
+      const value = r.publishedValue ?? r.draftValue;
+      if (value != null) {
+        map[r.key] = value;
+      }
+    }
+    const blob = new Blob([JSON.stringify(map, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${loc}${origin === 'all' ? '' : `.${origin}`}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    onClose();
+  }
+
+  const options = locales.length ? locales : LOCALES.map((code) => ({ code, label: code }));
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent closeLabel={t(locale, 'localeadmin.cancel')}>
+        <DialogHeader>
+          <DialogTitle>{t(locale, 'localeadmin.exportTitle')}</DialogTitle>
+          <DialogDescription>{t(locale, 'localeadmin.exportBody')}</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <label className="block space-y-1 text-sm">
+            <span className="font-medium text-foreground">
+              {t(locale, 'localeadmin.fieldLocale')}
+            </span>
+            <Select value={loc} onChange={(e) => setLoc(e.target.value)}>
+              {options.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.label}
+                </option>
+              ))}
+            </Select>
+          </label>
+          <label className="block space-y-1 text-sm">
+            <span className="font-medium text-foreground">{t(locale, 'localeadmin.origin')}</span>
+            <Select
+              value={origin}
+              onChange={(e) => setOrigin(e.target.value as 'all' | 'baseline' | 'runtime')}
+            >
+              <option value="all">{t(locale, 'localeadmin.originAll')}</option>
+              <option value="baseline">{t(locale, 'localeadmin.originSeed')}</option>
+              <option value="runtime">{t(locale, 'localeadmin.originRuntime')}</option>
+            </Select>
+          </label>
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" title={t(locale, 'localeadmin.tipCancel')} onClick={onClose}>
+            {t(locale, 'localeadmin.cancel')}
+          </Button>
+          <Button title={t(locale, 'localeadmin.tipExport')} onClick={exportJson}>
+            <Icon name="download" className="size-4" />
+            {t(locale, 'localeadmin.export')}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

@@ -31,6 +31,25 @@ export interface UiMessageListParams {
   includeDeleted?: boolean;
 }
 
+export interface LocaleInfo {
+  code: string;
+  label: string;
+}
+
+/** The locales the CMS knows about (public read; empty on error). */
+export async function listLocales(): Promise<LocaleInfo[]> {
+  try {
+    const response = await fetch(`${API_BASE}/i18n/locales`);
+    if (!response.ok) {
+      return [];
+    }
+    const data = (await response.json()) as { items: LocaleInfo[] };
+    return data.items;
+  } catch {
+    return [];
+  }
+}
+
 async function adminRequest<T>(path: string, init: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     credentials: 'include',
@@ -99,4 +118,14 @@ export const localeAdminApi = {
       method: 'POST',
       body: JSON.stringify(locale ? { locale } : {}),
     }).then((r) => r.versions),
+  createLocale: (body: { code: string; label: string }) =>
+    adminRequest<LocaleInfo>('/admin/i18n/locales', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  importStrings: (body: { locale: string; label?: string; entries: Record<string, string> }) =>
+    adminRequest<{ imported: number }>('/admin/i18n/import', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }).then((r) => r.imported),
 };

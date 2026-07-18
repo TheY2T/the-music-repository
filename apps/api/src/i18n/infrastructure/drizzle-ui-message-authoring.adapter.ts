@@ -267,4 +267,41 @@ export class DrizzleUiMessageAuthoring extends UiMessageAuthoring {
     }
     return result;
   }
+
+  async importMany(
+    locale: string,
+    entries: Record<string, string>,
+    editedBy?: string,
+  ): Promise<number> {
+    const values = Object.entries(entries)
+      .filter(([key]) => key.length > 0)
+      .map(([key, value]) => ({
+        locale,
+        key,
+        draftValue: value,
+        status: 'draft',
+        seeded: false,
+        updatedBy: editedBy ?? null,
+      }));
+    if (values.length === 0) {
+      return 0;
+    }
+    // Batched upsert: each imported key becomes/updates a draft (existing published value stays live
+    // until publish). `excluded` refers to the incoming row in an ON CONFLICT clause.
+    await this.db
+      .insert(uiMessages)
+      .values(values)
+      .onConflictDoUpdate({
+        target: [uiMessages.locale, uiMessages.key],
+        set: {
+          draftValue: sql`excluded.draft_value`,
+          status: 'draft',
+          seeded: false,
+          deletedAt: null,
+          updatedBy: editedBy ?? null,
+          updatedAt: new Date(),
+        },
+      });
+    return values.length;
+  }
 }

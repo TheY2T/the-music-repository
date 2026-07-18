@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Req, Res } from '@nestjs/common';
 import {
   GetLocaleCatalogueUseCase,
+  GetLocalesUseCase,
   GetLocaleVersionsUseCase,
 } from './application/ui-message.use-cases';
 
@@ -23,11 +24,17 @@ export class I18nController {
   constructor(
     private readonly getVersions: GetLocaleVersionsUseCase,
     private readonly getCatalogue: GetLocaleCatalogueUseCase,
+    private readonly getLocales: GetLocalesUseCase,
   ) {}
 
   @Get('version')
   async versions() {
     return { versions: await this.getVersions.execute() };
+  }
+
+  @Get('locales')
+  async locales() {
+    return { items: await this.getLocales.execute() };
   }
 
   @Get('catalogue/:locale')

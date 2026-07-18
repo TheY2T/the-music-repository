@@ -433,6 +433,70 @@
         ]
       }
     },
+    "/admin/i18n/import": {
+      "post": {
+        "operationId": "importUiMessages",
+        "description": "Bulk-import strings for a locale from a key→value map (drafts; auto-registers the locale).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportResult"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportStringsInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/i18n/locales": {
+      "post": {
+        "operationId": "createLocale",
+        "description": "Register a new locale (code + label) so its strings can be authored/imported.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocaleInfo"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLocaleInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/admin/i18n/messages": {
       "get": {
         "operationId": "listUiMessages",
@@ -2564,6 +2628,28 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LocaleCatalogue"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ]
+      }
+    },
+    "/i18n/locales": {
+      "get": {
+        "operationId": "getLocales",
+        "description": "The locales the CMS knows about (for the admin locale pickers).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocaleList"
                 }
               }
             }
@@ -5307,6 +5393,22 @@
           }
         }
       },
+      "CreateLocaleInput": {
+        "type": "object",
+        "required": [
+          "code",
+          "label"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "description": "Register a new locale so the CMS can author + import its strings."
+      },
       "CreateRedeemCodeInput": {
         "type": "object",
         "properties": {
@@ -5760,6 +5862,41 @@
           }
         }
       },
+      "ImportResult": {
+        "type": "object",
+        "required": [
+          "imported"
+        ],
+        "properties": {
+          "imported": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ImportStringsInput": {
+        "type": "object",
+        "required": [
+          "locale",
+          "entries"
+        ],
+        "properties": {
+          "locale": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string",
+            "description": "Optional label used to auto-register the locale if it does not exist yet."
+          },
+          "entries": {
+            "type": "object",
+            "unevaluatedProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "Bulk import a locale's strings from a flat key→value map (upserted as drafts)."
+      },
       "Invitation": {
         "type": "object",
         "required": [
@@ -5849,6 +5986,36 @@
           }
         },
         "description": "A locale's full published catalogue: every published, non-deleted key → its string."
+      },
+      "LocaleInfo": {
+        "type": "object",
+        "required": [
+          "code",
+          "label"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "description": "A locale the CMS can author strings for (a superset of the routing locales)."
+      },
+      "LocaleList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LocaleInfo"
+            }
+          }
+        }
       },
       "LocaleVersions": {
         "type": "object",

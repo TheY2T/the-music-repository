@@ -872,6 +872,36 @@ export const DeleteHelpTopicResponse = zod.void()
 
 
 /**
+ * Bulk-import strings for a locale from a key→value map (drafts; auto-registers the locale).
+ */
+export const ImportUiMessagesBody = zod.object({
+  "locale": zod.string(),
+  "label": zod.string().optional().describe('Optional label used to auto-register the locale if it does not exist yet.'),
+  "entries": zod.looseObject({
+
+})
+}).describe('Bulk import a locale\'s strings from a flat key→value map (upserted as drafts).')
+
+export const ImportUiMessagesResponse = zod.object({
+  "imported": zod.number()
+})
+
+
+/**
+ * Register a new locale (code + label) so its strings can be authored/imported.
+ */
+export const CreateLocaleBody = zod.object({
+  "code": zod.string(),
+  "label": zod.string()
+}).describe('Register a new locale so the CMS can author + import its strings.')
+
+export const CreateLocaleResponse = zod.object({
+  "code": zod.string(),
+  "label": zod.string()
+}).describe('A locale the CMS can author strings for (a superset of the routing locales).')
+
+
+/**
  * List message strings for the admin table (all locales/statuses; optional filters).
  */
 export const ListUiMessagesQueryParams = zod.object({
@@ -2837,6 +2867,17 @@ export const GetLocaleCatalogueResponse = zod.object({
 
 })
 }).describe('A locale\'s full published catalogue: every published, non-deleted key → its string.')
+
+
+/**
+ * The locales the CMS knows about (for the admin locale pickers).
+ */
+export const GetLocalesResponse = zod.object({
+  "items": zod.array(zod.object({
+  "code": zod.string(),
+  "label": zod.string()
+}).describe('A locale the CMS can author strings for (a superset of the routing locales).'))
+})
 
 
 /**

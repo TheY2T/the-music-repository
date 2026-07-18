@@ -1,11 +1,17 @@
 import { en, zhHans } from '@TheY2T/tmr-i18n-locales';
 import type { Database } from './database.module';
-import { i18nVersions, uiMessages } from './schema';
+import { i18nVersions, locales, uiMessages } from './schema';
 
 /** The seed catalogues keyed by locale id — the published baseline every fresh deploy boots with. */
 const CATALOGUES: Record<string, Record<string, string>> = {
   en: en as Record<string, string>,
   'zh-Hans': zhHans as Record<string, string>,
+};
+
+/** Display labels for the seeded locales in the CMS locale registry. */
+const LOCALE_LABELS: Record<string, string> = {
+  en: 'English',
+  'zh-Hans': '中文 (Simplified)',
 };
 
 /**
@@ -19,6 +25,10 @@ export async function seedI18n(db: Database): Promise<Record<string, number>> {
   const counts: Record<string, number> = {};
 
   for (const [locale, catalogue] of Object.entries(CATALOGUES)) {
+    await db
+      .insert(locales)
+      .values({ code: locale, label: LOCALE_LABELS[locale] ?? locale })
+      .onConflictDoNothing({ target: locales.code });
     const rows = Object.entries(catalogue).map(([key, value]) => ({
       locale,
       key,

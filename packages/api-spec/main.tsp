@@ -1630,6 +1630,57 @@ op restoreUiMessageRevision(@path id: string, @path revisionId: string): UiMessa
 @post
 op publishUiMessages(@body body: PublishLocaleInput): LocaleVersions;
 
+/** A locale the CMS can author strings for (a superset of the routing locales). */
+model LocaleInfo {
+  code: string;
+  label: string;
+}
+
+model LocaleList {
+  items: LocaleInfo[];
+}
+
+/** Register a new locale so the CMS can author + import its strings. */
+model CreateLocaleInput {
+  code: string;
+  label: string;
+}
+
+/** Bulk import a locale's strings from a flat key→value map (upserted as drafts). */
+model ImportStringsInput {
+  locale: string;
+
+  /** Optional label used to auto-register the locale if it does not exist yet. */
+  label?: string;
+
+  entries: Record<string>;
+}
+
+model ImportResult {
+  imported: int32;
+}
+
+/** The locales the CMS knows about (for the admin locale pickers). */
+@route("/i18n/locales")
+@tag("localization")
+@get
+op getLocales(): LocaleList;
+
+/** Register a new locale (code + label) so its strings can be authored/imported. */
+@route("/admin/i18n/locales")
+@tag("localization")
+@post
+op createLocale(@body body: CreateLocaleInput): {
+  @statusCode statusCode: 201;
+  @body body: LocaleInfo;
+};
+
+/** Bulk-import strings for a locale from a key→value map (drafts; auto-registers the locale). */
+@route("/admin/i18n/import")
+@tag("localization")
+@post
+op importUiMessages(@body body: ImportStringsInput): ImportResult;
+
 // ===================== Content translations (ADR 0034, Phase 2) =====================
 // Per-locale translations of catalogue/collection/help *content* fields (title/summary/body…). Overlaid
 // onto read responses when a request carries `?locale=`; authored here (RBAC-gated, draft→publish→

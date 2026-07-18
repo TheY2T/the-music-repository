@@ -6,6 +6,7 @@ import postgres from 'postgres';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Database } from '../../infrastructure/database/database.module';
 import * as schema from '../../infrastructure/database/schema';
+import { DrizzleLocaleRegistry } from './drizzle-locale-registry.adapter';
 import { DrizzleUiMessageAuthoring } from './drizzle-ui-message-authoring.adapter';
 import { DrizzleUiMessageCatalogue } from './drizzle-ui-message-catalogue.adapter';
 
@@ -105,5 +106,52 @@ describe('Drizzle UI-message adapters (Testcontainers Postgres)', () => {
     expect(actions).toContain('update');
     expect(actions).toContain('delete');
     expect(actions).toContain('restore');
+  });
+
+  it('bulk-imports a locale as drafts (live only after publish)', async () => {
+    const imported = await authoring.importMany('fr', { greeting: 'Bonjour', bye: 'Au revoir' });
+    expect(imported).toBe(2);
+    expect(await catalogue.snapshot('fr')).toEqual({ version: '0', locale: 'fr', messages: {} });
+
+    await authoring.publish('fr');
+    const snap = await catalogue.snapshot('fr');
+    expect(snap.messages).toEqual({ greeting: 'Bonjour', bye: 'Au revoir' });
+
+    // Re-importing upserts (edits the draft), doesn't duplicate.
+    await authoring.importMany('fr', { greeting: 'Salut' });
+    await authoring.publish('fr');
+    expect((await catalogue.snapshot('fr')).messages.greeting).toBe('Salut');
+  });
+});
+
+describe('DrizzleLocaleRegistry (Testcontainers Postgres)', () => {
+  let container: StartedPostgreSqlContainer;
+  let client: ReturnType<typeof postgres>;
+  let registry: DrizzleLocaleRegistry;
+
+  beforeAll(async () => {
+    container = await new PostgreSqlContainer('postgres:16-alpine').start();
+    client = postgres(container.getConnectionUri(), { max: 1 });
+    const db = drizzle(client, { schema });
+    await migrate(db, { migrationsFolder: MIGRATIONS });
+    registry = new DrizzleLocaleRegistry(db);
+  });
+
+  afterAll(async () => {
+    await client?.end();
+    await container?.stop();
+  });
+
+  it('creates, lists, and ensures locales', async () => {
+    expect(await registry.exists('fr')).toBe(false);
+    await registry.create('fr', 'Français');
+    expect(await registry.exists('fr')).toBe(true);
+    expect((await registry.list()).find((l) => l.code === 'fr')?.label).toBe('Français');
+
+    // ensure is idempotent — doesn't overwrite the label.
+    await registry.ensure('fr', 'ignored');
+    expect((await registry.list()).find((l) => l.code === 'fr')?.label).toBe('Français');
+    await registry.ensure('es');
+    expect(await registry.exists('es')).toBe(true);
   });
 });

@@ -31,4 +31,10 @@ export abstract class UiMessageAuthoring {
    * Returns the new version tag for every locale.
    */
   abstract publish(locale: string | undefined, editedBy?: string): Promise<Record<string, string>>;
+  /** Bulk-upsert a locale's strings from a key→value map (as drafts). Returns the number imported. */
+  abstract importMany(
+    locale: string,
+    entries: Record<string, string>,
+    editedBy?: string,
+  ): Promise<number>;
 }

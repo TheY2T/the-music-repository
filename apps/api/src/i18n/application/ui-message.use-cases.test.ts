@@ -1,13 +1,17 @@
 import { describe, expect, it, vi } from 'vitest';
+import { LocaleConflictError } from '../domain/errors/locale-conflict.error';
 import { UiMessageKeyConflictError } from '../domain/errors/ui-message-key-conflict.error';
 import { UiMessageNotFoundError } from '../domain/errors/ui-message-not-found.error';
 import type { UiMessageView } from '../domain/ui-message';
+import type { LocaleRegistry } from './ports/locale-registry.port';
 import type { UiMessageAuthoring } from './ports/ui-message-authoring.port';
 import type { UiMessageCatalogue } from './ports/ui-message-catalogue.port';
 import {
+  CreateLocaleUseCase,
   CreateUiMessageUseCase,
   DeleteUiMessageUseCase,
   GetLocaleCatalogueUseCase,
+  ImportUiMessagesUseCase,
   PublishUiMessagesUseCase,
   RestoreUiMessageUseCase,
   UpdateUiMessageUseCase,
@@ -37,6 +41,7 @@ function authoringMock(overrides: Partial<Record<keyof UiMessageAuthoring, unkno
     listRevisions: vi.fn().mockResolvedValue([]),
     restoreRevision: vi.fn().mockResolvedValue(ROW),
     publish: vi.fn().mockResolvedValue({ en: '123' }),
+    importMany: vi.fn().mockResolvedValue(0),
     ...overrides,
   } as unknown as UiMessageAuthoring;
 }
@@ -114,5 +119,47 @@ describe('GetLocaleCatalogueUseCase', () => {
     } as unknown as UiMessageCatalogue;
     const result = await new GetLocaleCatalogueUseCase(catalogue).execute('en');
     expect(result).toBe(snapshot);
+  });
+});
+
+function registryMock(overrides: Partial<Record<keyof LocaleRegistry, unknown>> = {}) {
+  return {
+    list: vi.fn().mockResolvedValue([]),
+    exists: vi.fn().mockResolvedValue(false),
+    create: vi.fn().mockResolvedValue({ code: 'fr', label: 'Français' }),
+    ensure: vi.fn().mockResolvedValue(undefined),
+    ...overrides,
+  } as unknown as LocaleRegistry;
+}
+
+describe('CreateLocaleUseCase', () => {
+  it('throws a conflict when the locale already exists', async () => {
+    const registry = registryMock({ exists: vi.fn().mockResolvedValue(true) });
+    await expect(new CreateLocaleUseCase(registry).execute('en', 'English')).rejects.toBeInstanceOf(
+      LocaleConflictError,
+    );
+    expect(registry.create).not.toHaveBeenCalled();
+  });
+
+  it('registers a free locale code', async () => {
+    const registry = registryMock();
+    await new CreateLocaleUseCase(registry).execute('fr', 'Français');
+    expect(registry.create).toHaveBeenCalledWith('fr', 'Français');
+  });
+});
+
+describe('ImportUiMessagesUseCase', () => {
+  it('auto-registers the locale, then bulk-imports the entries', async () => {
+    const authoring = authoringMock({ importMany: vi.fn().mockResolvedValue(2) });
+    const registry = registryMock();
+    const count = await new ImportUiMessagesUseCase(authoring, registry).execute(
+      'fr',
+      { a: '1', b: '2' },
+      'editor-1',
+      'Français',
+    );
+    expect(registry.ensure).toHaveBeenCalledWith('fr', 'Français');
+    expect(authoring.importMany).toHaveBeenCalledWith('fr', { a: '1', b: '2' }, 'editor-1');
+    expect(count).toBe(2);
   });
 });

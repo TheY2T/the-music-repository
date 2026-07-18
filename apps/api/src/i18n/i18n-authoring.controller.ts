@@ -4,8 +4,10 @@ import { RequireFlagsEnabled } from '@openfeature/nestjs-sdk';
 import { CurrentUser } from '../auth/application/current-user';
 import { RequirePermissions } from '../auth/require-permissions.decorator';
 import {
+  CreateLocaleUseCase,
   CreateUiMessageUseCase,
   DeleteUiMessageUseCase,
+  ImportUiMessagesUseCase,
   ListUiMessageRevisionsUseCase,
   ListUiMessagesUseCase,
   PublishUiMessagesUseCase,
@@ -13,7 +15,13 @@ import {
   RestoreUiMessageUseCase,
   UpdateUiMessageUseCase,
 } from './application/ui-message.use-cases';
-import { CreateUiMessageDto, PublishUiMessagesDto, UpdateUiMessageDto } from './dto/i18n.dto';
+import {
+  CreateLocaleDto,
+  CreateUiMessageDto,
+  ImportUiMessagesDto,
+  PublishUiMessagesDto,
+  UpdateUiMessageDto,
+} from './dto/i18n.dto';
 
 /**
  * Admin localization CMS (ADR 0034). Every route is RBAC-gated (reuses the `content` permission
@@ -32,6 +40,8 @@ export class I18nAuthoringController {
     private readonly listRevisions: ListUiMessageRevisionsUseCase,
     private readonly restoreRevision: RestoreUiMessageRevisionUseCase,
     private readonly publishMessages: PublishUiMessagesUseCase,
+    private readonly createLocale: CreateLocaleUseCase,
+    private readonly importMessages: ImportUiMessagesUseCase,
   ) {}
 
   private editorId(): string | undefined {
@@ -105,5 +115,32 @@ export class I18nAuthoringController {
   @RequirePermissions({ content: ['publish'] })
   async publish(@Body() body: PublishUiMessagesDto) {
     return { versions: await this.publishMessages.execute(body.locale, this.editorId()) };
+  }
+
+  @Post('locales')
+  @HttpCode(201)
+  @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.LocaleStrings }] })
+  @RequirePermissions({ content: ['create'] })
+  createNewLocale(@Body() body: CreateLocaleDto) {
+    return this.createLocale.execute(body.code.trim(), body.label.trim());
+  }
+
+  @Post('import')
+  @HttpCode(200)
+  @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.LocaleStrings }] })
+  @RequirePermissions({ content: ['create'] })
+  async import(@Body() body: ImportUiMessagesDto) {
+    // A key→value JSON map; coerce values to strings (the DTO types them loosely).
+    const entries: Record<string, string> = {};
+    for (const [key, value] of Object.entries(body.entries)) {
+      entries[key] = String(value);
+    }
+    const imported = await this.importMessages.execute(
+      body.locale,
+      entries,
+      this.editorId(),
+      body.label,
+    );
+    return { imported };
   }
 }

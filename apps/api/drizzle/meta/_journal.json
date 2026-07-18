@@ -176,6 +176,13 @@
       "when": 1784382903742,
       "tag": "0024_lovely_junta",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1784386248073,
+      "tag": "0025_small_firebrand",
+      "breakpoints": true
     }
   ]
 }

@@ -533,6 +533,15 @@ export const i18nVersions = pgTable('i18n_versions', {
   publishedAt: timestamp('published_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+/** The set of locales the CMS can author strings for (ADR 0034). A superset of the code-level routing
+ *  locales (`LOCALES` in @TheY2T/tmr-i18n): admins can create new locales here and import/manage their
+ *  strings before a deploy wires them into URL routing + the language switcher. Seeded with en/zh-Hans. */
+export const locales = pgTable('locales', {
+  code: text('code').primaryKey(), // BCP-47-ish id, e.g. 'en', 'zh-Hans', 'fr'
+  label: text('label').notNull(), // display name, e.g. 'English', '中文'
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 // --- Content translations (Phase 2, ADR 0034): per-locale translations of catalogue/collection/help
 //     *content* fields (title, summary, body…). Unlike ui_messages there is no seed baseline — content
 //     translations are authored in the CMS. Only published, non-deleted rows overlay the base row at read

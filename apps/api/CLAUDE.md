@@ -113,8 +113,13 @@ the API had **no** i18n responsibility — it now owns the string catalogue.
 - **Public read:** `GET /i18n/version` + `GET /i18n/catalogue/:locale` (ETag = version, conditional GET →
   304), ungated. **Admin write:** `/admin/i18n/*`, `@RequirePermissions({ content: […] })` + method-level
   `@RequireFlagsEnabled(FlagKeys.LocaleStrings)`.
-- **Seed:** `seed-i18n.ts` upserts `en.json`/`zh-Hans.json` as published `seeded` rows (idempotent). Only
-  published, non-deleted rows are served; publishing bumps `i18n_versions` (the web cache-bust signal).
+- **Seed:** `seed-i18n.ts` upserts `en.json`/`zh-Hans.json` as published `seeded` rows (idempotent) + the
+  `locales` registry rows. Only published, non-deleted rows are served; publishing bumps `i18n_versions`.
+- **Locale registry + import (`locales` table):** `LocaleRegistry` port (list/create/ensure) backed by
+  `DrizzleLocaleRegistry`; `GET /i18n/locales` (public), `POST /admin/i18n/locales` (create),
+  `POST /admin/i18n/import` (bulk key→value upsert as drafts; auto-registers a new locale). The registry
+  is a **superset** of the routing `LOCALES` — a new locale is translatable/servable via the DB but URL
+  routing + the switcher still need a code deploy.
 - **Content translations (Phase 2, `src/translations/`):** per-locale overlay of catalogue **content**
   fields (`entity_translations`). `ContentTranslations` overlay port (exported; injected by the catalogue
   read use-cases to overlay `title`/`summary`/`bodyMdx` when a read carries `?locale=`, falling back to

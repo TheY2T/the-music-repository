@@ -5,8 +5,14 @@ const listMock = vi.fn();
 const updateMock = vi.fn();
 const createMock = vi.fn();
 const removeMock = vi.fn();
+const createLocaleMock = vi.fn();
 
 vi.mock('@TheY2T/tmr-web-data/i18n-api', () => ({
+  listLocales: () =>
+    Promise.resolve([
+      { code: 'en', label: 'English' },
+      { code: 'zh-Hans', label: '中文' },
+    ]),
   localeAdminApi: {
     list: (...args: unknown[]) => listMock(...args),
     update: (...args: unknown[]) => updateMock(...args),
@@ -16,6 +22,8 @@ vi.mock('@TheY2T/tmr-web-data/i18n-api', () => ({
     revisions: vi.fn(),
     restoreRevision: vi.fn(),
     publish: vi.fn(),
+    createLocale: (...args: unknown[]) => createLocaleMock(...args),
+    importStrings: vi.fn(),
   },
 }));
 
@@ -42,6 +50,7 @@ describe('AdminLocaleManager island', () => {
     updateMock.mockReset().mockResolvedValue(row());
     createMock.mockReset().mockResolvedValue(row());
     removeMock.mockReset().mockResolvedValue(row({ deleted: true }));
+    createLocaleMock.mockReset().mockResolvedValue({ code: 'fr', label: 'Français' });
   });
 
   it('folds a key’s locale rows into one grouped row with locale badges', async () => {
@@ -69,8 +78,8 @@ describe('AdminLocaleManager island', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Edit' }));
     const dialog = await screen.findByRole('dialog');
-    // Both locales are listed in the modal.
-    expect(within(dialog).getByText('EN')).toBeInTheDocument();
+    // Both locales are listed in the modal (by their registry labels).
+    expect(within(dialog).getByText('English')).toBeInTheDocument();
     expect(within(dialog).getByText('中文')).toBeInTheDocument();
 
     const editor = within(dialog).getByDisplayValue('Catalogue');
@@ -105,5 +114,25 @@ describe('AdminLocaleManager island', () => {
     });
     await waitFor(() => expect(screen.queryByText('nav.catalogue')).not.toBeInTheDocument());
     expect(screen.getByText('nav.drills')).toBeInTheDocument();
+  });
+
+  it('registers a new locale from the Add locale dialog', async () => {
+    listMock.mockResolvedValue([row()]);
+    render(<AdminLocaleManager locale="en" />);
+    await screen.findByText('nav.catalogue');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add locale' }));
+    const dialog = await screen.findByRole('dialog');
+    fireEvent.change(within(dialog).getByPlaceholderText('e.g. fr, es, ja'), {
+      target: { value: 'fr' },
+    });
+    fireEvent.change(within(dialog).getByPlaceholderText('Français'), {
+      target: { value: 'Français' },
+    });
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Create' }));
+
+    await waitFor(() =>
+      expect(createLocaleMock).toHaveBeenCalledWith({ code: 'fr', label: 'Français' }),
+    );
   });
 });
