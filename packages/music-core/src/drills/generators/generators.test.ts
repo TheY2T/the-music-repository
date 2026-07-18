@@ -15,12 +15,14 @@ function seeded(seed: number): () => number {
 }
 
 describe('drill deck registry', () => {
-  it('exposes the four original decks with stable keys (SM-2 continuity)', () => {
+  it('keeps the four original decks first (stable keys, SM-2 continuity) + engine additions', () => {
     expect(DRILL_GENERATORS.map((g) => g.deck)).toEqual([
       'intervals',
       'chord-quality',
       'scale-degrees',
       'staff-notes',
+      'build-interval',
+      'fretboard-note',
     ]);
   });
 
@@ -43,12 +45,18 @@ describe('each generator: generate + check round-trip', () => {
       for (const card of gen.cards) {
         const item = gen.generate(card, 'beginner', rng);
         expect(item.card).toBe(card);
-        expect(item.options?.length).toBeGreaterThan(1);
-        // The correct answer must be present among the options and check as correct.
-        expect(item.options?.some((o) => o.value === item.expected)).toBe(true);
         expect(gen.check(item, item.expected).correct).toBe(true);
         expect(gen.check(item, item.expected).accuracy).toBe(1);
-        const wrong = item.options?.find((o) => o.value !== item.expected)?.value ?? '__none__';
+
+        // Option decks reveal a choice grid; play-instrument decks are checked directly.
+        let wrong: string;
+        if (item.options) {
+          expect(item.options.length).toBeGreaterThan(1);
+          expect(item.options.some((o) => o.value === item.expected)).toBe(true);
+          wrong = item.options.find((o) => o.value !== item.expected)?.value ?? '__none__';
+        } else {
+          wrong = String((Number(item.expected) + 1) % 12);
+        }
         expect(gen.check(item, wrong).correct).toBe(false);
         expect(gen.check(item, wrong).accuracy).toBe(0);
       }

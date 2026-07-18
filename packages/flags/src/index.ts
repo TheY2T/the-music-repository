@@ -242,8 +242,8 @@ export const FlagDefaults = {
   [FlagKeys.Trainers]: true,
   [FlagKeys.DrillEngine]: true,
   [FlagKeys.DrillCelebrations]: true,
+  [FlagKeys.DrillPlay]: true,
   // Later drill modalities land phase-by-phase — off until their phase ships.
-  [FlagKeys.DrillPlay]: false,
   [FlagKeys.DrillEar]: false,
   [FlagKeys.DrillPitch]: false,
   [FlagKeys.DrillRhythm]: false,

@@ -19,6 +19,6 @@ const locale = Astro.locals.locale;
     subtitle={t(locale, 'drills.subtitle')}
     back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
   >
-    <DrillsHub client:load locale={locale} />
+    <DrillsHub client:load locale={locale} flags={{ drillPlay: Astro.locals.flags.drillPlay }} />
   </PageShell>
 </BaseLayout>

@@ -41,6 +41,16 @@ export interface DrillOption {
   label: string;
 }
 
+/**
+ * A localized instruction for the UI to render — an i18n message key plus params (music terms like an
+ * interval name pass through as params, so the sentence stays translatable). The UI resolves it with
+ * `t(locale, key, params)`; the generator stays framework- and language-free.
+ */
+export interface DrillInstruction {
+  key: string;
+  params?: Record<string, string | number>;
+}
+
 /** One concrete question instance produced by a generator. */
 export interface DrillItem<TAnswer = unknown> {
   /** Stable card key for SM-2 scheduling (maps to `review_cards.card`). */
@@ -54,6 +64,10 @@ export interface DrillItem<TAnswer = unknown> {
   options?: DrillOption[];
   /** Human-readable answer, revealed after the response. */
   answerLabel: string;
+  /** Optional localized prompt (e.g. "Play a {interval} above the note you hear"). */
+  instruction?: DrillInstruction;
+  /** For play-instrument drills: which capture surface to render. Defaults to keyboard. */
+  instrument?: 'keyboard' | 'fretboard';
 }
 
 /** The objective outcome of a response. `accuracy` is 0–1 so timing drills can award partial credit. */

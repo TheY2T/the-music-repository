@@ -2,23 +2,16 @@ import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import type { DrillItem } from '@TheY2T/tmr-music-core/drills/drill-types';
 import { DRILL_GENERATORS, findGenerator } from '@TheY2T/tmr-music-core/drills/generators';
 import { playRewardChime, playWrongCue } from '@TheY2T/tmr-music-core/drills/reward-chime';
-import {
-  Badge,
-  Button,
-  buttonVariants,
-  Card,
-  cn,
-  EmptyState,
-  Icon,
-  Progress,
-} from '@TheY2T/tmr-ui';
+import { Button, buttonVariants, Card, cn, EmptyState, Icon, Progress } from '@TheY2T/tmr-ui';
 import { recordDrillAttempt } from '@TheY2T/tmr-web-data/drills-api';
 import { getDeckReviews } from '@TheY2T/tmr-web-data/reviews-api';
 import { useEffect, useRef, useState } from 'react';
 import DrillFeedback from './DrillFeedback';
+import ComboCounter from './drills/celebration/ComboCounter';
 import { answerCelebration } from './drills/celebration/celebration-tiers';
 import ScorePop from './drills/celebration/ScorePop';
 import EarIdentifyInput from './drills/inputs/EarIdentifyInput';
+import InstrumentInput from './drills/inputs/InstrumentInput';
 import MultipleChoiceInput from './drills/inputs/MultipleChoiceInput';
 
 const SESSION_LIMIT = 12;
@@ -55,10 +48,11 @@ export default function DrillSession({
   const [index, setIndex] = useState(0);
   const [item, setItem] = useState<DrillItem<string> | null>(null);
   const [answered, setAnswered] = useState<string | null>(null);
+  const [answerCorrect, setAnswerCorrect] = useState(false);
   const [reviewed, setReviewed] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [combo, setCombo] = useState(0);
-  const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
+  const [feedback, setFeedback] = useState<'correct' | 'wrong' | 'combo' | null>(null);
   const [scorePop, setScorePop] = useState<{ points: number | null; trigger: number }>({
     points: null,
     trigger: 0,
@@ -114,6 +108,7 @@ export default function DrillSession({
       return;
     }
     setAnswered(null);
+    setAnswerCorrect(false);
     setFeedback(null);
     setItem(gen.generate(current.card, 'beginner', Math.random));
     startedAt.current = Date.now();
@@ -141,13 +136,15 @@ export default function DrillSession({
     const celebration = answerCelebration(score.correct, nextCombo);
 
     setAnswered(value);
+    setAnswerCorrect(score.correct);
     setReviewed((r) => r + 1);
     setCombo(nextCombo);
     if (score.correct) {
       setCorrectCount((c) => c + 1);
     }
     if (celebrations) {
-      setFeedback(celebration.burst);
+      // A combo milestone earns the bigger gold burst; otherwise the normal correct/wrong burst.
+      setFeedback(celebration.comboMilestone != null ? 'combo' : celebration.burst);
       setScorePop((prev) => ({ points: celebration.scorePoints, trigger: prev.trigger + 1 }));
       if (soundOn) {
         if (score.correct) {
@@ -206,7 +203,7 @@ export default function DrillSession({
     );
   }
 
-  const isCorrect = answered != null && answered === item.expected;
+  const isCorrect = answered != null && answerCorrect;
 
   return (
     <div className="space-y-6">
@@ -216,12 +213,10 @@ export default function DrillSession({
             {t(locale, 'review.cardProgress', { current: index + 1, total: queue.length })}
           </span>
           <span className="flex items-center gap-2">
-            {combo >= 2 ? (
-              <Badge variant="secondary" className="gap-1">
-                <Icon name="flame" className="size-3" />
-                {t(locale, 'drill.celebrate.combo', { count: combo })}
-              </Badge>
-            ) : null}
+            <ComboCounter
+              combo={combo}
+              label={(count) => t(locale, 'drill.celebrate.combo', { count })}
+            />
             <button
               type="button"
               onClick={toggleSound}
@@ -244,6 +239,8 @@ export default function DrillSession({
         />
         {item.modality === 'ear-identify' ? (
           <EarIdentifyInput item={item} answered={answered} onAnswer={answer} locale={locale} />
+        ) : item.modality === 'play-instrument' ? (
+          <InstrumentInput item={item} answered={answered} onAnswer={answer} locale={locale} />
         ) : (
           <MultipleChoiceInput item={item} answered={answered} onAnswer={answer} locale={locale} />
         )}

@@ -1,6 +1,7 @@
 # Feature: Drill engine (objective grading + rewards)
 
-- **Phase:** P (drills expansion) · **Status:** Phase 0 shipped (multiple-choice + ear-identify)
+- **Phase:** P (drills expansion) · **Status:** Phases 0–1 shipped (multiple-choice, ear-identify,
+  play-instrument)
 - **Flags** (`@TheY2T/tmr-flags`): `trainers.drill-engine` (master gate; off = legacy self-grade
   `ReviewSession`), `trainers.celebrations` (reward mechanics), and the per-modality gates
   `trainers.play-instrument` / `trainers.ear` / `trainers.pitch-mic` / `trainers.rhythm-tap` (later phases).
@@ -25,8 +26,14 @@ mastery, and rewards the learner on-screen. It coexists with the legacy path beh
 - **Session runtime + inputs — `@TheY2T/tmr-musickit-ui`:** `DrillSession.tsx` (the objective successor to
   `ReviewSession.tsx` — same SM-2 queue via `getDeckReviews`, but generate → present → check → reward →
   record). `drills/inputs/` holds the per-modality widgets (`MultipleChoiceInput`, `EarIdentifyInput`,
-  `OptionGrid`; later phases add instrument/pitch/rhythm). `drills/celebration/` holds the reward layer
-  (`celebration-tiers.ts` config, `ScorePop`).
+  `OptionGrid`, `InstrumentInput`; later phases add pitch/rhythm). **Play-instrument is explore-then-submit:**
+  the learner plays freely on the capture surface (every key/fret sounds) and an explicit **Submit** commits
+  the chosen note; `InstrumentInput` picks `drills/AnswerKeyboard.tsx` (one-octave keyboard) or
+  `drills/AnswerFretboard.tsx` (guitar neck) by `DrillItem.instrument`; both reuse the note service +
+  `useMidiInput` and, after answering, highlight the correct pitch class (success) and a wrong choice
+  (destructive). `drills/celebration/` holds the reward layer (`celebration-tiers.ts` config, `ScorePop`,
+  `ComboCounter`). Engine-only decks (beyond the four legacy) are listed in the hub via
+  `drills/engine-decks.ts`, each gated by its per-modality flag.
 - **Backend — `apps/api/src/attempts/` (hexagonal):** objective attempts + mastery, **separate from but
   delegating to** the `reviews` context. `RecordDrillAttemptUseCase` persists the attempt, maps accuracy →
   SM-2 quality (`domain/grade.ts` `accuracyToQuality`), and calls the reviews `GradeCardUseCase` (which
@@ -36,10 +43,12 @@ mastery, and rewards the learner on-screen. It coexists with the legacy path beh
 ## Rewards (celebration hierarchy)
 
 One config — `celebration-tiers.ts` — decides which effect fires at which trigger, so intensity is
-reserved for rarity. **Tier 1 (per answer, shipped):** success/wrong glow on the options, a `ScorePop`
-"+N", and a `DrillFeedback` particle burst + reward chime. Tiers 2–4 (combo, session-summary confetti +
-stars, level-up/mastery/streak-milestone) land in later phases. Every reward degrades to a static outcome
-under `prefers-reduced-motion`; audio is opt-out and persisted (`tmr.drill.sound`).
+reserved for rarity. **Tier 1 (per answer):** success/wrong glow on the options/keys, a `ScorePop` "+N",
+and a `DrillFeedback` particle burst + reward chime. **Tier 2 (combo):** a `ComboCounter` (flame + count)
+that escalates colour/size as the run crosses `COMBO_THRESHOLDS` (5/10/20), and at each threshold a bigger
+gold `combo` burst (a `kind` on `drill-feedback-scene`). Tiers 3–4 (session-summary confetti + stars,
+level-up/mastery/streak-milestone) land in later phases. Every reward degrades to a static outcome under
+`prefers-reduced-motion`; audio is opt-out and persisted (`tmr.drill.sound`).
 
 ## Data model
 

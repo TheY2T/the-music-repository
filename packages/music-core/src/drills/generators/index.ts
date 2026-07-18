@@ -1,12 +1,16 @@
 /** The Phase-0 drill deck registry — the four original decks as pure `DrillItemGenerator`s. */
 
 import type { DrillItemGenerator } from '../drill-types';
+import { buildIntervalDeck } from './build-interval';
 import { chordQualityDeck } from './chord-quality';
+import { fretboardNoteDeck } from './fretboard-note';
 import { intervalsDeck } from './intervals';
 import { scaleDegreesDeck } from './scale-degrees';
 import { staffNotesDeck } from './staff-notes';
 
+export { buildIntervalDeck } from './build-interval';
 export { chordQualityDeck } from './chord-quality';
+export { fretboardNoteDeck } from './fretboard-note';
 export { intervalsDeck } from './intervals';
 export { scaleDegreesDeck } from './scale-degrees';
 export { staffNotesDeck } from './staff-notes';
@@ -17,6 +21,8 @@ export const DRILL_GENERATORS: DrillItemGenerator<string>[] = [
   chordQualityDeck,
   scaleDegreesDeck,
   staffNotesDeck,
+  buildIntervalDeck,
+  fretboardNoteDeck,
 ];
 
 export function findGenerator(deck: string): DrillItemGenerator<string> | undefined {

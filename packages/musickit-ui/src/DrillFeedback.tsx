@@ -10,7 +10,11 @@ import { useEffect, useState } from 'react';
  *
  * Usage: `<DrillFeedback result={answered == null ? null : isCorrect ? 'correct' : 'wrong'} />`
  */
-export default function DrillFeedback({ result }: { result: 'correct' | 'wrong' | null }) {
+export default function DrillFeedback({
+  result,
+}: {
+  result: 'correct' | 'wrong' | 'combo' | null;
+}) {
   const [pulse, setPulse] = useState<DrillPulse | null>(null);
 
   useEffect(() => {

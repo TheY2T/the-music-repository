@@ -9,7 +9,12 @@ const stepY = (step: number) => BASE_Y - step * HALF;
 /** A single note on a small treble staff — the visual prompt for the note-reading drill. */
 export default function StaffNotePrompt({ step }: { step: number }) {
   return (
-    <svg viewBox="0 -20 200 150" className="mx-auto h-44" role="img" aria-label="A note on the staff">
+    <svg
+      viewBox="0 -20 200 150"
+      className="mx-auto h-44"
+      role="img"
+      aria-label="A note on the staff"
+    >
       {STAFF_LINE_STEPS.map((line) => (
         <line
           key={line}

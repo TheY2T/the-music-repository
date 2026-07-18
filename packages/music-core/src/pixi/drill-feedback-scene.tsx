@@ -14,7 +14,8 @@ extend({ Container, Graphics });
 
 export interface DrillPulse {
   n: number;
-  kind: 'correct' | 'wrong';
+  /** `combo` is a bigger, gold celebratory burst fired at a combo milestone (Tier 2). */
+  kind: 'correct' | 'wrong' | 'combo';
 }
 export interface DrillFeedbackSceneProps {
   pulse: DrillPulse | null;
@@ -63,25 +64,35 @@ function Burst({ pulse, reducedMotion }: DrillFeedbackSceneProps & { reducedMoti
     lastN.current = pulse.n;
     const cx = size.w / 2;
     const cy = size.h * 0.4;
-    const correct = pulse.kind === 'correct';
-    const count = correct ? 48 : 22;
+    const kind = pulse.kind;
+    const positive = kind !== 'wrong';
+    const count = kind === 'combo' ? 90 : kind === 'correct' ? 48 : 22;
+    // Gold-leaning palette for a combo milestone; accent/success for a normal correct.
+    const positivePalette =
+      kind === 'combo'
+        ? [colors.warning, colors.accent, colors.success]
+        : [colors.accent, colors.success];
     for (let i = 0; i < count; i += 1) {
-      const angle = correct
+      const angle = positive
         ? Math.random() * Math.PI * 2
         : Math.PI / 2 + (Math.random() - 0.5) * 1.3; // wrong: downward scatter
-      const speed = correct ? 3 + Math.random() * 6 : 1.5 + Math.random() * 2.5;
+      const speed =
+        kind === 'combo'
+          ? 4 + Math.random() * 8
+          : kind === 'correct'
+            ? 3 + Math.random() * 6
+            : 1.5 + Math.random() * 2.5;
+      const lift = kind === 'combo' ? 4 : kind === 'correct' ? 3 : 0;
       parts.current.push({
         x: cx,
         y: cy,
         vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - (correct ? 3 : 0),
+        vy: Math.sin(angle) * speed - lift,
         life: 1,
-        max: 0.7 + Math.random() * 0.5,
-        r: 2 + Math.random() * 3,
-        color: correct
-          ? Math.random() > 0.5
-            ? colors.accent
-            : colors.success
+        max: (kind === 'combo' ? 0.9 : 0.7) + Math.random() * 0.5,
+        r: (kind === 'combo' ? 2.5 : 2) + Math.random() * 3,
+        color: positive
+          ? positivePalette[Math.floor(Math.random() * positivePalette.length)]
           : colors.destructive,
       });
     }
