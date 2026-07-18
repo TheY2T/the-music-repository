@@ -46,8 +46,9 @@ Biome + thin ESLint · podman-compose deploy.
 - **Package naming:** every workspace package is scoped `@TheY2T/tmr-*`. Folder names stay
   kebab-case; the scoped name lives in `package.json`.
 - **Shared sources of truth (never duplicate):** types → `@TheY2T/tmr-contracts`;
-  flag keys + eval-context → `@TheY2T/tmr-flags`; **UI message strings → `@TheY2T/tmr-i18n-locales`**
-  (`en.json` is the key source of truth) **via `@TheY2T/tmr-i18n`'s `t(locale, key)`**;
+  flag keys + eval-context → `@TheY2T/tmr-flags`; **UI message strings** are DB-backed + CMS-managed
+  (ADR 0034), rendered **via `@TheY2T/tmr-i18n`'s `t(locale, key)`**; `@TheY2T/tmr-i18n-locales`'s
+  `en.json` is the **key type source + DB seed** (add a new code-referenced key there once);
   **UI components → `@TheY2T/tmr-ui`; design tokens → `@TheY2T/tmr-design-tokens`**; dependency
   versions → **pnpm catalogs** in `pnpm-workspace.yaml` (add a version once, reference `catalog:`).
 - **`apps/web` is a thin shell; complex UI lives in packages (ADR 0033).** The web app keeps only
@@ -82,10 +83,12 @@ Biome + thin ESLint · podman-compose deploy.
   `@TheY2T/tmr-ui/astro/Icon.astro` in `.astro`. Both are Lucide; add an icon via the registry in
   `packages/ui/src/components/ui/icon.tsx`. Never bake glyphs into i18n strings. Music-notation glyphs
   (`♯♭♮♪♩`) are the sole exception. Follow **`add-ui-component`**. ADR 0018/0019 · `docs/features/icons.md`.
-- **Localize UI strings (web).** No hardcoded user-facing text in `apps/web` — add a key to
-  `@TheY2T/tmr-i18n-locales` (English + `zh-Hans`) and render via `t(Astro.locals.locale, key)`; pass
-  `locale` into islands as a prop. URL-prefix routing (`/zh/…`), gated by `platform.i18n`. Follow the
-  **`add-translations`** skill. ADR 0017.
+- **Localize UI strings (web).** No hardcoded user-facing text in `apps/web` — render via
+  `t(Astro.locals.locale, key)` and pass `locale` into islands as a prop. String **values are DB-backed
+  and edited in the admin CMS** (`/admin/locale-strings`) with no redeploy (ADR 0034); the in-repo
+  `@TheY2T/tmr-i18n-locales` JSON is the DB **seed** + compile-time `MessageKey` type + fallback, so a
+  brand-new code-referenced key still gets added there once. URL-prefix routing (`/zh/…`), gated by
+  `platform.i18n`. Follow the **`add-translations`** skill. ADR 0017/0034.
 - **Ship features behind a flag.** Add the key to `@TheY2T/tmr-flags`, define it in
   `flags/flags.json`, gate with `@RequireFlagsEnabled` (api) / `useFlag` (web).
 - **Test every feature (Definition of Done).** Ship tests with the code: **unit** for logic/use-cases

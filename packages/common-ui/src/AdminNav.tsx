@@ -16,10 +16,12 @@ export default function AdminNav({
   locale,
   showCollections,
   showHelp,
+  showLocaleStrings,
 }: {
   locale: Locale;
   showCollections: boolean;
   showHelp: boolean;
+  showLocaleStrings?: boolean;
 }) {
   const tiles: Tile[] = [
     {
@@ -43,6 +45,14 @@ export default function AdminNav({
       icon: 'info',
       title: t(locale, 'admin.helpTopics'),
       description: t(locale, 'admin.helpSubtitle'),
+    });
+  }
+  if (showLocaleStrings) {
+    tiles.push({
+      href: localizedPath(locale, '/admin/locale-strings'),
+      icon: 'globe',
+      title: t(locale, 'admin.localeStrings'),
+      description: t(locale, 'admin.localeStringsDesc'),
     });
   }
 

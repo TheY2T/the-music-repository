@@ -1,28 +1,36 @@
 ---
 name: add-translations
-description: Add or use localized UI strings in the web app (English + 中文 zh-Hans) via @TheY2T/tmr-i18n. Use whenever adding a new page/island or any user-facing text, or adding a new language. See docs/features/i18n.md + ADR 0017.
+description: Add or use localized UI strings in the web app (English + 中文 zh-Hans) via @TheY2T/tmr-i18n. Use whenever adding a new page/island or any user-facing text, or adding a new language. UI strings are DB-backed + admin-managed (ADR 0034); the in-repo JSON is the seed/type/fallback. See docs/features/i18n.md + ADR 0017/0034.
 ---
 
 # add-translations
 
 Every user-facing UI string in `apps/web` goes through `t(locale, key)` — no hardcoded English. Locale
-is resolved in middleware (`Astro.locals.locale`) and passed into islands as a plain `locale` prop.
+is resolved in middleware (`Astro.locals.locale`) and passed into islands as a plain `locale` prop. At
+runtime, string **values** come from the database (ADR 0034); the in-repo JSON seeds them and is the
+compile-time key type + fallback.
 
-## 1. Add the key(s)
+## 1. Add / change the string — two paths
 
-Edit **both** catalogues in `@TheY2T/tmr-i18n-locales`:
-- `packages/i18n-locales/src/en.json` — the **source of truth for keys** (`MessageKey = keyof typeof en`).
-- `packages/i18n-locales/src/zh-Hans.json` — the Simplified Chinese value (missing → falls back to English).
+**A. Change wording or a translation for an existing key, or add a runtime-only string** (no code change,
+no redeploy): do it in the **admin CMS** at `/admin/locale-strings` — search the key, edit or create,
+then **Publish**. Live within seconds. This is the normal path for copy edits and translation work.
+
+**B. Add a brand-new key that typed code references** (`t(locale, 'new.key')` in a page/island): add it
+to the in-repo catalogues so `MessageKey` widens and the key seeds, then ship once:
+- `packages/i18n-locales/src/en.json` — the **key type source** (`MessageKey = keyof typeof en`) + seed.
+- `packages/i18n-locales/src/zh-Hans.json` — the Simplified Chinese seed value (missing → English).
+
+After deploy + `db:seed`, that key's wording is CMS-editable like any other (path A).
 
 Key naming: `domain.thing` (camelCase after the dot), e.g. `catalogue.search`, `upgrade.subtitle`.
 Interpolate with `{name}` placeholders: `"catalogue.results": "{count} results"`.
 
 **No glyphs in strings.** Never embed emoji or unicode icon-glyphs (`←`/`→` arrows, `✓`, `♥`, `🎉`,
-etc.) in a locale value. Keep the string plain text and render an `<Icon>` beside it in the component
-(ADR 0019 / `docs/features/icons.md`) — e.g. a back-link label is just "Tools", and `PageShell.astro`
-draws the leading `arrow-left`. (Music-notation glyphs like `♯♭♮` are the exception — see §4.)
+etc.) in a value. Keep the string plain text and render an `<Icon>` beside it (ADR 0019 /
+`docs/features/icons.md`). (Music-notation glyphs like `♯♭♮` are the exception — see §4.)
 
-Rebuild the packages so the new keys/types are available:
+For path B, rebuild so the new keys/types are available:
 `pnpm --filter @TheY2T/tmr-i18n-locales --filter @TheY2T/tmr-i18n build`
 
 ## 2. Use it — `.astro` page
@@ -78,9 +86,10 @@ See "Adding a language" in `docs/features/i18n.md`: drop `src/<locale>.json`, ex
 
 ## Tests (Definition of Done — `add-tests` skill)
 
-- The **catalogue parity guard** (`packages/i18n-locales/src/index.test.ts`) already fails on orphan
-  `zh-Hans` keys or blank values — keep it green after editing the JSON (`pnpm --filter
-  @TheY2T/tmr-i18n-locales test`).
+- The **seed parity guard** (`packages/i18n-locales/src/index.test.ts`) fails on orphan `zh-Hans` keys or
+  blank values — keep it green after editing the JSON seed (`pnpm --filter @TheY2T/tmr-i18n-locales test`).
+- Admin CMS changes (path A) need no test edit — the manager is covered by
+  `packages/common-ui/src/AdminLocaleManager.test.tsx` + `apps/web/e2e/locale-strings.spec.ts`.
 - When you add a **new island** that renders localized text, add a component test that passes `locale`
   as a prop and asserts the rendered string (see the `add-tests` skill). Localized routing is covered by
   the E2E i18n spec (`apps/web/e2e/i18n.spec.ts`) — extend it if you add a locale.

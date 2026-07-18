@@ -103,6 +103,19 @@ write-side features:
 - **List responses wrap in `{ items }`** to match the contract; `POST .../publish` sets `@HttpCode(200)`
   (Nest defaults POST to 201).
 
+## Localization (ADR 0034, `src/i18n/`)
+
+DB-backed UI strings served to `apps/web` + an admin CMS write side (`docs/features/i18n.md`). Previously
+the API had **no** i18n responsibility — it now owns the string catalogue.
+- **Ports:** `UiMessageCatalogue` (assemble published catalogue + versions; in-memory cache keyed by the
+  per-locale version so the hot path never full-scans) and `UiMessageAuthoring` (draft CRUD, soft
+  delete/restore, publish, revisions), bound to `DrizzleUiMessage*`.
+- **Public read:** `GET /i18n/version` + `GET /i18n/catalogue/:locale` (ETag = version, conditional GET →
+  304), ungated. **Admin write:** `/admin/i18n/*`, `@RequirePermissions({ content: […] })` + method-level
+  `@RequireFlagsEnabled(FlagKeys.LocaleStrings)`.
+- **Seed:** `seed-i18n.ts` upserts `en.json`/`zh-Hans.json` as published `seeded` rows (idempotent). Only
+  published, non-deleted rows are served; publishing bumps `i18n_versions` (the web cache-bust signal).
+
 ## Monetization & Phase-6 (DEFERRED — flags OFF, ships free/public-domain)
 
 `monetization.premium` defaults **OFF** ⇒ the whole entitlement system is dormant (`resolveViewerRank` →

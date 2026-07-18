@@ -162,6 +162,13 @@
       "when": 1784364012268,
       "tag": "0022_huge_mephisto",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1784379995486,
+      "tag": "0023_complete_earthquake",
+      "breakpoints": true
     }
   ]
 }

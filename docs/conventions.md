@@ -47,13 +47,15 @@ filesystems otherwise pass locally but break Linux containers).
   markers (`○`/`×`), strum-direction markers (`↓`/`↑`/`·`), and typographic arrows inside prose are
   content/notation, not icons — leave them. See `docs/features/icons.md`.
 
-## Localization / i18n (web UI strings — ADR 0017)
+## Localization / i18n (web UI strings — ADR 0017 + 0034)
 
 - **No hardcoded user-facing strings** in `apps/web`. Every UI string goes through `t(locale, key)` from
   `@TheY2T/tmr-i18n`; the locale comes from `Astro.locals.locale` and is passed into islands as a plain
   `locale` prop (never React context — it can't cross island boundaries).
-- **Message keys** live in `@TheY2T/tmr-i18n-locales` (`en.json` = source of truth for keys;
-  `zh-Hans.json` = Simplified Chinese, missing → English). Naming: `domain.thing` (camelCase after the
+- **String values are DB-backed and edited in the admin CMS** (`/admin/locale-strings`, ADR 0034) with no
+  redeploy. **Message keys** are typed + seeded from `@TheY2T/tmr-i18n-locales` (`en.json` = key type
+  source + seed; `zh-Hans.json` = Simplified Chinese seed). A new code-referenced key is added there once
+  (widens `MessageKey`, seeds); wording is then CMS-editable. Naming: `domain.thing` (camelCase after the
   dot). Shared `tool.<slug>.*` keys back both the `/tools` hub and each tool page.
 - **Never duplicate** message strings — add a key once, reference it everywhere.
 - **Left language-neutral by design:** music-theory tokens (note names, chord symbols, Roman numerals),

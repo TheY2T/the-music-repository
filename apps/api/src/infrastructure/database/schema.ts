@@ -485,3 +485,50 @@ export const helpTopics = pgTable('help_topics', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
+// --- Localization (ADR 0034): UI message strings live in the DB and are edited via the admin CMS with
+//     no redeploy. Seeded from the in-repo en/zh-Hans JSON on a fresh deploy; thereafter runtime-driven.
+//     Draft → publish: only `published_value` (where not deleted) is assembled into the served catalogue. ---
+export const uiMessages = pgTable(
+  'ui_messages',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    locale: text('locale').notNull(), // 'en' | 'zh-Hans' (LOCALES from @TheY2T/tmr-i18n)
+    key: text('key').notNull(), // dotted message key, e.g. 'nav.catalogue'
+    draftValue: text('draft_value'), // latest edited value (pending until published)
+    publishedValue: text('published_value'), // live value served to the site; null until first publish
+    status: text('status').notNull().default('draft'), // draft | published (draft ⇒ unpublished edit pending)
+    /** true = pristine seeded baseline row; false = added or edited at runtime by an admin. */
+    seeded: boolean('seeded').notNull().default(false),
+    deletedAt: timestamp('deleted_at', { withTimezone: true }), // soft delete (restorable); null = live
+    updatedBy: text('updated_by'), // Better Auth user id of the last editor; null if unknown/seed
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    unique('ui_messages_locale_key_uq').on(t.locale, t.key),
+    index('ui_messages_locale_idx').on(t.locale),
+  ],
+);
+
+/** Append-only history of every message change — for diff + restore (mirrors `content_revisions`). */
+export const uiMessageRevisions = pgTable('ui_message_revisions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  messageId: uuid('message_id')
+    .notNull()
+    .references(() => uiMessages.id, { onDelete: 'cascade' }),
+  locale: text('locale').notNull(),
+  key: text('key').notNull(),
+  value: text('value'), // the value at the time of the action (null for a delete)
+  action: text('action').notNull(), // create | update | delete | restore | publish
+  editedBy: text('edited_by'), // Better Auth user id; null if unknown
+  editedAt: timestamp('edited_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** One row per locale: the published-catalogue version tag (epoch-ms of last publish) used as the ETag
+ *  and the web-side cache-bust signal. Bumped whenever a locale's published strings change. */
+export const i18nVersions = pgTable('i18n_versions', {
+  locale: text('locale').primaryKey(),
+  version: text('version').notNull(),
+  publishedAt: timestamp('published_at', { withTimezone: true }).notNull().defaultNow(),
+});

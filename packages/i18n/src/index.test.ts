@@ -1,12 +1,17 @@
 import { en, type MessageKey, zhHans } from '@TheY2T/tmr-i18n-locales';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import {
   DEFAULT_LOCALE,
+  getCatalogueVersion,
+  hasCatalogue,
+  hydrateCatalogueFromDom,
   isLocale,
+  loadCatalogue,
   localizedPath,
   matchAcceptLanguage,
   preferredLocale,
   readLocaleCookie,
+  type SerializedCatalogue,
   splitLocalePath,
   t,
 } from './index';
@@ -74,5 +79,73 @@ describe('locale routing helpers', () => {
     expect(isLocale('zh-Hans')).toBe(true);
     expect(isLocale('xx')).toBe(false);
     expect(isLocale(42)).toBe(false);
+  });
+});
+
+// These mutate the module-level REGISTRY, so they run last (the fallback tests above assume it is empty).
+describe('runtime catalogue (DB-sourced)', () => {
+  const sampleKey = Object.keys(en)[0] as MessageKey;
+
+  it('loadCatalogue makes t() resolve from the runtime registry, overriding the bundled fallback', () => {
+    expect(hasCatalogue('en')).toBe(false); // nothing loaded yet → bundled fallback in use
+    loadCatalogue('en', { [sampleKey]: 'Runtime override', 'db.only.key': 'From the DB' }, 'v1');
+    expect(hasCatalogue('en')).toBe(true);
+    expect(getCatalogueVersion()).toBe('v1');
+    expect(t('en', sampleKey)).toBe('Runtime override');
+    // A key that exists only in the DB (not in the compile-time catalogue) still resolves.
+    expect(t('en', 'db.only.key' as MessageKey)).toBe('From the DB');
+  });
+
+  it('falls through registry → default-locale registry → bundled fallback → key', () => {
+    loadCatalogue('en', { [sampleKey]: 'EN runtime' }, 'v2');
+    loadCatalogue('zh-Hans', {}, 'v2'); // loaded but empty → misses fall through to the en registry
+    expect(t('zh-Hans', sampleKey)).toBe('EN runtime'); // default-locale registry
+    // A key absent from every registry falls to the bundled fallback, then to the key itself.
+    const zhOnlyMissing = 'never.in.any.catalogue' as MessageKey;
+    expect(t('zh-Hans', zhOnlyMissing)).toBe(zhOnlyMissing);
+  });
+
+  it('loadCatalogue swaps the whole reference (no in-place merge)', () => {
+    loadCatalogue('en', { a: '1', b: '2' } as Record<string, string>, 'v3');
+    loadCatalogue('en', { a: '9' } as Record<string, string>, 'v4');
+    expect(t('en', 'a' as MessageKey)).toBe('9');
+    expect(t('en', 'b' as MessageKey)).toBe('b'); // gone — not merged from the previous load
+    expect(getCatalogueVersion()).toBe('v4');
+  });
+
+  describe('hydrateCatalogueFromDom', () => {
+    afterEach(() => {
+      (globalThis as { document?: unknown }).document = undefined;
+    });
+
+    function stubDom(textContent: string | null): void {
+      (globalThis as { document?: unknown }).document = {
+        getElementById: (id: string) =>
+          id === 'i18n-catalogue' && textContent !== null ? { textContent } : null,
+      };
+    }
+
+    it('loads the embedded blob (and its fallback) into the registry', () => {
+      const blob: SerializedCatalogue = {
+        version: 'h1',
+        locale: 'zh-Hans',
+        messages: { greeting: '你好' },
+        fallback: { greeting: 'Hello' },
+      };
+      stubDom(JSON.stringify(blob));
+      hydrateCatalogueFromDom();
+      expect(getCatalogueVersion()).toBe('h1');
+      expect(t('zh-Hans', 'greeting' as MessageKey)).toBe('你好');
+      expect(t('en', 'greeting' as MessageKey)).toBe('Hello'); // fallback loaded into the en registry
+    });
+
+    it('is a safe no-op when the blob is missing or malformed', () => {
+      const before = getCatalogueVersion();
+      stubDom(null);
+      expect(() => hydrateCatalogueFromDom()).not.toThrow();
+      stubDom('{ not json');
+      expect(() => hydrateCatalogueFromDom()).not.toThrow();
+      expect(getCatalogueVersion()).toBe(before); // unchanged
+    });
   });
 });

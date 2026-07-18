@@ -44,6 +44,9 @@
     },
     {
       "name": "classrooms"
+    },
+    {
+      "name": "localization"
     }
   ],
   "paths": {
@@ -428,6 +431,318 @@
         "tags": [
           "help"
         ]
+      }
+    },
+    "/admin/i18n/messages": {
+      "get": {
+        "operationId": "listUiMessages",
+        "description": "List message strings for the admin table (all locales/statuses; optional filters).",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "includeDeleted",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UiMessageAdminList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ]
+      },
+      "post": {
+        "operationId": "createUiMessage",
+        "description": "Create a message string (draft).",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UiMessageAdminRow"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UiMessageWriteInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/i18n/messages/{id}": {
+      "put": {
+        "operationId": "updateUiMessage",
+        "description": "Edit a message's draft value.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UiMessageAdminRow"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UiMessageEditInput"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteUiMessage",
+        "description": "Soft-delete a message (restorable); returns the updated row.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UiMessageAdminRow"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ]
+      }
+    },
+    "/admin/i18n/messages/{id}/restore": {
+      "post": {
+        "operationId": "restoreUiMessage",
+        "description": "Restore a soft-deleted message.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UiMessageAdminRow"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ]
+      }
+    },
+    "/admin/i18n/messages/{id}/revisions": {
+      "get": {
+        "operationId": "listUiMessageRevisions",
+        "description": "A message's change history (newest first).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UiMessageRevisionList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ]
+      }
+    },
+    "/admin/i18n/messages/{id}/revisions/{revisionId}/restore": {
+      "post": {
+        "operationId": "restoreUiMessageRevision",
+        "description": "Restore a prior revision's value as the current draft.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "revisionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UiMessageAdminRow"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ]
+      }
+    },
+    "/admin/i18n/publish": {
+      "post": {
+        "operationId": "publishUiMessages",
+        "description": "Publish pending drafts (one locale, or all) → bumps the catalogue version(s).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocaleVersions"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublishLocaleInput"
+              }
+            }
+          }
+        }
       }
     },
     "/admin/redeem-codes": {
@@ -1973,6 +2288,59 @@
         },
         "tags": [
           "help"
+        ]
+      }
+    },
+    "/i18n/catalogue/{locale}": {
+      "get": {
+        "operationId": "getLocaleCatalogue",
+        "description": "A locale's published catalogue (served with an ETag; supports conditional GET).",
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocaleCatalogue"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
+        ]
+      }
+    },
+    "/i18n/version": {
+      "get": {
+        "operationId": "getLocaleVersions",
+        "description": "Current published-catalogue versions for every locale.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocaleVersions"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "localization"
         ]
       }
     },
@@ -5145,6 +5513,44 @@
           }
         }
       },
+      "LocaleCatalogue": {
+        "type": "object",
+        "required": [
+          "version",
+          "locale",
+          "messages"
+        ],
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "messages": {
+            "type": "object",
+            "unevaluatedProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "A locale's full published catalogue: every published, non-deleted key → its string."
+      },
+      "LocaleVersions": {
+        "type": "object",
+        "required": [
+          "versions"
+        ],
+        "properties": {
+          "versions": {
+            "type": "object",
+            "unevaluatedProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "The published-catalogue version tag per locale (the web cache-bust / ETag signal)."
+      },
       "MediaAsset": {
         "type": "object",
         "required": [
@@ -5385,6 +5791,15 @@
           }
         },
         "description": "One chord in a saved progression: root pitch-class (0–11) + quality key."
+      },
+      "PublishLocaleInput": {
+        "type": "object",
+        "properties": {
+          "locale": {
+            "type": "string"
+          }
+        },
+        "description": "Publish drafts for one locale, or all locales when `locale` is omitted."
       },
       "RedeemCodeCreated": {
         "type": "object",
@@ -5694,6 +6109,142 @@
           }
         },
         "description": "Transfer ownership to a current member (owner only)."
+      },
+      "UiMessageAdminList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UiMessageAdminRow"
+            }
+          }
+        }
+      },
+      "UiMessageAdminRow": {
+        "type": "object",
+        "required": [
+          "id",
+          "locale",
+          "key",
+          "status",
+          "seeded",
+          "deleted",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "draftValue": {
+            "type": "string",
+            "description": "Latest edited value (pending until published)."
+          },
+          "publishedValue": {
+            "type": "string",
+            "description": "Live value served to the site (null until first publish)."
+          },
+          "status": {
+            "type": "string"
+          },
+          "seeded": {
+            "type": "boolean",
+            "description": "true = pristine seeded baseline; false = added or edited at runtime."
+          },
+          "deleted": {
+            "type": "boolean",
+            "description": "true when soft-deleted (restorable)."
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "updatedBy": {
+            "type": "string",
+            "description": "Better Auth user id of the last editor, if known."
+          }
+        },
+        "description": "One admin table row for a message string."
+      },
+      "UiMessageEditInput": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "description": "Edit an existing message's draft value."
+      },
+      "UiMessageRevisionList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UiMessageRevisionSummary"
+            }
+          }
+        }
+      },
+      "UiMessageRevisionSummary": {
+        "type": "object",
+        "required": [
+          "id",
+          "action",
+          "editedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "editedBy": {
+            "type": "string"
+          },
+          "editedAt": {
+            "type": "string"
+          }
+        },
+        "description": "One entry in a message's change history."
+      },
+      "UiMessageWriteInput": {
+        "type": "object",
+        "required": [
+          "locale",
+          "key",
+          "value"
+        ],
+        "properties": {
+          "locale": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "description": "Create a new message string (starts as a draft, `seeded=false`)."
       },
       "UserCollectionWriteInput": {
         "type": "object",

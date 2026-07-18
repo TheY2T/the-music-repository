@@ -720,6 +720,14 @@
         "off": false
       },
       "defaultVariant": "on"
+    },
+    "admin.locale-strings": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "on"
     }
   }
 }

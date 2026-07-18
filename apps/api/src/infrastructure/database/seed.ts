@@ -11,6 +11,7 @@ import * as schema from './schema';
 import { SEED_COLLECTIONS } from './seed-collections';
 import { SEED_CONTENT } from './seed-content';
 import { CONTENT, GENRES, HELP_TOPICS, INSTRUMENTS, SKILL_TOPICS, TAGS } from './seed-data';
+import { seedI18n } from './seed-i18n';
 import { SCORE_ALPHATEX, SCORE_META } from './seed-scores';
 
 /** Fold the near-synonym era "Folk" into "Traditional" so the Era facet isn't split. */
@@ -254,6 +255,13 @@ async function main(): Promise<void> {
       });
   }
   log.log(`Seeded ${HELP_TOPICS.length} help topics.`);
+
+  const i18nCounts = await seedI18n(db);
+  log.log(
+    `Seeded UI strings: ${Object.entries(i18nCounts)
+      .map(([locale, n]) => `${locale}=${n}`)
+      .join(', ')}.`,
+  );
 
   await app.close();
   process.exit(0);

@@ -9,6 +9,8 @@ declare namespace App {
     flags: import('@TheY2T/tmr-web-data').Flags;
     /** Active locale resolved per request (URL prefix > cookie > Accept-Language > default). */
     locale: import('@TheY2T/tmr-web-data').Locale;
+    /** DB-backed UI-string catalogue for the active locale (serialized into the page by BaseLayout). */
+    i18nCatalogue: import('@TheY2T/tmr-web-data').I18nCatalogue;
     /** Authenticated user resolved per request from the API session, or null when anonymous. */
     user: import('@TheY2T/tmr-web-data').User;
   }

@@ -3,11 +3,24 @@
 
 export type Locale = 'en' | 'zh-Hans';
 
+/**
+ * The DB-backed UI-string catalogue the middleware resolves per request (ADR 0034) and hands to
+ * `BaseLayout`, which serializes it into the page so client islands hydrate `t()` from the same
+ * strings the server rendered. `fallback` carries the default-locale (`en`) map when `locale` ≠ `en`.
+ */
+export interface I18nCatalogue {
+  version: string;
+  locale: Locale;
+  messages: Record<string, string>;
+  fallback?: Record<string, string>;
+}
+
 /** Feature-flag values evaluated once per request in the web middleware (see apps/web/src/middleware.ts). */
 export interface Flags {
   demoNewBanner: boolean;
   authEnabled: boolean;
   adminCms: boolean;
+  localeStrings: boolean;
   blockEditor: boolean;
   blockEditorPreview: boolean;
   contentRevisions: boolean;

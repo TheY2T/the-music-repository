@@ -8,8 +8,13 @@
  * rendered — no flash, no hydration mismatch. React context is NOT used (it can't cross island
  * boundaries — see apps/web/CLAUDE.md).
  *
- * Scope: web UI strings only. Backend problem+json / mail strings and DB catalogue content are a
- * separate, later concern (see docs/features/i18n.md).
+ * Storage: message values live in the database and are edited via the admin CMS with no redeploy
+ * (ADR 0034). This engine resolves `t()` against a mutable per-locale REGISTRY that the host populates
+ * at runtime — server-side in `apps/web` middleware before SSR, and client-side from a serialized blob
+ * before islands hydrate. The bundled JSON (`@TheY2T/tmr-i18n-locales`) is demoted to two jobs: it is
+ * the compile-time source of `MessageKey` (so `t()` call sites stay type-checked) and the last-resort
+ * FALLBACK when the registry is empty (fresh boot before the catalogue loads, or the API is briefly
+ * unreachable) — so `t()` still never renders blank. The same JSON seeds the database baseline.
  */
 import { type Catalogue, en, type MessageKey, zhHans } from '@TheY2T/tmr-i18n-locales';
 
@@ -34,10 +39,84 @@ export const LOCALE_LABELS: Record<Locale, string> = {
   'zh-Hans': '中文',
 };
 
-const CATALOGUES: Record<Locale, Catalogue> = {
+/**
+ * Last-resort catalogue, bundled at build time. Used only when the runtime REGISTRY has no entry for a
+ * locale/key (cold boot, or the API is unreachable) — the database is the real source of truth.
+ */
+const FALLBACK: Record<Locale, Catalogue> = {
   en,
   'zh-Hans': zhHans,
 };
+
+/**
+ * Runtime source of truth: the published catalogue for each locale, keyed by locale. Each value is a
+ * whole frozen reference that `loadCatalogue` swaps atomically — never mutated in place — so a
+ * synchronous `t()` (which never awaits) can never observe a half-updated map, and concurrent SSR
+ * renders sharing this module state each see one internally-consistent snapshot.
+ */
+const REGISTRY = new Map<Locale, Readonly<Record<string, string>>>();
+let REGISTRY_VERSION = '';
+
+/** The serialized catalogue the server hands the browser (embedded in the page, hydrated pre-island). */
+export interface SerializedCatalogue {
+  version: string;
+  locale: Locale;
+  messages: Record<string, string>;
+  /** The default-locale (`en`) messages, present when `locale` is not `en`, for the fallback chain. */
+  fallback?: Record<string, string>;
+}
+
+/**
+ * Replace the catalogue for one locale (whole-reference swap; callers must not mutate `messages`
+ * afterwards). Idempotent per version. Populated by the host: server-side before SSR, client-side
+ * before islands hydrate.
+ */
+export function loadCatalogue(
+  locale: Locale,
+  messages: Record<string, string>,
+  version: string,
+): void {
+  REGISTRY.set(locale, messages);
+  REGISTRY_VERSION = version;
+}
+
+/** The version tag of the currently-loaded catalogue (also the served ETag). Empty before first load. */
+export function getCatalogueVersion(): string {
+  return REGISTRY_VERSION;
+}
+
+/** Whether a runtime catalogue has been loaded for `locale` (false ⇒ `t()` uses the bundled fallback). */
+export function hasCatalogue(locale: Locale): boolean {
+  return REGISTRY.has(locale);
+}
+
+/**
+ * Client-side bootstrap: read the `<script id="i18n-catalogue" type="application/json">` blob the server
+ * embedded and load it into the REGISTRY. Runs from a `<head>` module before any island renders, so
+ * `t()` in the browser resolves from the same catalogue the server rendered with. No-op on the server
+ * or when the blob is absent/malformed (the bundled fallback then covers `t()`).
+ */
+export function hydrateCatalogueFromDom(): void {
+  // Reach the DOM through globalThis so this package needs no `dom` lib (it also runs on the server).
+  const doc = (
+    globalThis as {
+      document?: { getElementById(id: string): { textContent: string | null } | null };
+    }
+  ).document;
+  const el = doc?.getElementById('i18n-catalogue');
+  if (!el?.textContent) {
+    return;
+  }
+  try {
+    const blob = JSON.parse(el.textContent) as SerializedCatalogue;
+    if (blob.fallback) {
+      loadCatalogue(DEFAULT_LOCALE, blob.fallback, blob.version);
+    }
+    loadCatalogue(blob.locale, blob.messages, blob.version);
+  } catch {
+    // Malformed blob → leave the REGISTRY empty; `t()` falls back to the bundled catalogue.
+  }
+}
 
 export function isLocale(value: unknown): value is Locale {
   return typeof value === 'string' && (LOCALES as readonly string[]).includes(value);
@@ -137,14 +216,20 @@ const INTERPOLATION = /\{(\w+)\}/g;
 
 /**
  * Translate `key` into `locale`, interpolating `{name}` placeholders from `params`.
- * Missing translations fall back to the English string, then to the key itself (never blank).
+ * Resolution order (never blank): the runtime catalogue for `locale`, then the default-locale runtime
+ * catalogue, then the bundled fallback for `locale`, then the bundled default, then the key itself.
  */
 export function t(
   locale: Locale,
   key: MessageKey,
   params?: Record<string, string | number>,
 ): string {
-  const template = CATALOGUES[locale][key] ?? CATALOGUES[DEFAULT_LOCALE][key] ?? key;
+  const template =
+    REGISTRY.get(locale)?.[key] ??
+    REGISTRY.get(DEFAULT_LOCALE)?.[key] ??
+    FALLBACK[locale][key] ??
+    FALLBACK[DEFAULT_LOCALE][key] ??
+    key;
   if (!params) {
     return template;
   }

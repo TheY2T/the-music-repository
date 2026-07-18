@@ -872,6 +872,176 @@ export const DeleteHelpTopicResponse = zod.void()
 
 
 /**
+ * List message strings for the admin table (all locales/statuses; optional filters).
+ */
+export const ListUiMessagesQueryParams = zod.object({
+  "search": zod.string().optional(),
+  "locale": zod.string().optional(),
+  "status": zod.string().optional(),
+  "includeDeleted": zod.boolean().optional()
+})
+
+export const ListUiMessagesResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "locale": zod.string(),
+  "key": zod.string(),
+  "draftValue": zod.string().optional().describe('Latest edited value (pending until published).'),
+  "publishedValue": zod.string().optional().describe('Live value served to the site (null until first publish).'),
+  "status": zod.string(),
+  "seeded": zod.boolean().describe('true = pristine seeded baseline; false = added or edited at runtime.'),
+  "deleted": zod.boolean().describe('true when soft-deleted (restorable).'),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional().describe('Better Auth user id of the last editor, if known.')
+}).describe('One admin table row for a message string.'))
+})
+
+
+/**
+ * Create a message string (draft).
+ */
+export const CreateUiMessageBody = zod.object({
+  "locale": zod.string(),
+  "key": zod.string(),
+  "value": zod.string()
+}).describe('Create a new message string (starts as a draft, `seeded=false`).')
+
+export const CreateUiMessageResponse = zod.object({
+  "id": zod.string(),
+  "locale": zod.string(),
+  "key": zod.string(),
+  "draftValue": zod.string().optional().describe('Latest edited value (pending until published).'),
+  "publishedValue": zod.string().optional().describe('Live value served to the site (null until first publish).'),
+  "status": zod.string(),
+  "seeded": zod.boolean().describe('true = pristine seeded baseline; false = added or edited at runtime.'),
+  "deleted": zod.boolean().describe('true when soft-deleted (restorable).'),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional().describe('Better Auth user id of the last editor, if known.')
+}).describe('One admin table row for a message string.')
+
+
+/**
+ * Edit a message's draft value.
+ */
+export const UpdateUiMessageParams = zod.object({
+  "id": zod.string()
+})
+
+export const UpdateUiMessageBody = zod.object({
+  "value": zod.string()
+}).describe('Edit an existing message\'s draft value.')
+
+export const UpdateUiMessageResponse = zod.object({
+  "id": zod.string(),
+  "locale": zod.string(),
+  "key": zod.string(),
+  "draftValue": zod.string().optional().describe('Latest edited value (pending until published).'),
+  "publishedValue": zod.string().optional().describe('Live value served to the site (null until first publish).'),
+  "status": zod.string(),
+  "seeded": zod.boolean().describe('true = pristine seeded baseline; false = added or edited at runtime.'),
+  "deleted": zod.boolean().describe('true when soft-deleted (restorable).'),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional().describe('Better Auth user id of the last editor, if known.')
+}).describe('One admin table row for a message string.')
+
+
+/**
+ * Soft-delete a message (restorable); returns the updated row.
+ */
+export const DeleteUiMessageParams = zod.object({
+  "id": zod.string()
+})
+
+export const DeleteUiMessageResponse = zod.object({
+  "id": zod.string(),
+  "locale": zod.string(),
+  "key": zod.string(),
+  "draftValue": zod.string().optional().describe('Latest edited value (pending until published).'),
+  "publishedValue": zod.string().optional().describe('Live value served to the site (null until first publish).'),
+  "status": zod.string(),
+  "seeded": zod.boolean().describe('true = pristine seeded baseline; false = added or edited at runtime.'),
+  "deleted": zod.boolean().describe('true when soft-deleted (restorable).'),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional().describe('Better Auth user id of the last editor, if known.')
+}).describe('One admin table row for a message string.')
+
+
+/**
+ * Restore a soft-deleted message.
+ */
+export const RestoreUiMessageParams = zod.object({
+  "id": zod.string()
+})
+
+export const RestoreUiMessageResponse = zod.object({
+  "id": zod.string(),
+  "locale": zod.string(),
+  "key": zod.string(),
+  "draftValue": zod.string().optional().describe('Latest edited value (pending until published).'),
+  "publishedValue": zod.string().optional().describe('Live value served to the site (null until first publish).'),
+  "status": zod.string(),
+  "seeded": zod.boolean().describe('true = pristine seeded baseline; false = added or edited at runtime.'),
+  "deleted": zod.boolean().describe('true when soft-deleted (restorable).'),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional().describe('Better Auth user id of the last editor, if known.')
+}).describe('One admin table row for a message string.')
+
+
+/**
+ * A message's change history (newest first).
+ */
+export const ListUiMessageRevisionsParams = zod.object({
+  "id": zod.string()
+})
+
+export const ListUiMessageRevisionsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "action": zod.string(),
+  "value": zod.string().optional(),
+  "editedBy": zod.string().optional(),
+  "editedAt": zod.string()
+}).describe('One entry in a message\'s change history.'))
+})
+
+
+/**
+ * Restore a prior revision's value as the current draft.
+ */
+export const RestoreUiMessageRevisionParams = zod.object({
+  "id": zod.string(),
+  "revisionId": zod.string()
+})
+
+export const RestoreUiMessageRevisionResponse = zod.object({
+  "id": zod.string(),
+  "locale": zod.string(),
+  "key": zod.string(),
+  "draftValue": zod.string().optional().describe('Latest edited value (pending until published).'),
+  "publishedValue": zod.string().optional().describe('Live value served to the site (null until first publish).'),
+  "status": zod.string(),
+  "seeded": zod.boolean().describe('true = pristine seeded baseline; false = added or edited at runtime.'),
+  "deleted": zod.boolean().describe('true when soft-deleted (restorable).'),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional().describe('Better Auth user id of the last editor, if known.')
+}).describe('One admin table row for a message string.')
+
+
+/**
+ * Publish pending drafts (one locale, or all) → bumps the catalogue version(s).
+ */
+export const PublishUiMessagesBody = zod.object({
+  "locale": zod.string().optional()
+}).describe('Publish drafts for one locale, or all locales when `locale` is omitted.')
+
+export const PublishUiMessagesResponse = zod.object({
+  "versions": zod.looseObject({
+
+})
+}).describe('The published-catalogue version tag per locale (the web cache-bust \/ ETag signal).')
+
+
+/**
  * Mint a gift/redeem code (staff only).
  */
 export const CreateRedeemCodeBody = zod.object({
@@ -2514,6 +2684,32 @@ export const GetHelpTopicResponse = zod.object({
   "body": zod.string(),
   "linkSlug": zod.string().optional()
 })
+
+
+/**
+ * A locale's published catalogue (served with an ETag; supports conditional GET).
+ */
+export const GetLocaleCatalogueParams = zod.object({
+  "locale": zod.string()
+})
+
+export const GetLocaleCatalogueResponse = zod.object({
+  "version": zod.string(),
+  "locale": zod.string(),
+  "messages": zod.looseObject({
+
+})
+}).describe('A locale\'s full published catalogue: every published, non-deleted key → its string.')
+
+
+/**
+ * Current published-catalogue versions for every locale.
+ */
+export const GetLocaleVersionsResponse = zod.object({
+  "versions": zod.looseObject({
+
+})
+}).describe('The published-catalogue version tag per locale (the web cache-bust \/ ETag signal).')
 
 
 /**

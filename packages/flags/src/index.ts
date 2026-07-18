@@ -198,6 +198,8 @@ export const FlagKeys = {
   Classrooms: 'education.classrooms',
   /** i18n — enables `/zh` localized routing + the language switcher (English + 中文). */
   I18n: 'platform.i18n',
+  /** Localization CMS (ADR 0034) — gates the admin surface for editing DB-backed UI message strings. */
+  LocaleStrings: 'admin.locale-strings',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -293,4 +295,5 @@ export const FlagDefaults = {
   [FlagKeys.MonetizationMessaging]: false,
   [FlagKeys.Classrooms]: true,
   [FlagKeys.I18n]: true,
+  [FlagKeys.LocaleStrings]: true,
 } satisfies Record<FlagKey, boolean>;

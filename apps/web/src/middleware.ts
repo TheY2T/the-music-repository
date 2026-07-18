@@ -9,6 +9,7 @@ import {
 import { defineMiddleware } from 'astro:middleware';
 import { FlagdProvider } from '@openfeature/flagd-provider';
 import { type Logger, OpenFeature } from '@openfeature/server-sdk';
+import { ensureCatalogue } from './lib/i18n-catalogue';
 
 const FLAGD_HOST = process.env.FLAGD_HOST ?? 'localhost';
 const FLAGD_PORT = Number(process.env.FLAGD_PORT ?? 8013);
@@ -101,6 +102,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagDefaults[FlagKeys.AuthEnabled],
   );
   const adminCms = await client.getBooleanValue(FlagKeys.AdminCms, FlagDefaults[FlagKeys.AdminCms]);
+  const localeStrings = await client.getBooleanValue(
+    FlagKeys.LocaleStrings,
+    FlagDefaults[FlagKeys.LocaleStrings],
+  );
   const blockEditor = await client.getBooleanValue(
     FlagKeys.BlockEditor,
     FlagDefaults[FlagKeys.BlockEditor],
@@ -425,6 +430,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     demoNewBanner,
     authEnabled,
     adminCms,
+    localeStrings,
     blockEditor,
     blockEditorPreview,
     contentRevisions,
@@ -536,6 +542,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
+
+  // Load the DB-backed UI-string catalogue for the active locale (ADR 0034). This populates the i18n
+  // engine registry so SSR `t()` resolves from the DB, and yields the blob BaseLayout serializes for the
+  // client. Degrades to the engine's bundled fallback if the API is unreachable.
+  context.locals.i18nCatalogue = await ensureCatalogue(context.locals.locale);
 
   // Strip the locale prefix so the single page-file set renders (the browser URL stays `/zh/…`).
   if (i18nEnabled && localePrefix(urlLocale)) {

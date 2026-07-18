@@ -29,6 +29,11 @@ const primaryNav = buildPrimaryNav(navCtx);
 const accountNav = buildAccountNav(navCtx);
 const siteName = t(locale, 'site.name');
 const year = new Date().getFullYear();
+
+// DB-backed UI strings (ADR 0034): the middleware already loaded this catalogue into the i18n engine for
+// SSR; serialize it so client islands hydrate `t()` from the same strings. Escape `<` so a message value
+// can't break out of the <script> block.
+const i18nCatalogueJson = JSON.stringify(Astro.locals.i18nCatalogue).replace(/</g, '\\u003c');
 ---
 
 <html
@@ -54,6 +59,13 @@ const year = new Date().getFullYear();
       if (stored === 'dark' || (!stored && prefersDark)) {
         doc.classList.add('dark');
       }
+    </script>
+    <script id="i18n-catalogue" type="application/json" is:inline set:html={i18nCatalogueJson} />
+    <script>
+      // Hydrate the i18n engine's registry from the embedded catalogue before any island renders, so
+      // client-side `t(locale, key)` resolves from the same DB strings the server rendered (ADR 0034).
+      import { hydrateCatalogueFromDom } from '@TheY2T/tmr-i18n';
+      hydrateCatalogueFromDom();
     </script>
     {
       i18nEnabled && (

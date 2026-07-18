@@ -1477,3 +1477,153 @@ op listInvitations(@path id: string): InvitationList;
 @tag("classrooms")
 @post
 op acceptInvitation(@path token: string): Classroom;
+
+// ===================== Localization (ADR 0034) =====================
+// UI message strings served from the DB and edited via the admin CMS with no redeploy. Public reads
+// deliver the published catalogue (cache-busted by a per-locale version); admin ops are RBAC-gated.
+
+/** The published-catalogue version tag per locale (the web cache-bust / ETag signal). */
+model LocaleVersions {
+  versions: Record<string>;
+}
+
+/** A locale's full published catalogue: every published, non-deleted key → its string. */
+model LocaleCatalogue {
+  version: string;
+  locale: string;
+  messages: Record<string>;
+}
+
+/** One admin table row for a message string. */
+model UiMessageAdminRow {
+  id: string;
+  locale: string;
+  key: string;
+
+  /** Latest edited value (pending until published). */
+  draftValue?: string;
+
+  /** Live value served to the site (null until first publish). */
+  publishedValue?: string;
+
+  status: string; // draft | published (draft ⇒ an unpublished edit is pending)
+
+  /** true = pristine seeded baseline; false = added or edited at runtime. */
+  seeded: boolean;
+
+  /** true when soft-deleted (restorable). */
+  deleted: boolean;
+
+  updatedAt: string;
+
+  /** Better Auth user id of the last editor, if known. */
+  updatedBy?: string;
+}
+
+model UiMessageAdminList {
+  items: UiMessageAdminRow[];
+}
+
+/** Create a new message string (starts as a draft, `seeded=false`). */
+model UiMessageWriteInput {
+  locale: string;
+  key: string;
+  value: string;
+}
+
+/** Edit an existing message's draft value. */
+model UiMessageEditInput {
+  value: string;
+}
+
+/** One entry in a message's change history. */
+model UiMessageRevisionSummary {
+  id: string;
+  action: string; // create | update | delete | restore | publish
+  value?: string;
+  editedBy?: string;
+  editedAt: string;
+}
+
+model UiMessageRevisionList {
+  items: UiMessageRevisionSummary[];
+}
+
+/** Publish drafts for one locale, or all locales when `locale` is omitted. */
+model PublishLocaleInput {
+  locale?: string;
+}
+
+/** Current published-catalogue versions for every locale. */
+@route("/i18n/version")
+@tag("localization")
+@get
+op getLocaleVersions(): LocaleVersions;
+
+/** A locale's published catalogue (served with an ETag; supports conditional GET). */
+@route("/i18n/catalogue/{locale}")
+@tag("localization")
+@get
+op getLocaleCatalogue(@path locale: string): LocaleCatalogue;
+
+/** List message strings for the admin table (all locales/statuses; optional filters). */
+@route("/admin/i18n/messages")
+@tag("localization")
+@get
+op listUiMessages(
+  @query search?: string,
+  @query locale?: string,
+  @query status?: string,
+  @query includeDeleted?: boolean,
+): UiMessageAdminList;
+
+/** Create a message string (draft). */
+@route("/admin/i18n/messages")
+@tag("localization")
+@post
+op createUiMessage(@body body: UiMessageWriteInput): {
+  @statusCode statusCode: 201;
+  @body body: UiMessageAdminRow;
+};
+
+/** Edit a message's draft value. */
+@route("/admin/i18n/messages/{id}")
+@tag("localization")
+@put
+op updateUiMessage(@path id: string, @body body: UiMessageEditInput): UiMessageAdminRow | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+/** Soft-delete a message (restorable); returns the updated row. */
+@route("/admin/i18n/messages/{id}")
+@tag("localization")
+@delete
+op deleteUiMessage(@path id: string): UiMessageAdminRow | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+/** Restore a soft-deleted message. */
+@route("/admin/i18n/messages/{id}/restore")
+@tag("localization")
+@post
+op restoreUiMessage(@path id: string): UiMessageAdminRow;
+
+/** A message's change history (newest first). */
+@route("/admin/i18n/messages/{id}/revisions")
+@tag("localization")
+@get
+op listUiMessageRevisions(@path id: string): UiMessageRevisionList;
+
+/** Restore a prior revision's value as the current draft. */
+@route("/admin/i18n/messages/{id}/revisions/{revisionId}/restore")
+@tag("localization")
+@post
+op restoreUiMessageRevision(@path id: string, @path revisionId: string): UiMessageAdminRow;
+
+/** Publish pending drafts (one locale, or all) → bumps the catalogue version(s). */
+@route("/admin/i18n/publish")
+@tag("localization")
+@post
+op publishUiMessages(@body body: PublishLocaleInput): LocaleVersions;

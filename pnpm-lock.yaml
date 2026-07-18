@@ -374,6 +374,9 @@ importers:
       '@TheY2T/tmr-flags':
         specifier: workspace:*
         version: link:../../packages/flags
+      '@TheY2T/tmr-i18n-locales':
+        specifier: workspace:*
+        version: link:../../packages/i18n-locales
       '@TheY2T/tmr-nest-platform':
         specifier: workspace:*
         version: link:../../packages/nest-platform
