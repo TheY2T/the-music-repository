@@ -23,6 +23,8 @@ describe('drill deck registry', () => {
       'staff-notes',
       'build-interval',
       'fretboard-note',
+      'progression-ear',
+      'cadence-ear',
     ]);
   });
 

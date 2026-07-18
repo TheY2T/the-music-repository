@@ -79,8 +79,7 @@ export default function AnswerFretboard({
         </thead>
         <tbody>
           {STANDARD_TUNING.map((open, s) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: string index is the stable row identity
-            <tr key={s}>
+            <tr key={open}>
               <td className="pr-1 text-right text-muted-foreground">{STANDARD_TUNING_NAMES[s]}</td>
               {Array.from({ length: FRETS + 1 }, (_, f) => {
                 const midi = open + f;

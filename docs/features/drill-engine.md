@@ -1,7 +1,7 @@
 # Feature: Drill engine (objective grading + rewards)
 
-- **Phase:** P (drills expansion) · **Status:** Phases 0–1 shipped (multiple-choice, ear-identify,
-  play-instrument)
+- **Phase:** P (drills expansion) · **Status:** Phases 0–2 shipped (multiple-choice, ear-identify,
+  play-instrument; ear progressions/cadences; Tier-1/2/3 rewards)
 - **Flags** (`@TheY2T/tmr-flags`): `trainers.drill-engine` (master gate; off = legacy self-grade
   `ReviewSession`), `trainers.celebrations` (reward mechanics), and the per-modality gates
   `trainers.play-instrument` / `trainers.ear` / `trainers.pitch-mic` / `trainers.rhythm-tap` (later phases).
@@ -46,9 +46,11 @@ One config — `celebration-tiers.ts` — decides which effect fires at which tr
 reserved for rarity. **Tier 1 (per answer):** success/wrong glow on the options/keys, a `ScorePop` "+N",
 and a `DrillFeedback` particle burst + reward chime. **Tier 2 (combo):** a `ComboCounter` (flame + count)
 that escalates colour/size as the run crosses `COMBO_THRESHOLDS` (5/10/20), and at each threshold a bigger
-gold `combo` burst (a `kind` on `drill-feedback-scene`). Tiers 3–4 (session-summary confetti + stars,
-level-up/mastery/streak-milestone) land in later phases. Every reward degrades to a static outcome under
-`prefers-reduced-motion`; audio is opt-out and persisted (`tmr.drill.sound`).
+gold `combo` burst (a `kind` on `drill-feedback-scene`). **Tier 3 (session complete):** `SessionSummary`
+replaces the old static "Session complete" text with a 1–3 **star rating** on accuracy (`starsForAccuracy`),
+counting-up stats, an optional personal-best callout (`isPersonalBest` from the recorded attempt), and a
+`confetti-scene` fall behind it. Tier 4 (level-up/mastery/streak-milestone) lands in Phase 5. Every reward
+degrades to a static outcome under `prefers-reduced-motion`; audio is opt-out and persisted (`tmr.drill.sound`).
 
 ## Data model
 

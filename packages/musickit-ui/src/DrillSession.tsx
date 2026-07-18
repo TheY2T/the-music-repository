@@ -10,6 +10,7 @@ import DrillFeedback from './DrillFeedback';
 import ComboCounter from './drills/celebration/ComboCounter';
 import { answerCelebration } from './drills/celebration/celebration-tiers';
 import ScorePop from './drills/celebration/ScorePop';
+import SessionSummary from './drills/celebration/SessionSummary';
 import EarIdentifyInput from './drills/inputs/EarIdentifyInput';
 import InstrumentInput from './drills/inputs/InstrumentInput';
 import MultipleChoiceInput from './drills/inputs/MultipleChoiceInput';
@@ -51,6 +52,7 @@ export default function DrillSession({
   const [answerCorrect, setAnswerCorrect] = useState(false);
   const [reviewed, setReviewed] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
+  const [personalBest, setPersonalBest] = useState(false);
   const [combo, setCombo] = useState(0);
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | 'combo' | null>(null);
   const [scorePop, setScorePop] = useState<{ points: number | null; trigger: number }>({
@@ -155,7 +157,7 @@ export default function DrillSession({
       }
     }
 
-    await recordDrillAttempt({
+    const result = await recordDrillAttempt({
       deck: current.deck,
       card: current.card,
       modality: item.modality,
@@ -163,6 +165,9 @@ export default function DrillSession({
       correct: score.correct,
       responseMs,
     });
+    if (result?.isPersonalBest) {
+      setPersonalBest(true);
+    }
   }
 
   if (!queue) {
@@ -185,21 +190,14 @@ export default function DrillSession({
     );
   }
   if (!current || !item) {
-    const accuracy = reviewed === 0 ? 0 : Math.round((correctCount / reviewed) * 100);
     return (
-      <div className="space-y-4 text-center">
-        <p className="flex items-center justify-center gap-2 text-lg font-medium">
-          <Icon name="party-popper" className="size-5" />
-          {t(locale, 'drill.sessionComplete')}
-        </p>
-        <p className="text-muted-foreground">
-          {t(locale, 'drill.reviewedCount', { count: reviewed })} ·{' '}
-          {t(locale, 'drill.accuracy', { percent: accuracy })}
-        </p>
-        <a href={localizedPath(locale, '/drills')}>
-          <Button variant="outline">{t(locale, 'review.backToDrills')}</Button>
-        </a>
-      </div>
+      <SessionSummary
+        reviewed={reviewed}
+        correctCount={correctCount}
+        personalBest={personalBest}
+        locale={locale}
+        celebrations={celebrations}
+      />
     );
   }
 

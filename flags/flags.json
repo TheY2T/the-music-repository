@@ -295,7 +295,7 @@
         "on": true,
         "off": false
       },
-      "defaultVariant": "off"
+      "defaultVariant": "on"
     },
     "trainers.pitch-mic": {
       "state": "ENABLED",

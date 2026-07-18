@@ -1,6 +1,6 @@
 /** Shared helpers for the string-answer drill generators (multiple-choice / ear-identify). */
 
-import type { AttemptScore, DrillItem, DrillOption } from '../drill-types';
+import type { AttemptScore, DrillItem, DrillOption, NoteEvent } from '../drill-types';
 
 /** Fisher–Yates shuffle using an injected `rng` (deterministic in tests). */
 export function shuffle<T>(items: readonly T[], rng: () => number): T[] {
@@ -34,3 +34,21 @@ export function exactMatch(item: DrillItem<string>, response: string): AttemptSc
 
 /** Root MIDI for generated prompts — C3, matching the legacy decks' `BASE_MIDI`. */
 export const BASE_MIDI = 48;
+
+/**
+ * Turn a chord sequence (each with `pitchClasses` 0–11) into a block-chord playback plan: each chord
+ * sounds as a stack over `base`, `chordMs` apart. For ear drills that play a progression or cadence.
+ */
+export function chordsToNotes(
+  chords: readonly { pitchClasses: number[] }[],
+  base = BASE_MIDI,
+  chordMs = 850,
+): NoteEvent[] {
+  const notes: NoteEvent[] = [];
+  chords.forEach((chord, i) => {
+    for (const pc of chord.pitchClasses) {
+      notes.push({ midi: base + pc, atMs: i * chordMs, durationMs: chordMs - 80 });
+    }
+  });
+  return notes;
+}

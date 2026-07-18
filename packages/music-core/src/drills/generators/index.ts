@@ -2,16 +2,20 @@
 
 import type { DrillItemGenerator } from '../drill-types';
 import { buildIntervalDeck } from './build-interval';
+import { cadenceEarDeck } from './cadence-ear';
 import { chordQualityDeck } from './chord-quality';
 import { fretboardNoteDeck } from './fretboard-note';
 import { intervalsDeck } from './intervals';
+import { progressionEarDeck } from './progression-ear';
 import { scaleDegreesDeck } from './scale-degrees';
 import { staffNotesDeck } from './staff-notes';
 
 export { buildIntervalDeck } from './build-interval';
+export { cadenceEarDeck } from './cadence-ear';
 export { chordQualityDeck } from './chord-quality';
 export { fretboardNoteDeck } from './fretboard-note';
 export { intervalsDeck } from './intervals';
+export { progressionEarDeck } from './progression-ear';
 export { scaleDegreesDeck } from './scale-degrees';
 export { staffNotesDeck } from './staff-notes';
 
@@ -23,6 +27,8 @@ export const DRILL_GENERATORS: DrillItemGenerator<string>[] = [
   staffNotesDeck,
   buildIntervalDeck,
   fretboardNoteDeck,
+  progressionEarDeck,
+  cadenceEarDeck,
 ];
 
 export function findGenerator(deck: string): DrillItemGenerator<string> | undefined {

@@ -12,7 +12,7 @@ export interface EngineDeckMeta {
   /** Number of cards in the deck (for the "new" badge before any are learned). */
   cardCount: number;
   /** The `Astro.locals.flags` key that gates this deck. */
-  flag: 'drillPlay';
+  flag: 'drillPlay' | 'drillEar';
   helpSlug: string;
 }
 
@@ -31,6 +31,22 @@ export const ENGINE_DECKS: EngineDeckMeta[] = [
     descKey: 'drill.deck.fretboardNote.desc',
     cardCount: 7,
     flag: 'drillPlay',
+    helpSlug: 'ear-training',
+  },
+  {
+    key: 'progression-ear',
+    titleKey: 'drill.deck.progressionEar.title',
+    descKey: 'drill.deck.progressionEar.desc',
+    cardCount: 5,
+    flag: 'drillEar',
+    helpSlug: 'ear-training',
+  },
+  {
+    key: 'cadence-ear',
+    titleKey: 'drill.deck.cadenceEar.title',
+    descKey: 'drill.deck.cadenceEar.desc',
+    cardCount: 4,
+    flag: 'drillEar',
     helpSlug: 'ear-training',
   },
 ];
