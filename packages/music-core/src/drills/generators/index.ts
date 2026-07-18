@@ -7,6 +7,7 @@ import { chordQualityDeck } from './chord-quality';
 import { fretboardNoteDeck } from './fretboard-note';
 import { intervalsDeck } from './intervals';
 import { progressionEarDeck } from './progression-ear';
+import { rhythmEchoDeck } from './rhythm-echo';
 import { scaleDegreesDeck } from './scale-degrees';
 import { singIntervalDeck } from './sing-interval';
 import { staffNotesDeck } from './staff-notes';
@@ -17,6 +18,7 @@ export { chordQualityDeck } from './chord-quality';
 export { fretboardNoteDeck } from './fretboard-note';
 export { intervalsDeck } from './intervals';
 export { progressionEarDeck } from './progression-ear';
+export { rhythmEchoDeck } from './rhythm-echo';
 export { scaleDegreesDeck } from './scale-degrees';
 export { singIntervalDeck } from './sing-interval';
 export { staffNotesDeck } from './staff-notes';
@@ -32,6 +34,7 @@ export const DRILL_GENERATORS: DrillItemGenerator<string>[] = [
   progressionEarDeck,
   cadenceEarDeck,
   singIntervalDeck,
+  rhythmEchoDeck,
 ];
 
 export function findGenerator(deck: string): DrillItemGenerator<string> | undefined {

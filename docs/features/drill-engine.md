@@ -1,7 +1,7 @@
 # Feature: Drill engine (objective grading + rewards)
 
-- **Phase:** P (drills expansion) · **Status:** Phases 0–3 shipped (multiple-choice, ear-identify,
-  play-instrument, pitch/mic; ear progressions/cadences; Tier-1/2/3 rewards)
+- **Phase:** P (drills expansion) · **Status:** Phases 0–4 shipped (multiple-choice, ear-identify,
+  play-instrument, pitch/mic, rhythm-tap; ear progressions/cadences; Tier-1/2/3 rewards)
 - **Flags** (`@TheY2T/tmr-flags`): `trainers.drill-engine` (master gate; off = legacy self-grade
   `ReviewSession`), `trainers.celebrations` (reward mechanics), and the per-modality gates
   `trainers.play-instrument` / `trainers.ear` / `trainers.pitch-mic` / `trainers.rhythm-tap` (later phases).
@@ -34,7 +34,11 @@ mastery, and rewards the learner on-screen. It coexists with the legacy path beh
   (destructive). **Pitch/mic** (`PitchMicInput`) listens via `getUserMedia` + an `AnalyserNode`, runs
   `detectPitchHz`/`hzToNote`, and submits the sustained pitch class (pure `drills/pitch-match.ts` —
   cents-tolerance + sustain debounce, unit-tested); it falls back to `InstrumentInput` (keyboard) when
-  there's no mic, permission is denied, or the learner opts out, so the drill is always answerable. `drills/celebration/` holds the reward layer (`celebration-tiers.ts` config, `ScorePop`,
+  there's no mic, permission is denied, or the learner opts out, so the drill is always answerable.
+  **Rhythm-tap** (`RhythmTapInput`) plays a one-bar pattern (count-in + `scheduleDrum`), captures pad/Space
+  taps, normalizes them to beats (tap 1 = downbeat) and submits for timing grading (pure
+  `drills/rhythm-grade.ts` `gradeRhythm` — a tolerance window yields **partial accuracy**, which the server
+  maps to a shaky-pass quality 3). `drills/celebration/` holds the reward layer (`celebration-tiers.ts` config, `ScorePop`,
   `ComboCounter`). Engine-only decks (beyond the four legacy) are listed in the hub via
   `drills/engine-decks.ts`, each gated by its per-modality flag.
 - **Backend — `apps/api/src/attempts/` (hexagonal):** objective attempts + mastery, **separate from but

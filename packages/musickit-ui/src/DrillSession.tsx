@@ -15,6 +15,7 @@ import EarIdentifyInput from './drills/inputs/EarIdentifyInput';
 import InstrumentInput from './drills/inputs/InstrumentInput';
 import MultipleChoiceInput from './drills/inputs/MultipleChoiceInput';
 import PitchMicInput from './drills/inputs/PitchMicInput';
+import RhythmTapInput from './drills/inputs/RhythmTapInput';
 
 const SESSION_LIMIT = 12;
 const SOUND_PREF_KEY = 'tmr.drill.sound';
@@ -242,6 +243,8 @@ export default function DrillSession({
           <InstrumentInput item={item} answered={answered} onAnswer={answer} locale={locale} />
         ) : item.modality === 'pitch-mic' ? (
           <PitchMicInput item={item} answered={answered} onAnswer={answer} locale={locale} />
+        ) : item.modality === 'rhythm-tap' ? (
+          <RhythmTapInput item={item} answered={answered} onAnswer={answer} locale={locale} />
         ) : (
           <MultipleChoiceInput item={item} answered={answered} onAnswer={answer} locale={locale} />
         )}

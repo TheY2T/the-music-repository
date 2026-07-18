@@ -311,7 +311,7 @@
         "on": true,
         "off": false
       },
-      "defaultVariant": "off"
+      "defaultVariant": "on"
     },
     "tools.sight-reading": {
       "state": "ENABLED",

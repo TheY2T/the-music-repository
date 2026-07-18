@@ -20,7 +20,7 @@ export default function DrillsHub({
 }: {
   locale: Locale;
   /** Per-modality drill flags that unlock engine-only decks. */
-  flags?: { drillPlay?: boolean; drillEar?: boolean; drillPitch?: boolean };
+  flags?: { drillPlay?: boolean; drillEar?: boolean; drillPitch?: boolean; drillRhythm?: boolean };
 }) {
   const [summary, setSummary] = useState<ReviewSummary | null>(null);
 

@@ -26,6 +26,7 @@ describe('drill deck registry', () => {
       'progression-ear',
       'cadence-ear',
       'sing-interval',
+      'rhythm-echo',
     ]);
   });
 
