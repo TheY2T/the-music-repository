@@ -1,6 +1,7 @@
 import {
   boolean,
   doublePrecision,
+  index,
   integer,
   jsonb,
   pgTable,
@@ -334,6 +335,26 @@ export const reviewLog = pgTable('review_log', {
     .references(() => user.id, { onDelete: 'cascade' }),
   reviewedAt: timestamp('reviewed_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
+// --- Drill engine (Phase P): one row per objectively-graded drill attempt. Powers per-skill mastery
+//     stats; SM-2 scheduling itself lives in `review_cards` (attempts delegate to the reviews context). ---
+export const drillAttempts = pgTable(
+  'drill_attempts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    deck: text('deck').notNull(),
+    card: text('card').notNull(),
+    modality: text('modality').notNull(),
+    accuracy: doublePrecision('accuracy').notNull(),
+    correct: boolean('correct').notNull(),
+    responseMs: integer('response_ms'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('drill_attempts_user_deck_idx').on(t.userId, t.deck)],
+);
 
 // --- Entitlements (Phase 6): premium access grants per user (e.g. `premium`). A grant is a local
 //     stand-in for a payment-provider subscription; `expires_at` null = no expiry. ---

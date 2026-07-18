@@ -336,10 +336,16 @@ it in the `.astro` page and pass `locale`/`flags`/`user` props. Wiring for a NEW
 
 ## Trainers / drills (Phase 4)
 
-- SRS drills at `/drills` (gated on `trainers.srs` + login). **Decks are client-side**
-  (`src/lib/drill-decks.ts`): card key + `play(card)` (question audio, reusing Phase-3 audio/theory) +
-  `answer(card)`. `src/lib/reviews-api.ts` calls the SM-2 backend; `DrillsHub` + `ReviewSession` islands.
-  The server only stores scheduling state (see ADR 0014) — add a deck without touching the backend.
+- SRS drills at `/drills` (gated on `trainers.srs` + login). UI moved to packages (ADR 0033):
+  legacy self-grade decks live in `@TheY2T/tmr-musickit-ui/drill-decks` (card key + `play(card)` +
+  `answer(card)`); `@TheY2T/tmr-web-data/reviews-api` calls the SM-2 backend; `DrillsHub` + `ReviewSession`
+  islands. The server only stores scheduling state (see ADR 0014) — add a deck without touching the backend.
+- **Drill engine (objective grading, flag `trainers.drill-engine`)** supersedes the self-grade flashcard:
+  `/drills/{deck}` + `/drills/review` render `@TheY2T/tmr-musickit-ui/DrillSession` when the flag is on
+  (else `ReviewSession`). It generates + objectively checks answers, fires Tier-1 rewards
+  (`trainers.celebrations`), and records attempts via `@TheY2T/tmr-web-data/drills-api` to the
+  `apps/api/src/attempts/` context. Engine core + generators live in `@TheY2T/tmr-music-core/drills/`.
+  See `docs/features/drill-engine.md`.
 
 ## Monetization / premium (Phase 6)
 

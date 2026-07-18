@@ -3092,6 +3092,63 @@ export const RateCollectionResponse = zod.object({
 
 
 /**
+ * Record an objective attempt; grades via SM-2 and returns the updated state.
+ */
+export const RecordDrillAttemptBody = zod.object({
+  "deck": zod.string(),
+  "card": zod.string(),
+  "modality": zod.string().describe('Answer-input modality (multiple-choice | play-instrument | ear-identify | pitch-mic | rhythm-tap).'),
+  "accuracy": zod.number().describe('0–1 objective accuracy.'),
+  "correct": zod.boolean(),
+  "responseMs": zod.number().optional().describe('Response latency in ms, if measured.')
+}).describe('One objectively-graded drill attempt reported by the client.')
+
+export const RecordDrillAttemptResponse = zod.object({
+  "state": zod.object({
+  "card": zod.string(),
+  "easeFactor": zod.number(),
+  "intervalDays": zod.number(),
+  "repetitions": zod.number(),
+  "dueAt": zod.string()
+}).describe('SM-2 scheduling state for a single card.'),
+  "quality": zod.number(),
+  "isPersonalBest": zod.boolean().describe('True when this attempt set a new best rolling accuracy for the deck.')
+}).describe('The result of recording an attempt: the SM-2 state after grading + the applied quality.')
+
+
+/**
+ * Per-skill mastery + streak for the current user.
+ */
+export const GetDrillStatsResponse = zod.object({
+  "skills": zod.array(zod.object({
+  "deck": zod.string(),
+  "attempts": zod.number(),
+  "accuracy": zod.number().describe('Rolling accuracy 0–1 over recent attempts.'),
+  "mastery": zod.number().describe('Mastery score 0–1 (EWMA of correctness).'),
+  "level": zod.string().describe('Recommended level tier from mastery (beginner…expert).')
+}).describe('Rolling mastery for one deck\/skill, computed from the attempt log.')),
+  "streakDays": zod.number(),
+  "attemptsToday": zod.number()
+})
+
+
+/**
+ * Per-skill mastery for a single deck.
+ */
+export const GetDeckMasteryParams = zod.object({
+  "deck": zod.string()
+})
+
+export const GetDeckMasteryResponse = zod.object({
+  "deck": zod.string(),
+  "attempts": zod.number(),
+  "accuracy": zod.number().describe('Rolling accuracy 0–1 over recent attempts.'),
+  "mastery": zod.number().describe('Mastery score 0–1 (EWMA of correctness).'),
+  "level": zod.string().describe('Recommended level tier from mastery (beginner…expert).')
+}).describe('Rolling mastery for one deck\/skill, computed from the attempt log.')
+
+
+/**
  * The acting user's entitlement grant/revoke history (most-recent first).
  */
 export const GetEntitlementHistoryResponse = zod.object({

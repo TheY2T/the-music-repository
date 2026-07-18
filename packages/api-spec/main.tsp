@@ -1024,6 +1024,70 @@ op gradeCard(@path deck: string, @path card: string, @body body: ReviewGrade): {
   @body body: ReviewState;
 };
 
+// ===================== Drill engine attempts (Phase P — objective grading) =====================
+// Objective drill attempts + per-skill mastery. An attempt records measured accuracy for a card; the
+// server maps it to an SM-2 quality and delegates scheduling to the reviews context. Auth-gated.
+
+/** One objectively-graded drill attempt reported by the client. */
+model DrillAttempt {
+  deck: string;
+  card: string;
+  /** Answer-input modality (multiple-choice | play-instrument | ear-identify | pitch-mic | rhythm-tap). */
+  modality: string;
+  /** 0–1 objective accuracy. */
+  accuracy: float32;
+  correct: boolean;
+  /** Response latency in ms, if measured. */
+  responseMs?: int32;
+}
+
+/** The result of recording an attempt: the SM-2 state after grading + the applied quality. */
+model DrillAttemptResult {
+  state: ReviewState;
+  quality: int32;
+  /** True when this attempt set a new best rolling accuracy for the deck. */
+  isPersonalBest: boolean;
+}
+
+/** Rolling mastery for one deck/skill, computed from the attempt log. */
+model SkillMastery {
+  deck: string;
+  attempts: int32;
+  /** Rolling accuracy 0–1 over recent attempts. */
+  accuracy: float32;
+  /** Mastery score 0–1 (EWMA of correctness). */
+  mastery: float32;
+  /** Recommended level tier from mastery (beginner…expert). */
+  level: string;
+}
+
+model DrillStatsSummary {
+  skills: SkillMastery[];
+  streakDays: int32;
+  attemptsToday: int32;
+}
+
+/** Record an objective attempt; grades via SM-2 and returns the updated state. */
+@route("/me/drills/attempts")
+@tag("drills")
+@post
+op recordDrillAttempt(@body body: DrillAttempt): {
+  @statusCode statusCode: 201;
+  @body body: DrillAttemptResult;
+};
+
+/** Per-skill mastery + streak for the current user. */
+@route("/me/drills/stats")
+@tag("drills")
+@get
+op getDrillStats(): DrillStatsSummary;
+
+/** Per-skill mastery for a single deck. */
+@route("/me/drills/stats/{deck}")
+@tag("drills")
+@get
+op getDeckMastery(@path deck: string): SkillMastery;
+
 // ===================== Info View / help topics (Phase 2) =====================
 // Context-sensitive help: elements tagged `data-help="<slug>"` show the matching topic.
 

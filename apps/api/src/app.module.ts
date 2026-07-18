@@ -1,6 +1,7 @@
 import { PlatformModule } from '@TheY2T/tmr-nest-platform';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { AttemptsModule } from './attempts/attempts.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthoringModule } from './authoring/authoring.module';
 import { BillingModule } from './billing/billing.module';
@@ -48,6 +49,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     ProgressionsModule,
     HelpModule,
     ReviewsModule,
+    AttemptsModule,
   ],
 })
 export class AppModule {}

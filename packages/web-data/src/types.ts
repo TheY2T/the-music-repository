@@ -41,6 +41,12 @@ export interface Flags {
   toolEarTrainer: boolean;
   toolSequencer: boolean;
   trainers: boolean;
+  drillEngine: boolean;
+  drillCelebrations: boolean;
+  drillPlay: boolean;
+  drillEar: boolean;
+  drillPitch: boolean;
+  drillRhythm: boolean;
   toolSightReading: boolean;
   toolBackingTrack: boolean;
   toolVoicings: boolean;

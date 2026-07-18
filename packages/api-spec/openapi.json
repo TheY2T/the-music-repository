@@ -34,6 +34,9 @@
       "name": "reviews"
     },
     {
+      "name": "drills"
+    },
+    {
       "name": "help"
     },
     {
@@ -2361,6 +2364,91 @@
         }
       }
     },
+    "/me/drills/attempts": {
+      "post": {
+        "operationId": "recordDrillAttempt",
+        "description": "Record an objective attempt; grades via SM-2 and returns the updated state.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DrillAttemptResult"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "drills"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DrillAttempt"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/drills/stats": {
+      "get": {
+        "operationId": "getDrillStats",
+        "description": "Per-skill mastery + streak for the current user.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DrillStatsSummary"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "drills"
+        ]
+      }
+    },
+    "/me/drills/stats/{deck}": {
+      "get": {
+        "operationId": "getDeckMastery",
+        "description": "Per-skill mastery for a single deck.",
+        "parameters": [
+          {
+            "name": "deck",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillMastery"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "drills"
+        ]
+      }
+    },
     "/me/entitlements/history": {
       "get": {
         "operationId": "getEntitlementHistory",
@@ -4654,6 +4742,88 @@
           }
         }
       },
+      "DrillAttempt": {
+        "type": "object",
+        "required": [
+          "deck",
+          "card",
+          "modality",
+          "accuracy",
+          "correct"
+        ],
+        "properties": {
+          "deck": {
+            "type": "string"
+          },
+          "card": {
+            "type": "string"
+          },
+          "modality": {
+            "type": "string",
+            "description": "Answer-input modality (multiple-choice | play-instrument | ear-identify | pitch-mic | rhythm-tap)."
+          },
+          "accuracy": {
+            "type": "number",
+            "format": "float",
+            "description": "0–1 objective accuracy."
+          },
+          "correct": {
+            "type": "boolean"
+          },
+          "responseMs": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Response latency in ms, if measured."
+          }
+        },
+        "description": "One objectively-graded drill attempt reported by the client."
+      },
+      "DrillAttemptResult": {
+        "type": "object",
+        "required": [
+          "state",
+          "quality",
+          "isPersonalBest"
+        ],
+        "properties": {
+          "state": {
+            "$ref": "#/components/schemas/ReviewState"
+          },
+          "quality": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isPersonalBest": {
+            "type": "boolean",
+            "description": "True when this attempt set a new best rolling accuracy for the deck."
+          }
+        },
+        "description": "The result of recording an attempt: the SM-2 state after grading + the applied quality."
+      },
+      "DrillStatsSummary": {
+        "type": "object",
+        "required": [
+          "skills",
+          "streakDays",
+          "attemptsToday"
+        ],
+        "properties": {
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SkillMastery"
+            }
+          },
+          "streakDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "attemptsToday": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "EntitlementEvent": {
         "type": "object",
         "required": [
@@ -5392,6 +5562,40 @@
           }
         },
         "description": "A saved progression as returned to the client."
+      },
+      "SkillMastery": {
+        "type": "object",
+        "required": [
+          "deck",
+          "attempts",
+          "accuracy",
+          "mastery",
+          "level"
+        ],
+        "properties": {
+          "deck": {
+            "type": "string"
+          },
+          "attempts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "accuracy": {
+            "type": "number",
+            "format": "float",
+            "description": "Rolling accuracy 0–1 over recent attempts."
+          },
+          "mastery": {
+            "type": "number",
+            "format": "float",
+            "description": "Mastery score 0–1 (EWMA of correctness)."
+          },
+          "level": {
+            "type": "string",
+            "description": "Recommended level tier from mastery (beginner…expert)."
+          }
+        },
+        "description": "Rolling mastery for one deck/skill, computed from the attempt log."
       },
       "StartCheckoutInput": {
         "type": "object",

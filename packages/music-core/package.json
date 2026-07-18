@@ -11,6 +11,7 @@
     "./pixi/use-theme-colors": "./src/pixi/use-theme-colors.ts",
     "./pixi/*": "./src/pixi/*.tsx",
     "./score/*": "./src/score/*.ts",
+    "./drills/generators": "./src/drills/generators/index.ts",
     "./*": "./src/*.ts"
   },
   "files": [

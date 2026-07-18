@@ -224,6 +224,27 @@ export const onRequest = defineMiddleware(async (context, next) => {
     FlagDefaults[FlagKeys.ToolSequencer],
   );
   const trainers = await client.getBooleanValue(FlagKeys.Trainers, FlagDefaults[FlagKeys.Trainers]);
+  const drillEngine = await client.getBooleanValue(
+    FlagKeys.DrillEngine,
+    FlagDefaults[FlagKeys.DrillEngine],
+  );
+  const drillCelebrations = await client.getBooleanValue(
+    FlagKeys.DrillCelebrations,
+    FlagDefaults[FlagKeys.DrillCelebrations],
+  );
+  const drillPlay = await client.getBooleanValue(
+    FlagKeys.DrillPlay,
+    FlagDefaults[FlagKeys.DrillPlay],
+  );
+  const drillEar = await client.getBooleanValue(FlagKeys.DrillEar, FlagDefaults[FlagKeys.DrillEar]);
+  const drillPitch = await client.getBooleanValue(
+    FlagKeys.DrillPitch,
+    FlagDefaults[FlagKeys.DrillPitch],
+  );
+  const drillRhythm = await client.getBooleanValue(
+    FlagKeys.DrillRhythm,
+    FlagDefaults[FlagKeys.DrillRhythm],
+  );
   const toolSightReading = await client.getBooleanValue(
     FlagKeys.ToolSightReading,
     FlagDefaults[FlagKeys.ToolSightReading],
@@ -437,6 +458,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
     toolEarTrainer,
     toolSequencer,
     trainers,
+    drillEngine,
+    drillCelebrations,
+    drillPlay,
+    drillEar,
+    drillPitch,
+    drillRhythm,
     toolSightReading,
     toolBackingTrack,
     toolVoicings,

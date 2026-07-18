@@ -100,7 +100,14 @@ export function PixiCanvas<P extends object>({
         className={cn('relative overflow-hidden', containerClassName)}
       >
         <Suspense
-          fallback={<div className="size-full animate-pulse rounded-lg bg-muted" aria-hidden />}
+          fallback={
+            // A decorative overlay (feedback burst, ambient/sparkle) must stay invisible while its
+            // scene lazy-loads — a muted skeleton would flash over whatever it covers (e.g. the
+            // full-viewport DrillFeedback). Inline canvases keep the loading skeleton.
+            decorative ? null : (
+              <div className="size-full animate-pulse rounded-lg bg-muted" aria-hidden />
+            )
+          }
         >
           <Scene
             resizeTo={containerRef}

@@ -89,6 +89,18 @@ export const FlagKeys = {
   ToolSequencer: 'tools.sequencer',
   /** Phase 4 — SRS trainers / drills. */
   Trainers: 'trainers.srs',
+  /** Drill engine (Phase P) — objective answer-checking + per-skill mastery; off = legacy self-grade. */
+  DrillEngine: 'trainers.drill-engine',
+  /** Drill engine — on-screen celebration/reward mechanics (score-pop, combo, confetti, level-up). */
+  DrillCelebrations: 'trainers.celebrations',
+  /** Drill engine — play-on-instrument answer modality (keyboard/fretboard/MIDI). */
+  DrillPlay: 'trainers.play-instrument',
+  /** Drill engine — ear-then-identify answer modality (progressions/cadences/functional degrees). */
+  DrillEar: 'trainers.ear',
+  /** Drill engine — pitch/mic (sing or play acoustic) answer modality. */
+  DrillPitch: 'trainers.pitch-mic',
+  /** Drill engine — rhythm-tap (tap in time) answer modality. */
+  DrillRhythm: 'trainers.rhythm-tap',
   /** Phase 4 — sight-reading generator tool. */
   ToolSightReading: 'tools.sight-reading',
   /** Phase 5 — play-along backing-track generator (progression × key × tempo). */
@@ -228,6 +240,13 @@ export const FlagDefaults = {
   [FlagKeys.ToolEarTrainer]: true,
   [FlagKeys.ToolSequencer]: true,
   [FlagKeys.Trainers]: true,
+  [FlagKeys.DrillEngine]: true,
+  [FlagKeys.DrillCelebrations]: true,
+  // Later drill modalities land phase-by-phase — off until their phase ships.
+  [FlagKeys.DrillPlay]: false,
+  [FlagKeys.DrillEar]: false,
+  [FlagKeys.DrillPitch]: false,
+  [FlagKeys.DrillRhythm]: false,
   [FlagKeys.ToolSightReading]: true,
   [FlagKeys.ToolBackingTrack]: true,
   [FlagKeys.ToolVoicings]: true,

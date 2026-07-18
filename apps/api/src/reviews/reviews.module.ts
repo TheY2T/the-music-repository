@@ -19,5 +19,7 @@ import { ReviewsController } from './reviews.controller';
     GradeCardUseCase,
     { provide: ReviewRepository, useClass: DrizzleReviewRepository },
   ],
+  // GradeCardUseCase is reused by the attempts context (objective grading delegates SM-2 to reviews).
+  exports: [GradeCardUseCase],
 })
 export class ReviewsModule {}

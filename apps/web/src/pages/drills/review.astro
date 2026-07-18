@@ -1,4 +1,5 @@
 ---
+import DrillSession from '@TheY2T/tmr-musickit-ui/DrillSession';
 import ReviewSession from '@TheY2T/tmr-musickit-ui/ReviewSession';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
@@ -11,6 +12,7 @@ if (!Astro.locals.user) {
   return Astro.redirect('/signin?redirect=/drills');
 }
 const locale = Astro.locals.locale;
+const { drillEngine, drillCelebrations } = Astro.locals.flags;
 ---
 
 <BaseLayout title={`${t(locale, 'drills.review')} — ${t(locale, 'site.name')}`}>
@@ -19,6 +21,12 @@ const locale = Astro.locals.locale;
     back={{ href: localizedPath(locale, '/drills'), label: t(locale, 'common.backDrills') }}
     maxWidth="max-w-2xl"
   >
-    <ReviewSession client:load locale={locale} />
+    {
+      drillEngine ? (
+        <DrillSession client:load locale={locale} celebrations={drillCelebrations} />
+      ) : (
+        <ReviewSession client:load locale={locale} />
+      )
+    }
   </PageShell>
 </BaseLayout>
