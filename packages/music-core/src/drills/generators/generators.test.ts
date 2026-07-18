@@ -25,6 +25,7 @@ describe('drill deck registry', () => {
       'fretboard-note',
       'progression-ear',
       'cadence-ear',
+      'sing-interval',
     ]);
   });
 

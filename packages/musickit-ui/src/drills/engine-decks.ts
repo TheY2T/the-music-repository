@@ -12,7 +12,7 @@ export interface EngineDeckMeta {
   /** Number of cards in the deck (for the "new" badge before any are learned). */
   cardCount: number;
   /** The `Astro.locals.flags` key that gates this deck. */
-  flag: 'drillPlay' | 'drillEar';
+  flag: 'drillPlay' | 'drillEar' | 'drillPitch';
   helpSlug: string;
 }
 
@@ -47,6 +47,14 @@ export const ENGINE_DECKS: EngineDeckMeta[] = [
     descKey: 'drill.deck.cadenceEar.desc',
     cardCount: 4,
     flag: 'drillEar',
+    helpSlug: 'ear-training',
+  },
+  {
+    key: 'sing-interval',
+    titleKey: 'drill.deck.singInterval.title',
+    descKey: 'drill.deck.singInterval.desc',
+    cardCount: 7,
+    flag: 'drillPitch',
     helpSlug: 'ear-training',
   },
 ];

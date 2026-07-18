@@ -22,7 +22,11 @@ const locale = Astro.locals.locale;
     <DrillsHub
       client:load
       locale={locale}
-      flags={{ drillPlay: Astro.locals.flags.drillPlay, drillEar: Astro.locals.flags.drillEar }}
+      flags={{
+        drillPlay: Astro.locals.flags.drillPlay,
+        drillEar: Astro.locals.flags.drillEar,
+        drillPitch: Astro.locals.flags.drillPitch,
+      }}
     />
   </PageShell>
 </BaseLayout>

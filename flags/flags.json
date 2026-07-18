@@ -303,7 +303,7 @@
         "on": true,
         "off": false
       },
-      "defaultVariant": "off"
+      "defaultVariant": "on"
     },
     "trainers.rhythm-tap": {
       "state": "ENABLED",

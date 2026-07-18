@@ -1,7 +1,7 @@
 # Feature: Drill engine (objective grading + rewards)
 
-- **Phase:** P (drills expansion) · **Status:** Phases 0–2 shipped (multiple-choice, ear-identify,
-  play-instrument; ear progressions/cadences; Tier-1/2/3 rewards)
+- **Phase:** P (drills expansion) · **Status:** Phases 0–3 shipped (multiple-choice, ear-identify,
+  play-instrument, pitch/mic; ear progressions/cadences; Tier-1/2/3 rewards)
 - **Flags** (`@TheY2T/tmr-flags`): `trainers.drill-engine` (master gate; off = legacy self-grade
   `ReviewSession`), `trainers.celebrations` (reward mechanics), and the per-modality gates
   `trainers.play-instrument` / `trainers.ear` / `trainers.pitch-mic` / `trainers.rhythm-tap` (later phases).
@@ -31,7 +31,10 @@ mastery, and rewards the learner on-screen. It coexists with the legacy path beh
   the chosen note; `InstrumentInput` picks `drills/AnswerKeyboard.tsx` (one-octave keyboard) or
   `drills/AnswerFretboard.tsx` (guitar neck) by `DrillItem.instrument`; both reuse the note service +
   `useMidiInput` and, after answering, highlight the correct pitch class (success) and a wrong choice
-  (destructive). `drills/celebration/` holds the reward layer (`celebration-tiers.ts` config, `ScorePop`,
+  (destructive). **Pitch/mic** (`PitchMicInput`) listens via `getUserMedia` + an `AnalyserNode`, runs
+  `detectPitchHz`/`hzToNote`, and submits the sustained pitch class (pure `drills/pitch-match.ts` —
+  cents-tolerance + sustain debounce, unit-tested); it falls back to `InstrumentInput` (keyboard) when
+  there's no mic, permission is denied, or the learner opts out, so the drill is always answerable. `drills/celebration/` holds the reward layer (`celebration-tiers.ts` config, `ScorePop`,
   `ComboCounter`). Engine-only decks (beyond the four legacy) are listed in the hub via
   `drills/engine-decks.ts`, each gated by its per-modality flag.
 - **Backend — `apps/api/src/attempts/` (hexagonal):** objective attempts + mastery, **separate from but
