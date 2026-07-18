@@ -54,6 +54,12 @@ export default function AdminNav({
       title: t(locale, 'admin.localeStrings'),
       description: t(locale, 'admin.localeStringsDesc'),
     });
+    tiles.push({
+      href: localizedPath(locale, '/admin/translations'),
+      icon: 'languages',
+      title: t(locale, 'admin.contentTranslations'),
+      description: t(locale, 'admin.contentTranslationsDesc'),
+    });
   }
 
   return (

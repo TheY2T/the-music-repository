@@ -184,6 +184,8 @@ export interface MediaView {
 }
 
 export interface ContentDetailView extends ContentSummaryView {
+  /** Internal id — used by the translations admin to key per-locale translations. */
+  id: string;
   bodyMdx?: string;
   source?: string;
   attribution?: string;
@@ -299,6 +301,7 @@ export function toContentSummaryView(item: ContentItem): ContentSummaryView {
  * catalogue read path and the authoring CMS so both emit an identical `ContentDetail`. */
 export function toContentDetailView(item: ContentItem, media: MediaView[]): ContentDetailView {
   return {
+    id: item.id,
     slug: item.slug,
     title: item.title,
     summary: item.summary ?? undefined,

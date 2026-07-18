@@ -4005,6 +4005,7 @@
           "featured",
           "popularity",
           "ratingCount",
+          "id",
           "items",
           "sections"
         ],
@@ -4098,6 +4099,10 @@
           "ratingCount": {
             "type": "integer",
             "format": "int32"
+          },
+          "id": {
+            "type": "string",
+            "description": "Internal id — used by the translations admin to key per-locale collection translations."
           },
           "ownerId": {
             "type": "string"
@@ -4311,6 +4316,7 @@
           "featured",
           "popularity",
           "ratingCount",
+          "id",
           "items",
           "sections",
           "percentComplete",
@@ -4407,6 +4413,10 @@
           "ratingCount": {
             "type": "integer",
             "format": "int32"
+          },
+          "id": {
+            "type": "string",
+            "description": "Internal id — used by the translations admin to key per-locale collection translations."
           },
           "ownerId": {
             "type": "string"
@@ -4932,6 +4942,7 @@
           "genres",
           "instruments",
           "topics",
+          "id",
           "tags",
           "media",
           "createdAt",
@@ -4996,6 +5007,10 @@
             "items": {
               "$ref": "#/components/schemas/TaxonomyRef"
             }
+          },
+          "id": {
+            "type": "string",
+            "description": "Internal id — used by the translations admin to key per-locale content translations."
           },
           "bodyMdx": {
             "type": "string"
@@ -5854,11 +5869,16 @@
       "HelpTopic": {
         "type": "object",
         "required": [
+          "id",
           "slug",
           "term",
           "body"
         ],
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Internal id — used by the translations admin to key per-locale help translations."
+          },
           "slug": {
             "type": "string"
           },

@@ -131,6 +131,7 @@ export class CollectionDetailAssembler {
     }));
     return {
       ...summary,
+      id: collection.id,
       // itemCount reflects what's actually shown.
       itemCount: entries.length,
       status: collection.status,

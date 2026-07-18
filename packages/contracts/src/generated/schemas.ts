@@ -93,6 +93,7 @@ export const CreateCollectionResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale collection translations.'),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -195,6 +196,7 @@ export const GetCollectionForEditResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale collection translations.'),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -322,6 +324,7 @@ export const UpdateCollectionResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale collection translations.'),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -443,6 +446,7 @@ export const SetCollectionItemsResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale collection translations.'),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -545,6 +549,7 @@ export const PublishCollectionResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale collection translations.'),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -657,6 +662,7 @@ export const SetCollectionSectionsResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale collection translations.'),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -759,6 +765,7 @@ export const UnpublishCollectionResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale collection translations.'),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -838,6 +845,7 @@ export const CreateHelpTopicBody = zod.object({
 })
 
 export const CreateHelpTopicResponse = zod.object({
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale help translations.'),
   "slug": zod.string(),
   "term": zod.string(),
   "body": zod.string(),
@@ -857,6 +865,7 @@ export const UpdateHelpTopicBody = zod.object({
 })
 
 export const UpdateHelpTopicResponse = zod.object({
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale help translations.'),
   "slug": zod.string(),
   "term": zod.string(),
   "body": zod.string(),
@@ -1337,6 +1346,7 @@ export const GetContentBySlugResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale content translations.'),
   "bodyMdx": zod.string().optional(),
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
@@ -1846,6 +1856,7 @@ export const GetCollectionBySlugResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale collection translations.'),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -1965,6 +1976,7 @@ export const GetCollectionWithProgressResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale collection translations.'),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -2132,6 +2144,7 @@ export const CreateContentResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale content translations.'),
   "bodyMdx": zod.string().optional(),
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
@@ -2210,6 +2223,7 @@ export const GetContentForEditResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale content translations.'),
   "bodyMdx": zod.string().optional(),
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
@@ -2337,6 +2351,7 @@ export const UpdateContentResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale content translations.'),
   "bodyMdx": zod.string().optional(),
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
@@ -2441,6 +2456,7 @@ export const PublishContentResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale content translations.'),
   "bodyMdx": zod.string().optional(),
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
@@ -2537,6 +2553,7 @@ export const RestoreContentRevisionResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale content translations.'),
   "bodyMdx": zod.string().optional(),
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
@@ -2619,6 +2636,7 @@ export const SetContentScoreResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale content translations.'),
   "bodyMdx": zod.string().optional(),
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
@@ -2698,6 +2716,7 @@ export const SetContentStatusResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale content translations.'),
   "bodyMdx": zod.string().optional(),
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
@@ -2773,6 +2792,7 @@ export const UnpublishContentResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale content translations.'),
   "bodyMdx": zod.string().optional(),
   "source": zod.string().optional(),
   "attribution": zod.string().optional(),
@@ -2849,6 +2869,7 @@ export const ListHelpTopicsQueryParams = zod.object({
 
 export const ListHelpTopicsResponse = zod.object({
   "items": zod.array(zod.object({
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale help translations.'),
   "slug": zod.string(),
   "term": zod.string(),
   "body": zod.string(),
@@ -2866,6 +2887,7 @@ export const GetHelpTopicQueryParams = zod.object({
 })
 
 export const GetHelpTopicResponse = zod.object({
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale help translations.'),
   "slug": zod.string(),
   "term": zod.string(),
   "body": zod.string(),
@@ -3035,6 +3057,7 @@ export const CreateUserCollectionResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale collection translations.'),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -3140,6 +3163,7 @@ export const GetMyCollectionResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale collection translations.'),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -3252,6 +3276,7 @@ export const UpdateUserCollectionResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale collection translations.'),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),
@@ -3396,6 +3421,7 @@ export const SetUserCollectionItemsResponse = zod.object({
   "popularity": zod.number(),
   "averageRating": zod.number().optional(),
   "ratingCount": zod.number(),
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale collection translations.'),
   "ownerId": zod.string().optional(),
   "bodyMdx": zod.string().optional(),
   "outcomes": zod.array(zod.string()).optional(),

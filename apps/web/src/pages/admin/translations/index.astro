@@ -1,0 +1,27 @@
+---
+import AdminTranslationManager from '@TheY2T/tmr-common-ui/AdminTranslationManager';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { guardAdmin } from '@/lib/admin-guard';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+const redirect = guardAdmin(Astro);
+if (redirect) {
+  return redirect;
+}
+if (!Astro.locals.flags.localeStrings) {
+  return Astro.redirect('/admin');
+}
+const locale = Astro.locals.locale;
+---
+
+<BaseLayout title={`${t(locale, 'transadmin.title')} — ${t(locale, 'nav.admin')}`}>
+  <PageShell
+    title={t(locale, 'transadmin.title')}
+    subtitle={t(locale, 'transadmin.subtitle')}
+    back={{ href: localizedPath(locale, '/admin'), label: t(locale, 'common.backContent') }}
+    maxWidth="max-w-6xl"
+  >
+    <AdminTranslationManager client:load locale={locale} />
+  </PageShell>
+</BaseLayout>

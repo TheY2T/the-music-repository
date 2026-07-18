@@ -185,6 +185,8 @@ export interface CollectionSectionView {
 }
 
 export interface CollectionDetailView extends CollectionSummaryView {
+  /** Internal id — used by the translations admin to key per-locale translations. */
+  id: string;
   ownerId?: string;
   bodyMdx?: string;
   outcomes?: string[];

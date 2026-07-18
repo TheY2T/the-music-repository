@@ -182,6 +182,10 @@ model ContentEmbed {
 /** Full detail view of a catalogue item. */
 model ContentDetail {
   ...ContentSummary;
+
+  /** Internal id — used by the translations admin to key per-locale content translations. */
+  id: string;
+
   bodyMdx?: string;
   source?: string;
   attribution?: string;
@@ -533,6 +537,10 @@ model CollectionSectionView {
 /** Full collection with its ordered items grouped into sections. */
 model CollectionDetail {
   ...CollectionSummary;
+
+  /** Internal id — used by the translations admin to key per-locale collection translations. */
+  id: string;
+
   ownerId?: string;
   bodyMdx?: string;
   outcomes?: string[];
@@ -1098,6 +1106,9 @@ op getDeckMastery(@path deck: string): SkillMastery;
 // Context-sensitive help: elements tagged `data-help="<slug>"` show the matching topic.
 
 model HelpTopic {
+  /** Internal id — used by the translations admin to key per-locale help translations. */
+  id: string;
+
   slug: string;
   term: string;
   body: string;
