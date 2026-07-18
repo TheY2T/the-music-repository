@@ -12,6 +12,7 @@ import {
   Icon,
   Input,
   Label,
+  Pagination,
   SearchField,
   Select,
   Table,
@@ -27,7 +28,22 @@ import {
   type UiMessageRevision,
   type UiMessageRow,
 } from '@TheY2T/tmr-web-data/i18n-api';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
+
+const PAGE_SIZES = [10, 25, 50, 100, 200] as const;
+
+/** Case-insensitive match of a row against the client-side filter (key + draft + published values). */
+function matchesSearch(row: UiMessageRow, needle: string): boolean {
+  if (!needle) {
+    return true;
+  }
+  const q = needle.toLowerCase();
+  return (
+    row.key.toLowerCase().includes(q) ||
+    (row.draftValue?.toLowerCase().includes(q) ?? false) ||
+    (row.publishedValue?.toLowerCase().includes(q) ?? false)
+  );
+}
 
 /**
  * Admin CMS for DB-backed UI strings (ADR 0034). Search-first over the whole catalogue; each row can be
@@ -44,6 +60,8 @@ export default function AdminLocaleManager({ locale }: { locale: Locale }) {
   const [busyIds, setBusyIds] = useState<Set<string>>(new Set());
   const [publishing, setPublishing] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<number>(50);
 
   const [editing, setEditing] = useState<{ id: string; value: string } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<UiMessageRow | null>(null);
@@ -52,11 +70,12 @@ export default function AdminLocaleManager({ locale }: { locale: Locale }) {
     null,
   );
 
+  // The server returns the whole coarse set (by locale/status/deleted); text search + paging are done
+  // client-side. `useDeferredValue` keeps the search box responsive while the (large) list re-filters.
   const reload = useCallback(async () => {
     setError(null);
     try {
       const items = await localeAdminApi.list({
-        search: search.trim() || undefined,
         locale: localeFilter || undefined,
         status: statusFilter || undefined,
         includeDeleted,
@@ -66,19 +85,26 @@ export default function AdminLocaleManager({ locale }: { locale: Locale }) {
       setError(t(locale, 'localeadmin.loadError', { error: (err as Error).message }));
       setRows([]);
     }
-  }, [search, localeFilter, statusFilter, includeDeleted, locale]);
+  }, [localeFilter, statusFilter, includeDeleted, locale]);
 
-  // Refetch when filters change; debounce the search box so typing doesn't hammer the API.
-  const first = useRef(true);
   useEffect(() => {
-    if (first.current) {
-      first.current = false;
-      void reload();
-      return;
-    }
-    const timer = setTimeout(() => void reload(), 250);
-    return () => clearTimeout(timer);
+    void reload();
   }, [reload]);
+
+  const deferredSearch = useDeferredValue(search);
+  const filtered = useMemo(
+    () => (rows ?? []).filter((row) => matchesSearch(row, deferredSearch.trim())),
+    [rows, deferredSearch],
+  );
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const clampedPage = Math.min(page, pageCount);
+  const pageRows = filtered.slice((clampedPage - 1) * pageSize, clampedPage * pageSize);
+
+  // Snap back to the first page whenever the filter/search/page-size changes the result window.
+  useEffect(() => {
+    setPage(1);
+  }, [deferredSearch, localeFilter, statusFilter, includeDeleted, pageSize]);
 
   const withBusy = useCallback(async (id: string, fn: () => Promise<void>) => {
     setBusyIds((prev) => new Set(prev).add(id));
@@ -158,27 +184,22 @@ export default function AdminLocaleManager({ locale }: { locale: Locale }) {
     }
   }
 
-  const count = rows?.length ?? 0;
+  const total = filtered.length;
+  const rangeFrom = total === 0 ? 0 : (clampedPage - 1) * pageSize + 1;
+  const rangeTo = Math.min(clampedPage * pageSize, total);
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h2 className="font-display text-lg font-semibold tracking-tight">
-            {t(locale, 'localeadmin.title')}
-          </h2>
-          <p className="text-sm text-muted-foreground">{t(locale, 'localeadmin.subtitle')}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => setNewOpen(true)}>
-            <Icon name="plus" className="size-4" />
-            {t(locale, 'localeadmin.new')}
-          </Button>
-          <Button onClick={publish} disabled={publishing}>
-            <Icon name="upload" className="size-4" />
-            {publishing ? t(locale, 'localeadmin.publishing') : t(locale, 'localeadmin.publish')}
-          </Button>
-        </div>
+      {/* Title + subtitle come from the page's PageShell header — no duplicate heading here. */}
+      <div className="flex items-center justify-end gap-2">
+        <Button variant="outline" onClick={() => setNewOpen(true)}>
+          <Icon name="plus" className="size-4" />
+          {t(locale, 'localeadmin.new')}
+        </Button>
+        <Button onClick={publish} disabled={publishing}>
+          <Icon name="upload" className="size-4" />
+          {publishing ? t(locale, 'localeadmin.publishing') : t(locale, 'localeadmin.publish')}
+        </Button>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
@@ -220,7 +241,7 @@ export default function AdminLocaleManager({ locale }: { locale: Locale }) {
           {t(locale, 'localeadmin.showDeleted')}
         </Label>
         <span className="ml-auto text-sm text-muted-foreground">
-          {t(locale, 'localeadmin.count', { count })}
+          {t(locale, 'localeadmin.count', { count: total })}
         </span>
       </div>
 
@@ -249,14 +270,14 @@ export default function AdminLocaleManager({ locale }: { locale: Locale }) {
                   <Icon name="loader" className="mx-auto size-5 animate-spin" />
                 </TableCell>
               </TableRow>
-            ) : rows.length === 0 ? (
+            ) : pageRows.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
                   {t(locale, 'localeadmin.empty')}
                 </TableCell>
               </TableRow>
             ) : (
-              rows.map((row) => {
+              pageRows.map((row) => {
                 const busy = busyIds.has(row.id);
                 const isEditing = editing?.id === row.id;
                 return (
@@ -368,6 +389,36 @@ export default function AdminLocaleManager({ locale }: { locale: Locale }) {
             )}
           </TableBody>
         </Table>
+      </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Label className="flex items-center gap-2">
+            {t(locale, 'localeadmin.perPage')}
+            <Select
+              value={String(pageSize)}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+              aria-label={t(locale, 'localeadmin.perPage')}
+              className="w-auto"
+            >
+              {PAGE_SIZES.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </Select>
+          </Label>
+          <span>{t(locale, 'localeadmin.showing', { from: rangeFrom, to: rangeTo, total })}</span>
+        </div>
+        {pageCount > 1 ? (
+          <Pagination
+            page={clampedPage}
+            pageCount={pageCount}
+            onPageChange={setPage}
+            prevLabel={t(locale, 'common.prev')}
+            nextLabel={t(locale, 'common.next')}
+          />
+        ) : null}
       </div>
 
       <DeleteDialog
