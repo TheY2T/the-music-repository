@@ -6,6 +6,12 @@ import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 const locale = Astro.locals.locale;
 const showSupport = Astro.locals.flags.support;
+const showFeedback = Astro.locals.flags.feedbackForm;
+
+// `about.p2` carries a `{suggestion}` slot where the "leave a suggestion" call-to-action sits;
+// splitting on it keeps each language's word order intact around the link.
+const [p2Before, p2After = ''] = t(locale, 'about.p2').split('{suggestion}');
+const suggestLabel = t(locale, 'about.suggestLink');
 
 const chips = [
   { icon: 'guitar', label: t(locale, 'about.chipGuitar') },
@@ -32,7 +38,17 @@ const chips = [
 
       <div class="space-y-5 text-sm leading-relaxed text-muted-foreground">
         <p>{t(locale, 'about.p1')}</p>
-        <p>{t(locale, 'about.p2')}</p>
+        <p>
+          {p2Before}
+          {showFeedback ? (
+            <a href={localizedPath(locale, '/feedback')} class="text-primary underline underline-offset-4">
+              {suggestLabel}
+            </a>
+          ) : (
+            suggestLabel
+          )}
+          {p2After}
+        </p>
         <p>{t(locale, 'about.p3')}</p>
       </div>
 
