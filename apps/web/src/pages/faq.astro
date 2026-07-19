@@ -1,0 +1,46 @@
+---
+import FaqAccordion from '@TheY2T/tmr-common-ui/FaqAccordion';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { apiBaseUrl } from '@/lib/api-base';
+import { breadcrumbJsonLd, pageTitle } from '@/lib/seo';
+import { fetchFaqEntries } from '@TheY2T/tmr-web-acl/server-content';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+if (!Astro.locals.flags.faq) {
+  return Astro.redirect('/');
+}
+const locale = Astro.locals.locale;
+const siteName = t(locale, 'site.name');
+const site = Astro.site;
+
+// Fetch entries server-side so the crawler-visible <head> and body carry the real question/answer text.
+const entries = await fetchFaqEntries({
+  apiBaseUrl: apiBaseUrl(),
+  locale,
+  cookie: Astro.request.headers.get('cookie') ?? undefined,
+});
+
+const abs = (path: string) => (site ? new URL(path, site).href : path);
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: t(locale, 'common.home'), url: abs(localizedPath(locale, '/')) },
+    { name: t(locale, 'nav.faq'), url: abs(localizedPath(locale, '/faq')) },
+  ]),
+];
+---
+
+<BaseLayout
+  title={pageTitle(t(locale, 'faq.title'), siteName)}
+  description={t(locale, 'seo.faq.description')}
+  jsonLd={jsonLd}
+>
+  <PageShell
+    title={t(locale, 'faq.title')}
+    subtitle={t(locale, 'faq.subtitle')}
+    back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
+    maxWidth="max-w-3xl"
+  >
+    <FaqAccordion locale={locale} entries={entries} />
+  </PageShell>
+</BaseLayout>

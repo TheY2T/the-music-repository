@@ -11,6 +11,7 @@ import { CollectionsModule } from './collections/collections.module';
 import { validateEnv } from './config/env';
 import { DemoModule } from './demo/demo.module';
 import { EntitlementsModule } from './entitlements/entitlements.module';
+import { FaqModule } from './faq/faq.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { FeatureFlagsModule } from './feature-flags/feature-flags.module';
 import { HealthModule } from './health/health.module';
@@ -51,6 +52,7 @@ import { TranslationsModule } from './translations/translations.module';
     ProgressModule,
     ProgressionsModule,
     HelpModule,
+    FaqModule,
     ReviewsModule,
     AttemptsModule,
     I18nModule,

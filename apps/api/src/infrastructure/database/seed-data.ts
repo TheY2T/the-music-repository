@@ -1470,3 +1470,163 @@ export const HELP_TOPICS: SeedHelpTopic[] = [
     body: 'A rough **difficulty rating** from 1–10, grouped into bands: **Beginner** (1–3), **Intermediate** (4–6), **Advanced** (7–8), and **Expert** (9–10). Pick a band to match material to your current level.',
   },
 ];
+
+export interface SeedFaqEntry {
+  slug: string;
+  question: string;
+  answer: string; // markdown
+  category: string;
+  sortOrder: number;
+}
+
+/** FAQ entries shown on the public /faq page, grouped by category and ordered within each. */
+export const FAQ_ENTRIES: SeedFaqEntry[] = [
+  // --- Getting started ---
+  {
+    slug: 'what-is-the-music-repository',
+    question: 'What is The Music Repository?',
+    answer:
+      'A free library of music lessons, songs, and interactive tools for learning piano and guitar. You can read and play through the catalogue, work through collections (courses and learning paths), and use the practice tools right in the browser.',
+    category: 'Getting started',
+    sortOrder: 0,
+  },
+  {
+    slug: 'who-is-it-for',
+    question: 'Who is it for? Do I need to be a beginner?',
+    answer:
+      'Anyone learning piano or guitar, at any stage. Material is graded from beginner to advanced, so you can start with the basics or jump to something that matches your current level. No prior music-reading experience is assumed.',
+    category: 'Getting started',
+    sortOrder: 1,
+  },
+  {
+    slug: 'do-i-need-an-account',
+    question: 'Do I need an account?',
+    answer:
+      'No — browsing the catalogue, reading lessons, and using the tools work without signing in. An account adds personal features: saving favourites, tracking progress and streaks, and building your own collections.',
+    category: 'Getting started',
+    sortOrder: 2,
+  },
+  {
+    slug: 'which-instruments',
+    question: 'Which instruments are covered?',
+    answer:
+      'Piano and guitar to begin with. The tools and notation support both — for example, scores render as a grand staff for piano and as standard notation plus tab for guitar.',
+    category: 'Getting started',
+    sortOrder: 3,
+  },
+  // --- Learning & practice ---
+  {
+    slug: 'how-much-should-i-practice',
+    question: 'How much should I practice?',
+    answer:
+      'Short and regular beats long and occasional. Around 20 minutes a day is a good starting point — consistency matters more than session length, because progress comes from small, repeated gains.',
+    category: 'Learning & practice',
+    sortOrder: 0,
+  },
+  {
+    slug: 'do-i-need-to-read-music',
+    question: 'Do I need to read music?',
+    answer:
+      "Not to begin. Many songs can be learned from chords, tab, or by ear. Reading standard notation is a useful skill that opens up more material over time, and the notation tools here let you build it gradually.",
+    category: 'Learning & practice',
+    sortOrder: 1,
+  },
+  {
+    slug: 'am-i-too-old',
+    question: 'Am I too old to start?',
+    answer:
+      'No. Playing an instrument is a learned skill, not a fixed talent — adults learn successfully at any age. Steady practice is what drives improvement.',
+    category: 'Learning & practice',
+    sortOrder: 2,
+  },
+  {
+    slug: 'piano-or-guitar-first',
+    question: 'Should I learn piano or guitar first?',
+    answer:
+      'Either works. Piano lays out pitch visually and every key sounds cleanly, which makes theory and sight-reading easier to see. Guitar is portable and quick to strum first songs on, though fingertips take a few weeks to toughen up. Pick the one you are more drawn to playing.',
+    category: 'Learning & practice',
+    sortOrder: 3,
+  },
+  {
+    slug: 'do-i-need-theory',
+    question: 'Do I need to know music theory?',
+    answer:
+      'You can play a lot without it, but a little theory makes learning faster — it explains why chords, scales, and progressions work. The catalogue and the theory tools introduce it in small, practical steps tied to real music.',
+    category: 'Learning & practice',
+    sortOrder: 4,
+  },
+  // --- Interactive tools ---
+  {
+    slug: 'how-do-the-tools-work',
+    question: 'How do the interactive tools work?',
+    answer:
+      'They run in your browser — no install. Open a tool from the Tools page (for example the keyboard, chord diagrams, scale explorer, or metronome) and interact with it directly. Some lessons also embed a preconfigured tool inline so you can try the idea as you read.',
+    category: 'Interactive tools',
+    sortOrder: 0,
+  },
+  {
+    slug: 'loop-and-slow-down-scores',
+    question: 'Can I loop or slow down a section in the score player?',
+    answer:
+      'Yes. The interactive score player lets you set an A–B loop over a passage, scrub to any point, click a note to hear it, and run a metronome or count-in — useful for drilling a tricky bar at a comfortable tempo.',
+    category: 'Interactive tools',
+    sortOrder: 1,
+  },
+  {
+    slug: 'play-keyboard-with-computer',
+    question: 'Can I play the on-screen keyboard with my computer keyboard?',
+    answer:
+      'Yes. The keyboard tool maps your computer keys to notes, and supports sustain, velocity, and octave shifting. You can also click or tap the on-screen keys.',
+    category: 'Interactive tools',
+    sortOrder: 2,
+  },
+  {
+    slug: 'no-sound-or-microphone',
+    question: "Why isn't the sound or microphone working?",
+    answer:
+      'Audio starts only after you interact with the page (a browser requirement), so click or press a key first. Tools that listen — such as the tuner — need microphone permission: allow it when your browser asks, and check that no other app is holding the microphone.',
+    category: 'Interactive tools',
+    sortOrder: 3,
+  },
+  // --- Content & licensing ---
+  {
+    slug: 'where-does-the-sheet-music-come-from',
+    question: 'Where does the sheet music come from?',
+    answer:
+      'The catalogue is built from public-domain works and material created for this site. Each score is authored and rendered here so it plays back and prints consistently.',
+    category: 'Content & licensing',
+    sortOrder: 0,
+  },
+  {
+    slug: 'is-it-free',
+    question: 'Is it free?',
+    answer:
+      'Yes — the lessons, songs, and tools are free and ad-free. If you would like to help keep it running, there is a voluntary support option, but nothing is locked behind it.',
+    category: 'Content & licensing',
+    sortOrder: 1,
+  },
+  {
+    slug: 'can-i-reuse-the-content',
+    question: 'Can I reuse the content?',
+    answer:
+      'Public-domain works carry no reuse restrictions. Material original to this site remains its own — check the notice on a page before redistributing it. When in doubt, get in touch.',
+    category: 'Content & licensing',
+    sortOrder: 2,
+  },
+  {
+    slug: 'how-is-my-progress-saved',
+    question: 'How is my progress saved?',
+    answer:
+      'When you are signed in, completion, streaks, favourites, and saved collections are stored to your account and sync across devices. Signed out, the site still works but nothing personal is kept.',
+    category: 'Content & licensing',
+    sortOrder: 3,
+  },
+  {
+    slug: 'support-or-report-a-problem',
+    question: 'How do I support the project or report a problem?',
+    answer:
+      'You can support the project through the Support page. To report a problem or suggest something, use the contact link on the About page.',
+    category: 'Content & licensing',
+    sortOrder: 4,
+  },
+];

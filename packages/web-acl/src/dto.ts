@@ -13,6 +13,8 @@ export type {
   ContentRevisionSummary,
   ContentSummary,
   ContentWriteInput,
+  FaqEntry,
+  FaqEntryWriteInput,
   HelpTopic,
   HelpTopicWriteInput,
   MediaUploadRequestKind,

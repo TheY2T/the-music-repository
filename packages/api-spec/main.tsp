@@ -1162,6 +1162,69 @@ op deleteHelpTopic(@path slug: string): {
   @statusCode statusCode: 204;
 };
 
+// ===================== FAQ =====================
+// Reader-facing frequently-asked questions, grouped by category and manually ordered. Authored in the
+// admin CMS and rendered on the public /faq page.
+
+model FaqEntry {
+  /** Internal id — used by the translations admin to key per-locale FAQ translations. */
+  id: string;
+
+  slug: string;
+  question: string;
+  answer: string;
+  category: string;
+  sortOrder: int32;
+}
+
+model FaqEntryList {
+  items: FaqEntry[];
+}
+
+model FaqEntryWriteInput {
+  slug: string;
+  question: string;
+  answer: string;
+  category: string;
+  sortOrder: int32;
+}
+
+/** All FAQ entries (ordered by category, then sort order), for the public /faq page. */
+@route("/faq-entries")
+@tag("faq")
+@get
+op listFaqEntries(@query locale?: string): FaqEntryList;
+
+@route("/faq-entries/{slug}")
+@tag("faq")
+@get
+op getFaqEntry(@path slug: string, @query locale?: string): FaqEntry | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+// --- Admin authoring (RBAC-gated in NestJS) ---
+
+@route("/admin/faq-entries")
+@tag("faq")
+@post
+op createFaqEntry(@body body: FaqEntryWriteInput): {
+  @statusCode statusCode: 201;
+  @body body: FaqEntry;
+};
+
+@route("/admin/faq-entries/{slug}")
+@tag("faq")
+@put
+op updateFaqEntry(@path slug: string, @body body: FaqEntryWriteInput): FaqEntry;
+
+@route("/admin/faq-entries/{slug}")
+@tag("faq")
+@delete
+op deleteFaqEntry(@path slug: string): {
+  @statusCode statusCode: 204;
+};
+
 // ===================== Monetization (Phase 6) =====================
 // Premium entitlements gate `visibility: "premium"` content. The subscription endpoints are a local,
 // mock stand-in for a payment provider's checkout + webhook (no real billing wired yet). Auth-gated.

@@ -506,6 +506,18 @@ export const helpTopics = pgTable('help_topics', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+// --- FAQ: reader-facing frequently-asked questions, grouped by category and manually ordered. ---
+export const faqEntries = pgTable('faq_entries', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  slug: text('slug').notNull().unique(),
+  question: text('question').notNull(),
+  answer: text('answer').notNull(), // markdown
+  category: text('category').notNull(),
+  sortOrder: integer('sort_order').notNull().default(0), // order within a category (ascending)
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 // --- Localization (ADR 0034): UI message strings live in the DB and are edited via the admin CMS.
 //     Seeded from the in-repo en/zh-Hans JSON on a fresh deploy; thereafter runtime-driven.
 //     Draft → publish: only `published_value` (where not deleted) is assembled into the served catalogue. ---

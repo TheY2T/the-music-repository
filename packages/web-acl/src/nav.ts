@@ -108,6 +108,7 @@ export function buildLegalNav(ctx: NavContext): NavItem[] {
     makeItem(ctx, 'terms', '/terms', 'nav.terms', 'file-text'),
     makeItem(ctx, 'cookies', '/cookies', 'nav.cookies', 'cookie'),
   ];
+  if (ctx.flags.faq) items.push(makeItem(ctx, 'faq', '/faq', 'nav.faq', 'help-circle'));
   if (ctx.flags.support) items.push(makeItem(ctx, 'support', '/support', 'nav.support', 'coffee'));
   return items;
 }

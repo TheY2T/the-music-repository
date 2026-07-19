@@ -3,7 +3,7 @@
  * localized value of a content *field*, addressed by `(entityType, entityId, locale, field)`.
  */
 
-export type EntityType = 'content' | 'collection' | 'help';
+export type EntityType = 'content' | 'collection' | 'help' | 'faq';
 
 /** A field→value map of published translations for one entity+locale (the read-time overlay). */
 export type TranslationOverlay = Record<string, string>;

@@ -33,4 +33,14 @@ describe('buildLegalNav', () => {
     expect(items.find((i) => i.key === 'privacy')?.active).toBe(true);
     expect(items.find((i) => i.key === 'terms')?.active).toBe(false);
   });
+
+  it('adds the FAQ link when the faq flag is on, localized', () => {
+    const base = ctx();
+    const en = buildLegalNav({ ...base, flags: { faq: true } as Flags });
+    const faq = en.find((i) => i.key === 'faq');
+    expect(faq?.href).toBe('/faq');
+
+    const zh = buildLegalNav({ ...base, flags: { faq: true } as Flags, locale: 'zh-Hans' });
+    expect(zh.find((i) => i.key === 'faq')?.href).toBe('/zh/faq');
+  });
 });

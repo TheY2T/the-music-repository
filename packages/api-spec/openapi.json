@@ -40,6 +40,9 @@
       "name": "help"
     },
     {
+      "name": "faq"
+    },
+    {
       "name": "monetization"
     },
     {
@@ -341,6 +344,98 @@
         },
         "tags": [
           "collections"
+        ]
+      }
+    },
+    "/admin/faq-entries": {
+      "post": {
+        "operationId": "createFaqEntry",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaqEntry"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "faq"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FaqEntryWriteInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/faq-entries/{slug}": {
+      "put": {
+        "operationId": "updateFaqEntry",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaqEntry"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "faq"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FaqEntryWriteInput"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteFaqEntry",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "faq"
         ]
       }
     },
@@ -3049,6 +3144,87 @@
         },
         "tags": [
           "demo"
+        ]
+      }
+    },
+    "/faq-entries": {
+      "get": {
+        "operationId": "listFaqEntries",
+        "description": "All FAQ entries (ordered by category, then sort order), for the public /faq page.",
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaqEntryList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "faq"
+        ]
+      }
+    },
+    "/faq-entries/{slug}": {
+      "get": {
+        "operationId": "getFaqEntry",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaqEntry"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "faq"
         ]
       }
     },
@@ -6395,6 +6571,81 @@
           }
         },
         "description": "Available facets for the current result set."
+      },
+      "FaqEntry": {
+        "type": "object",
+        "required": [
+          "id",
+          "slug",
+          "question",
+          "answer",
+          "category",
+          "sortOrder"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Internal id — used by the translations admin to key per-locale FAQ translations."
+          },
+          "slug": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "answer": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "FaqEntryList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FaqEntry"
+            }
+          }
+        }
+      },
+      "FaqEntryWriteInput": {
+        "type": "object",
+        "required": [
+          "slug",
+          "question",
+          "answer",
+          "category",
+          "sortOrder"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "answer": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       },
       "FavoritesList": {
         "type": "object",

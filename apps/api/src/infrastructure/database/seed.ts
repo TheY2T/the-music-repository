@@ -10,7 +10,15 @@ import { DATABASE, type Database } from './database.module';
 import * as schema from './schema';
 import { SEED_COLLECTIONS } from './seed-collections';
 import { SEED_CONTENT } from './seed-content';
-import { CONTENT, GENRES, HELP_TOPICS, INSTRUMENTS, SKILL_TOPICS, TAGS } from './seed-data';
+import {
+  CONTENT,
+  FAQ_ENTRIES,
+  GENRES,
+  HELP_TOPICS,
+  INSTRUMENTS,
+  SKILL_TOPICS,
+  TAGS,
+} from './seed-data';
 import { seedFeatureFlags } from './seed-feature-flags';
 import { seedI18n } from './seed-i18n';
 import { SCORE_ALPHATEX, SCORE_META } from './seed-scores';
@@ -256,6 +264,29 @@ async function main(): Promise<void> {
       });
   }
   log.log(`Seeded ${HELP_TOPICS.length} help topics.`);
+
+  for (const entry of FAQ_ENTRIES) {
+    await db
+      .insert(schema.faqEntries)
+      .values({
+        slug: entry.slug,
+        question: entry.question,
+        answer: entry.answer,
+        category: entry.category,
+        sortOrder: entry.sortOrder,
+      })
+      .onConflictDoUpdate({
+        target: schema.faqEntries.slug,
+        set: {
+          question: entry.question,
+          answer: entry.answer,
+          category: entry.category,
+          sortOrder: entry.sortOrder,
+          updatedAt: new Date(),
+        },
+      });
+  }
+  log.log(`Seeded ${FAQ_ENTRIES.length} FAQ entries.`);
 
   const i18nCounts = await seedI18n(db);
   log.log(

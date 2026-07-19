@@ -3,7 +3,7 @@
 
 const API_BASE = import.meta.env.PUBLIC_API_BASE_URL ?? 'http://localhost:3000';
 
-export type TranslatableEntityType = 'content' | 'collection' | 'help';
+export type TranslatableEntityType = 'content' | 'collection' | 'help' | 'faq';
 
 export interface EntityTranslationRow {
   id: string;
@@ -77,6 +77,10 @@ export const LOCALIZABLE_FIELDS: Record<TranslatableEntityType, LocalizableField
     { field: 'term', kind: 'plain' },
     { field: 'body', kind: 'rich' },
   ],
+  faq: [
+    { field: 'question', kind: 'plain' },
+    { field: 'answer', kind: 'rich' },
+  ],
 };
 
 /** Flat list of translatable field names per entity type (the server-facing view). */
@@ -84,6 +88,7 @@ export const TRANSLATABLE_FIELDS: Record<TranslatableEntityType, string[]> = {
   content: LOCALIZABLE_FIELDS.content.map((f) => f.field),
   collection: LOCALIZABLE_FIELDS.collection.map((f) => f.field),
   help: LOCALIZABLE_FIELDS.help.map((f) => f.field),
+  faq: LOCALIZABLE_FIELDS.faq.map((f) => f.field),
 };
 
 /** The block-editor profile matching how each entity type authors its body (see the entity forms). */
@@ -91,6 +96,7 @@ export const EDITOR_PROFILE: Record<TranslatableEntityType, 'full' | 'minimal' |
   content: 'full',
   collection: 'collection',
   help: 'minimal',
+  faq: 'minimal',
 };
 
 const LIST_PATH: Record<TranslatableEntityType, string> = {
@@ -98,11 +104,13 @@ const LIST_PATH: Record<TranslatableEntityType, string> = {
   content: '/catalogue/items?pageSize=100',
   collection: '/collections',
   help: '/help-topics',
+  faq: '/faq-entries',
 };
 const DETAIL_PATH: Record<TranslatableEntityType, (slug: string) => string> = {
   content: (slug) => `/catalogue/items/${encodeURIComponent(slug)}`,
   collection: (slug) => `/collections/${encodeURIComponent(slug)}`,
   help: (slug) => `/help-topics/${encodeURIComponent(slug)}`,
+  faq: (slug) => `/faq-entries/${encodeURIComponent(slug)}`,
 };
 
 export interface TranslationTargetSummary {
@@ -131,9 +139,12 @@ export async function listTranslationTargets(
       return [];
     }
     const data = (await response.json()) as {
-      items: { slug: string; title?: string; term?: string }[];
+      items: { slug: string; title?: string; term?: string; question?: string }[];
     };
-    return data.items.map((i) => ({ slug: i.slug, title: i.title ?? i.term ?? i.slug }));
+    return data.items.map((i) => ({
+      slug: i.slug,
+      title: i.title ?? i.term ?? i.question ?? i.slug,
+    }));
   } catch {
     return [];
   }
@@ -233,7 +244,7 @@ export async function getTranslationTarget(
     entityType,
     entityId: asString(detail.id),
     slug,
-    title: asString(detail.title) || asString(detail.term) || slug,
+    title: asString(detail.title) || asString(detail.term) || asString(detail.question) || slug,
     specs,
     fields,
   };

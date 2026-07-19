@@ -16,12 +16,14 @@ export default function AdminNav({
   locale,
   showCollections,
   showHelp,
+  showFaq,
   showLocaleStrings,
   showFeatureFlags,
 }: {
   locale: Locale;
   showCollections: boolean;
   showHelp: boolean;
+  showFaq?: boolean;
   showLocaleStrings?: boolean;
   showFeatureFlags?: boolean;
 }) {
@@ -47,6 +49,14 @@ export default function AdminNav({
       icon: 'info',
       title: t(locale, 'admin.helpTopics'),
       description: t(locale, 'admin.helpSubtitle'),
+    });
+  }
+  if (showFaq) {
+    tiles.push({
+      href: localizedPath(locale, '/admin/faq'),
+      icon: 'message-circle-question',
+      title: t(locale, 'admin.faq'),
+      description: t(locale, 'admin.faqSubtitle'),
     });
   }
   if (showLocaleStrings) {

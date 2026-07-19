@@ -837,6 +837,53 @@ export const UnpublishCollectionResponse = zod.object({
 }).describe('Full collection with its ordered items grouped into sections.')
 
 
+export const CreateFaqEntryBody = zod.object({
+  "slug": zod.string(),
+  "question": zod.string(),
+  "answer": zod.string(),
+  "category": zod.string(),
+  "sortOrder": zod.number()
+})
+
+export const CreateFaqEntryResponse = zod.object({
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale FAQ translations.'),
+  "slug": zod.string(),
+  "question": zod.string(),
+  "answer": zod.string(),
+  "category": zod.string(),
+  "sortOrder": zod.number()
+})
+
+
+export const UpdateFaqEntryParams = zod.object({
+  "slug": zod.string()
+})
+
+export const UpdateFaqEntryBody = zod.object({
+  "slug": zod.string(),
+  "question": zod.string(),
+  "answer": zod.string(),
+  "category": zod.string(),
+  "sortOrder": zod.number()
+})
+
+export const UpdateFaqEntryResponse = zod.object({
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale FAQ translations.'),
+  "slug": zod.string(),
+  "question": zod.string(),
+  "answer": zod.string(),
+  "category": zod.string(),
+  "sortOrder": zod.number()
+})
+
+
+export const DeleteFaqEntryParams = zod.object({
+  "slug": zod.string()
+})
+
+export const DeleteFaqEntryResponse = zod.void()
+
+
 /**
  * List environments (for the admin environment manager).
  */
@@ -3205,6 +3252,43 @@ export const UnpublishContentResponse = zod.object({
  * Reference endpoint that always fails with a Problem Details 404 (proves the error pipeline).
  */
 export const GetDemoErrorResponse = zod.void()
+
+
+/**
+ * All FAQ entries (ordered by category, then sort order), for the public /faq page.
+ */
+export const ListFaqEntriesQueryParams = zod.object({
+  "locale": zod.string().optional()
+})
+
+export const ListFaqEntriesResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale FAQ translations.'),
+  "slug": zod.string(),
+  "question": zod.string(),
+  "answer": zod.string(),
+  "category": zod.string(),
+  "sortOrder": zod.number()
+}))
+})
+
+
+export const GetFaqEntryParams = zod.object({
+  "slug": zod.string()
+})
+
+export const GetFaqEntryQueryParams = zod.object({
+  "locale": zod.string().optional()
+})
+
+export const GetFaqEntryResponse = zod.object({
+  "id": zod.string().describe('Internal id — used by the translations admin to key per-locale FAQ translations.'),
+  "slug": zod.string(),
+  "question": zod.string(),
+  "answer": zod.string(),
+  "category": zod.string(),
+  "sortOrder": zod.number()
+})
 
 
 /**

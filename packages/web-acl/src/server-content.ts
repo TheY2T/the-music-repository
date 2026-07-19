@@ -8,6 +8,8 @@ import type {
   CollectionList,
   ContentDetail,
   ContentDetails,
+  FaqEntry,
+  FaqEntryList,
 } from '@TheY2T/tmr-api-client';
 
 /** Where the SSR request should reach the API, plus the locale overlay and (optional) session cookie. */
@@ -117,6 +119,14 @@ export async function listContentSlugs(
     if (items.length === 0 || slugs.length >= total) break;
   }
   return slugs;
+}
+
+/** All FAQ entries (ordered by category then sort order) for SSR-rendering the /faq page so the
+ *  question/answer text is crawler-visible. Empty when the flag is off or the API is unreachable. */
+export async function fetchFaqEntries(ctx: ServerFetchContext): Promise<FaqEntry[]> {
+  const url = `${trimBase(ctx.apiBaseUrl)}${withLocale('/faq-entries', ctx.locale)}`;
+  const list = await getJson<FaqEntryList>(url, ctx.cookie);
+  return list?.items ?? [];
 }
 
 /** Every published collection slug — for the collections sitemap. */

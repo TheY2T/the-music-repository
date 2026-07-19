@@ -1,0 +1,27 @@
+---
+import FaqEntryForm from '@TheY2T/tmr-common-ui/FaqEntryForm';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { guardAdmin } from '@/lib/admin-guard';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+const redirect = guardAdmin(Astro);
+if (redirect) {
+  return redirect;
+}
+if (!Astro.locals.flags.faq) {
+  return Astro.redirect('/admin');
+}
+const locale = Astro.locals.locale;
+---
+
+<BaseLayout noindex title={`${t(locale, 'admin.newFaq')} — ${t(locale, 'nav.admin')}`}>
+  <PageShell
+    title={t(locale, 'admin.newFaq')}
+    back={{ href: localizedPath(locale, '/admin/faq'), label: t(locale, 'common.backFaq') }}
+    maxWidth="max-w-5xl"
+  >
+    <FaqEntryForm client:load locale={locale} blockEditor={Astro.locals.flags.blockEditor}
+      localeStrings={Astro.locals.flags.localeStrings} />
+  </PageShell>
+</BaseLayout>
