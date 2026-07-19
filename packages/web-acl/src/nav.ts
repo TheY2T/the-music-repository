@@ -95,6 +95,19 @@ export function buildAccountNav(ctx: NavContext): NavItem[] {
   return items;
 }
 
+/**
+ * Legal / company footer links — the business-identity and policy pages. Always present (no flag
+ * or auth gating): a privacy policy and terms must be reachable from every page.
+ */
+export function buildLegalNav(ctx: NavContext): NavItem[] {
+  return [
+    makeItem(ctx, 'about', '/about', 'nav.about', 'building'),
+    makeItem(ctx, 'privacy', '/privacy', 'nav.privacy', 'shield'),
+    makeItem(ctx, 'terms', '/terms', 'nav.terms', 'file-text'),
+    makeItem(ctx, 'cookies', '/cookies', 'nav.cookies', 'cookie'),
+  ];
+}
+
 export function isSignedIn(ctx: Pick<NavContext, 'user'>): boolean {
   return !!ctx.user;
 }

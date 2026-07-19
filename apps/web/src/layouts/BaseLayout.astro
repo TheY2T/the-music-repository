@@ -1,7 +1,8 @@
 ---
 import SiteFooter from '@TheY2T/tmr-common-ui/astro/SiteFooter.astro';
 import SiteHeader from '@TheY2T/tmr-common-ui/SiteHeader';
-import { buildAccountNav, buildPrimaryNav } from '@TheY2T/tmr-web-acl/nav';
+import { buildAccountNav, buildLegalNav, buildPrimaryNav } from '@TheY2T/tmr-web-acl/nav';
+import { business } from '@/lib/business';
 import '@/styles/global.css';
 import { LOCALES, htmlLang, localizedPath, splitLocalePath, t } from '@TheY2T/tmr-i18n';
 
@@ -27,8 +28,30 @@ const alternateHref = (target: (typeof LOCALES)[number]) =>
 const navCtx = { flags: Astro.locals.flags, user: Astro.locals.user, locale, path: rawPath };
 const primaryNav = buildPrimaryNav(navCtx);
 const accountNav = buildAccountNav(navCtx);
+const legalNav = buildLegalNav(navCtx);
 const siteName = t(locale, 'site.name');
 const year = new Date().getFullYear();
+
+// schema.org Organization structured data — publishes the operator's identity (trading name + ABN)
+// and contact point for search engines and business verification. Escape `<` so a value can't break
+// out of the <script> block.
+const orgJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: siteName,
+  legalName: business.tradingName,
+  ...(site ? { url: site.href } : {}),
+  identifier: {
+    '@type': 'PropertyValue',
+    propertyID: 'ABN',
+    value: business.abnRaw,
+  },
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer support',
+    email: business.contactEmail,
+  },
+}).replace(/</g, '\\u003c');
 
 // DB-backed UI strings (ADR 0034): the middleware already loaded this catalogue into the i18n engine for
 // SSR; serialize it so client islands hydrate `t()` from the same strings. Escape `<` so a message value
@@ -77,6 +100,7 @@ const i18nCatalogueJson = JSON.stringify(Astro.locals.i18nCatalogue).replace(/</
         </>
       )
     }
+    <script type="application/ld+json" is:inline set:html={orgJsonLd} />
     <slot name="head" />
   </head>
   <body class="flex min-h-svh flex-col">
@@ -99,6 +123,9 @@ const i18nCatalogueJson = JSON.stringify(Astro.locals.i18nCatalogue).replace(/</
       siteName={siteName}
       primaryNav={primaryNav}
       accountNav={accountNav}
+      legalNav={legalNav}
+      tradingName={business.tradingName}
+      abn={business.abn}
       year={year}
     />
   </body>

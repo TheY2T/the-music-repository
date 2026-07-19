@@ -1,0 +1,105 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { business } from '@/lib/business';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+const locale = Astro.locals.locale;
+const contact = `mailto:${business.contactEmail}`;
+---
+
+<BaseLayout title={`${t(locale, 'nav.terms')} — ${t(locale, 'site.name')}`}>
+  <PageShell
+    title={t(locale, 'nav.terms')}
+    back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
+    maxWidth="max-w-3xl"
+  >
+    <div class="space-y-8 text-sm leading-relaxed text-muted-foreground">
+      <p>
+        These Terms of Service govern your use of {t(locale, 'site.name')} (the "site"), operated by{' '}
+        {business.tradingName} (ABN {business.abn}). By using the site you agree to these terms.
+      </p>
+      <p>Effective date: {business.effectiveDate}.</p>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Using the site</h2>
+        <p>
+          You may use the site for personal, non-commercial learning. You agree not to misuse the site,
+          including by attempting to disrupt it, gain unauthorised access, or use it in any way that breaks
+          the law or infringes the rights of others.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Accounts</h2>
+        <p>
+          Some features require an account. You are responsible for keeping your login details secure and for
+          activity under your account. Let us know promptly if you believe your account has been used without
+          your permission.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Content and licensing</h2>
+        <p>
+          Learning content on the site is public-domain or openly licensed (for example under Creative
+          Commons). The applicable attribution and licence are shown on each item; your use of that content
+          is subject to its licence. The site's own design, software, and branding remain our property or
+          that of our licensors.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Content you create</h2>
+        <p>
+          You keep ownership of content you create through the site, such as saved chord progressions. You
+          grant us the permission needed to store and display that content back to you so the features work.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">No warranty</h2>
+        <p>
+          The site is provided "as is" and "as available", without warranties of any kind to the extent
+          permitted by law. We do not guarantee that the site will be uninterrupted, error-free, or that the
+          content is complete or suitable for any particular purpose.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Limitation of liability</h2>
+        <p>
+          To the maximum extent permitted by law, we are not liable for any indirect or consequential loss
+          arising from your use of the site. Nothing in these terms excludes rights you have under the
+          Australian Consumer Law that cannot be excluded.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Changes and termination</h2>
+        <p>
+          We may update these terms or change, suspend, or discontinue parts of the site from time to time.
+          We may also suspend or close accounts that breach these terms. The current version of these terms
+          is always available on this page.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Governing law</h2>
+        <p>
+          These terms are governed by the laws of {business.governingLawState}, Australia, and you submit to
+          the courts of that jurisdiction.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Contact</h2>
+        <p>
+          Questions about these terms? Email us at{' '}
+          <a href={contact} class="text-primary underline underline-offset-4">{business.contactEmail}</a>.
+          See also our <a href={localizedPath(locale, '/privacy')} class="text-primary underline underline-offset-4">Privacy Policy</a>.
+        </p>
+      </section>
+    </div>
+  </PageShell>
+</BaseLayout>

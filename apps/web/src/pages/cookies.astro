@@ -1,0 +1,59 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+const locale = Astro.locals.locale;
+---
+
+<BaseLayout title={`${t(locale, 'nav.cookies')} — ${t(locale, 'site.name')}`}>
+  <PageShell
+    title={t(locale, 'nav.cookies')}
+    back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
+    maxWidth="max-w-3xl"
+  >
+    <div class="space-y-8 text-sm leading-relaxed text-muted-foreground">
+      <p>
+        {t(locale, 'site.name')} uses cookies and browser local storage to keep the site working and to
+        remember your choices. This notice explains what we store and how you can control it.
+      </p>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">What we store</h2>
+        <ul class="list-disc space-y-1 pl-5">
+          <li>
+            <span class="text-foreground">Sign-in session</span> — a cookie that keeps you signed in while
+            you use the site. Without it, account features do not work.
+          </li>
+          <li>
+            <span class="text-foreground">Display preferences</span> — your chosen theme and appearance,
+            stored in your browser so the site looks the way you left it.
+          </li>
+          <li>
+            <span class="text-foreground">Language preference</span> — remembers the language you selected.
+          </li>
+          <li>
+            <span class="text-foreground">Feature configuration</span> — a cached copy of which features are
+            enabled, so pages load correctly.
+          </li>
+        </ul>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Managing cookies</h2>
+        <p>
+          You can clear or block cookies and local storage through your browser settings. If you do, some
+          parts of the site — particularly staying signed in — may not work as expected.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">More information</h2>
+        <p>
+          For how we handle personal information generally, see our{' '}
+          <a href={localizedPath(locale, '/privacy')} class="text-primary underline underline-offset-4">Privacy Policy</a>.
+        </p>
+      </section>
+    </div>
+  </PageShell>
+</BaseLayout>

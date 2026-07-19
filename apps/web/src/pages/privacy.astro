@@ -1,0 +1,148 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { business } from '@/lib/business';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+const locale = Astro.locals.locale;
+const contact = `mailto:${business.contactEmail}`;
+---
+
+<BaseLayout title={`${t(locale, 'nav.privacy')} — ${t(locale, 'site.name')}`}>
+  <PageShell
+    title={t(locale, 'nav.privacy')}
+    back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
+    maxWidth="max-w-3xl"
+  >
+    <div class="space-y-8 text-sm leading-relaxed text-muted-foreground">
+      <p>
+        This Privacy Policy explains how {business.tradingName} (ABN {business.abn}) ("we", "us")
+        handles personal information collected through {t(locale, 'site.name')} (the "site"), in line
+        with the <em>Privacy Act 1988</em> (Cth) and the Australian Privacy Principles (APPs).
+      </p>
+      <p>Effective date: {business.effectiveDate}.</p>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Who we are</h2>
+        <p>
+          The site is operated by {business.tradingName}, an Australian sole trader (ABN{' '}
+          {business.abn}). You can reach us about privacy at{' '}
+          <a href={contact} class="text-primary underline underline-offset-4">{business.contactEmail}</a>.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">What personal information we collect</h2>
+        <p>The kinds of personal information we collect and hold depend on how you use the site:</p>
+        <ul class="list-disc space-y-1 pl-5">
+          <li>
+            <span class="text-foreground">Account details</span> — when you create an account we collect
+            your name, email address, and an encrypted (hashed) password. Sign-in and account management
+            are handled through our authentication service.
+          </li>
+          <li>
+            <span class="text-foreground">Learning activity</span> — your progress, practice and drill
+            attempts, review scheduling, saved chord progressions, favourites, bookmarks, ratings, and any
+            classroom membership.
+          </li>
+          <li>
+            <span class="text-foreground">Preferences</span> — your language and display-theme choices.
+          </li>
+          <li>
+            <span class="text-foreground">Technical information</span> — cookies and browser local
+            storage (see our <a href={localizedPath(locale, '/cookies')} class="text-primary underline underline-offset-4">Cookie notice</a>),
+            plus server logs that may include your IP address, device and browser type, and the pages you
+            request, collected for security and to keep the site running.
+          </li>
+        </ul>
+        <p>
+          We do not seek to collect sensitive information (such as health, racial, or political
+          information). Please do not send us sensitive information you are not asked for.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">How we collect it</h2>
+        <p>
+          We collect most information directly from you when you register, sign in, and use the site's
+          features. Technical information is collected automatically by your browser and our servers as you
+          use the site.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Why we collect and use it</h2>
+        <ul class="list-disc space-y-1 pl-5">
+          <li>to create and manage your account and keep you signed in;</li>
+          <li>to provide the learning features and remember your progress and preferences;</li>
+          <li>to keep the site secure, diagnose problems, and improve how it works;</li>
+          <li>to respond to your enquiries and requests.</li>
+        </ul>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Who we disclose it to</h2>
+        <p>
+          We do not sell your personal information. We share it only with service providers who help us run
+          the site — for example hosting, database, and email providers — and only so they can perform
+          those services for us. We may also disclose information where required or authorised by law.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Overseas disclosure</h2>
+        <p>
+          Some of our service providers may store or process data on servers located outside Australia. Where
+          that happens, we take reasonable steps to ensure the information is handled consistently with the
+          APPs.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">How we keep it secure</h2>
+        <p>
+          We take reasonable steps to protect personal information from misuse, loss, and unauthorised
+          access, including access controls and encrypted storage of credentials. No method of transmission
+          or storage is completely secure, so we cannot guarantee absolute security.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Accessing and correcting your information</h2>
+        <p>
+          You can view and update much of your account information while signed in. You may also ask us to
+          give you access to, or correct, the personal information we hold about you by emailing{' '}
+          <a href={contact} class="text-primary underline underline-offset-4">{business.contactEmail}</a>.
+          We will respond within a reasonable period.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Children</h2>
+        <p>
+          The site is intended for general audiences. If a child uses the site, we ask that a parent or
+          guardian manage their account and contact us with any privacy questions.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Complaints</h2>
+        <p>
+          If you believe we have breached the Australian Privacy Principles, please contact us at{' '}
+          <a href={contact} class="text-primary underline underline-offset-4">{business.contactEmail}</a>{' '}
+          and we will investigate and respond. If you are not satisfied with our response, you can contact
+          the Office of the Australian Information Commissioner (OAIC) at{' '}
+          <a href="https://www.oaic.gov.au" rel="noopener" target="_blank" class="text-primary underline underline-offset-4">www.oaic.gov.au</a>.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Changes to this policy</h2>
+        <p>
+          We may update this policy from time to time. The current version is always available on this page,
+          with the effective date shown above.
+        </p>
+      </section>
+    </div>
+  </PageShell>
+</BaseLayout>

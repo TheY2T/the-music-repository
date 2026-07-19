@@ -1,0 +1,72 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { business } from '@/lib/business';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import Icon from '@TheY2T/tmr-ui/astro/Icon.astro';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+const locale = Astro.locals.locale;
+const contact = `mailto:${business.contactEmail}`;
+---
+
+<BaseLayout title={`${t(locale, 'nav.about')} — ${t(locale, 'site.name')}`}>
+  <PageShell
+    title={t(locale, 'nav.about')}
+    back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
+    maxWidth="max-w-3xl"
+  >
+    <div class="space-y-8 text-sm leading-relaxed text-muted-foreground">
+      <p>
+        {t(locale, 'site.name')} is a growing library of public-domain lessons, songs, and interactive
+        tools for piano and guitar — built to make learning music approachable and enjoyable.
+      </p>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Business details</h2>
+        <dl class="rounded-lg border border-border bg-card/40 p-5">
+          <div class="flex items-start gap-3">
+            <Icon name="building" class="mt-0.5 size-4 text-muted-foreground" />
+            <div>
+              <dt class="text-xs uppercase tracking-wide text-muted-foreground">Trading name</dt>
+              <dd class="text-foreground">{business.tradingName}</dd>
+            </div>
+          </div>
+          <div class="mt-4 flex items-start gap-3">
+            <Icon name="file-text" class="mt-0.5 size-4 text-muted-foreground" />
+            <div>
+              <dt class="text-xs uppercase tracking-wide text-muted-foreground">
+                {t(locale, 'footer.abnLabel')}
+              </dt>
+              <dd class="text-foreground">{business.abn}</dd>
+            </div>
+          </div>
+          <div class="mt-4 flex items-start gap-3">
+            <Icon name="user" class="mt-0.5 size-4 text-muted-foreground" />
+            <div>
+              <dt class="text-xs uppercase tracking-wide text-muted-foreground">Contact</dt>
+              <dd>
+                <a href={contact} class="text-primary underline underline-offset-4">{business.contactEmail}</a>
+              </dd>
+            </div>
+          </div>
+        </dl>
+        <p>{business.tradingName} operates {t(locale, 'site.name')} as an Australian sole trader.</p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Policies</h2>
+        <ul class="list-disc space-y-1 pl-5">
+          <li>
+            <a href={localizedPath(locale, '/privacy')} class="text-primary underline underline-offset-4">Privacy Policy</a>
+          </li>
+          <li>
+            <a href={localizedPath(locale, '/terms')} class="text-primary underline underline-offset-4">Terms of Service</a>
+          </li>
+          <li>
+            <a href={localizedPath(locale, '/cookies')} class="text-primary underline underline-offset-4">Cookie notice</a>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </PageShell>
+</BaseLayout>
