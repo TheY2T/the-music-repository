@@ -19,7 +19,7 @@ export class S3MediaLibrary extends MediaLibrary implements OnApplicationBootstr
   /**
    * Used ONLY to presign browser-facing URLs. Pointed at the PUBLIC endpoint so the SigV4-signed
    * Host header matches the host the browser actually requests — rewriting the host after signing
-   * (the old approach) invalidates the signature (`SignatureDoesNotMatch`). Presigning is pure URL
+   * invalidates the signature (`SignatureDoesNotMatch`). Presigning is pure URL
    * construction (no network), so this client never needs to reach the public host itself.
    */
   private readonly signer: S3Client;

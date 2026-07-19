@@ -3,7 +3,7 @@
  *
  * Tools trigger notes through the shared note service (`soundfont.ts`), which has a single "default"
  * instrument that bare `playNote`/`noteOn` calls use. Since each tool is its own page (one tool island
- * at a time), a tool can simply set that default to its family's chosen instrument on mount — every
+ * at a time), a tool can set that default to its family's chosen instrument on mount — every
  * `playNote` in the tool then sounds with it, no per-call threading. `useToolInstrument` does exactly
  * that, remembers the choice per **family** (a guitar sound is remembered for guitar tools, a piano
  * sound for piano tools) in localStorage, and gates readiness like `useInstrumentReady` so the first

@@ -15,7 +15,7 @@ import { DrizzleEntityTranslationAuthoring } from './infrastructure/drizzle-enti
 import { TranslationAuthoringController } from './translation-authoring.controller';
 
 /**
- * Content translations feature (ADR 0034, Phase 2, hexagonal). Provides the read-side `ContentTranslations`
+ * Content translations feature (ADR 0034, hexagonal). Provides the read-side `ContentTranslations`
  * overlay port (exported so read modules like `CatalogueModule` can inject it) plus the admin write side.
  * Imports AuthModule for `CurrentUser`.
  */

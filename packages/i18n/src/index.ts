@@ -8,7 +8,7 @@
  * rendered — no flash, no hydration mismatch. React context is NOT used (it can't cross island
  * boundaries — see apps/web/CLAUDE.md).
  *
- * Storage: message values live in the database and are edited via the admin CMS with no redeploy
+ * Storage: message values live in the database and are edited via the admin CMS
  * (ADR 0034). This engine resolves `t()` against a mutable per-locale REGISTRY that the host populates
  * at runtime — server-side in `apps/web` middleware before SSR, and client-side from a serialized blob
  * before islands hydrate. The bundled JSON (`@TheY2T/tmr-i18n-locales`) is demoted to two jobs: it is

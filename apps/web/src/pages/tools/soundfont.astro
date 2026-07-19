@@ -1,8 +1,6 @@
 ---
 import { localizedPath } from '@TheY2T/tmr-i18n';
 
-// The keyboard tool now exposes both the scale highlighter and the instrument picker, so the sampled-
-// instruments tool is folded into it. This route redirects so existing links keep working. See the
-// interactive-tools audit (consolidation C1).
+// Redirects to /tools/keyboard, which exposes the scale highlighter and the instrument picker.
 return Astro.redirect(localizedPath(Astro.locals.locale, '/tools/keyboard'));
 ---

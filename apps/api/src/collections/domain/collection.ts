@@ -62,7 +62,7 @@ export interface Collection {
 }
 
 /**
- * Overlay published per-locale translations onto a collection's text fields (ADR 0034, Phase 2).
+ * Overlay published per-locale translations onto a collection's text fields (ADR 0034).
  * `overlay` is a field→value map: `title` / `summary` / `bodyMdx` / `curatorBio`, plus
  * `section.<id>.title` / `section.<id>.description` for each section. Absent fields keep their base
  * (English) value. Returns a new collection; a no-op for an empty overlay.

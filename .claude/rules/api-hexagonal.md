@@ -48,7 +48,7 @@ Copy `src/catalogue/` (the full reference feature) when adding one; follow the *
 - Gate routes with `@RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.X }] })` (keys from
   `@TheY2T/tmr-flags`). **Method-level** for deferred features (class-level drops route mapping). Flags are
   **DB-backed** (ADR 0035) — a new key goes live on `db:seed`; existing flags toggle per-env in
-  `/admin/feature-flags` with no redeploy (no flagd). Follow **`manage-flags`**.
+  `/admin/feature-flags` (no flagd). Follow **`manage-flags`**.
 - Env is Zod-validated at boot in `src/config/env.ts` — add new vars there (`APP_ENV` names the flag env).
 
 ## Testing (Definition of Done — `add-tests`)

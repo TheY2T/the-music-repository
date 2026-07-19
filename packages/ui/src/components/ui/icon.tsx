@@ -218,7 +218,7 @@ export interface IconProps extends Omit<LucideProps, 'ref'> {
 
 /**
  * The single sanctioned way to render an icon in React islands. Size + color via Tailwind on
- * `className` (`size-4`, `text-muted-foreground`); Lucide uses `currentColor` so `text-*` just works.
+ * `className` (`size-4`, `text-muted-foreground`); Lucide uses `currentColor` so `text-*` utilities set the icon colour.
  */
 export function Icon({ name, label, className, ...props }: IconProps) {
   const Glyph = registry[name];

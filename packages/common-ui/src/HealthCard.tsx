@@ -3,7 +3,7 @@ import { Button, Card } from '@TheY2T/tmr-ui';
 
 /**
  * Interactive island consuming the spec-first generated client: the `useGetHealth` TanStack Query
- * hook (from `@TheY2T/tmr-api-client`, generated from the OpenAPI spec) replaces the old manual fetch.
+ * hook (from `@TheY2T/tmr-api-client`, generated from the OpenAPI spec).
  */
 function HealthView() {
   const { data, error, refetch, isFetching } = useGetHealth();

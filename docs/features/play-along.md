@@ -93,7 +93,7 @@ it up to speed, and a **category** filter (Blues / Rock / Turnarounds) narrows t
 The notation player (`/tools/player`) gained a **Key (transpose)** control (12 keys). The melody is
 recomputed from each note's MIDI + transpose and re-spelled via a new pure helper
 `staffPlacement(midi, flats)` in `music-theory.ts` (returns staff `step`, `label`, and `accidental`).
-`StaffSequence` now renders a **♯/♭ glyph** left of the note head (`StaffNoteDatum.accidental`, optional
+`StaffSequence` renders a **♯/♭ glyph** left of the note head (`StaffNoteDatum.accidental`, optional
 and backward-compatible). Transposing up spells with sharps, down with flats; the range stays within ±6
 semitones for readability. Changing key restarts playback in the new key.
 

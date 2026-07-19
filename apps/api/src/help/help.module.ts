@@ -12,7 +12,7 @@ import { HelpController } from './help.controller';
 import { HelpAuthoringController } from './help-authoring.controller';
 import { DrizzleHelpTopicRepository } from './infrastructure/drizzle-help-topic.repository';
 
-/** Info View / help-topics feature (Phase 2, hexagonal). */
+/** Info View / help-topics feature (hexagonal). */
 @Module({
   imports: [TranslationsModule],
   controllers: [HelpController, HelpAuthoringController],

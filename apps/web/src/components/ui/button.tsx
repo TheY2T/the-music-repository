@@ -1,3 +1,2 @@
-// `Button` now lives in the shared design system (@TheY2T/tmr-ui). Re-exported here so existing
-// `@/components/ui/button` imports keep working; prefer importing from `@TheY2T/tmr-ui` in new code.
+// Re-export of the design-system Button (@TheY2T/tmr-ui) for @/components/ui/button consumers.
 export { Button, type ButtonProps, buttonVariants } from '@TheY2T/tmr-ui/components/ui/button';

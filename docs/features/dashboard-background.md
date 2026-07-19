@@ -46,7 +46,7 @@ motion → a static frame). Built on the existing PixiJS layer (ADR 0022,
   `setBackgroundPref`, fires `tmr:dashboard-bg-change`, and toasts. It is an app island, so it calls
   `t()` directly (i18n-by-prop is for the library).
 - **Scenes** live in `src/lib/pixi/`: `bg-waves-scene`, `bg-staff-scene`, `bg-roll-scene`, and the
-  reused `ambient-scene` (now accepts an optional `intensity`). Each reads theme colours via
+  reused `ambient-scene` (accepts an optional `intensity`). Each reads theme colours via
   `useThemeColors()`, keeps the canvas transparent, and renders a single static frame under
   `prefers-reduced-motion`.
 

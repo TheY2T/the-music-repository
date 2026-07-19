@@ -9,8 +9,8 @@ paths:
 
 # Feature flags (ADR 0035, `docs/features/feature-flags.md`)
 
-Flag **config is DB-backed** and toggled **per environment** in the admin CMS (`/admin/feature-flags`) with
-**no redeploy** — the OpenFeature abstraction is kept but the provider is a custom Postgres-backed one
+Flag **config is DB-backed** and toggled **per environment** in the admin CMS (`/admin/feature-flags`) —
+the OpenFeature abstraction with a custom Postgres-backed provider
 (`@TheY2T/tmr-flags-eval`); **flagd is gone**. The typed key registry (`@TheY2T/tmr-flags`) is the type
 source + DB seed + fallback. Full lifecycle is the **`manage-flags`** skill.
 

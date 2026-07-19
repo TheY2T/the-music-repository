@@ -4,9 +4,8 @@ import { OpenFeature, OpenFeatureProvider, useFlag } from '@openfeature/react-sd
 import { InMemoryProvider } from '@openfeature/web-sdk';
 
 /**
- * Demonstrates the OpenFeature React SDK inside an island. The client-side provider is seeded
- * from the SSR-evaluated value (`initial`) so first paint matches the server. Phase 3 swaps this
- * InMemoryProvider for the OFREP web provider to get live updates from flagd in the browser.
+ * OpenFeature React SDK inside an island. The client-side provider is seeded from the
+ * SSR-evaluated value (`initial`) so the first client paint matches the server.
  */
 let providerConfigured = false;
 function ensureProvider(initial: boolean): void {

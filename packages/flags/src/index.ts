@@ -17,7 +17,7 @@ export interface FlagEvaluationContext {
 
 /** Flag key registry. Naming convention: `<domain>.<capability>`. */
 export const FlagKeys = {
-  /** Phase 0 demo flag — proves the OpenFeature round-trip across API + web. */
+  /** Demo flag — proves the OpenFeature round-trip across API + web. */
   DemoNewBanner: 'demo.new-banner',
   /** Slice 2a — surfaces auth entry points (sign-in, account) in the web app. */
   AuthEnabled: 'auth.enabled',
@@ -31,7 +31,7 @@ export const FlagKeys = {
   ContentRevisions: 'admin.content-revisions',
   /** Slice 2c — gates favorites (heart toggles + My favorites page). */
   Favorites: 'personalization.favorites',
-  /** Phase 5 backlog — gates cloud-synced saved chord progressions (chord analyzer). */
+  /** Gates cloud-synced saved chord progressions (chord analyzer). */
   SavedProgressions: 'personalization.saved-progressions',
   /** Catalogue redesign (ADR 0031) — curated-shelf hub + axis switcher + level facet/sort; off = flat grid. */
   CatalogueHub: 'catalogue.hub',
@@ -39,7 +39,7 @@ export const FlagKeys = {
   LearnerDashboard: 'learning.dashboard',
   /** Animated PixiJS dashboard background + its /settings controls (style picker + intensity). */
   DashboardBackground: 'personalization.dashboard-background',
-  /** Phase 2 — gates collections (courses / learning paths) browse + admin. */
+  /** Gates collections (courses / learning paths) browse + admin. */
   Collections: 'learning.collections',
   /** Collections Library — faceted discovery (search/facets/sort/shelves) on the collections index. */
   CollectionDiscovery: 'learning.collections-discovery',
@@ -51,45 +51,45 @@ export const FlagKeys = {
   CollectionRatings: 'learning.collections-ratings',
   /** Collections Library — user-created collections (build your own, public/private). */
   UserCollections: 'learning.user-collections',
-  /** Phase 2 — gates progress tracking (completion, streaks, dashboard). */
+  /** Gates progress tracking (completion, streaks, dashboard). */
   Progress: 'learning.progress',
-  /** Phase 5 backlog — logs active tool usage as practice time (feeds the progress dashboard). */
+  /** Logs active tool usage as practice time (feeds the progress dashboard). */
   ToolPractice: 'learning.tool-practice',
-  /** Phase 2 — gates the Info View contextual helper (help topics on hover/focus). */
+  /** Gates the Info View contextual helper (help topics on hover/focus). */
   InfoView: 'learning.info-view',
   /** Interactive score player — click/seek/A–B loop/scrub/metronome (ADR 0026); off = basic play/stop. */
   InteractiveScores: 'learning.interactive-scores',
-  /** Phase 3 — interactive piano keyboard tool. */
+  /** Interactive piano keyboard tool. */
   ToolKeyboard: 'tools.keyboard',
-  /** Phase 3 — circle of fifths explorer tool. */
+  /** Circle of fifths explorer tool. */
   ToolCircleOfFifths: 'tools.circle-of-fifths',
-  /** Phase 3 — interactive guitar fretboard tool. */
+  /** Interactive guitar fretboard tool. */
   ToolFretboard: 'tools.fretboard',
-  /** Phase 3 — chord builder tool. */
+  /** Chord builder tool. */
   ToolChords: 'tools.chords',
-  /** Phase 3 — scale explorer tool. */
+  /** Scale explorer tool. */
   ToolScaleExplorer: 'tools.scale-explorer',
-  /** Phase 3 — reverse chord identifier tool. */
+  /** Reverse chord identifier tool. */
   ToolChordId: 'tools.chord-id',
-  /** Phase 3 — mode explorer tool. */
+  /** Mode explorer tool. */
   ToolModes: 'tools.modes',
-  /** Phase 3 — Roman-numeral progression builder tool. */
+  /** Roman-numeral progression builder tool. */
   ToolProgression: 'tools.progression',
-  /** Phase 3 — metronome tool. */
+  /** Metronome tool. */
   ToolMetronome: 'tools.metronome',
-  /** Phase 3 — tuning reference tool. */
+  /** Tuning reference tool. */
   ToolTuner: 'tools.tuner',
-  /** Phase 3 — interval explorer tool. */
+  /** Interval explorer tool. */
   ToolIntervals: 'tools.intervals',
-  /** Phase 3 — staff-notation note reader tool. */
+  /** Staff-notation note reader tool. */
   ToolStaff: 'tools.staff',
-  /** Phase 3 — interval ear-training quiz tool. */
+  /** Interval ear-training quiz tool. */
   ToolEarTrainer: 'tools.ear-trainer',
-  /** Phase 3 — beat sequencer tool. */
+  /** Beat sequencer tool. */
   ToolSequencer: 'tools.sequencer',
-  /** Phase 4 — SRS trainers / drills. */
+  /** SRS trainers / drills. */
   Trainers: 'trainers.srs',
-  /** Drill engine (Phase P) — objective answer-checking + per-skill mastery; off = legacy self-grade. */
+  /** Drill engine — objective answer-checking + per-skill mastery. */
   DrillEngine: 'trainers.drill-engine',
   /** Drill engine — on-screen celebration/reward mechanics (score-pop, combo, confetti, level-up). */
   DrillCelebrations: 'trainers.celebrations',
@@ -101,69 +101,69 @@ export const FlagKeys = {
   DrillPitch: 'trainers.pitch-mic',
   /** Drill engine — rhythm-tap (tap in time) answer modality. */
   DrillRhythm: 'trainers.rhythm-tap',
-  /** Phase 4 — sight-reading generator tool. */
+  /** Sight-reading generator tool. */
   ToolSightReading: 'tools.sight-reading',
-  /** Phase 5 — play-along backing-track generator (progression × key × tempo). */
+  /** Play-along backing-track generator (progression × key × tempo). */
   ToolBackingTrack: 'tools.backing-track',
-  /** Phase 5 — chord voicing library (close / inversions / drop-2/3 / shell). */
+  /** Chord voicing library (close / inversions / drop-2/3 / shell). */
   ToolVoicings: 'tools.voicings',
-  /** Phase 5 — notation-synced player (cursor highlight, tempo/loop/section). */
+  /** Notation-synced player (cursor highlight, tempo/loop/section). */
   ToolNotationPlayer: 'tools.notation-player',
-  /** Phase 5 — lick & turnaround library (guitar tab + audio). */
+  /** Lick & turnaround library (guitar tab + audio). */
   ToolLicks: 'tools.licks',
-  /** Phase 5 — guitar chord-diagram library. */
+  /** Guitar chord-diagram library. */
   ToolChordDiagrams: 'tools.chord-diagrams',
-  /** Phase 5 — strumming pattern trainer. */
+  /** Strumming pattern trainer. */
   ToolStrumming: 'tools.strumming',
-  /** Phase 5 — fingerpicking pattern trainer. */
+  /** Fingerpicking pattern trainer. */
   ToolFingerpicking: 'tools.fingerpicking',
-  /** Phase 5 — arpeggio pattern player. */
+  /** Arpeggio pattern player. */
   ToolArpeggio: 'tools.arpeggio',
-  /** Phase 5 — chord-progression play-along (strum through a progression). */
+  /** Chord-progression play-along (strum through a progression). */
   ToolProgressionPlayer: 'tools.progression-player',
-  /** Phase 5 — rhythm reading trainer. */
+  /** Rhythm reading trainer. */
   ToolRhythm: 'tools.rhythm',
-  /** Phase 5 — CAGED system explorer. */
+  /** CAGED system explorer. */
   ToolCaged: 'tools.caged',
-  /** Phase 5 — scale-in-position boxes. */
+  /** Scale-in-position boxes. */
   ToolScaleBoxes: 'tools.scale-boxes',
-  /** Phase 5 — combined melody + chords song player. */
+  /** Combined melody + chords song player. */
   ToolSong: 'tools.song',
-  /** Phase 5 — chord-progression ear training. */
+  /** Chord-progression ear training. */
   ToolProgressionEar: 'tools.progression-ear',
-  /** Phase 5 — chord-quality ear training. */
+  /** Chord-quality ear training. */
   ToolChordQualityEar: 'tools.chord-quality-ear',
-  /** Phase 5 — fretboard note-naming quiz. */
+  /** Fretboard note-naming quiz. */
   ToolFretQuiz: 'tools.fret-quiz',
-  /** Phase 5 — MusicXML score import + playback. */
+  /** MusicXML score import + playback. */
   ToolMusicXml: 'tools.musicxml',
-  /** Phase 5 — multi-voice (stacked chord) staff engraving. */
+  /** Multi-voice (stacked chord) staff engraving. */
   ToolMultiVoice: 'tools.multi-voice',
-  /** Phase 5 — pitch-preserving time-stretch practice player. */
+  /** Pitch-preserving time-stretch practice player. */
   ToolPracticePlayer: 'tools.practice-player',
-  /** Phase 5 — Roman-numeral / functional chord analyzer. */
+  /** Roman-numeral / functional chord analyzer. */
   ToolAnalyzer: 'tools.analyzer',
-  /** Phase 5 — transposer + capo suggestions. */
+  /** Transposer + capo suggestions. */
   ToolTransposer: 'tools.transposer',
-  /** Phase 5 — bass-line generator (roots / root-fifth / walking). */
+  /** Bass-line generator (roots / root-fifth / walking). */
   ToolBassline: 'tools.bassline',
-  /** Phase 5 — melodic dictation (hear a melody, rebuild it). */
+  /** Melodic dictation (hear a melody, rebuild it). */
   ToolMelodicDictation: 'tools.melodic-dictation',
-  /** Phase 5 — rhythm dictation (hear a rhythm, rebuild it). */
+  /** Rhythm dictation (hear a rhythm, rebuild it). */
   ToolRhythmDictation: 'tools.rhythm-dictation',
-  /** Phase 5 — drum-groove library. */
+  /** Drum-groove library. */
   ToolGrooves: 'tools.grooves',
-  /** Phase 5 — sight-singing / solfège. */
+  /** Sight-singing / solfège. */
   ToolSolfege: 'tools.solfege',
-  /** Phase 5 — key-signature quiz. */
+  /** Key-signature quiz. */
   ToolKeyQuiz: 'tools.key-quiz',
-  /** Phase 5 — interval-construction quiz. */
+  /** Interval-construction quiz. */
   ToolIntervalQuiz: 'tools.interval-quiz',
-  /** Phase 5 — combined practice room (jam station). */
+  /** Combined practice room (jam station). */
   ToolPracticeRoom: 'tools.practice-room',
-  /** Phase 5 — score playground: write alphaTex / import MusicXML, render + play via alphaTab (ADR 0027). */
+  /** Score playground: write alphaTex / import MusicXML, render + play via alphaTab (ADR 0027). */
   ToolScore: 'tools.score',
-  /** Phase 5 — sampled General-MIDI instrument playback (smplr soundfonts). */
+  /** Sampled General-MIDI instrument playback (smplr soundfonts). */
   ToolSoundfont: 'tools.soundfont',
   /** Expansion — improvisation guide: which scales fit a chord. */
   ToolImprovise: 'tools.improvise',
@@ -185,7 +185,7 @@ export const FlagKeys = {
   ToolKeySigGame: 'tools.key-sig-game',
   /** Expansion — build + run a timed practice routine. */
   ToolPracticePlanner: 'tools.practice-planner',
-  /** Phase 6 — premium entitlements gate `visibility=premium` content + the subscription flow.
+  /** Premium entitlements gate `visibility=premium` content + the subscription flow.
    * OFF (default) = everything is free/public-domain and nothing is locked. Turn on only once
    * monetized content actually exists. */
   Premium: 'monetization.premium',
@@ -194,7 +194,7 @@ export const FlagKeys = {
    * = the app never references paid content. Separate from {@link Premium} so the entitlement engine
    * and the marketing copy can be rolled out independently. */
   MonetizationMessaging: 'monetization.messaging',
-  /** Phase 6 — teacher/classroom mode (create/join classrooms, grant premium to a class). */
+  /** Teacher/classroom mode (create/join classrooms, grant premium to a class). */
   Classrooms: 'education.classrooms',
   /** i18n — enables `/zh` localized routing + the language switcher (English + 中文). */
   I18n: 'platform.i18n',

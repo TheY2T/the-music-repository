@@ -46,10 +46,9 @@ domain fn) + `reviewsToday` + `totalDue`. Hexagonal: pure `applySm2` domain fn; 
 `packages/musickit-ui/src/drill-decks.tsx` (was `apps/web/src/lib/drill-decks.tsx` before ADR 0033) and
 the backend only schedules.
 
-## Drill engine (objective grading) — supersedes self-grade
+## Drill engine (objective grading)
 
-Behind `trainers.drill-engine`, `/drills` sessions render the **drill engine** instead of the self-grade
-flashcard: a generated prompt, an objective answer check across multiple input modalities, on-screen
+Behind `trainers.drill-engine`, `/drills` sessions render the **drill engine**: a generated prompt, an objective answer check across multiple input modalities, on-screen
 rewards, and per-attempt logging + per-skill mastery. It keeps this SM-2 scheduler (grading from measured
 accuracy) and the same deck/card keys. See **`docs/features/drill-engine.md`** (engine core in
 `@TheY2T/tmr-music-core/drills/`, `DrillSession` in `@TheY2T/tmr-musickit-ui`, the `apps/api/src/attempts/`

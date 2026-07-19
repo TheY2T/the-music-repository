@@ -15,7 +15,7 @@ import { user } from '../../auth/auth-schema';
 import type { CollectionFacets, ContentDetails, ProseMirrorDoc } from './content-details';
 
 /**
- * Catalogue schema (Phase 1). The repository core: content items + taxonomy + media assets.
+ * Catalogue schema. The repository core: content items + taxonomy + media assets.
  * Postgres columns are snake_case; mapped to camelCase domain entities in the infrastructure mapper.
  */
 export const contentItems = pgTable('content_items', {
@@ -174,7 +174,7 @@ export const favorites = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.contentId] })],
 );
 
-// --- Saved progressions (Phase 5 backlog): a user's named chord progressions from the analyzer.
+// --- Saved progressions: a user's named chord progressions from the analyzer.
 // One row per (user, name); `chords` is a JSON array of { root, quality }. ---
 export const savedProgressions = pgTable(
   'saved_progressions',
@@ -190,7 +190,7 @@ export const savedProgressions = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.name] })],
 );
 
-// --- Collections (Phase 2 → Collections Library): rich, chaptered groupings — courses / learning
+// --- Collections: rich, chaptered groupings — courses / learning
 //     paths / syllabi / song lists. Editorial (curated) or user-created. ---
 export const collections = pgTable('collections', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -284,7 +284,7 @@ export const collectionRatings = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.collectionId] })],
 );
 
-// --- Progress (Phase 2): per-user completion + practice sessions (streaks / practice time). ---
+// --- Progress: per-user completion + practice sessions (streaks / practice time). ---
 export const contentProgress = pgTable(
   'content_progress',
   {
@@ -309,7 +309,7 @@ export const practiceSessions = pgTable('practice_sessions', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
-// --- Trainers (Phase 4): SM-2 spaced-repetition state per user + deck + card. ---
+// --- Trainers: SM-2 spaced-repetition state per user + deck + card. ---
 export const reviewCards = pgTable(
   'review_cards',
   {
@@ -336,7 +336,7 @@ export const reviewLog = pgTable('review_log', {
   reviewedAt: timestamp('reviewed_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
-// --- Drill engine (Phase P): one row per objectively-graded drill attempt. Powers per-skill mastery
+// --- Drill engine: one row per objectively-graded drill attempt. Powers per-skill mastery
 //     stats; SM-2 scheduling itself lives in `review_cards` (attempts delegate to the reviews context). ---
 export const drillAttempts = pgTable(
   'drill_attempts',
@@ -356,7 +356,7 @@ export const drillAttempts = pgTable(
   (t) => [index('drill_attempts_user_deck_idx').on(t.userId, t.deck)],
 );
 
-// --- Entitlements (Phase 6): premium access grants per user (e.g. `premium`). A grant is a local
+// --- Entitlements: premium access grants per user (e.g. `premium`). A grant is a local
 //     stand-in for a payment-provider subscription; `expires_at` null = no expiry. ---
 export const entitlements = pgTable(
   'entitlements',
@@ -372,7 +372,7 @@ export const entitlements = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.key] })],
 );
 
-// --- Billing (Phase 6): checkout sessions + webhook idempotency. A checkout session maps a provider
+// --- Billing: checkout sessions + webhook idempotency. A checkout session maps a provider
 // session back to the user (the mock resolves the user from here; real Stripe also uses
 // client_reference_id); it holds the Stripe customer/subscription ids for lifecycle events. ---
 export const checkoutSessions = pgTable('checkout_sessions', {
@@ -394,7 +394,7 @@ export const processedWebhooks = pgTable('processed_webhooks', {
   processedAt: timestamp('processed_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
-// Entitlement audit log (Phase 6, 6B): every grant/revoke — for support + analytics. Append-only.
+// Entitlement audit log: every grant/revoke — for support + analytics. Append-only.
 export const entitlementEvents = pgTable('entitlement_events', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: text('user_id')
@@ -406,7 +406,7 @@ export const entitlementEvents = pgTable('entitlement_events', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
-// Gift / redeem codes (Phase 6, 6B): a one-time (or multi-use) code that grants an entitlement, no
+// Gift / redeem codes: a one-time (or multi-use) code that grants an entitlement, no
 // card. Mirrors the classroom join-code pattern.
 export const redeemCodes = pgTable('redeem_codes', {
   code: text('code').primaryKey(),
@@ -418,7 +418,7 @@ export const redeemCodes = pgTable('redeem_codes', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
-// --- Classrooms (Phase 6, teacher mode): a teacher owns a classroom with a join code; learners join.
+// --- Classrooms (teacher mode): a teacher owns a classroom with a join code; learners join.
 //     `premium_granted` records that the teacher granted premium to the class (seat entitlement). ---
 export const classrooms = pgTable('classrooms', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -446,7 +446,7 @@ export const classroomMembers = pgTable(
   (t) => [primaryKey({ columns: [t.classroomId, t.userId] })],
 );
 
-// --- Classroom assignments (Phase 6, 6C): content a teacher assigns to a class. One row per
+// --- Classroom assignments: content a teacher assigns to a class. One row per
 // (classroom, content); progress is read from `content_progress` for the class members. ---
 export const classroomAssignments = pgTable(
   'classroom_assignments',
@@ -463,7 +463,7 @@ export const classroomAssignments = pgTable(
   (t) => [primaryKey({ columns: [t.classroomId, t.contentId] })],
 );
 
-// --- Classroom invitations (Phase 6, 6C): an emailed invite (token) to join a class. ---
+// --- Classroom invitations: an emailed invite (token) to join a class. ---
 export const classroomInvitations = pgTable('classroom_invitations', {
   id: uuid('id').primaryKey().defaultRandom(),
   classroomId: uuid('classroom_id')
@@ -475,7 +475,7 @@ export const classroomInvitations = pgTable('classroom_invitations', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
-// --- Info View (Phase 2): context-sensitive help topics keyed by slug (e.g. a term or skill_topic). ---
+// --- Info View: context-sensitive help topics keyed by slug (e.g. a term or skill_topic). ---
 export const helpTopics = pgTable('help_topics', {
   id: uuid('id').primaryKey().defaultRandom(),
   slug: text('slug').notNull().unique(),
@@ -486,8 +486,8 @@ export const helpTopics = pgTable('help_topics', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
-// --- Localization (ADR 0034): UI message strings live in the DB and are edited via the admin CMS with
-//     no redeploy. Seeded from the in-repo en/zh-Hans JSON on a fresh deploy; thereafter runtime-driven.
+// --- Localization (ADR 0034): UI message strings live in the DB and are edited via the admin CMS.
+//     Seeded from the in-repo en/zh-Hans JSON on a fresh deploy; thereafter runtime-driven.
 //     Draft → publish: only `published_value` (where not deleted) is assembled into the served catalogue. ---
 export const uiMessages = pgTable(
   'ui_messages',
@@ -542,7 +542,7 @@ export const locales = pgTable('locales', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
-// --- Content translations (Phase 2, ADR 0034): per-locale translations of catalogue/collection/help
+// --- Content translations (ADR 0034): per-locale translations of catalogue/collection/help
 //     *content* fields (title, summary, body…). Unlike ui_messages there is no seed baseline — content
 //     translations are authored in the CMS. Only published, non-deleted rows overlay the base row at read
 //     time (missing → base/English). Polymorphic by (entityType, entityId) — no hard FK. ---
@@ -646,8 +646,8 @@ export const featureFlagSettings = pgTable(
   ],
 );
 
-/** Append-only audit of every flag/setting/environment change — for diff + one-click restore (flags apply
- *  immediately, so this history is the safety net rather than a draft/publish gate). */
+/** Append-only audit of every flag/setting/environment change — for diff + one-click restore. Flags apply
+ *  immediately, so this table is the change history rather than a draft/publish gate. */
 export const featureFlagRevisions = pgTable('feature_flag_revisions', {
   id: uuid('id').primaryKey().defaultRandom(),
   flagId: uuid('flag_id'), // null for environment-level actions

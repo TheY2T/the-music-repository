@@ -4,7 +4,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import { guardAdmin } from '@/lib/admin-guard';
 import { t } from '@TheY2T/tmr-i18n';
 
-// Draft preview surface for the collection editor (Phase C). Gated by guardAdmin; renders no DB data —
+// Draft preview surface for the collection editor. Gated by guardAdmin; renders no DB data —
 // the editor pushes the live collection in via postMessage. `[slug]` only keys the iframe.
 const redirect = guardAdmin(Astro);
 if (redirect) {

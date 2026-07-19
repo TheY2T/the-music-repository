@@ -22,7 +22,7 @@ Both draw from Lucide (`lucide-react` / `@iconify-json/lucide`), so they render 
 ## Sizing, color, a11y
 
 - **Size + color** via Tailwind on `className`/`class`: `size-4`, `text-muted-foreground`,
-  `fill-current`. Lucide strokes use `currentColor`, so `text-*` "just works". Prefer `size-*` utilities
+  `fill-current`. Lucide strokes use `currentColor`, so `text-*` utilities set the icon colour. Prefer `size-*` utilities
   over hardcoded pixel props.
 - **Decorative (default):** omit `label` → the icon is `aria-hidden` + `focusable="false"`. Use this
   when the icon sits beside visible text or the interactive parent already has an accessible name.

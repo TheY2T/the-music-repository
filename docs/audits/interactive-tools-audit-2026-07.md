@@ -180,21 +180,21 @@ only **25 of 83 articles use live embeds**.
 **Phase 2 — Deepen (high leverage)**
 4. ✅ **DONE (2026-07-15)** 4.2 — generative movable chord-shape library at
    `packages/ui/src/components/organisms/music/chord-library.ts` (`generateChordShapes`). Slides E-shape/
-   A-shape barre templates (guitar), barre shapes (ukulele) and root grips (bass — previously zero) to
+   A-shape barre templates (guitar), barre shapes (ukulele) and bass root grips to
    any root, for 14 qualities incl. maj7/min7/m7♭5/6/add9/9/dim/aug. `ChordShape` gained `baseFret`;
    `ChordDiagram` now windows the neck with a "{n}fr" label for movable shapes. `embeds.ts findChordShape`
-   falls back to the generator, so any `CHORDS` symbol (`F♯m7`, `Bbmaj7`, …) now renders instead of
-   degrading to text — enriching chord-diagrams/chord-board/strum/progression/song/practice-room embeds.
+   falls back to the generator, so any `CHORDS` symbol (`F♯m7`, `Bbmaj7`, …) renders — enriching
+   chord-diagrams/chord-board/strum/progression/song/practice-room embeds.
    21 UI tests (all roots × qualities × instruments: no wrong notes, root-in-bass, essentials) + embeds
    fallback tests; typecheck green; verified live in-app.
 5. 4.4 — tuner mic pitch-detection; staff/sight-reading clef+accidental+key coverage.
 6. 4.3 — alternate tunings across fretted tools.
 
-4b. ✅ **DONE (2026-07-15)** wired the generator into two tools: the **CAGED explorer** is no longer
-   major-only — it's a root + chord-type picker (major/minor/dom7/maj7/min7) rendering CAGED shapes
-   (added C/G/D shape families to the library); the **chord-diagrams tool** is now a full chord
-   dictionary (instrument × root × quality → every movable voicing, strummable), replacing the 16-shape
-   static browser. Both use the shared `ChordDiagram` with `baseFret` neck-windowing.
+4b. ✅ **DONE (2026-07-15)** wired the generator into two tools: the **CAGED explorer** is a root +
+   chord-type picker (major/minor/dom7/maj7/min7) rendering CAGED shapes
+   (added C/G/D shape families to the library); the **chord-diagrams tool** is a full chord
+   dictionary (instrument × root × quality → every movable voicing, strummable). Both use the shared
+   `ChordDiagram` with `baseFret` neck-windowing.
 
 **Phase 3 — Consolidate** ✅ **RESOLVED (2026-07-15)**
 7. C1 + C5 merged (genuine redundancy, with redirects). C2/C3/C4/C6 reviewed and deliberately kept as

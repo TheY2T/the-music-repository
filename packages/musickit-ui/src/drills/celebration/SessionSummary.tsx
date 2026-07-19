@@ -31,8 +31,8 @@ function useCountUp(target: number, reduced: boolean): number {
 
 /**
  * Tier-3 milestone reward: the session-complete summary — a 1–3 star rating on accuracy, counting-up
- * stats, an optional personal-best callout, and a confetti fall behind it. Replaces the old static
- * "Session complete" text. Confetti + count-up degrade to static under reduced motion.
+ * stats, an optional personal-best callout, and a confetti fall behind it. Confetti + count-up degrade
+ * to static under reduced motion.
  */
 export default function SessionSummary({
   reviewed,

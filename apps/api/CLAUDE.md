@@ -111,8 +111,8 @@ write-side features:
 
 ## Localization (ADR 0034, `src/i18n/`)
 
-DB-backed UI strings served to `apps/web` + an admin CMS write side (`docs/features/i18n.md`). Previously
-the API had **no** i18n responsibility — it now owns the string catalogue.
+The API owns the DB-backed UI-string catalogue served to `apps/web`, plus an admin CMS write side
+(`docs/features/i18n.md`).
 - **Ports:** `UiMessageCatalogue` (assemble published catalogue + versions; in-memory cache keyed by the
   per-locale version so the hot path never full-scans) and `UiMessageAuthoring` (draft CRUD, soft
   delete/restore, publish, revisions), bound to `DrizzleUiMessage*`.

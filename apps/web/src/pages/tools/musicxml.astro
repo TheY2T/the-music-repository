@@ -1,8 +1,6 @@
 ---
 import { localizedPath } from '@TheY2T/tmr-i18n';
 
-// The score playground now accepts MusicXML directly (alphaTab sniffs the format), so the standalone
-// MusicXML import tool folds into it. This route redirects so existing links keep working.
-// See the interactive-tools audit (consolidation C5).
+// Redirects to /tools/score — the score playground accepts MusicXML directly (alphaTab sniffs the format).
 return Astro.redirect(localizedPath(Astro.locals.locale, '/tools/score'));
 ---

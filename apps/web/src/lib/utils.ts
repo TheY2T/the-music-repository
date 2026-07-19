@@ -1,3 +1,2 @@
-// `cn()` now lives in the shared design system. Re-exported here so existing `@/lib/utils`
-// imports keep working; prefer importing from `@TheY2T/tmr-ui` in new code.
+// Re-export of cn() from the design system (@TheY2T/tmr-ui).
 export { cn } from '@TheY2T/tmr-ui/lib/utils';

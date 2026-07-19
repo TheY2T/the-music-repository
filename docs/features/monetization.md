@@ -33,7 +33,7 @@ they author the content; subscribers hold a grant; everyone else sees locked pre
 - **Catalogue gating:** the controller resolves `entitled` (flag on? then `PremiumAccessService.isEntitled()`)
   and passes a plain boolean into the pure `SearchCatalogue` / `GetContentBySlug` use-cases. The public
   read routes use `ResolveOptionalAuth()` so `CurrentUser` sees a logged-in viewer without blocking anon.
-  The Meilisearch adapter no longer excludes premium (only published items are indexed); the use-case
+  The Meilisearch adapter indexes only published items; the use-case
   computes `locked`.
 - **Web:** `src/lib/subscription-api.ts` (credentialed get/activate/cancel); `UpgradePanel.tsx` +
   `/upgrade` page (login + flag gated); a 🔒 Premium badge on catalogue cards (`CatalogueBrowser`) and a

@@ -4,8 +4,8 @@ import type { Flags, User } from './types';
 
 /**
  * Global navigation model, derived once per request from `Astro.locals` and passed into the
- * SiteHeader / mobile drawer / SiteFooter. Centralises the flag + auth gating that used to be
- * inlined on the homepage so every surface shows a consistent nav. Labels are resolved here
+ * SiteHeader / mobile drawer / SiteFooter. Centralises the flag + auth gating so every surface
+ * shows a consistent nav. Labels are resolved here
  * (i18n) so the header island stays a thin renderer.
  */
 export interface NavItem {

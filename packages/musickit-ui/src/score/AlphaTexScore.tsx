@@ -6,8 +6,8 @@ import { Button, Icon } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 
 /**
- * Lightweight alphaTab notation surface (ADR 0027) for the interactive tools that used to render via
- * the bespoke `StaffSequence` SVG. Renders an alphaTex string with alphaTab; when `tex` changes it
+ * Lightweight alphaTab notation surface (ADR 0027) that the interactive tools use to render generated
+ * notation. Renders an alphaTex string with alphaTab; when `tex` changes it
  * **reloads into the same engine** (`engine.reload`) so the Worker/synth stay warm across exercise
  * regenerations. Optional inline Play/Pause (alphaTab's synth). Notation strings are English to match
  * the other score tools. Deliberately simpler than `ScorePlayer` (no scrub/loop/metronome chrome).

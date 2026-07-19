@@ -1,7 +1,6 @@
 /**
- * Pure `notes → alphaTex` generators (ADR 0027). The interactive tools that used to hand-author
- * notation as note-name/beat arrays or fret data (rendered by the bespoke `StaffSequence` SVG) now
- * generate alphaTex and render it through alphaTab. These helpers turn a tool's normalized data into
+ * Pure `notes → alphaTex` generators (ADR 0027). The interactive tools generate alphaTex from their
+ * note/fret data and render it through alphaTab. These helpers turn a tool's normalized data into
  * alphaTex text; no DOM/audio/alphaTab deps, so they're unit-tested.
  *
  * alphaTex primer used here: a beat is `<note>.<duration>` (e.g. `c4.4` = quarter middle-C), duration

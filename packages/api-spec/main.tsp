@@ -1034,7 +1034,7 @@ op gradeCard(@path deck: string, @path card: string, @body body: ReviewGrade): {
   @body body: ReviewState;
 };
 
-// ===================== Drill engine attempts (Phase P — objective grading) =====================
+// ===================== Drill engine attempts (objective grading) =====================
 // Objective drill attempts + per-skill mastery. An attempt records measured accuracy for a card; the
 // server maps it to an SM-2 quality and delegates scheduling to the reviews context. Auth-gated.
 
@@ -1492,7 +1492,7 @@ op listInvitations(@path id: string): InvitationList;
 op acceptInvitation(@path token: string): Classroom;
 
 // ===================== Localization (ADR 0034) =====================
-// UI message strings served from the DB and edited via the admin CMS with no redeploy. Public reads
+// UI message strings served from the DB and edited via the admin CMS. Public reads
 // deliver the published catalogue (cache-busted by a per-locale version); admin ops are RBAC-gated.
 
 /** The published-catalogue version tag per locale (the web cache-bust / ETag signal). */
@@ -1791,7 +1791,7 @@ op listTranslationRevisions(@path id: string): TranslationRevisionList;
 op publishTranslations(@body body: TranslationPublishInput): TranslationPublishResult;
 
 // ===================== Feature flags (ADR 00XX) =====================
-// Flag configuration lives in the DB and is toggled per environment via the admin CMS with no redeploy.
+// Flag configuration lives in the DB and is toggled per environment via the admin CMS.
 // The public snapshot feeds the web SSR OpenFeature provider (@TheY2T/tmr-flags-eval); it is cache-busted
 // by a per-environment version tag (ETag / conditional GET → 304). Admin CRUD ops land in a later slice.
 
@@ -1849,7 +1849,7 @@ op listFeatureFlagEnvironments(): FeatureFlagEnvironmentList;
 
 // --- Feature-flag admin CRUD (ADR 00XX) — RBAC-gated (`featureFlags` resource, admin-only) + method-level
 //     flag-gated on `admin.feature-flags`. Toggles apply immediately (no draft/publish); the revision log
-//     is the safety net. Every write bumps the affected environment's version tag. ---
+//     records every change. Every write bumps the affected environment's version tag. ---
 
 model FeatureFlagSettingAdmin {
   environmentId: string;

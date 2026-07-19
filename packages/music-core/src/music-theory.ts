@@ -17,7 +17,7 @@ export function midiToFrequency(midi: number): number {
 /**
  * Difficulty tier for a scale or chord, used to progressively disclose options per learner level
  * (Beginner → Expert). Tools filter their pickers with `scalesByLevel` / `chordsByLevel`; a tool that
- * ignores the field simply shows everything.
+ * ignores the field shows everything.
  */
 export type Level = 'beginner' | 'intermediate' | 'advanced' | 'expert';
 

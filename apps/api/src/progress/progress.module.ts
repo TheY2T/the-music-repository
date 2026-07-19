@@ -12,7 +12,7 @@ import { DrizzleProgressRepository } from './infrastructure/drizzle-progress.rep
 import { ProgressController } from './progress.controller';
 
 /**
- * Progress feature (Phase 2, hexagonal). Imports AuthModule for the `CurrentUser` port and
+ * Progress feature (hexagonal). Imports AuthModule for the `CurrentUser` port and
  * CollectionsModule for `CollectionRepository` (per-collection completion).
  */
 @Module({

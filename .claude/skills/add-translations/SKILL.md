@@ -12,8 +12,8 @@ compile-time key type + fallback.
 
 ## 1. Add / change the string — two paths
 
-**A. Change wording or a translation for an existing key, or add a runtime-only string** (no code change,
-no redeploy): do it in the **admin CMS** — the **Localization** section (`/admin/localization`), which
+**A. Change wording or a translation for an existing key, or add a runtime-only string** (no code change):
+do it in the **admin CMS** — the **Localization** section (`/admin/localization`), which
 manages the general-site **UI strings**. The table is grouped by key; edit a key to manage all its locales,
 or **Add string** / **Import** a key→value JSON, then **Publish**. Live within seconds. Admins can also
 **create new locales** and **export** a locale's strings (filterable by origin) here. To translate

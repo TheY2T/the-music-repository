@@ -1,6 +1,6 @@
 # Feature: Catalogue redesign — hub, axis switcher & shelves
 
-- **Phase:** Platform/UX · **Status:** Phases 1–2 + 4–5 shipped (hub shelves + axis switcher + level facet + sort; collections & tools federated; signed-in dashboard at `/dashboard`; composer + key facets). The **Atlas** intersection mode (Phase 3) was trialed and **reverted** (a count matrix gave weak content signal — see ADR 0031).
+- **Phase:** Platform/UX · **Status:** Phases 1–2 + 4–5 shipped (hub shelves + axis switcher + level facet + sort; collections & tools federated; signed-in dashboard at `/dashboard`; composer + key facets). An Atlas intersection mode is not offered — a count matrix gives weak content signal (ADR 0031).
 - **Flag key:** `catalogue.hub` (hub) · `learning.dashboard` (signed-in dashboard) — from `@TheY2T/tmr-flags`
 - **ADR:** [0031](../adr/0031-catalogue-hub-redesign.md) · builds on [0023 collections](../adr/0023-collections-library.md), [0021 themes](../adr/0021-multi-theme-vintage-design-system.md), [0018 design system](../adr/0018-ui-component-library-atomic-design.md)
 
@@ -21,7 +21,7 @@ experiences — with the faceted grid retained underneath for precise narrowing.
 - **Axis switcher** (`SegmentedToggle`) — *Instrument · Skill level · Era · Genre · Format*. Changing it
   re-labels and re-orders the shelves around that dimension (the same catalogue, re-sliced). URL-reflected
   (`?by=level`) and remembered for the session (`sessionStorage['tmr.catalogue.hubAxis']`), so re-entering
-  the hub without a `?by=` — a shared `?view=browse` link, or simply returning later — restores the last
+  the hub without a `?by=` — a shared `?view=browse` link, or returning later — restores the last
   axis instead of snapping back to the default. The collections hub mirrors this (`tmr.collections.hubAxis`).
 - **Shelf stack** (`FeaturedShelf`) — one row per top facet value of the chosen axis (fixed grade bands
   for the level axis), plus evergreen **Collections & guided paths** (federated from the `collections`

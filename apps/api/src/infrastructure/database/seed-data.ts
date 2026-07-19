@@ -63,9 +63,9 @@ export interface SeedContent {
   source: string;
   attribution: string;
   license: string;
-  /** Phase 6 — `premium` gates the item behind an entitlement; defaults to `public`. */
+  /** `premium` gates the item behind an entitlement; defaults to `public`. */
   visibility?: string;
-  /** Phase 6 (6B) — which plan unlocks a premium item: `premium` (default) or `pro`. */
+  /** Which plan unlocks a premium item: `premium` (default) or `pro`. */
   tier?: string;
 }
 

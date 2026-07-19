@@ -9,7 +9,7 @@ import {
 import { DrizzleReviewRepository } from './infrastructure/drizzle-review.repository';
 import { ReviewsController } from './reviews.controller';
 
-/** Trainers / SRS reviews feature (Phase 4, hexagonal). Imports AuthModule for `CurrentUser`. */
+/** Trainers / SRS reviews feature (hexagonal). Imports AuthModule for `CurrentUser`. */
 @Module({
   imports: [AuthModule],
   controllers: [ReviewsController],

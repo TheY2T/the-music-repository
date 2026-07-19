@@ -204,7 +204,7 @@ export const CAGED_FAMILIES = ['C-shape', 'A-shape', 'G-shape', 'E-shape', 'D-sh
 
 /**
  * Guitar chord voicings ordered by the CAGED sequence (C-A-G-E-D) for the CAGED explorer. Qualities
- * that only voice cleanly in some families (minor, minor-7) simply return fewer shapes.
+ * that only voice cleanly in some families (minor, minor-7) return fewer shapes.
  */
 export function generateCagedShapes(
   rootPc: number,

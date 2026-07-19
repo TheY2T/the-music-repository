@@ -51,7 +51,7 @@ education path into monetization: a teacher (or school) unlocks premium for thei
 - **Roster management:** `POST /classrooms/{id}/leave` (a member removes themselves; the **owner is
   blocked → 403**, archive instead), `DELETE /classrooms/{id}/members/{memberId}` (owner only),
   `POST /classrooms/{id}/archive` (owner only — sets `archived_at`; archived classrooms are hidden from
-  every roster: `findByCode`/`listForUser` filter `archived_at IS NULL`). `ClassroomMember` now carries
+  every roster: `findByCode`/`listForUser` filter `archived_at IS NULL`). `ClassroomMember` carries
   `id` so the owner can target a member for removal. Verified curl (403 owner-leave / 204 remove /
   403 non-owner-archive / 204 archive / hidden from list).
 

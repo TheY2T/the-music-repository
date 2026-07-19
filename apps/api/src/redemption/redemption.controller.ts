@@ -6,7 +6,7 @@ import { CreateRedeemCodeUseCase, RedeemCodeUseCase } from './application/redemp
 import { CreateRedeemCodeDto, RedeemCodeDto } from './dto/redemption.dto';
 
 /**
- * Gift / redeem codes (Phase 6, 6B). Minting is staff-only (enforced in the use-case via `CurrentUser`
+ * Gift / redeem codes. Minting is staff-only (enforced in the use-case via `CurrentUser`
  * roles → 403 `NOT_STAFF`); redeeming grants premium to the acting user. Gated on `monetization.premium`
  * (method-level).
  */

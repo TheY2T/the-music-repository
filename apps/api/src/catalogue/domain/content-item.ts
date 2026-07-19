@@ -122,7 +122,7 @@ export interface ContentItem {
 }
 
 /**
- * Overlay published per-locale translations onto a content item's text fields (ADR 0034, Phase 2).
+ * Overlay published per-locale translations onto a content item's text fields (ADR 0034).
  * `overlay` is a field→value map: `title` / `summary` / `bodyMdx`, and `details.<field>` for detail
  * facts. Absent fields keep their base (English) value. Returns a new item; a no-op for an empty overlay.
  */
@@ -165,7 +165,7 @@ export interface ContentSummaryView {
   visibility: string;
   /** Which plan unlocks this premium item: `premium` | `pro`. Present on premium items. */
   tier?: string;
-  /** True when this premium item is withheld from the current viewer (Phase 6). */
+  /** True when this premium item is withheld from the current viewer. */
   locked?: boolean;
   genres: TaxonomyRef[];
   instruments: TaxonomyRef[];

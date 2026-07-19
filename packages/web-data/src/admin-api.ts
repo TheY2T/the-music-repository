@@ -76,7 +76,7 @@ export const adminApi = {
     ),
 };
 
-/** Admin CMS for collections (Phase 2). */
+/** Admin CMS for collections. */
 export const collectionsAdminApi = {
   list: () => request<CollectionList>('/admin/collections'),
   get: (slug: string) =>

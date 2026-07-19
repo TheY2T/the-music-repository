@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 import ScorePlayer from './ScorePlayer';
 
 /**
- * `/tools/score` — an alphaTab score playground (ADR 0027; replaces the old Verovio renderer). Type
+ * `/tools/score` — an alphaTab score playground (ADR 0027). Type
  * alphaTex (alphaTab's native notation format) or paste/upload MusicXML — the engine sniffs the format
  * by its leading `<` — then render + play it through the shared {@link ScorePlayer}. The MusicXML import
  * tool (`/tools/musicxml`) folds in here as the "MusicXML" input format (consolidation C5).

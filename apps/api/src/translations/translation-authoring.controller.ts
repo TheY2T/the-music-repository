@@ -14,7 +14,7 @@ import {
 import { PublishTranslationsDto, UpsertTranslationDto } from './dto/translations.dto';
 
 /**
- * Admin content-translation CMS (ADR 0034, Phase 2). RBAC-gated (reuses the `content` resource) and
+ * Admin content-translation CMS (ADR 0034). RBAC-gated (reuses the `content` resource) and
  * method-level flag-gated on `admin.locale-strings` (routes still map when off — ADR 0009).
  */
 @Controller('admin/translations')

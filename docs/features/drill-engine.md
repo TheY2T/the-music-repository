@@ -12,7 +12,7 @@
 The original `/drills` was a **self-graded flashcard** — the learner clicked "Show answer" and rated
 their own recall (Again/Good/Easy), with no answer input and no objective correctness. The drill engine
 replaces that with **objective answer-checking across multiple input modalities**, keeps the SM-2
-scheduler (grading from measured accuracy instead of self-grade), persists per-attempt results + per-skill
+scheduler (grading from measured accuracy), persists per-attempt results + per-skill
 mastery, and rewards the learner on-screen. It coexists with the legacy path behind `trainers.drill-engine`.
 
 ## Architecture
@@ -55,7 +55,7 @@ reserved for rarity. **Tier 1 (per answer):** success/wrong glow on the options/
 and a `DrillFeedback` particle burst + reward chime. **Tier 2 (combo):** a `ComboCounter` (flame + count)
 that escalates colour/size as the run crosses `COMBO_THRESHOLDS` (5/10/20), and at each threshold a bigger
 gold `combo` burst (a `kind` on `drill-feedback-scene`). **Tier 3 (session complete):** `SessionSummary`
-replaces the old static "Session complete" text with a 1–3 **star rating** on accuracy (`starsForAccuracy`),
+shows a 1–3 **star rating** on accuracy (`starsForAccuracy`),
 counting-up stats, an optional personal-best callout (`isPersonalBest` from the recorded attempt), and a
 `confetti-scene` fall behind it. Tier 4 (level-up/mastery/streak-milestone) lands in Phase 5. Every reward
 degrades to a static outcome under `prefers-reduced-motion`; audio is opt-out and persisted (`tmr.drill.sound`). **Tier 4 (progression):**

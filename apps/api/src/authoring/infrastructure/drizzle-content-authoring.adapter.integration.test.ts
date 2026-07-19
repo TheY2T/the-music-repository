@@ -11,9 +11,9 @@ import { contentItems, mediaAssets } from '../../infrastructure/database/schema'
 import type { ContentWriteData } from '../application/ports/content-authoring.port';
 import { DrizzleContentAuthoring } from './drizzle-content-authoring.adapter';
 
-// Proves the write path persists the fields the CMS previously dropped — `details` (facts + related +
-// embeds), `tier`, and the canonical `bodyDoc` — and that a partial update preserves them rather than
-// clearing them. Requires a Docker/podman socket (opt-in via `test:integration`). See ADR 0020.
+// Proves the write path persists `details` (facts + related + embeds), `tier`, and the canonical
+// `bodyDoc`, and that a partial update preserves them. Requires a Docker/podman socket (opt-in via
+// `test:integration`). See ADR 0020.
 const MIGRATIONS = join(process.cwd(), 'drizzle');
 
 const base: ContentWriteData = {

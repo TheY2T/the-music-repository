@@ -85,15 +85,15 @@ Biome + thin ESLint · podman-compose deploy.
   (`♯♭♮♪♩`) are the sole exception. Follow **`add-ui-component`**. ADR 0018/0019 · `docs/features/icons.md`.
 - **Localize UI strings (web).** No hardcoded user-facing text in `apps/web` — render via
   `t(Astro.locals.locale, key)` and pass `locale` into islands as a prop. String **values are DB-backed
-  and edited in the admin CMS** (`/admin/localization`) with no redeploy (ADR 0034); the in-repo
+  and edited in the admin CMS** (`/admin/localization`, ADR 0034); the in-repo
   `@TheY2T/tmr-i18n-locales` JSON is the DB **seed** + compile-time `MessageKey` type + fallback, so a
   brand-new code-referenced key still gets added there once. URL-prefix routing (`/zh/…`), gated by
   `platform.i18n`. Follow the **`add-translations`** skill. ADR 0017/0034.
 - **Ship features behind a flag (DB-backed, per-environment; ADR 0035).** Add the key to
   `@TheY2T/tmr-flags` (`FlagKeys` + `FlagDefaults`) + map its web field in `FLAG_FIELD_BY_KEY`
   (`@TheY2T/tmr-web-data`), gate with `@RequireFlagsEnabled` (api) / `Astro.locals.flags` prop (web); it
-  **seeds into the DB** on `db:seed`. Toggle per environment in the admin CMS (`/admin/feature-flags`) with
-  **no redeploy** — flagd is gone. Follow the **`manage-flags`** skill.
+  **seeds into the DB** on `db:seed`. Toggle per environment in the admin CMS (`/admin/feature-flags`).
+  Follow the **`manage-flags`** skill.
 - **Test every feature (Definition of Done).** Ship tests with the code: **unit** for logic/use-cases
   (mock **ports**, never Drizzle), **component** for islands/UI (i18n-by-prop), **E2E** for user flows.
   Vitest (unit/component) + Playwright (E2E) + Testcontainers (api integration); shared runner config
@@ -162,7 +162,7 @@ pnpm obs:up                                             # optional observability
   to the config package, not the consumer. Set output paths in each app's own tsconfig.
 - **Feature flags are DB-backed (ADR 0035), not flagd.** The api evaluates in-process from Postgres for
   `APP_ENV`; the web SSR fetches `GET /feature-flags/snapshot/:env` (ETag/304) and evaluates with the same
-  `@TheY2T/tmr-flags-eval` engine. Toggle per-environment in `/admin/feature-flags` (no redeploy). If the
+  `@TheY2T/tmr-flags-eval` engine. Toggle per-environment in `/admin/feature-flags`. If the
   snapshot source is unreachable, flags fall back to code `FlagDefaults` (the app still boots). There is no
   flagd container / `flags/flags.json` — don't reintroduce them.
 - **PixiJS is client-only + lazy (web).** The WebGL layer (ADR 0022) is added via

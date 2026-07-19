@@ -1,5 +1,5 @@
 /**
- * Content-translation domain types (ADR 0034, Phase 2). Framework-free POJOs. A translation is one
+ * Content-translation domain types (ADR 0034). Framework-free POJOs. A translation is one
  * localized value of a content *field*, addressed by `(entityType, entityId, locale, field)`.
  */
 

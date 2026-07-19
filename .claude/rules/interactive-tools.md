@@ -36,7 +36,7 @@ they keep bespoke SVG/DOM.
 
 ## Drills (ADR 0014, `docs/features/drill-engine.md`)
 
-Objective drill engine (flag `trainers.drill-engine`) supersedes self-grade flashcards. Engine core +
+Objective drill engine (flag `trainers.drill-engine`): objective answer-checking + per-skill mastery. Engine core +
 generators live in `@TheY2T/tmr-music-core/drills/`; `DrillSession` island in `@TheY2T/tmr-musickit-ui`;
 attempts recorded via `@TheY2T/tmr-web-data/drills-api` → `apps/api/src/attempts/`. The server only stores
 SM-2 scheduling — add a deck without touching the backend. Author decks via the **`author-content`** skill.

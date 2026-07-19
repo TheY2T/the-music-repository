@@ -1,13 +1,13 @@
 ---
 name: manage-flags
-description: Add, gate, toggle, and verify a DB-backed feature flag in The Music Repository — register the typed key in @TheY2T/tmr-flags, map its web field, gate the API route (@RequireFlagsEnabled) and web usage (SSR eval → island prop), then toggle it per-environment in the admin CMS (/admin/feature-flags) with no redeploy. Use whenever shipping a feature behind a flag or wiring an existing flag. See docs/features/feature-flags.md + ADR 0035.
+description: Add, gate, toggle, and verify a DB-backed feature flag in The Music Repository — register the typed key in @TheY2T/tmr-flags, map its web field, gate the API route (@RequireFlagsEnabled) and web usage (SSR eval → island prop), then toggle it per-environment in the admin CMS (/admin/feature-flags). Use whenever shipping a feature behind a flag or wiring an existing flag. See docs/features/feature-flags.md + ADR 0035.
 ---
 
 # manage-flags
 
-Flag **config is DB-backed** and toggled **per environment** in the admin CMS with **no redeploy** (ADR
-0035). The OpenFeature abstraction is kept — every gate site is unchanged — but the provider is a custom
-Postgres-backed one (`@TheY2T/tmr-flags-eval`); **flagd is gone**. To *ship* a new code flag you touch the
+Flag **config is DB-backed** and toggled **per environment** in the admin CMS (ADR
+0035). The OpenFeature abstraction wraps a custom
+Postgres-backed provider (`@TheY2T/tmr-flags-eval`); **flagd is gone**. To *ship* a new code flag you touch the
 typed registry + the gate; to *toggle* an existing one you use the CMS.
 
 ## 1. Register the key (type source + DB seed + fallback)

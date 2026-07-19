@@ -28,7 +28,7 @@ export const envSchema = z.object({
   // Comma-separated. Origins allowed to send credentialed requests + accept auth cookies.
   TRUSTED_ORIGINS: z.string().default('http://localhost:4321,http://localhost:3000'),
 
-  // Billing (Phase 6). When STRIPE_SECRET_KEY is set the Stripe checkout gateway is used; otherwise
+  // Billing. When STRIPE_SECRET_KEY is set the Stripe checkout gateway is used; otherwise
   // the MockCheckoutGateway (dev/CI) — no keys, no charges. STRIPE_WEBHOOK_SECRET defaults to a
   // non-sensitive dev value the mock ignores. WEB_BASE_URL builds checkout success/cancel URLs.
   STRIPE_SECRET_KEY: z.string().optional(),
@@ -37,7 +37,7 @@ export const envSchema = z.object({
   STRIPE_PRO_PRICE_ID: z.string().optional(),
   WEB_BASE_URL: z.string().default('http://localhost:4321'),
 
-  // Mail (Phase 6). Unset SMTP_URL → the LogMailSender (dev/CI, logs instead of sending). Set a
+  // Mail. Unset SMTP_URL → the LogMailSender (dev/CI, logs instead of sending). Set a
   // connection string (e.g. smtps://user:pass@host:465) to switch to real SMTP delivery.
   SMTP_URL: z.string().optional(),
   MAIL_FROM: z.string().default('The Music Repository <no-reply@localhost>'),
