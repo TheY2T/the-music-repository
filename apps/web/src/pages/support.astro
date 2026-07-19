@@ -1,0 +1,26 @@
+---
+import SupportPanel from '@TheY2T/tmr-common-ui/SupportPanel';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+// The Ko-fi support surface is gated by the `support.kofi` flag.
+if (!Astro.locals.flags.support) {
+  return Astro.redirect('/');
+}
+const locale = Astro.locals.locale;
+const kofiUsername = import.meta.env.PUBLIC_KOFI_USERNAME as string | undefined;
+---
+
+<BaseLayout
+  title={`${t(locale, 'support.title')} — ${t(locale, 'site.name')}`}
+  description={t(locale, 'seo.support.description')}
+>
+  <PageShell
+    title={t(locale, 'support.title')}
+    back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
+    maxWidth="max-w-2xl"
+  >
+    <SupportPanel client:load locale={locale} kofiUsername={kofiUsername} />
+  </PageShell>
+</BaseLayout>

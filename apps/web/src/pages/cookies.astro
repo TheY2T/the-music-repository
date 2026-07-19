@@ -43,6 +43,17 @@ const locale = Astro.locals.locale;
       </section>
 
       <section class="space-y-3">
+        <h2 class="font-display text-xl font-semibold text-foreground">Third-party services</h2>
+        <p>
+          The <a href={localizedPath(locale, '/support')} class="text-primary underline underline-offset-4">Support</a>
+          page embeds a Ko-fi tip panel so you can contribute without leaving the site. When that page
+          loads, Ko-fi (ko-fi.com) may set its own cookies to run the widget and process a contribution.
+          Those cookies are governed by Ko-fi's own privacy and cookie policies. No other page loads
+          third-party widgets.
+        </p>
+      </section>
+
+      <section class="space-y-3">
         <h2 class="font-display text-xl font-semibold text-foreground">Managing cookies</h2>
         <p>
           You can clear or block cookies and local storage through your browser settings. If you do, some

@@ -394,6 +394,26 @@ export const processedWebhooks = pgTable('processed_webhooks', {
   processedAt: timestamp('processed_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+// --- Support: Ko-fi contributions recorded from the inbound Ko-fi webhook. One row per Ko-fi
+//     `message_id` (idempotency — Ko-fi retries a delivery with the same id until it gets a 200).
+//     Audit/analytics only; grants no entitlements. `raw` keeps the full verified payload. ---
+export const kofiDonations = pgTable('kofi_donations', {
+  messageId: text('message_id').primaryKey(),
+  kofiTransactionId: text('kofi_transaction_id'),
+  type: text('type').notNull(), // Donation | Subscription | Commission | Shop Order
+  fromName: text('from_name'),
+  email: text('email'),
+  amount: text('amount'), // provider sends a decimal string, e.g. "3.00"
+  currency: text('currency'),
+  message: text('message'),
+  isPublic: boolean('is_public').notNull().default(true),
+  isSubscriptionPayment: boolean('is_subscription_payment').notNull().default(false),
+  tierName: text('tier_name'),
+  kofiTimestamp: timestamp('kofi_timestamp', { withTimezone: true }),
+  raw: jsonb('raw').notNull(),
+  receivedAt: timestamp('received_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 // Entitlement audit log: every grant/revoke — for support + analytics. Append-only.
 export const entitlementEvents = pgTable('entitlement_events', {
   id: uuid('id').primaryKey().defaultRandom(),

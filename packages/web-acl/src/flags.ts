@@ -96,6 +96,7 @@ export const FLAG_FIELD_BY_KEY = {
   [FlagKeys.Premium]: 'premium',
   [FlagKeys.MonetizationMessaging]: 'monetizationMessaging',
   [FlagKeys.Classrooms]: 'classrooms',
+  [FlagKeys.Support]: 'support',
   [FlagKeys.I18n]: 'i18nEnabled',
   [FlagKeys.LocaleStrings]: 'localeStrings',
   [FlagKeys.FeatureFlags]: 'featureFlags',

@@ -37,6 +37,11 @@ export const envSchema = z.object({
   STRIPE_PRO_PRICE_ID: z.string().optional(),
   WEB_BASE_URL: z.string().default('http://localhost:4321'),
 
+  // Support (Ko-fi). Shared token the Ko-fi webhook payload must carry to be accepted (from Ko-fi's
+  // Advanced webhook settings). Optional so the app boots without it; an unset token rejects every
+  // inbound webhook until configured.
+  KOFI_VERIFICATION_TOKEN: z.string().optional(),
+
   // Mail. Unset SMTP_URL → the LogMailSender (dev/CI, logs instead of sending). Set a
   // connection string (e.g. smtps://user:pass@host:465) to switch to real SMTP delivery.
   SMTP_URL: z.string().optional(),

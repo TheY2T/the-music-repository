@@ -14,6 +14,7 @@
   "seo.privacy.description": "How The Music Repository collects, uses, and protects your personal information.",
   "seo.terms.description": "The terms of service governing your use of The Music Repository.",
   "seo.cookies.description": "How The Music Repository uses cookies and similar technologies.",
+  "seo.support.description": "Support The Music Repository — help keep its public-domain lessons, songs, and interactive tools free and ad-free.",
 
   "nav.catalogue": "Browse the catalogue",
   "nav.collections": "Collections",
@@ -33,6 +34,7 @@
   "nav.privacy": "Privacy Policy",
   "nav.terms": "Terms of Service",
   "nav.cookies": "Cookies",
+  "nav.support": "Support",
 
   "footer.tagline": "A growing library of public-domain lessons, songs, and interactive tools for piano and guitar.",
   "footer.explore": "Explore",
@@ -43,6 +45,12 @@
   "footer.licenseNote": "All content is public-domain or openly licensed (CC BY-SA). Attribution and license appear on every item.",
   "footer.rights": "The Music Repository",
   "footer.madeWith": "Made for the love of music.",
+
+  "support.title": "Support The Music Repository",
+  "support.intro": "The Music Repository is free, ad-free, and built around public-domain and openly-licensed music. If it helps your playing, a small tip on Ko-fi helps cover hosting and keeps new lessons, songs, and tools coming.",
+  "support.cta": "Support us on Ko-fi",
+  "support.thanks": "Every contribution is genuinely appreciated — thank you for keeping the music playing.",
+  "support.comingSoon": "Our Ko-fi page is being set up — please check back soon.",
 
   "theme.label": "Theme",
   "theme.appearance": "Appearance",

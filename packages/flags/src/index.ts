@@ -196,6 +196,9 @@ export const FlagKeys = {
   MonetizationMessaging: 'monetization.messaging',
   /** Teacher/classroom mode (create/join classrooms, grant premium to a class). */
   Classrooms: 'education.classrooms',
+  /** Ko-fi "Support" surface — the /support page + the footer/header support links. Independent of
+   * the premium engine: supporters tip via Ko-fi, which unlocks nothing. */
+  Support: 'support.kofi',
   /** i18n — enables `/zh` localized routing + the language switcher (English + 中文). */
   I18n: 'platform.i18n',
   /** Localization CMS (ADR 0034) — gates the admin surface for editing DB-backed UI message strings. */
@@ -297,6 +300,7 @@ export const FlagDefaults = {
   [FlagKeys.Premium]: false,
   [FlagKeys.MonetizationMessaging]: false,
   [FlagKeys.Classrooms]: true,
+  [FlagKeys.Support]: true,
   [FlagKeys.I18n]: true,
   [FlagKeys.LocaleStrings]: true,
   [FlagKeys.FeatureFlags]: true,

@@ -37,6 +37,7 @@ export const sampleProps: Record<string, unknown> = {
   title: 'Demo Title',
   subtitle: 'Demo subtitle',
   name: 'Demo',
+  kofiUsername: 'themusicrepository',
   // A real seed slug so detail views (ContentDetail) fetch their item, and the admin forms load in
   // edit mode — both are served dummy data by the MSW handlers (item/collection GETs are mocked).
   slug: 'moonlight-sonata',

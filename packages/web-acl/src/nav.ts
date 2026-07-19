@@ -61,6 +61,7 @@ export function buildPrimaryNav(ctx: NavContext): NavItem[] {
     items.push(makeItem(ctx, 'collections', '/collections', 'nav.collections', 'list-music'));
   if (anyToolEnabled(flags)) items.push(makeItem(ctx, 'tools', '/tools', 'nav.tools', 'wrench'));
   if (flags.trainers && user) items.push(makeItem(ctx, 'drills', '/drills', 'nav.drills', 'gauge'));
+  if (flags.support) items.push(makeItem(ctx, 'support', '/support', 'nav.support', 'coffee'));
   return items;
 }
 
@@ -96,16 +97,19 @@ export function buildAccountNav(ctx: NavContext): NavItem[] {
 }
 
 /**
- * Legal / company footer links — the business-identity and policy pages. Always present (no flag
- * or auth gating): a privacy policy and terms must be reachable from every page.
+ * Legal / company footer links — the business-identity and policy pages. The policy links are always
+ * present (no gating): a privacy policy and terms must be reachable from every page. The Ko-fi support
+ * link joins them when the `support.kofi` flag is on.
  */
 export function buildLegalNav(ctx: NavContext): NavItem[] {
-  return [
+  const items = [
     makeItem(ctx, 'about', '/about', 'nav.about', 'building'),
     makeItem(ctx, 'privacy', '/privacy', 'nav.privacy', 'shield'),
     makeItem(ctx, 'terms', '/terms', 'nav.terms', 'file-text'),
     makeItem(ctx, 'cookies', '/cookies', 'nav.cookies', 'cookie'),
   ];
+  if (ctx.flags.support) items.push(makeItem(ctx, 'support', '/support', 'nav.support', 'coffee'));
+  return items;
 }
 
 export function isSignedIn(ctx: Pick<NavContext, 'user'>): boolean {

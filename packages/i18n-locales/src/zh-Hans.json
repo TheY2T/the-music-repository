@@ -14,6 +14,7 @@
   "seo.privacy.description": "音乐资料库如何收集、使用和保护您的个人信息。",
   "seo.terms.description": "管辖您使用音乐资料库的服务条款。",
   "seo.cookies.description": "音乐资料库如何使用 Cookie 及类似技术。",
+  "seo.support.description": "支持音乐资料库——帮助它的公共领域课程、乐曲与互动工具保持免费、无广告。",
 
   "nav.catalogue": "浏览曲库",
   "nav.collections": "合辑",
@@ -33,6 +34,7 @@
   "nav.privacy": "隐私政策",
   "nav.terms": "服务条款",
   "nav.cookies": "Cookie",
+  "nav.support": "支持我们",
 
   "footer.tagline": "面向钢琴与吉他的公共领域课程、乐曲与互动工具的成长型资料库。",
   "footer.explore": "探索",
@@ -43,6 +45,12 @@
   "footer.licenseNote": "所有内容均为公共领域或开放许可（CC BY-SA）。每个条目均标注署名与许可。",
   "footer.rights": "音乐资料库",
   "footer.madeWith": "因热爱音乐而制作。",
+
+  "support.title": "支持音乐资料库",
+  "support.intro": "音乐资料库免费、无广告，围绕公共领域与开放许可的音乐构建。如果它对你的练习有帮助，在 Ko-fi 上的一点小小心意即可帮助我们承担托管费用，并持续带来新的课程、乐曲与工具。",
+  "support.cta": "在 Ko-fi 上支持我们",
+  "support.thanks": "我们由衷感谢每一份支持——谢谢你让音乐延续。",
+  "support.comingSoon": "我们的 Ko-fi 页面正在筹备中，敬请稍后再来。",
 
   "theme.label": "主题",
   "theme.appearance": "外观",

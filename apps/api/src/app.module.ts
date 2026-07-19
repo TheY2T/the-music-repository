@@ -21,6 +21,7 @@ import { ProgressModule } from './progress/progress.module';
 import { ProgressionsModule } from './progressions/progressions.module';
 import { RedemptionModule } from './redemption/redemption.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { SupportModule } from './support/support.module';
 import { TranslationsModule } from './translations/translations.module';
 
 @Module({
@@ -54,6 +55,7 @@ import { TranslationsModule } from './translations/translations.module';
     AttemptsModule,
     I18nModule,
     TranslationsModule,
+    SupportModule,
   ],
 })
 export class AppModule {}
