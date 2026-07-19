@@ -17,6 +17,9 @@ export abstract class EntityTranslationAuthoring {
   abstract softDelete(id: string, editedBy?: string): Promise<EntityTranslationView | null>;
   abstract restore(id: string, editedBy?: string): Promise<EntityTranslationView | null>;
   abstract listRevisions(id: string): Promise<EntityTranslationRevisionView[]>;
-  /** Copy draft→published for pending rows (of an entity, or all). Returns the number published. */
-  abstract publish(entityType?: string, entityId?: string): Promise<number>;
+  /**
+   * Copy draft→published for pending rows (of an entity, or all; scoped to one locale when given).
+   * Returns the number published.
+   */
+  abstract publish(entityType?: string, entityId?: string, locale?: string): Promise<number>;
 }

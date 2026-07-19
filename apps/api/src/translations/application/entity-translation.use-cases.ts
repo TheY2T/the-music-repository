@@ -62,7 +62,7 @@ export class ListTranslationRevisionsUseCase {
 @Injectable()
 export class PublishTranslationsUseCase {
   constructor(private readonly authoring: EntityTranslationAuthoring) {}
-  execute(entityType?: string, entityId?: string): Promise<number> {
-    return this.authoring.publish(entityType, entityId);
+  execute(entityType?: string, entityId?: string, locale?: string): Promise<number> {
+    return this.authoring.publish(entityType, entityId, locale);
   }
 }

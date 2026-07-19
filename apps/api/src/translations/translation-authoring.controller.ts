@@ -84,7 +84,11 @@ export class TranslationAuthoringController {
   @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.LocaleStrings }] })
   @RequirePermissions({ content: ['publish'] })
   async publish(@Body() body: PublishTranslationsDto) {
-    const published = await this.publishTranslations.execute(body.entityType, body.entityId);
+    const published = await this.publishTranslations.execute(
+      body.entityType,
+      body.entityId,
+      body.locale,
+    );
     return { published };
   }
 }

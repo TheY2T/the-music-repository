@@ -22,6 +22,7 @@ const locale = Astro.locals.locale;
     maxWidth="max-w-5xl"
   >
     <HelpTopicForm client:load locale={locale} blockEditor={Astro.locals.flags.blockEditor}
-      preview={Astro.locals.flags.blockEditorPreview} />
+      preview={Astro.locals.flags.blockEditorPreview}
+      localeStrings={Astro.locals.flags.localeStrings} />
   </PageShell>
 </BaseLayout>

@@ -1736,10 +1736,11 @@ model TranslationRevisionList {
   items: TranslationRevisionSummary[];
 }
 
-/** Publish pending translation drafts for an entity (or all when omitted). */
+/** Publish pending translation drafts for an entity (or all when omitted); scope to one locale when set. */
 model TranslationPublishInput {
   entityType?: string;
   entityId?: string;
+  locale?: string;
 }
 
 model TranslationPublishResult {

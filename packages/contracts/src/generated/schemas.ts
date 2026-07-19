@@ -1509,8 +1509,9 @@ export const UpsertTranslationResponse = zod.object({
  */
 export const PublishTranslationsBody = zod.object({
   "entityType": zod.string().optional(),
-  "entityId": zod.string().optional()
-}).describe('Publish pending translation drafts for an entity (or all when omitted).')
+  "entityId": zod.string().optional(),
+  "locale": zod.string().optional()
+}).describe('Publish pending translation drafts for an entity (or all when omitted); scope to one locale when set.')
 
 export const PublishTranslationsResponse = zod.object({
   "published": zod.number()

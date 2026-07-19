@@ -63,15 +63,19 @@ export interface Collection {
 
 /**
  * Overlay published per-locale translations onto a collection's text fields (ADR 0034).
- * `overlay` is a field→value map: `title` / `summary` / `bodyMdx` / `curatorBio`, plus
- * `section.<id>.title` / `section.<id>.description` for each section. Absent fields keep their base
- * (English) value. Returns a new collection; a no-op for an empty overlay.
+ * `overlay` is a field→value map:
+ * - top-level: `title` / `summary` / `bodyMdx` / `curatorBio`
+ * - `section.<id>.title` / `section.<id>.description` for each section
+ * - `outcome.<index>` for each "what you'll learn" line
+ * - `item.<contentSlug>.curatorNote` for each item's curator note
+ * Absent fields keep their base (English) value. Returns a new collection; a no-op for an empty overlay.
  */
 export function applyCollectionOverlay(
   collection: Collection,
   overlay: Record<string, string>,
 ): Collection {
-  if (Object.keys(overlay).length === 0) {
+  const keys = Object.keys(overlay);
+  if (keys.length === 0) {
     return collection;
   }
   const next: Collection = { ...collection };
@@ -98,6 +102,15 @@ export function applyCollectionOverlay(
       title: overlay[`section.${s.id}.title`] ?? s.title,
       description: overlay[`section.${s.id}.description`] ?? s.description,
     }));
+  }
+  if (next.outcomes && keys.some((k) => k.startsWith('outcome.'))) {
+    next.outcomes = next.outcomes.map((line, i) => overlay[`outcome.${i}`] ?? line);
+  }
+  if (keys.some((k) => k.startsWith('item.'))) {
+    next.items = next.items.map((item) => {
+      const value = overlay[`item.${item.contentSlug}.curatorNote`];
+      return value !== undefined ? { ...item, curatorNote: value } : item;
+    });
   }
   return next;
 }

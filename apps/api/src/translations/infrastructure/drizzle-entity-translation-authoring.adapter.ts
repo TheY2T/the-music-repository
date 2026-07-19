@@ -165,7 +165,7 @@ export class DrizzleEntityTranslationAuthoring extends EntityTranslationAuthorin
     }));
   }
 
-  async publish(entityType?: string, entityId?: string): Promise<number> {
+  async publish(entityType?: string, entityId?: string, locale?: string): Promise<number> {
     const conditions = [
       isNull(entityTranslations.deletedAt),
       eq(entityTranslations.status, 'draft'),
@@ -175,6 +175,9 @@ export class DrizzleEntityTranslationAuthoring extends EntityTranslationAuthorin
     }
     if (entityId) {
       conditions.push(eq(entityTranslations.entityId, entityId));
+    }
+    if (locale) {
+      conditions.push(eq(entityTranslations.locale, locale));
     }
     const published = await this.db
       .update(entityTranslations)

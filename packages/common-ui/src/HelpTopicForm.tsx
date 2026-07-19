@@ -9,13 +9,15 @@ import {
   Field,
   Icon,
   Input,
-  Textarea,
 } from '@TheY2T/tmr-ui';
+import { LOCALIZABLE_FIELDS } from '@TheY2T/tmr-web-data/content-translations-api';
 import { getHelpTopic, helpAdminApi } from '@TheY2T/tmr-web-data/help-api';
-import { type FormEvent, useEffect, useState } from 'react';
+import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { BlockEditor } from './admin/block-editor/BlockEditor';
 import { PreviewPane } from './admin/block-editor/PreviewPane';
-import ContentLocalizationEditor from './ContentLocalizationEditor';
+import { LocaleBar } from './localization/LocaleBar';
+import { LocalizableField } from './localization/LocalizableField';
+import { useLocaleContent } from './localization/useLocaleContent';
 
 const emptyForm = { slug: '', term: '', body: '', linkSlug: '' };
 
@@ -32,12 +34,13 @@ export default function HelpTopicForm({
   blockEditor?: boolean;
   /** When true (+ blockEditor), show the opt-in Info-View live preview. */
   preview?: boolean;
-  /** When true (+ edit mode), show the per-locale content localization section (ADR 0034). */
+  /** When true, enable the per-locale content localization switcher (ADR 0034). */
   localeStrings?: boolean;
 }) {
   const isEdit = Boolean(slug);
   const [showPreview, setShowPreview] = useState(false);
   const [form, setForm] = useState({ ...emptyForm });
+  const [entityId, setEntityId] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(!isEdit);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -49,6 +52,7 @@ export default function HelpTopicForm({
     }
     getHelpTopic(slug).then((topic) => {
       if (topic) {
+        setEntityId(topic.id);
         setForm({
           slug: topic.slug,
           term: topic.term,
@@ -64,6 +68,25 @@ export default function HelpTopicForm({
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
+  const baseValues = useMemo(() => ({ term: form.term, body: form.body }), [form.term, form.body]);
+  const onBaseChange = useCallback((field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  }, []);
+
+  const loc = useLocaleContent({
+    entityType: 'help',
+    entityId,
+    specs: LOCALIZABLE_FIELDS.help,
+    baseValues,
+    onBaseChange,
+    enabled: localeStrings,
+    locale,
+  });
+  const isBase = loc.isBase;
+  const lock = !isBase;
+  const baseLabel = t(locale, 'transadmin.baseLabel');
+  const lockAttrs = lock ? { title: t(locale, 'loc.lockedFieldHint') } : {};
+
   function payload(): HelpTopicWriteInput {
     return {
       slug: form.slug.trim(),
@@ -75,6 +98,10 @@ export default function HelpTopicForm({
 
   async function onSave(event: FormEvent) {
     event.preventDefault();
+    if (!isBase) {
+      await loc.saveActive();
+      return;
+    }
     setBusy(true);
     setError(null);
     setNotice(null);
@@ -84,6 +111,11 @@ export default function HelpTopicForm({
         setNotice(t(locale, 'hform.saved'));
       } else {
         const created = await helpAdminApi.create(payload());
+        try {
+          await loc.flushBuffered(created.id);
+        } catch {
+          // The base topic is saved; translations can be re-entered on the edit page.
+        }
         window.location.href = localizedPath(
           locale,
           `/admin/help/${encodeURIComponent(created.slug)}/edit`,
@@ -97,33 +129,57 @@ export default function HelpTopicForm({
     }
   }
 
+  const showLocaleBar =
+    localeStrings && (loc.availableLocales.length > 1 || loc.addableLocales.length > 0);
+  const bannerError = error ?? loc.error;
+  const bannerNotice = notice ?? loc.notice;
+
   return (
     <div className="space-y-6">
-      {error ? (
+      {bannerError ? (
         <p
           role="alert"
           className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
         >
           <Icon name="alert-triangle" className="size-4" />
-          {error}
+          {bannerError}
         </p>
       ) : null}
-      {notice ? (
+      {bannerNotice ? (
         <p className="flex items-center gap-2 rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
           <Icon name="circle-check" className="size-4" />
-          {notice}
+          {bannerNotice}
         </p>
+      ) : null}
+
+      {showLocaleBar ? (
+        <LocaleBar
+          locale={locale}
+          available={loc.availableLocales}
+          active={loc.activeLocale}
+          onChange={loc.setActiveLocale}
+          addable={loc.addableLocales}
+          onAdd={loc.addLanguage}
+          baseLocale={loc.baseLocale}
+          statusOf={loc.status}
+          completenessOf={loc.completeness}
+        />
       ) : null}
 
       <form onSubmit={onSave} className="space-y-6">
         {/* The term reads as the document head (Notion-style), consistent with content/collections. */}
         <div className="space-y-1">
-          <Input
-            aria-label={t(locale, 'hform.termLabel')}
-            value={form.term}
-            onChange={(e) => set('term', e.target.value)}
+          <LocalizableField
+            locale={locale}
+            kind="plain"
+            variant="head"
+            isBase={isBase}
+            value={loc.valueFor('term')}
+            baseValue={loc.baseValueFor('term')}
+            onChange={(v) => loc.setValueFor('term', v)}
+            baseLabel={baseLabel}
             placeholder={t(locale, 'hform.termPlaceholder')}
-            className="h-auto border-0 bg-transparent px-0 py-1 font-display text-3xl font-semibold tracking-tight shadow-none focus-visible:ring-0"
+            inputClassName="h-auto border-0 bg-transparent px-0 py-1 font-display text-3xl font-semibold tracking-tight shadow-none focus-visible:ring-0"
           />
         </div>
 
@@ -141,17 +197,20 @@ export default function HelpTopicForm({
                   <Input
                     id="hform-slug"
                     value={form.slug}
-                    readOnly={isEdit}
+                    readOnly={isEdit || lock}
                     onChange={(e) => set('slug', e.target.value)}
                     placeholder="cadence"
+                    {...lockAttrs}
                   />
                 </Field>
                 <Field label={t(locale, 'hform.linkSlugLabel')} htmlFor="hform-linkSlug">
                   <Input
                     id="hform-linkSlug"
                     value={form.linkSlug}
+                    readOnly={lock}
                     onChange={(e) => set('linkSlug', e.target.value)}
                     placeholder="omt-diatonic-chords"
+                    {...lockAttrs}
                   />
                 </Field>
               </div>
@@ -159,12 +218,12 @@ export default function HelpTopicForm({
           </AccordionItem>
         </Accordion>
 
-        {/* Body (full-width). */}
+        {/* Body (full-width). One editor, keyed by locale; the base body stays in `form.body`. */}
         {blockEditor ? (
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-2">
               <span className="text-sm font-medium">{t(locale, 'hform.bodyLabel')}</span>
-              {preview ? (
+              {preview && isBase ? (
                 <Button
                   type="button"
                   variant="ghost"
@@ -178,89 +237,106 @@ export default function HelpTopicForm({
               ) : null}
             </div>
             {loaded ? (
-              <div className={showPreview ? 'grid gap-4 lg:grid-cols-2' : ''}>
-                <BlockEditor
-                  key={slug ?? 'new'}
-                  profile="minimal"
-                  locale={locale}
-                  initialDoc={null}
-                  initialBodyMdx={form.body}
-                  initialEmbeds={[]}
-                  onChange={(c) => set('body', c.bodyMdx)}
-                />
-                {preview && showPreview ? (
-                  <PreviewPane
-                    slug={slug ?? 'new'}
-                    locale={locale}
-                    route="/admin/preview/help"
-                    payload={{ term: form.term, body: form.body }}
-                  />
+              <div className="space-y-2">
+                {!isBase ? (
+                  <div className="rounded-md border border-border bg-muted/40 p-2 text-sm">
+                    <span className="mb-1 block text-xs font-medium text-muted-foreground">
+                      {baseLabel}
+                    </span>
+                    <span className="block max-h-40 overflow-y-auto whitespace-pre-wrap break-words">
+                      {loc.baseValueFor('body') || <span className="text-muted-foreground">—</span>}
+                    </span>
+                  </div>
                 ) : null}
+                <div className={showPreview && isBase ? 'grid gap-4 lg:grid-cols-2' : ''}>
+                  <BlockEditor
+                    key={`help-${loc.activeLocale}`}
+                    profile="minimal"
+                    locale={locale}
+                    initialDoc={null}
+                    initialBodyMdx={isBase ? form.body : loc.valueFor('body')}
+                    initialEmbeds={[]}
+                    onChange={(c) =>
+                      isBase ? set('body', c.bodyMdx) : loc.setValueFor('body', c.bodyMdx)
+                    }
+                  />
+                  {preview && showPreview && isBase ? (
+                    <PreviewPane
+                      slug={slug ?? 'new'}
+                      locale={locale}
+                      route="/admin/preview/help"
+                      payload={{ term: form.term, body: form.body }}
+                    />
+                  ) : null}
+                </div>
               </div>
             ) : null}
           </div>
         ) : (
-          <Field label={t(locale, 'hform.bodyLabel')} htmlFor="hform-body">
-            <Textarea
-              id="hform-body"
-              className="h-32"
-              value={form.body}
-              onChange={(e) => set('body', e.target.value)}
-            />
-          </Field>
+          <LocalizableField
+            locale={locale}
+            kind="rich"
+            isBase={isBase}
+            blockEditor={false}
+            label={t(locale, 'hform.bodyLabel')}
+            remountKey={`help-${loc.activeLocale}`}
+            value={isBase ? form.body : loc.valueFor('body')}
+            baseValue={loc.baseValueFor('body')}
+            onChange={(v) => (isBase ? set('body', v) : loc.setValueFor('body', v))}
+            baseLabel={baseLabel}
+          />
         )}
 
         <div className="flex flex-wrap gap-3 border-t border-border pt-4">
-          <Button type="submit" disabled={busy}>
-            <Icon name="check" className="size-4" />
-            {isEdit ? t(locale, 'hform.saveChanges') : t(locale, 'hform.create')}
-          </Button>
-          {isEdit && slug ? (
-            <Button
-              type="button"
-              variant="destructive"
-              disabled={busy}
-              onClick={() => {
-                if (confirm(t(locale, 'hform.deleteConfirm'))) {
-                  setBusy(true);
-                  helpAdminApi
-                    .remove(slug)
-                    .then(() => {
-                      window.location.href = localizedPath(locale, '/admin/help');
-                    })
-                    .catch((e: Error) => {
-                      setError(e.message);
-                      setBusy(false);
-                    });
-                }
-              }}
-            >
-              <Icon name="trash" className="size-4" />
-              {t(locale, 'hform.delete')}
-            </Button>
-          ) : null}
+          {isBase ? (
+            <>
+              <Button type="submit" disabled={busy}>
+                <Icon name="check" className="size-4" />
+                {isEdit ? t(locale, 'hform.saveChanges') : t(locale, 'hform.create')}
+              </Button>
+              {isEdit && slug ? (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  disabled={busy}
+                  onClick={() => {
+                    if (confirm(t(locale, 'hform.deleteConfirm'))) {
+                      setBusy(true);
+                      helpAdminApi
+                        .remove(slug)
+                        .then(() => {
+                          window.location.href = localizedPath(locale, '/admin/help');
+                        })
+                        .catch((e: Error) => {
+                          setError(e.message);
+                          setBusy(false);
+                        });
+                    }
+                  }}
+                >
+                  <Icon name="trash" className="size-4" />
+                  {t(locale, 'hform.delete')}
+                </Button>
+              ) : null}
+            </>
+          ) : (
+            <>
+              <Button type="submit" disabled={loc.saving || !entityId}>
+                <Icon name="check" className="size-4" />
+                {t(locale, 'loc.saveTranslation')}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={loc.saving || !entityId}
+                onClick={() => void loc.publishActive()}
+              >
+                {t(locale, 'loc.publishTranslation')}
+              </Button>
+            </>
+          )}
         </div>
       </form>
-
-      {isEdit && slug && localeStrings ? (
-        <Accordion
-          type="multiple"
-          defaultValue={[]}
-          className="rounded-lg border border-border [&>*]:px-4"
-        >
-          <AccordionItem value="localization" className="border-b-0">
-            <AccordionTrigger>{t(locale, 'loc.sectionHeading')}</AccordionTrigger>
-            <AccordionContent className="text-foreground">
-              <ContentLocalizationEditor
-                locale={locale}
-                entityType="help"
-                slug={slug}
-                blockEditor={blockEditor}
-              />
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      ) : null}
     </div>
   );
 }

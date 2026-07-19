@@ -72,6 +72,30 @@ describe('Drizzle entity-translation adapters (Testcontainers Postgres)', () => 
     expect(await reader.overlay('content', ENTITY_ID, 'fr')).toEqual({});
   });
 
+  it('publish scoped to a locale only publishes that locale', async () => {
+    const ID = '33333333-3333-3333-3333-333333333333';
+    await authoring.upsertDraft({
+      entityType: 'content',
+      entityId: ID,
+      locale: 'zh-Hans',
+      field: 'title',
+      value: '标题',
+    });
+    await authoring.upsertDraft({
+      entityType: 'content',
+      entityId: ID,
+      locale: 'fr',
+      field: 'title',
+      value: 'Titre',
+    });
+
+    const published = await authoring.publish('content', ID, 'fr');
+    expect(published).toBe(1);
+    expect(await reader.overlay('content', ID, 'fr')).toEqual({ title: 'Titre' });
+    // The other locale's draft stays unpublished.
+    expect(await reader.overlay('content', ID, 'zh-Hans')).toEqual({});
+  });
+
   it('soft-delete removes from the overlay; restore brings it back', async () => {
     const rows = await authoring.list({ entityType: 'content', entityId: ENTITY_ID });
     const target = rows[0];

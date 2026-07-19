@@ -23,6 +23,7 @@ const locale = Astro.locals.locale;
   >
     <CollectionForm client:load locale={locale} blockEditor={Astro.locals.flags.blockEditor}
       preview={Astro.locals.flags.blockEditorPreview}
+      localeStrings={Astro.locals.flags.localeStrings}
     />
   </PageShell>
 </BaseLayout>
