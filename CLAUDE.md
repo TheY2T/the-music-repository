@@ -54,24 +54,31 @@ Biome + thin ESLint · podman-compose deploy.
 - **`apps/web` is a thin shell; complex UI lives in packages (ADR 0033).** The web app keeps only
   routes (`src/pages/**`), middleware/`Astro.locals`, flag-gating, `BaseLayout` + `global.css`, and
   prop-passing. All islands come from the shared **raw-source ESM** UI packages, in an acyclic DAG:
-  `@TheY2T/tmr-design-tokens → tmr-ui → tmr-music-core → tmr-web-data → tmr-musickit-ui → tmr-common-ui → apps/web`.
+  `@TheY2T/tmr-design-tokens → tmr-ui → tmr-music-core → tmr-web-acl → tmr-musickit-ui → tmr-common-ui → apps/web`.
   - **`@TheY2T/tmr-ui`** — atoms (shadcn primitives) + molecules foundation. **Strictly presentational,
     i18n-by-prop (never calls `t()`), never fetches.** Style with `@TheY2T/tmr-design-tokens`.
   - **`@TheY2T/tmr-music-core`** — portable music logic: theory/audio/soundfont, the alphaTab score
     engine, PixiJS scenes + the `PixiCanvas` boundary, hooks, and chord-shape data (`chord-shapes`,
     `chord-library`, `staff-geometry`). Peers: react, pixi, alphatab, smplr.
-  - **`@TheY2T/tmr-web-data`** — the data seam: credentialed api-client wrappers, the Better Auth
-    browser client, `nav`, and the shared shell types (`Flags`/`User`/`Locale`). **No UI.** `App.Locals`
-    in `apps/web/src/env.d.ts` is derived from these types.
+  - **`@TheY2T/tmr-web-acl`** — the **anti-corruption layer** between the UI and `@TheY2T/tmr-api-client`:
+    credentialed api-client wrappers, the Better Auth browser client, `nav`, the shared shell types
+    (`Flags`/`User`/`Locale`), the DTO re-export boundary (`@TheY2T/tmr-web-acl/dto`), and the
+    **data-access port** (`@TheY2T/tmr-web-acl/api-data`: `ApiDataProvider` + `useApiData()`). **No UI.**
+    It is the **only** UI-facing package allowed to name `api-client`. `App.Locals` in
+    `apps/web/src/env.d.ts` is derived from these types.
   - **`@TheY2T/tmr-musickit-ui`** — ALL music/learning experiences: tool islands, score UI,
     catalogue/collections/drills, and the music organisms (`ChordDiagram`, `StaffSequence` at
     `@TheY2T/tmr-musickit-ui/organisms`).
   - **`@TheY2T/tmr-common-ui`** — app-shell chrome + account/admin/billing/auth UI (header/footer,
     switchers, dashboards, forms, admin block editor).
-  - **Smart packages:** `musickit-ui`/`common-ui` MAY consume `tmr-api-client` / `tmr-web-data` /
-    `tmr-i18n` and call `t(locale, key)` — but take `locale`/`flags`/`user` as **props**; never reach
-    for `Astro.locals`. No bespoke raw-Tailwind chrome in `apps/web`. Follow the **`add-ui-component`**
-    skill. ADR 0018/0033 · `docs/features/design-system.md`.
+  - **Smart packages:** `musickit-ui`/`common-ui` MAY consume `tmr-web-acl` / `tmr-i18n` and call
+    `t(locale, key)` — but take `locale`/`flags`/`user` as **props**; never reach for `Astro.locals`.
+    They **never depend on `tmr-api-client`** (not even for DTO types): they read live data through the
+    injected **data-access port** (`useApiData()` from `@TheY2T/tmr-web-acl/api-data`) and import DTO
+    types from `@TheY2T/tmr-web-acl/dto`. `apps/web` bootstraps the provider (`AppProviders`) around each
+    interactive region; the port's concrete api-client binding lives in `web-acl`. No bespoke
+    raw-Tailwind chrome in `apps/web`. Follow the **`add-ui-component`** skill. ADR 0018/0033/0037 ·
+    `docs/features/design-system.md`.
 - **Theme with tokens, not colors (web).** The site ships **3 vintage aesthetics × light/dark** (ADR
   0021) via `data-theme` (`hybrid`/`heritage`/`warm-minimal`) + the `.dark` class on `<html>`, switched
   by `ThemeSwitcher` in the global `SiteHeader`. Every component MUST use **semantic token utilities**
@@ -91,7 +98,7 @@ Biome + thin ESLint · podman-compose deploy.
   `platform.i18n`. Follow the **`add-translations`** skill. ADR 0017/0034.
 - **Ship features behind a flag (DB-backed, per-environment; ADR 0035).** Add the key to
   `@TheY2T/tmr-flags` (`FlagKeys` + `FlagDefaults`) + map its web field in `FLAG_FIELD_BY_KEY`
-  (`@TheY2T/tmr-web-data`), gate with `@RequireFlagsEnabled` (api) / `Astro.locals.flags` prop (web); it
+  (`@TheY2T/tmr-web-acl`), gate with `@RequireFlagsEnabled` (api) / `Astro.locals.flags` prop (web); it
   **seeds into the DB** on `db:seed`. Toggle per environment in the admin CMS (`/admin/feature-flags`).
   Follow the **`manage-flags`** skill.
 - **Test every feature (Definition of Done).** Ship tests with the code: **unit** for logic/use-cases

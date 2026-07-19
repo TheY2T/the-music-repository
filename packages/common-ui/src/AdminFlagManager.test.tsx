@@ -9,7 +9,7 @@ const deleteEnvironmentMock = vi.fn();
 const deleteFlagMock = vi.fn();
 const importFlagsMock = vi.fn();
 
-vi.mock('@TheY2T/tmr-web-data/feature-flags-api', () => ({
+vi.mock('@TheY2T/tmr-web-acl/feature-flags-api', () => ({
   featureFlagAdminApi: {
     listFlags: (...args: unknown[]) => listFlagsMock(...args),
     listEnvironments: (...args: unknown[]) => listEnvironmentsMock(...args),

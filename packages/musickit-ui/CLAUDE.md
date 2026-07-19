@@ -5,12 +5,14 @@ catalogue/collections/drills, and the music organisms. Raw-source ESM. See root 
 
 ## Smart package — but props in, no locals
 
-- MAY depend on `@TheY2T/tmr-api-client`, the `@TheY2T/tmr-web-data` seam, and `@TheY2T/tmr-i18n` — it
-  fetches data and renders localized text internally, calling `t(locale, key)`.
+- MAY depend on the `@TheY2T/tmr-web-acl` anti-corruption layer and `@TheY2T/tmr-i18n` — it fetches data
+  and renders localized text internally, calling `t(locale, key)`. It **never** depends on
+  `@TheY2T/tmr-api-client`: read live data through the injected `useApiData()` port
+  (`@TheY2T/tmr-web-acl/api-data`); import DTO types from `@TheY2T/tmr-web-acl/dto` (ADR 0037).
 - BUT takes `locale`/`flags`/`user` **as props** — **never** reaches for `Astro.locals` (that stays in
   `apps/web`). Pages pass them down.
-- DAG position: `… → music-core → web-data → **musickit-ui** → common-ui → apps/web`. It imports
-  `music-core`/`web-data`/`ui`, **never** `common-ui` (the two catalogue toggles `FavoriteHeart`/
+- DAG position: `… → music-core → web-acl → **musickit-ui** → common-ui → apps/web`. It imports
+  `music-core`/`web-acl`/`ui`, **never** `common-ui` (the two catalogue toggles `FavoriteHeart`/
   `SaveCollectionButton` live here so the cycle stays broken).
 
 ## Layout / exports
@@ -26,7 +28,7 @@ catalogue/collections/drills, and the music organisms. Raw-source ESM. See root 
   `.claude/rules/interactive-tools.md` + the **`embed-tool`** skill. Add/extend components via
   **`add-ui-component`**.
 - **Notation** renders via alphaTab (`.claude/rules/scores.md`). **Drills** — `DrillSession` over
-  `music-core/drills`; attempts via `web-data/drills-api`.
+  `music-core/drills`; attempts via `web-acl/drills-api`.
 
 ## Tests
 

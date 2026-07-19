@@ -30,7 +30,7 @@ import {
   type FlagRevisionRow,
   featureFlagAdminApi,
   type TargetingRule,
-} from '@TheY2T/tmr-web-data/feature-flags-api';
+} from '@TheY2T/tmr-web-acl/feature-flags-api';
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
 
 /** JSONLogic templates offered in the targeting editor. */

@@ -1,7 +1,7 @@
-import type { ContentRevisionSummary } from '@TheY2T/tmr-api-client';
 import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { Button, Card, Icon } from '@TheY2T/tmr-ui';
-import { adminApi } from '@TheY2T/tmr-web-data/admin-api';
+import { adminApi } from '@TheY2T/tmr-web-acl/admin-api';
+import type { ContentRevisionSummary } from '@TheY2T/tmr-web-acl/dto';
 import { useEffect, useState } from 'react';
 
 /**

@@ -13,16 +13,18 @@ changing `exports`). ADR 0018.
 ## Decide the package first (ADR 0033)
 
 `apps/web` is a **shell** — new UI goes into a package, not `apps/web/src/components`. Acyclic DAG:
-`tmr-design-tokens → tmr-ui → tmr-music-core → tmr-web-data → tmr-musickit-ui → tmr-common-ui → apps/web`.
+`tmr-design-tokens → tmr-ui → tmr-music-core → tmr-web-acl → tmr-musickit-ui → tmr-common-ui → apps/web`.
 
 - **`@TheY2T/tmr-ui`** — atoms + molecules ONLY. **Strictly presentational, i18n-by-prop, never fetches.**
 - **`@TheY2T/tmr-musickit-ui`** — music/learning experiences (tool islands, score UI,
   catalogue/collections/drills) + music organisms (`ChordDiagram`/`StaffSequence` at `/organisms`).
 - **`@TheY2T/tmr-common-ui`** — shell chrome + account/admin/billing/auth UI. May import musickit-ui.
 - **`@TheY2T/tmr-music-core`** — non-UI music logic (theory/audio/pixi/score) + chord-shape data.
-- **`@TheY2T/tmr-web-data`** — data seam (api wrappers, auth client, nav, `Flags`/`User`/`Locale` types).
-- `musickit-ui`/`common-ui` are **smart**: they MAY call `t(locale, key)` + fetch via `tmr-api-client` /
-  `tmr-web-data`, but take `locale`/`flags`/`user` as **props** — never read `Astro.locals`.
+- **`@TheY2T/tmr-web-acl`** — anti-corruption layer (api wrappers, auth client, nav, the data-access
+  port, DTO re-exports, `Flags`/`User`/`Locale` types).
+- `musickit-ui`/`common-ui` are **smart**: they MAY call `t(locale, key)` + read data via the
+  `useApiData()` port (`@TheY2T/tmr-web-acl/api-data`, DTO types from `/dto`; never `tmr-api-client`),
+  but take `locale`/`flags`/`user` as **props** — never read `Astro.locals`.
 - A NEW package needs an entry in `apps/web/astro.config.mjs` `ssr.noExternal` + a `@source` glob in
   `apps/web/src/styles/global.css`.
 

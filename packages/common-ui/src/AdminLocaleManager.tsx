@@ -29,7 +29,7 @@ import {
   listLocales,
   localeAdminApi,
   type UiMessageRow,
-} from '@TheY2T/tmr-web-data/i18n-api';
+} from '@TheY2T/tmr-web-acl/i18n-api';
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
 
 /** One key's locale rows folded into a single table row. */

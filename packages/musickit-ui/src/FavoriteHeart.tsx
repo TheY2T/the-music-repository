@@ -1,5 +1,5 @@
 import { Icon } from '@TheY2T/tmr-ui';
-import { addFavorite, removeFavorite } from '@TheY2T/tmr-web-data/favorites-api';
+import { addFavorite, removeFavorite } from '@TheY2T/tmr-web-acl/favorites-api';
 
 /**
  * Presentational heart toggle. Optimistically flips via `onChange` (parent owns the source of truth),

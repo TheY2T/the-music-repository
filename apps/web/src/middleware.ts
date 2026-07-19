@@ -7,7 +7,7 @@ import {
   preferredLocale,
   splitLocalePath,
 } from '@TheY2T/tmr-i18n';
-import { FLAG_FIELD_BY_KEY, type Flags } from '@TheY2T/tmr-web-data';
+import { FLAG_FIELD_BY_KEY, type Flags } from '@TheY2T/tmr-web-acl';
 import { defineMiddleware } from 'astro:middleware';
 import { ensureCatalogue } from './lib/i18n-catalogue';
 

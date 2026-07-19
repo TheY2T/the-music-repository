@@ -1,4 +1,3 @@
-import type { CollectionItemInput, CollectionWriteInput } from '@TheY2T/tmr-api-client';
 import type { PMDoc } from '@TheY2T/tmr-content-serde';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import {
@@ -15,21 +14,22 @@ import {
   Select,
   Textarea,
 } from '@TheY2T/tmr-ui';
-import { adminApi, collectionsAdminApi } from '@TheY2T/tmr-web-data/admin-api';
+import { adminApi, collectionsAdminApi } from '@TheY2T/tmr-web-acl/admin-api';
 import {
   type CollectionDocData,
   type CollectionDocItem,
   collectionToDoc,
   docToCollection,
-} from '@TheY2T/tmr-web-data/collection-doc';
+} from '@TheY2T/tmr-web-acl/collection-doc';
 import {
   LOCALIZABLE_FIELDS,
   type LocalizableFieldSpec,
-} from '@TheY2T/tmr-web-data/content-translations-api';
+} from '@TheY2T/tmr-web-acl/content-translations-api';
+import type { CollectionItemInput, CollectionWriteInput } from '@TheY2T/tmr-web-acl/dto';
 import type {
   CollectionPreviewItem,
   CollectionPreviewPayload,
-} from '@TheY2T/tmr-web-data/preview-protocol';
+} from '@TheY2T/tmr-web-acl/preview-protocol';
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { BlockEditor } from './admin/block-editor/BlockEditor';
 import type { CatalogueOption } from './admin/block-editor/editor-ui';

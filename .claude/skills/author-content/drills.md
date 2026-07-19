@@ -32,7 +32,7 @@ export const <name>Deck: DrillItemGenerator<string> = {
 
 Add the deck to the `DRILL_GENERATORS` array (and the re-export) in `generators/index.ts`. The
 `DrillSession` island (`@TheY2T/tmr-musickit-ui`) and `/drills/<deck>` route pick it up via
-`findGenerator(deck)`. Attempts record through `@TheY2T/tmr-web-data/drills-api` → `apps/api/src/attempts/`.
+`findGenerator(deck)`. Attempts record through `@TheY2T/tmr-web-acl/drills-api` → `apps/api/src/attempts/`.
 
 ## Tests (Definition of Done — `add-tests`)
 

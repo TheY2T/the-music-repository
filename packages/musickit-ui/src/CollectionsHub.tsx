@@ -1,4 +1,3 @@
-import { ApiProvider, useSearchCollections } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import {
   Button,
@@ -9,6 +8,7 @@ import {
   SegmentedToggle,
   Skeleton,
 } from '@TheY2T/tmr-ui';
+import { useApiData } from '@TheY2T/tmr-web-acl/api-data';
 import {
   buildCollectionShelves,
   COLLECTION_AXES,
@@ -18,7 +18,7 @@ import {
   type CollectionShelfConfig,
   type CollectionsFilters,
   collectionFiltersToParams,
-} from '@TheY2T/tmr-web-data/collections-shelves';
+} from '@TheY2T/tmr-web-acl/collections-shelves';
 import { useEffect, useState } from 'react';
 import CollectionCard from './CollectionCard';
 import { CollectionsGrid } from './CollectionsBrowser';
@@ -44,6 +44,7 @@ function CollectionShelf({
   onSeeAll: () => void;
   seeAllLabel: string;
 }) {
+  const { useSearchCollections } = useApiData();
   const { data, isFetching } = useSearchCollections({
     ...collectionFiltersToParams(config.filters),
     sort: 'featured',
@@ -188,6 +189,7 @@ function Hub({
   }
 
   // Overview query — its facet distributions drive the shelves and its items provide the featured hero.
+  const { useSearchCollections } = useApiData();
   const { data: overview } = useSearchCollections({ sort: 'featured', page: 1, pageSize: 12 });
   const facets = overview?.data?.facets as CollectionHubFacets | undefined;
   const featured = overview?.data?.items?.find((c) => c.featured);
@@ -286,9 +288,5 @@ export default function CollectionsHub({
   showProgress?: boolean;
   showSave?: boolean;
 }) {
-  return (
-    <ApiProvider>
-      <Hub locale={locale} showProgress={showProgress} showSave={showSave} />
-    </ApiProvider>
-  );
+  return <Hub locale={locale} showProgress={showProgress} showSave={showSave} />;
 }

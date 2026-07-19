@@ -1,4 +1,4 @@
-import { logPractice } from '@TheY2T/tmr-web-data/progress-api';
+import { logPractice } from '@TheY2T/tmr-web-acl/progress-api';
 import { useEffect } from 'react';
 
 const MINUTE_MS = 60_000;

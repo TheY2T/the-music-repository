@@ -7,11 +7,11 @@
 
 > **Update (ADR 0033):** the organism/template/page layer + music logic were extracted out of
 > `apps/web` into four more raw-source packages, making the app a thin shell. Acyclic DAG:
-> `tmr-design-tokens → tmr-ui → tmr-music-core → tmr-web-data → tmr-musickit-ui → tmr-common-ui → apps/web`.
+> `tmr-design-tokens → tmr-ui → tmr-music-core → tmr-web-acl → tmr-musickit-ui → tmr-common-ui → apps/web`.
 > `@TheY2T/tmr-ui` stays the strictly-presentational atoms/molecules foundation described below;
 > `tmr-musickit-ui` (music/learning UI + the `ChordDiagram`/`StaffSequence` organisms), `tmr-common-ui`
 > (shell chrome + account/admin/billing/auth), `tmr-music-core` (theory/audio/pixi/score logic +
-> chord-shape data), and `tmr-web-data` (api wrappers, auth client, nav, `Flags`/`User`/`Locale` types)
+> chord-shape data), and `tmr-web-acl` (api wrappers, auth client, nav, `Flags`/`User`/`Locale` types)
 > are the new homes. The higher packages are "smart" (may fetch + call `t()` with `locale` by prop);
 > only `tmr-ui` remains i18n-by-prop and fetch-free.
 
@@ -110,7 +110,7 @@ from `tmr-ui`, `tmr-musickit-ui`, and `tmr-common-ui`. It surfaces components th
 Smart islands that need a live API/audio degrade to a graceful note (start the API with `pnpm dev`).
 Run `pnpm --filter @TheY2T/tmr-storybook dev` (port 6006; also started by `pnpm dev` alongside api + web) /
 `build-storybook`. **Aesthetic** + **Mode** toolbar toggles preview all 3 aesthetics × light/dark; a
-Providers decorator supplies the api-client React-Query context.
+Providers decorator supplies the `web-acl` data-access port via `ApiDataProvider`.
 Caveats: the alphaTab Vite plugin is omitted (it breaks Storybook's static build), so score components
 render only in the app; Storybook 9 warns about Vite 8 (from Astro 7) — a peer-range warning.
 

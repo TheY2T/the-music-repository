@@ -12,13 +12,15 @@ paths:
 
 Build UI from the shared packages — no bespoke raw-Tailwind chrome in `apps/web`. Follow the
 **`add-ui-component`** skill when adding/extending shared UI. Acyclic DAG:
-`design-tokens → ui → music-core → web-data → musickit-ui → common-ui → apps/web`.
+`design-tokens → ui → music-core → web-acl → musickit-ui → common-ui → apps/web`.
 
 - **`@TheY2T/tmr-ui`** — atoms (shadcn primitives) + molecules (`Field`, `Card`, `Badge`, `SearchField`,
   `CardGrid`, `StatCard`, `PageHeader`, `SegmentedToggle`, …). **Strictly presentational, i18n-by-prop
   (never calls `t()`), never fetches.**
-- **`musickit-ui` / `common-ui`** are smart: they MAY use `tmr-api-client` / `web-data` / `tmr-i18n` and
-  call `t(locale, key)` — but take `locale`/`flags`/`user` **as props**; never reach for `Astro.locals`.
+- **`musickit-ui` / `common-ui`** are smart: they MAY use `web-acl` / `tmr-i18n` and call
+  `t(locale, key)` — but take `locale`/`flags`/`user` **as props**; never reach for `Astro.locals`. They
+  **never depend on `tmr-api-client`**: read data via the injected `useApiData()` port
+  (`@TheY2T/tmr-web-acl/api-data`) and import DTO types from `@TheY2T/tmr-web-acl/dto` (ADR 0037).
 
 ## Theme with tokens, not colours (ADR 0021)
 

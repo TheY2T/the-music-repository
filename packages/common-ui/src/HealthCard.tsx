@@ -1,11 +1,9 @@
-import { ApiProvider, useGetHealth } from '@TheY2T/tmr-api-client';
 import { Button, Card } from '@TheY2T/tmr-ui';
+import { useApiData } from '@TheY2T/tmr-web-acl/api-data';
 
-/**
- * Interactive island consuming the spec-first generated client: the `useGetHealth` TanStack Query
- * hook (from `@TheY2T/tmr-api-client`, generated from the OpenAPI spec).
- */
+/** Interactive island reporting API health via the data-access port's health query hook. */
 function HealthView() {
+  const { useGetHealth } = useApiData();
   const { data, error, refetch, isFetching } = useGetHealth();
   const health = data?.data; // Orval fetch client wraps the body: { status, data, headers }
   const dbUp = health?.checks.database === 'up';
@@ -47,9 +45,5 @@ function HealthView() {
 }
 
 export default function HealthCard() {
-  return (
-    <ApiProvider>
-      <HealthView />
-    </ApiProvider>
-  );
+  return <HealthView />;
 }

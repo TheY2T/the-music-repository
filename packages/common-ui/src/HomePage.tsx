@@ -1,4 +1,3 @@
-import { ApiProvider, useSearchCatalogue, useSearchCollections } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import {
   Badge,
@@ -14,6 +13,7 @@ import {
   MediaCard,
   Skeleton,
 } from '@TheY2T/tmr-ui';
+import { useApiData } from '@TheY2T/tmr-web-acl/api-data';
 import AmbientBackground from './AmbientBackground';
 
 /**
@@ -68,6 +68,7 @@ function tierLabel(locale: Locale, tier?: string): string {
 }
 
 function FeaturedRow({ locale, showMonetization }: { locale: Locale; showMonetization: boolean }) {
+  const { useSearchCatalogue } = useApiData();
   const { data, isFetching } = useSearchCatalogue({ pageSize: 10 });
   const items = data?.data?.items ?? [];
 
@@ -120,6 +121,7 @@ function FeaturedRow({ locale, showMonetization }: { locale: Locale; showMonetiz
 }
 
 function CollectionsRow({ locale, href }: { locale: Locale; href: string }) {
+  const { useSearchCollections } = useApiData();
   const { data } = useSearchCollections({ featured: true, sort: 'featured', pageSize: 8 });
   const items = data?.data?.items ?? [];
   if (items.length === 0) {
@@ -333,9 +335,5 @@ function Home({
 }
 
 export default function HomePage(props: HomePageProps) {
-  return (
-    <ApiProvider>
-      <Home {...props} />
-    </ApiProvider>
-  );
+  return <Home {...props} />;
 }

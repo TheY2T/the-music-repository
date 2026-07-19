@@ -3,8 +3,8 @@ paths:
   - "packages/flags/**"
   - "packages/flags-eval/**"
   - "apps/api/src/feature-flags/**"
-  - "packages/web-data/src/flags.ts"
-  - "packages/web-data/src/feature-flags-api.ts"
+  - "packages/web-acl/src/flags.ts"
+  - "packages/web-acl/src/feature-flags-api.ts"
 ---
 
 # Feature flags (ADR 0035, `docs/features/feature-flags.md`)
@@ -19,7 +19,7 @@ source + DB seed + fallback. Full lifecycle is the **`manage-flags`** skill.
 1. **Key** — add to `FlagKeys` + a boolean to `FlagDefaults` in `packages/flags/src/index.ts` (naming:
    `<domain>.<capability>`). If it targets (rollout/roles), add a rule to `FlagTargeting` there too.
 2. **Web field** — map the key → its camelCase `Astro.locals.flags` field in `FLAG_FIELD_BY_KEY`
-   (`packages/web-data/src/flags.ts`). The `Flags` type derives from this map (no hand-synced list).
+   (`packages/web-acl/src/flags.ts`). The `Flags` type derives from this map (no hand-synced list).
 3. **Gate** — api: `@RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.X }] })` (**method-level**;
    class-level drops route mapping). web: read `Astro.locals.flags.x` in the page, pass into islands as a
    **prop** (never read flags inside an island). It seeds into the DB on the next `db:seed`.

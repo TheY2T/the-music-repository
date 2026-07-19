@@ -1,7 +1,7 @@
 import {
   type CollectionPreviewPayload,
   PREVIEW_MESSAGE,
-} from '@TheY2T/tmr-web-data/preview-protocol';
+} from '@TheY2T/tmr-web-acl/preview-protocol';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useEffect } from 'react';
 import CollectionPreview from './CollectionPreview';

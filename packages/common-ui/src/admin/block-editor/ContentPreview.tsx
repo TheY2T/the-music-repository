@@ -5,7 +5,7 @@ import {
   isPreviewMessage,
   PREVIEW_READY,
   type PreviewPayload,
-} from '@TheY2T/tmr-web-data/preview-protocol';
+} from '@TheY2T/tmr-web-acl/preview-protocol';
 import { marked } from 'marked';
 import { useEffect, useState } from 'react';
 

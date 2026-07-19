@@ -1,0 +1,23 @@
+// The anti-corruption re-export: the UI's domain vocabulary. UI packages import DTO types from here,
+// never from the generated api-client. This module is the only place outside the seam allowed to name
+// api-client for its data-transfer types.
+export type {
+  CollectionEntry,
+  CollectionItemInput,
+  CollectionProgressDetail,
+  CollectionSectionView,
+  CollectionSummary,
+  CollectionWriteInput,
+  ContentAdminSummary,
+  ContentDetail,
+  ContentRevisionSummary,
+  ContentSummary,
+  ContentWriteInput,
+  HelpTopic,
+  HelpTopicWriteInput,
+  MediaUploadRequestKind,
+  ProgressSummary,
+  ReviewSummary,
+  SearchCatalogueType,
+  SkillMastery,
+} from '@TheY2T/tmr-api-client';

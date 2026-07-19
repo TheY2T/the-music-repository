@@ -1,4 +1,3 @@
-import { ApiProvider, type SearchCatalogueType, useSearchCatalogue } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import {
   type ActiveFilterItem,
@@ -16,15 +15,17 @@ import {
   Select,
   Skeleton,
 } from '@TheY2T/tmr-ui';
-import { useBrowseHistory } from '@TheY2T/tmr-web-data/browse-history';
+import { useApiData } from '@TheY2T/tmr-web-acl/api-data';
+import { useBrowseHistory } from '@TheY2T/tmr-web-acl/browse-history';
 import {
   bandCount,
   bandRange,
   type CatalogueGridFilters,
   LEVEL_BANDS,
   LEVEL_LABEL,
-} from '@TheY2T/tmr-web-data/catalogue-shelves';
-import { listFavoriteSlugs } from '@TheY2T/tmr-web-data/favorites-api';
+} from '@TheY2T/tmr-web-acl/catalogue-shelves';
+import type { SearchCatalogueType } from '@TheY2T/tmr-web-acl/dto';
+import { listFavoriteSlugs } from '@TheY2T/tmr-web-acl/favorites-api';
 import { useEffect, useState } from 'react';
 import FavoriteHeart from './FavoriteHeart';
 import RecentlyViewedStrip from './RecentlyViewedStrip';
@@ -109,6 +110,7 @@ export function CatalogueGrid({
   }
 
   const band = bandRange(level);
+  const { useSearchCatalogue } = useApiData();
   const { data, isFetching } = useSearchCatalogue({
     q: q || undefined,
     genre,
@@ -490,12 +492,10 @@ export default function CatalogueBrowser({
   locale: Locale;
 }) {
   return (
-    <ApiProvider>
-      <CatalogueGrid
-        showFavorites={showFavorites}
-        showMonetization={showMonetization}
-        locale={locale}
-      />
-    </ApiProvider>
+    <CatalogueGrid
+      showFavorites={showFavorites}
+      showMonetization={showMonetization}
+      locale={locale}
+    />
   );
 }

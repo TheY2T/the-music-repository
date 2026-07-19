@@ -1,4 +1,3 @@
-import type { ProgressSummary } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import {
   Button,
@@ -14,8 +13,9 @@ import {
   StatTile,
   usePagination,
 } from '@TheY2T/tmr-ui';
-import { listSavedCollectionSlugs } from '@TheY2T/tmr-web-data/collections-api';
-import { getProgress, logPractice } from '@TheY2T/tmr-web-data/progress-api';
+import { listSavedCollectionSlugs } from '@TheY2T/tmr-web-acl/collections-api';
+import type { ProgressSummary } from '@TheY2T/tmr-web-acl/dto';
+import { getProgress, logPractice } from '@TheY2T/tmr-web-acl/progress-api';
 import { type FormEvent, useEffect, useState } from 'react';
 
 export default function ProgressDashboard({

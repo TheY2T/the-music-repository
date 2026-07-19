@@ -1,9 +1,3 @@
-import {
-  ApiProvider,
-  type SearchCatalogueType,
-  useSearchCatalogue,
-  useSearchCollections,
-} from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import {
   Badge,
@@ -15,6 +9,7 @@ import {
   SegmentedToggle,
   Skeleton,
 } from '@TheY2T/tmr-ui';
+import { useApiData } from '@TheY2T/tmr-web-acl/api-data';
 import {
   AXES,
   AXIS_LABEL,
@@ -24,8 +19,9 @@ import {
   filtersToParams,
   type HubFacets,
   type ShelfConfig,
-} from '@TheY2T/tmr-web-data/catalogue-shelves';
-import { listFavoriteSlugs } from '@TheY2T/tmr-web-data/favorites-api';
+} from '@TheY2T/tmr-web-acl/catalogue-shelves';
+import type { SearchCatalogueType } from '@TheY2T/tmr-web-acl/dto';
+import { listFavoriteSlugs } from '@TheY2T/tmr-web-acl/favorites-api';
 import { useEffect, useState } from 'react';
 import { CatalogueGrid } from './CatalogueBrowser';
 import CollectionCard from './CollectionCard';
@@ -55,6 +51,7 @@ function CatalogueShelf({
   seeAllLabel: string;
 }) {
   const params = filtersToParams(config.filters);
+  const { useSearchCatalogue } = useApiData();
   const { data, isFetching } = useSearchCatalogue({
     ...params,
     type: params.type as SearchCatalogueType | undefined,
@@ -164,6 +161,7 @@ function durationLabel(locale: Locale, minutes: number | undefined): string | un
 /** Federated shelf of guided collections (a separate Meili index) — the "guided paths" layer.
  * Hidden when the collections feature is off or the index is empty. */
 function CollectionsShelf({ locale }: { locale: Locale }) {
+  const { useSearchCollections } = useApiData();
   const { data, isFetching } = useSearchCollections({ sort: 'featured', page: 1, pageSize: 12 });
   const items = data?.data?.items ?? [];
   const title = t(locale, 'catalogue.hub.shelfCollections');
@@ -344,6 +342,7 @@ function Hub({
   }
 
   // Overview query — one lightweight call whose facet distributions drive the shelf list.
+  const { useSearchCatalogue } = useApiData();
   const { data: overview } = useSearchCatalogue({ page: 1, pageSize: 1 });
   const facets = overview?.data?.facets as HubFacets | undefined;
   const shelves = buildShelves(axis, facets, locale);
@@ -451,14 +450,12 @@ export default function CatalogueHub({
   locale: Locale;
 }) {
   return (
-    <ApiProvider>
-      <Hub
-        showFavorites={showFavorites}
-        showCollections={showCollections}
-        showMonetization={showMonetization}
-        tools={tools}
-        locale={locale}
-      />
-    </ApiProvider>
+    <Hub
+      showFavorites={showFavorites}
+      showCollections={showCollections}
+      showMonetization={showMonetization}
+      tools={tools}
+      locale={locale}
+    />
   );
 }

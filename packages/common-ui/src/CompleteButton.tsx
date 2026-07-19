@@ -1,5 +1,5 @@
 import { Button, Icon } from '@TheY2T/tmr-ui';
-import { getProgress, markComplete, markIncomplete } from '@TheY2T/tmr-web-data/progress-api';
+import { getProgress, markComplete, markIncomplete } from '@TheY2T/tmr-web-acl/progress-api';
 import { useEffect, useState } from 'react';
 
 /** Toggle "completed" for a content item on its detail page. Fetches its own initial state. */

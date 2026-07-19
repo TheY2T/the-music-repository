@@ -9,7 +9,7 @@ paths:
 
 `apps/web` is a **shell** (ADR 0033): routes, middleware/`Astro.locals`, flag-gating, `BaseLayout` +
 `global.css`, prop-passing. Complex UI lives in the packages (`musickit-ui`/`common-ui`/`music-core`/
-`web-data`/`ui`). Pages read `Astro.locals`, gate flags, mount a package island, and pass
+`web-acl`/`ui`). Pages read `Astro.locals`, gate flags, mount a package island, and pass
 `locale`/`flags`/`user` down as **props**. `Astro.locals` never leaves `apps/web`.
 
 Each feature has a full doc under `docs/features/` — read it before changing that feature. Below are only

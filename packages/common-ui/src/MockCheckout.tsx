@@ -1,6 +1,6 @@
 import { type Locale, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import { Button, buttonVariants, Card, cn, Icon } from '@TheY2T/tmr-ui';
-import { completeMockCheckout } from '@TheY2T/tmr-web-data/subscription-api';
+import { completeMockCheckout } from '@TheY2T/tmr-web-acl/subscription-api';
 import { useEffect, useState } from 'react';
 
 interface CheckoutParams {

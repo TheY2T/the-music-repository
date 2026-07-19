@@ -1,4 +1,3 @@
-import type { ContentSummary } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import {
   Badge,
@@ -12,7 +11,8 @@ import {
   Skeleton,
   usePagination,
 } from '@TheY2T/tmr-ui';
-import { listFavorites } from '@TheY2T/tmr-web-data/favorites-api';
+import type { ContentSummary } from '@TheY2T/tmr-web-acl/dto';
+import { listFavorites } from '@TheY2T/tmr-web-acl/favorites-api';
 import { useEffect, useState } from 'react';
 
 /** Localized label for a premium tier (`premium`/`pro`/`institution`; unknown → premium). */

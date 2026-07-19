@@ -4,7 +4,7 @@ import {
   type AnyPreviewPayload,
   isPreviewReady,
   PREVIEW_MESSAGE,
-} from '@TheY2T/tmr-web-data/preview-protocol';
+} from '@TheY2T/tmr-web-acl/preview-protocol';
 import { useEffect, useRef, useState } from 'react';
 
 /**

@@ -1,5 +1,5 @@
 import { Card, cn, Icon, type IconName, SearchField } from '@TheY2T/tmr-ui';
-import { useBrowseHistory } from '@TheY2T/tmr-web-data/browse-history';
+import { useBrowseHistory } from '@TheY2T/tmr-web-acl/browse-history';
 import { useMemo, useState } from 'react';
 import RecentlyViewedStrip from './RecentlyViewedStrip';
 

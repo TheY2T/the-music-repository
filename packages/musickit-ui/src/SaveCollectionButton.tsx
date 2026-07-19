@@ -1,5 +1,5 @@
 import { Button, cn, Icon } from '@TheY2T/tmr-ui';
-import { saveCollection, unsaveCollection } from '@TheY2T/tmr-web-data/collections-api';
+import { saveCollection, unsaveCollection } from '@TheY2T/tmr-web-acl/collections-api';
 import { useState } from 'react';
 
 /**

@@ -1,6 +1,6 @@
 import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { Icon, SegmentedToggle, Select } from '@TheY2T/tmr-ui';
-import type { LocaleInfo } from '@TheY2T/tmr-web-data/i18n-api';
+import type { LocaleInfo } from '@TheY2T/tmr-web-acl/i18n-api';
 import type { LocaleStatus } from './useLocaleContent';
 
 const STATUS_DOT: Record<LocaleStatus, string> = {

@@ -3,8 +3,8 @@ import {
   contentTranslationApi,
   type LocalizableFieldSpec,
   type TranslatableEntityType,
-} from '@TheY2T/tmr-web-data/content-translations-api';
-import { type LocaleInfo, listLocales } from '@TheY2T/tmr-web-data/i18n-api';
+} from '@TheY2T/tmr-web-acl/content-translations-api';
+import { type LocaleInfo, listLocales } from '@TheY2T/tmr-web-acl/i18n-api';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 /** The base (source) locale every entity's fields are authored in; target locales overlay it. */

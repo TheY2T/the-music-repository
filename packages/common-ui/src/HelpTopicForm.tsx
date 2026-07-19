@@ -1,4 +1,3 @@
-import type { HelpTopicWriteInput } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import {
   Accordion,
@@ -10,8 +9,9 @@ import {
   Icon,
   Input,
 } from '@TheY2T/tmr-ui';
-import { LOCALIZABLE_FIELDS } from '@TheY2T/tmr-web-data/content-translations-api';
-import { getHelpTopic, helpAdminApi } from '@TheY2T/tmr-web-data/help-api';
+import { LOCALIZABLE_FIELDS } from '@TheY2T/tmr-web-acl/content-translations-api';
+import type { HelpTopicWriteInput } from '@TheY2T/tmr-web-acl/dto';
+import { getHelpTopic, helpAdminApi } from '@TheY2T/tmr-web-acl/help-api';
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { BlockEditor } from './admin/block-editor/BlockEditor';
 import { PreviewPane } from './admin/block-editor/PreviewPane';

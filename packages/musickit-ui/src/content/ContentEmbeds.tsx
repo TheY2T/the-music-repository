@@ -1,8 +1,8 @@
-import type { ContentDetail as ContentDetailDto } from '@TheY2T/tmr-api-client';
 import { type Locale, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import { playTone } from '@TheY2T/tmr-music-core/audio';
 import { findChordShape, noteNameToPitchClass, tuningFor } from '@TheY2T/tmr-music-core/embeds';
 import { midiToFrequency } from '@TheY2T/tmr-music-core/music-theory';
+import type { ContentDetail as ContentDetailDto } from '@TheY2T/tmr-web-acl/dto';
 import { lazy, Suspense } from 'react';
 import { ChordDiagram } from '../organisms/index';
 

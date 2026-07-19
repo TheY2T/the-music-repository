@@ -1,6 +1,6 @@
 import { type Locale, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import { Button, Card, Field, Input } from '@TheY2T/tmr-ui';
-import { authClient } from '@TheY2T/tmr-web-data/auth-client';
+import { authClient } from '@TheY2T/tmr-web-acl/auth-client';
 import { type FormEvent, useState } from 'react';
 
 /** Local dev accounts (seeded by `pnpm --filter @TheY2T/tmr-api db:seed:auth`). */

@@ -2,7 +2,7 @@
 
 - **Status:** accepted — **superseded in part by ADR 0033** (organisms/templates/pages + music logic
   extracted into `@TheY2T/tmr-musickit-ui` / `@TheY2T/tmr-common-ui` / `@TheY2T/tmr-music-core` /
-  `@TheY2T/tmr-web-data`; the strict "library components are presentational, never fetch, i18n-by-prop"
+  `@TheY2T/tmr-web-acl`; the strict "library components are presentational, never fetch, i18n-by-prop"
   rule now applies only to `@TheY2T/tmr-ui` — the higher packages are "smart"). `@TheY2T/tmr-ui`
   (atoms + molecules) and `@TheY2T/tmr-design-tokens` remain exactly as decided here.
 - **Date:** 2026-07

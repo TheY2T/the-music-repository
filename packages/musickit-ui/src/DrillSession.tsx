@@ -13,8 +13,8 @@ import {
   Toaster,
   toast,
 } from '@TheY2T/tmr-ui';
-import { recordDrillAttempt } from '@TheY2T/tmr-web-data/drills-api';
-import { getDeckReviews } from '@TheY2T/tmr-web-data/reviews-api';
+import { recordDrillAttempt } from '@TheY2T/tmr-web-acl/drills-api';
+import { getDeckReviews } from '@TheY2T/tmr-web-acl/reviews-api';
 import { useEffect, useRef, useState } from 'react';
 import DrillFeedback from './DrillFeedback';
 import ComboCounter from './drills/celebration/ComboCounter';

@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE, type Locale, loadCatalogue } from '@TheY2T/tmr-i18n';
-import type { I18nCatalogue } from '@TheY2T/tmr-web-data';
+import type { I18nCatalogue } from '@TheY2T/tmr-web-acl';
 
 // SSR runs on the server, so it needs a server-reachable API origin (see middleware.ts for the rationale).
 const API_BASE =

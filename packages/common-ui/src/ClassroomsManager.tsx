@@ -34,7 +34,7 @@ import {
   removeMember,
   transferOwnership,
   unassignContent,
-} from '@TheY2T/tmr-web-data/classrooms-api';
+} from '@TheY2T/tmr-web-acl/classrooms-api';
 import { useEffect, useState } from 'react';
 
 function SectionHeading({ iconName, children }: { iconName: IconName; children: React.ReactNode }) {

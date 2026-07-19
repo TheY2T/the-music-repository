@@ -21,7 +21,7 @@
     "@TheY2T/tmr-design-tokens": "workspace:*",
     "@TheY2T/tmr-music-core": "workspace:*",
     "@TheY2T/tmr-musickit-ui": "workspace:*",
-    "@TheY2T/tmr-web-data": "workspace:*",
+    "@TheY2T/tmr-web-acl": "workspace:*",
     "@dnd-kit/core": "catalog:",
     "@dnd-kit/sortable": "catalog:",
     "@dnd-kit/utilities": "catalog:",

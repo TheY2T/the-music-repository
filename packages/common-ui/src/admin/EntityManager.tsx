@@ -41,7 +41,7 @@ import {
   groupIntoShelves,
   orderBuckets,
   type ShelfOrder,
-} from '@TheY2T/tmr-web-data/admin-manager';
+} from '@TheY2T/tmr-web-acl/admin-manager';
 import {
   type DragEvent,
   type FormEvent,

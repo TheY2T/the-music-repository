@@ -1,10 +1,3 @@
-import {
-  ApiProvider,
-  type CollectionEntry,
-  type CollectionProgressDetail,
-  type CollectionSectionView,
-  useGetCollectionWithProgress,
-} from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import {
   Badge,
@@ -18,11 +11,17 @@ import {
   Skeleton,
   StatTile,
 } from '@TheY2T/tmr-ui';
+import { useApiData } from '@TheY2T/tmr-web-acl/api-data';
 import {
   listSavedCollectionSlugs,
   recordCollectionOpen,
-} from '@TheY2T/tmr-web-data/collections-api';
-import { markComplete, markIncomplete } from '@TheY2T/tmr-web-data/progress-api';
+} from '@TheY2T/tmr-web-acl/collections-api';
+import type {
+  CollectionEntry,
+  CollectionProgressDetail,
+  CollectionSectionView,
+} from '@TheY2T/tmr-web-acl/dto';
+import { markComplete, markIncomplete } from '@TheY2T/tmr-web-acl/progress-api';
 import { marked } from 'marked';
 import { useEffect, useState } from 'react';
 import AnimatedCoverArt from './AnimatedCoverArt';
@@ -159,6 +158,7 @@ function localeParam(locale: Locale): string | undefined {
 }
 
 function Detail({ slug, locale, flags }: { slug: string; locale: Locale; flags: Flags }) {
+  const { useGetCollectionWithProgress } = useApiData();
   const { data, isLoading } = useGetCollectionWithProgress(slug, { locale: localeParam(locale) });
   const collection = data?.status === 200 ? (data.data as CollectionProgressDetail) : undefined;
 
@@ -418,9 +418,5 @@ export default function CollectionDetail({
   showSave?: boolean;
   showRating?: boolean;
 }) {
-  return (
-    <ApiProvider>
-      <Detail slug={slug} locale={locale} flags={{ showProgress, showSave, showRating }} />
-    </ApiProvider>
-  );
+  return <Detail slug={slug} locale={locale} flags={{ showProgress, showSave, showRating }} />;
 }

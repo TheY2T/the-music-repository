@@ -32,7 +32,7 @@ export default defineConfig({
         '@TheY2T/tmr-common-ui',
         '@TheY2T/tmr-musickit-ui',
         '@TheY2T/tmr-music-core',
-        '@TheY2T/tmr-web-data',
+        '@TheY2T/tmr-web-acl',
         // Raw-source ESM (extensionless .ts imports) — must be transformed, not externalized. It was
         // auto-inlined when only apps/web imported it; now the noExternal UI packages import it too, and
         // Vite externalizes a noExternal package's own deps unless they're listed here. See ADR 0033.

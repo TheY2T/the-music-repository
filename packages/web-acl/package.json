@@ -1,5 +1,5 @@
 {
-  "name": "@TheY2T/tmr-web-data",
+  "name": "@TheY2T/tmr-web-acl",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -7,6 +7,7 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
+    "./api-data": "./src/api-data.tsx",
     "./*": "./src/*.ts"
   },
   "files": [
@@ -23,6 +24,7 @@
     "@TheY2T/tmr-flags": "workspace:*",
     "@TheY2T/tmr-i18n": "workspace:*",
     "@TheY2T/tmr-ui": "workspace:*",
+    "@tanstack/react-query": "catalog:",
     "better-auth": "catalog:"
   },
   "peerDependencies": {
@@ -31,6 +33,7 @@
   "devDependencies": {
     "@TheY2T/tmr-config-typescript": "workspace:*",
     "@TheY2T/tmr-config-vitest": "workspace:*",
+    "@testing-library/react": "catalog:",
     "@types/react": "catalog:",
     "typescript": "catalog:",
     "@vitest/coverage-v8": "catalog:",

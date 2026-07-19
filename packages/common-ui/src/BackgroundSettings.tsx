@@ -6,7 +6,7 @@ import {
   DEFAULT_PREF,
   getBackgroundPref,
   setBackgroundPref,
-} from '@TheY2T/tmr-web-data/dashboard-background';
+} from '@TheY2T/tmr-web-acl/dashboard-background';
 import { useEffect, useState } from 'react';
 import DashboardBackground, { BG_CHANGE_EVENT } from './DashboardBackground';
 

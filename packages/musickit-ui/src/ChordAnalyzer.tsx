@@ -12,13 +12,13 @@ import {
   deleteRemoteProgression,
   listRemoteProgressions,
   saveRemoteProgression,
-} from '@TheY2T/tmr-web-data/progressions-api';
+} from '@TheY2T/tmr-web-acl/progressions-api';
 import {
   deleteProgression,
   listSaved,
   type SavedProgression,
   saveProgression,
-} from '@TheY2T/tmr-web-data/saved-progressions';
+} from '@TheY2T/tmr-web-acl/saved-progressions';
 import { useEffect, useState } from 'react';
 
 interface ProgChord {

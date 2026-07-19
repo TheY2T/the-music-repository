@@ -4,6 +4,8 @@
 - **Date:** 2026-07
 - **Supersedes (in part):** ADR 0018 (which kept templates/pages, single-use tool visuals, and all
   audio/theory logic in `apps/web`, and required library components to be strictly presentational).
+- **Superseded (in part) by:** ADR 0037 (renames `web-data` → `web-acl`; the smart packages no longer
+  depend on `@TheY2T/tmr-api-client` — they consume an injected data-access port).
 
 ## Context
 
@@ -25,7 +27,7 @@ in shared packages**, so the music/learning UI can evolve and be reused independ
      the alphaTab **score engine**, PixiJS **scenes + the `PixiCanvas` boundary**, hooks, and the
      chord-shape **data/geometry**. Peers: `react`, `react-dom`, `pixi.js`, `@pixi/react`,
      `@coderline/alphatab`, `smplr`.
-   - **`@TheY2T/tmr-web-data`** — the **data seam**: credentialed api-client wrappers, the Better Auth
+   - **`@TheY2T/tmr-web-acl`** — the **data seam**: credentialed api-client wrappers, the Better Auth
      browser client, shell config (`nav`), and the shared shell **types** (`Flags`/`User`/`Locale`).
      **No UI.**
    - **`@TheY2T/tmr-musickit-ui`** — **all** music/learning experiences: interactive tool islands,
@@ -34,14 +36,17 @@ in shared packages**, so the music/learning UI can evolve and be reused independ
      switchers, `InfoView`, dashboards, forms, the admin block editor, …).
 
 2. **Smart packages, thin web (relaxes ADR 0017/0018 §6).** `common-ui` and `musickit-ui` components
-   **may** depend on `@TheY2T/tmr-api-client`, the `web-data` seam, and `@TheY2T/tmr-i18n` — they fetch
-   data and render localized text internally, calling `t(locale, key)` with **`locale`/`flags`/`user`
-   passed in as props**. `@TheY2T/tmr-ui` alone stays strictly presentational / i18n-by-prop.
+   depend on the `web-acl` layer and `@TheY2T/tmr-i18n` — they fetch data and render localized text
+   internally, calling `t(locale, key)` with **`locale`/`flags`/`user` passed in as props**.
+   **Superseded in part by ADR 0037:** these packages no longer depend on `@TheY2T/tmr-api-client`
+   directly — they read data through the injected `useApiData()` port and import DTO types from
+   `@TheY2T/tmr-web-acl/dto`; only `web-acl` (the anti-corruption layer) names api-client.
+   `@TheY2T/tmr-ui` alone stays strictly presentational / i18n-by-prop.
    **`Astro.locals` never leaves `apps/web`** — pages read locals, gate flags, and pass props down.
 
 3. **Acyclic UI DAG:**
-   `design-tokens → ui → music-core → web-data → musickit-ui → common-ui → apps/web`
-   (`web-data → ui` for the `IconName` type only; `music-core → ui` for `cn`). The data seam sits below
+   `design-tokens → ui → music-core → web-acl → musickit-ui → common-ui → apps/web`
+   (`web-acl → ui` for the `IconName` type only; `music-core → ui` for `cn`). The data seam sits below
    both UI packages, and the two catalogue toggles (`FavoriteHeart`, `SaveCollectionButton`) live in
    `musickit-ui`, so `musickit-ui` never imports `common-ui`. `common-ui` **does** import `musickit-ui`
    (the admin block-editor previews music content: `ContentBody`/`ContentEmbeds`/`AlphaTexScore`).
@@ -52,20 +57,20 @@ in shared packages**, so the music/learning UI can evolve and be reused independ
    music-core for a single import surface (`@TheY2T/tmr-musickit-ui/organisms`).
 
 5. **`apps/web` keeps** `src/pages/**` (thin route shells), `src/middleware.ts`, `src/env.d.ts`
-   (`App.Locals` **derived from** `@TheY2T/tmr-web-data`'s `Flags`/`User`/`Locale`), `src/lib/admin-guard.ts`,
+   (`App.Locals` **derived from** `@TheY2T/tmr-web-acl`'s `Flags`/`User`/`Locale`), `src/lib/admin-guard.ts`,
    `src/layouts/BaseLayout.astro`, and `src/styles/global.css`. `BaseLayout` + `global.css` stay in the
    app because Tailwind v4 content-scanning and the `@import "tailwindcss"` entry are consumer-side; the
    alphaTab Vite plugin + font/soundfont asset copying also stay in `astro.config.mjs`.
 
 6. **Wiring:** all four new packages are added to `vite.ssr.noExternal` and to the `@source` globs in
-   `global.css` (except `web-data`, which ships no utility classes but still needs `noExternal`).
+   `global.css` (except `web-acl`, which ships no utility classes but still needs `noExternal`).
    `optimizeDeps.include` is unchanged (pixi/alphatab stay lazy + out of it → no duplicate-React).
 
 ## Consequences
 
 - `apps/web/src/components` is emptied (only a `ui/button` + `lib/utils` back-compat shim remain);
   pages mount package islands with props. Music UI evolves independently of the shell.
-- The data/auth seam is now its own layer (`web-data`) — cleaner than the ADR-0018-era habit of leaving
+- The data/auth seam is now its own layer (`web-acl`) — cleaner than the ADR-0018-era habit of leaving
   fetch wrappers beside UI, and it is what keeps the DAG acyclic.
 - Package tsconfigs disable `noUncheckedIndexedAccess` + `declaration`/`declarationMap` to match the
   `astro/tsconfigs/strict` environment the code was authored under (raw-source, `noEmit`).
@@ -76,7 +81,7 @@ in shared packages**, so the music/learning UI can evolve and be reused independ
 ## Alternatives considered
 
 - **Keep the data seam in `common-ui`** — creates a `common-ui ↔ musickit-ui` cycle (admin previews
-  music content while musickit fetches). Rejected: extracting `web-data` keeps the DAG acyclic.
+  music content while musickit fetches). Rejected: extracting `web-acl` keeps the DAG acyclic.
 - **Accept a package-level cycle** (declare the dependency both ways) — pnpm/Vite tolerate it, but it
   violates the one-way layering and risks the turbo task graph. Rejected.
 - **Bundle music logic inside `musickit-ui`** — rejected: a headless `music-core` keeps logic reusable

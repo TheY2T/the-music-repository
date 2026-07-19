@@ -1,8 +1,8 @@
-import type { CollectionSummary, CollectionWriteInput } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import { Badge, Icon, TableCell, TableHead } from '@TheY2T/tmr-ui';
-import { collectionsAdminApi } from '@TheY2T/tmr-web-data/admin-api';
-import { byCountThenValue, byFixedOrder } from '@TheY2T/tmr-web-data/admin-manager';
+import { collectionsAdminApi } from '@TheY2T/tmr-web-acl/admin-api';
+import { byCountThenValue, byFixedOrder } from '@TheY2T/tmr-web-acl/admin-manager';
+import type { CollectionSummary, CollectionWriteInput } from '@TheY2T/tmr-web-acl/dto';
 import type { EntityManagerConfig } from './EntityManager';
 import { statusText, statusVariant, titleize } from './manager-helpers';
 

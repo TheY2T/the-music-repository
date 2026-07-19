@@ -3,7 +3,7 @@ import {
   type HelpPreviewPayload,
   isPreviewMessage,
   PREVIEW_READY,
-} from '@TheY2T/tmr-web-data/preview-protocol';
+} from '@TheY2T/tmr-web-acl/preview-protocol';
 import { marked } from 'marked';
 import { useEffect, useState } from 'react';
 

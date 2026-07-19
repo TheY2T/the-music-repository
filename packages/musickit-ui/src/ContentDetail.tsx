@@ -1,12 +1,3 @@
-import {
-  ApiProvider,
-  type CollectionSummary,
-  type ContentDetail as ContentDetailDto,
-  type ContentSummary,
-  useGetContentBySlug,
-  useGetRelatedContent,
-  useListCollectionsForContent,
-} from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import { resolveDisplayMode, tabTuningFor } from '@TheY2T/tmr-music-core/score/loop';
 import {
@@ -27,6 +18,12 @@ import {
   MediaCard,
   Skeleton,
 } from '@TheY2T/tmr-ui';
+import { useApiData } from '@TheY2T/tmr-web-acl/api-data';
+import type {
+  CollectionSummary,
+  ContentDetail as ContentDetailDto,
+  ContentSummary,
+} from '@TheY2T/tmr-web-acl/dto';
 import { marked } from 'marked';
 import AnimatedCoverArt from './AnimatedCoverArt';
 import ContentBody from './content/ContentBody';
@@ -95,6 +92,7 @@ function DetailsPanel({
 }
 
 function AppearsInCollections({ slug, locale }: { slug: string; locale: Locale }) {
+  const { useListCollectionsForContent } = useApiData();
   const { data } = useListCollectionsForContent(slug);
   const items = data?.status === 200 ? (data.data.items as CollectionSummary[]) : [];
   if (!items.length) {
@@ -125,6 +123,7 @@ function AppearsInCollections({ slug, locale }: { slug: string; locale: Locale }
 }
 
 function RelatedSection({ slug, locale }: { slug: string; locale: Locale }) {
+  const { useGetRelatedContent } = useApiData();
   const { data } = useGetRelatedContent(slug, { locale: localeParam(locale) });
   const items = data?.status === 200 ? (data.data.items as ContentSummary[]) : [];
   if (!items.length) {
@@ -169,6 +168,7 @@ function Detail({
   interactiveScores: boolean;
   showMonetization: boolean;
 }) {
+  const { useGetContentBySlug } = useApiData();
   const { data, isLoading } = useGetContentBySlug(slug, { locale: localeParam(locale) });
   // customFetch returns non-2xx as data (not a throw), so narrow on the 200 status.
   const item = data?.status === 200 ? (data.data as ContentDetailDto) : undefined;
@@ -391,13 +391,11 @@ export default function ContentDetail({
   showMonetization?: boolean;
 }) {
   return (
-    <ApiProvider>
-      <Detail
-        slug={slug}
-        locale={locale}
-        interactiveScores={interactiveScores}
-        showMonetization={showMonetization}
-      />
-    </ApiProvider>
+    <Detail
+      slug={slug}
+      locale={locale}
+      interactiveScores={interactiveScores}
+      showMonetization={showMonetization}
+    />
   );
 }

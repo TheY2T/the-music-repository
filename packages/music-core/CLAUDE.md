@@ -7,7 +7,7 @@ compiles it. See root `CLAUDE.md` for repo-wide rules.
 
 - **This package is logic + engine + data — NOT app UI and NOT a data-fetcher.** No api-client, no
   `t()`/i18n, no `Astro.locals`. It sits low in the DAG:
-  `design-tokens → ui → **music-core** → web-data → musickit-ui → common-ui → apps/web`.
+  `design-tokens → ui → **music-core** → web-acl → musickit-ui → common-ui → apps/web`.
 - Peers (don't bundle — the consumer provides): `react`, `react-dom`, `pixi.js`, `@pixi/react`,
   `@coderline/alphatab`, `smplr`.
 - It imports `@TheY2T/tmr-ui` only for `cn`.

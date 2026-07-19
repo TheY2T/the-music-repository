@@ -1,4 +1,3 @@
-import type { ReviewSummary, SkillMastery } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import {
   Badge,
@@ -11,8 +10,9 @@ import {
   Toaster,
   toast,
 } from '@TheY2T/tmr-ui';
-import { getDrillStats } from '@TheY2T/tmr-web-data/drills-api';
-import { getReviewSummary } from '@TheY2T/tmr-web-data/reviews-api';
+import { getDrillStats } from '@TheY2T/tmr-web-acl/drills-api';
+import type { ReviewSummary, SkillMastery } from '@TheY2T/tmr-web-acl/dto';
+import { getReviewSummary } from '@TheY2T/tmr-web-acl/reviews-api';
 import { useEffect, useState } from 'react';
 import { DECKS } from './drill-decks';
 import AchievementBadge from './drills/celebration/AchievementBadge';

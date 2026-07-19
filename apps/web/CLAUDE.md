@@ -15,8 +15,10 @@ pass `locale`/`flags`/`user` down as **props**. **`Astro.locals` never leaves `a
   `astro/SiteFooter.astro`, `ThemeSwitcher`, dashboards, forms, admin block editor).
 - **Music logic** (theory/audio/soundfont, alphaTab engine, PixiJS scenes + `PixiCanvas`, chord data) →
   `@TheY2T/tmr-music-core`.
-- **Data seam** (api-client wrappers, `auth-client`, `nav`, `Flags`/`User`/`Locale` types) →
-  `@TheY2T/tmr-web-data`.
+- **Anti-corruption layer** (api-client wrappers, `auth-client`, `nav`, the `useApiData()` data-access
+  port + DTO re-exports, `Flags`/`User`/`Locale` types) → `@TheY2T/tmr-web-acl`. Bootstrap the port with
+  `AppProviders` (`src/components/providers/`) around a region; mount islands via the wrappers in
+  `src/components/islands/*` (ADR 0037).
 
 ## Structure
 
@@ -28,7 +30,7 @@ src/
   lib/admin-guard.ts   # reads Astro.locals (stays in the app)
   styles/global.css    # Tailwind v4 (@import) + @import @TheY2T/tmr-design-tokens + @source globs
   middleware.ts        # OpenFeature SSR eval → Astro.locals.flags; locale + session resolution
-  env.d.ts             # App.Locals typing — derived from @TheY2T/tmr-web-data (Flags/User/Locale)
+  env.d.ts             # App.Locals typing — derived from @TheY2T/tmr-web-acl (Flags/User/Locale)
 ```
 
 Adding a package island to a route: add it to the package (**`add-ui-component`**), import it in the

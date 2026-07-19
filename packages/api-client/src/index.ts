@@ -11,4 +11,4 @@ export * from './generated/model';
 export * from './generated/progress/progress';
 export * from './generated/reviews/reviews';
 export { customFetch } from './mutator/custom-fetch';
-export { ApiProvider, createQueryClient } from './provider';
+export { createQueryClient } from './provider';

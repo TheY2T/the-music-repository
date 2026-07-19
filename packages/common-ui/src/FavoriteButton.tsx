@@ -1,5 +1,5 @@
 import FavoriteHeart from '@TheY2T/tmr-musickit-ui/FavoriteHeart';
-import { listFavoriteSlugs } from '@TheY2T/tmr-web-data/favorites-api';
+import { listFavoriteSlugs } from '@TheY2T/tmr-web-acl/favorites-api';
 import { useEffect, useState } from 'react';
 
 /** Standalone heart + label for the content detail page. Fetches its own initial state. */

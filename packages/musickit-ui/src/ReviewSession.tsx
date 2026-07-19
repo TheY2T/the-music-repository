@@ -9,7 +9,7 @@ import {
   Icon,
   Progress,
 } from '@TheY2T/tmr-ui';
-import { getDeckReviews, gradeCard } from '@TheY2T/tmr-web-data/reviews-api';
+import { getDeckReviews, gradeCard } from '@TheY2T/tmr-web-acl/reviews-api';
 import { useEffect, useState } from 'react';
 import { DECKS, findDeck } from './drill-decks';
 

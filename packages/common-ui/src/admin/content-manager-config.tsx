@@ -1,9 +1,9 @@
-import type { ContentAdminSummary, ContentWriteInput } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import { Badge, Icon, TableCell, TableHead } from '@TheY2T/tmr-ui';
-import { adminApi } from '@TheY2T/tmr-web-data/admin-api';
-import { byCountThenValue, byFixedOrder } from '@TheY2T/tmr-web-data/admin-manager';
-import { LEVEL_BANDS, LEVEL_LABEL, type LevelBand } from '@TheY2T/tmr-web-data/catalogue-shelves';
+import { adminApi } from '@TheY2T/tmr-web-acl/admin-api';
+import { byCountThenValue, byFixedOrder } from '@TheY2T/tmr-web-acl/admin-manager';
+import { LEVEL_BANDS, LEVEL_LABEL, type LevelBand } from '@TheY2T/tmr-web-acl/catalogue-shelves';
+import type { ContentAdminSummary, ContentWriteInput } from '@TheY2T/tmr-web-acl/dto';
 import type { EntityManagerConfig } from './EntityManager';
 import { relativeTime, statusText, statusVariant, titleize } from './manager-helpers';
 

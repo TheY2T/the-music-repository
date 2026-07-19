@@ -60,7 +60,7 @@ management, and **import** (flags.json-shaped). Self-lockout guardrail: the API 
 The compile-time type source for gate sites, the DB **seed** (`seed-feature-flags.ts`, idempotent, seeds
 from the package; never clobbers admin edits), and the **fallback** when the snapshot source is
 unavailable. Adding a new **code** flag: add the key to `FlagKeys` + `FlagDefaults`
-(one line each), map its camelCase web field in `@TheY2T/tmr-web-data`'s `FLAG_FIELD_BY_KEY`, gate the
+(one line each), map its camelCase web field in `@TheY2T/tmr-web-acl`'s `FLAG_FIELD_BY_KEY`, gate the
 code, then it seeds on the next `db:seed`. See the **`manage-flags`** skill.
 
 ## Graceful degradation

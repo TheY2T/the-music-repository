@@ -8,7 +8,7 @@ const upsertMock = vi.fn();
 const publishMock = vi.fn();
 const listLocalesMock = vi.fn();
 
-vi.mock('@TheY2T/tmr-web-data/content-translations-api', () => ({
+vi.mock('@TheY2T/tmr-web-acl/content-translations-api', () => ({
   contentTranslationApi: {
     list: (...a: unknown[]) => listMock(...a),
     upsert: (...a: unknown[]) => upsertMock(...a),
@@ -16,7 +16,7 @@ vi.mock('@TheY2T/tmr-web-data/content-translations-api', () => ({
   },
 }));
 
-vi.mock('@TheY2T/tmr-web-data/i18n-api', () => ({
+vi.mock('@TheY2T/tmr-web-acl/i18n-api', () => ({
   listLocales: (...a: unknown[]) => listLocalesMock(...a),
 }));
 

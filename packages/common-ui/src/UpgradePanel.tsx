@@ -5,7 +5,7 @@ import {
   getSubscription,
   type SubscriptionStatus,
   startCheckout,
-} from '@TheY2T/tmr-web-data/subscription-api';
+} from '@TheY2T/tmr-web-acl/subscription-api';
 import { useEffect, useState } from 'react';
 
 /** Localized plan name for the given plan id (`premium`/`pro`/`institution`). */

@@ -44,7 +44,7 @@ We want translating to feel like editing: switch a language control and keep wor
 6. **Shared, form-agnostic pieces.** `packages/common-ui/src/localization/`: `useLocaleContent` (buffer +
    persistence hook), `LocaleBar` (switcher), `LocalizableField` (per-field binder with reference + lock +
    block-editor remount). The field registry and dotted/keyed base-value resolution live in
-   `@TheY2T/tmr-web-data/content-translations-api` (`LOCALIZABLE_FIELDS`, `dynamicLocalizableFields`,
+   `@TheY2T/tmr-web-acl/content-translations-api` (`LOCALIZABLE_FIELDS`, `dynamicLocalizableFields`,
    `getTranslationTarget`). The standalone `ContentLocalizationEditor` panel is removed.
 
 ## Consequences

@@ -1,8 +1,8 @@
-import type { HelpTopic } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import { Icon, TableCell, TableHead } from '@TheY2T/tmr-ui';
-import { byFixedOrder } from '@TheY2T/tmr-web-data/admin-manager';
-import { listHelpTopics } from '@TheY2T/tmr-web-data/help-api';
+import { byFixedOrder } from '@TheY2T/tmr-web-acl/admin-manager';
+import type { HelpTopic } from '@TheY2T/tmr-web-acl/dto';
+import { listHelpTopics } from '@TheY2T/tmr-web-acl/help-api';
 import type { EntityManagerConfig } from './EntityManager';
 
 type Row = HelpTopic;

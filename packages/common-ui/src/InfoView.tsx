@@ -1,6 +1,6 @@
-import type { HelpTopic } from '@TheY2T/tmr-api-client';
 import { Icon } from '@TheY2T/tmr-ui';
-import { listHelpTopics } from '@TheY2T/tmr-web-data/help-api';
+import type { HelpTopic } from '@TheY2T/tmr-web-acl/dto';
+import { listHelpTopics } from '@TheY2T/tmr-web-acl/help-api';
 import { marked } from 'marked';
 import { useEffect, useMemo, useState } from 'react';
 

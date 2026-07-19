@@ -7,7 +7,7 @@ const createMock = vi.fn();
 const removeMock = vi.fn();
 const createLocaleMock = vi.fn();
 
-vi.mock('@TheY2T/tmr-web-data/i18n-api', () => ({
+vi.mock('@TheY2T/tmr-web-acl/i18n-api', () => ({
   listLocales: () =>
     Promise.resolve([
       { code: 'en', label: 'English' },

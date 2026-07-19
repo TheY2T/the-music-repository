@@ -1,5 +1,5 @@
 import { StarRating } from '@TheY2T/tmr-ui';
-import { rateCollection } from '@TheY2T/tmr-web-data/collections-api';
+import { rateCollection } from '@TheY2T/tmr-web-acl/collections-api';
 import { useState } from 'react';
 
 /**

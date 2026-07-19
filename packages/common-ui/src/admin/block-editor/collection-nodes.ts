@@ -1,4 +1,4 @@
-import { COLLECTION_ITEM_NODE } from '@TheY2T/tmr-web-data/collection-doc';
+import { COLLECTION_ITEM_NODE } from '@TheY2T/tmr-web-acl/collection-doc';
 import { mergeAttributes, Node } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import { CollectionItemNodeView } from './CollectionItemNodeView';

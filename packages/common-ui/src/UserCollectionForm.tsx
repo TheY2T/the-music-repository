@@ -1,4 +1,3 @@
-import { ApiProvider, useSearchCatalogue } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import {
   Button,
@@ -10,13 +9,14 @@ import {
   SegmentedToggle,
   Textarea,
 } from '@TheY2T/tmr-ui';
+import { useApiData } from '@TheY2T/tmr-web-acl/api-data';
 import {
   createUserCollection,
   deleteUserCollection,
   getMyCollection,
   setUserCollectionItems,
   updateUserCollection,
-} from '@TheY2T/tmr-web-data/collections-api';
+} from '@TheY2T/tmr-web-acl/collections-api';
 import { useEffect, useState } from 'react';
 
 interface Item {
@@ -56,6 +56,7 @@ function Form({ slug, locale }: { slug?: string; locale: Locale }) {
     }
   }, [slug]);
 
+  const { useSearchCatalogue } = useApiData();
   const { data } = useSearchCatalogue({ q: pickerQuery || undefined, page: 1, pageSize: 8 });
   const results = pickerQuery ? (data?.data?.items ?? []) : [];
   const chosen = new Set(items.map((i) => i.contentSlug));
@@ -235,9 +236,5 @@ function Form({ slug, locale }: { slug?: string; locale: Locale }) {
 }
 
 export default function UserCollectionForm({ slug, locale }: { slug?: string; locale: Locale }) {
-  return (
-    <ApiProvider>
-      <Form slug={slug} locale={locale} />
-    </ApiProvider>
-  );
+  return <Form slug={slug} locale={locale} />;
 }

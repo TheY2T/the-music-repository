@@ -21,7 +21,7 @@ rule at seed time, add it to `FlagTargeting` in the same file.
 ## 2. Map the web field
 
 Add the key → its camelCase `Astro.locals.flags` field in `FLAG_FIELD_BY_KEY`
-(`packages/web-data/src/flags.ts`). The `Flags` type derives from this map — a missing mapping won't
+(`packages/web-acl/src/flags.ts`). The `Flags` type derives from this map — a missing mapping won't
 compile. (Bespoke names exist: `platform.i18n` → `i18nEnabled`, `learning.dashboard` → `learnerDashboard`.)
 
 ## 3. Gate the code

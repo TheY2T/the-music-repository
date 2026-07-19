@@ -1,4 +1,3 @@
-import { ApiProvider, type ContentSummary, useGetRelatedContent } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import FavoriteHeart from '@TheY2T/tmr-musickit-ui/FavoriteHeart';
 import {
@@ -11,8 +10,10 @@ import {
   MediaCard,
   Skeleton,
 } from '@TheY2T/tmr-ui';
-import { createBrowseHistory, type RecentItem } from '@TheY2T/tmr-web-data/browse-history';
-import { listFavorites } from '@TheY2T/tmr-web-data/favorites-api';
+import { useApiData } from '@TheY2T/tmr-web-acl/api-data';
+import { createBrowseHistory, type RecentItem } from '@TheY2T/tmr-web-acl/browse-history';
+import type { ContentSummary } from '@TheY2T/tmr-web-acl/dto';
+import { listFavorites } from '@TheY2T/tmr-web-acl/favorites-api';
 import { useEffect, useState } from 'react';
 
 function Dashboard({
@@ -51,6 +52,7 @@ function Dashboard({
   }
 
   const topRecent = recents[0];
+  const { useGetRelatedContent } = useApiData();
   const { data: relatedData } = useGetRelatedContent(topRecent?.slug ?? '', undefined, {
     query: { enabled: !!topRecent },
   });
@@ -157,7 +159,7 @@ function Dashboard({
 }
 
 /** The signed-in learner dashboard (ADR 0031) at `/dashboard` — continue / recommended / saved.
- * Self-contained (own ApiProvider); the page guards auth + the `learning.dashboard` flag. */
+ * The page guards auth + the `learning.dashboard` flag. */
 export default function StudioDashboard({
   locale,
   showFavorites = false,
@@ -168,12 +170,6 @@ export default function StudioDashboard({
   showMonetization?: boolean;
 }) {
   return (
-    <ApiProvider>
-      <Dashboard
-        locale={locale}
-        showFavorites={showFavorites}
-        showMonetization={showMonetization}
-      />
-    </ApiProvider>
+    <Dashboard locale={locale} showFavorites={showFavorites} showMonetization={showMonetization} />
   );
 }

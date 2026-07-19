@@ -23,13 +23,11 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@TheY2T/tmr-api-client": "workspace:*",
     "@TheY2T/tmr-flags": "workspace:*",
     "@TheY2T/tmr-i18n": "workspace:*",
     "@TheY2T/tmr-music-core": "workspace:*",
     "@TheY2T/tmr-ui": "workspace:*",
-    "@TheY2T/tmr-web-data": "workspace:*",
-    "@tanstack/react-query": "catalog:",
+    "@TheY2T/tmr-web-acl": "workspace:*",
     "astro-icon": "catalog:",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",

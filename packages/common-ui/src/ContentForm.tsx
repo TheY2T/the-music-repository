@@ -1,4 +1,3 @@
-import type { ContentWriteInput, MediaUploadRequestKind } from '@TheY2T/tmr-api-client';
 import type { EmbedConfig } from '@TheY2T/tmr-content-serde';
 import { type Locale, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import AlphaTexScore from '@TheY2T/tmr-musickit-ui/score/AlphaTexScore';
@@ -14,8 +13,9 @@ import {
   Select,
   Textarea,
 } from '@TheY2T/tmr-ui';
-import { adminApi, uploadToTicket } from '@TheY2T/tmr-web-data/admin-api';
-import { LOCALIZABLE_FIELDS } from '@TheY2T/tmr-web-data/content-translations-api';
+import { adminApi, uploadToTicket } from '@TheY2T/tmr-web-acl/admin-api';
+import { LOCALIZABLE_FIELDS } from '@TheY2T/tmr-web-acl/content-translations-api';
+import type { ContentWriteInput, MediaUploadRequestKind } from '@TheY2T/tmr-web-acl/dto';
 import { marked } from 'marked';
 import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BlockEditor, type BlockEditorChange } from './admin/block-editor/BlockEditor';

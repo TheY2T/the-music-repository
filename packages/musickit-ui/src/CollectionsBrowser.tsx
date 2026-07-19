@@ -1,4 +1,3 @@
-import { ApiProvider, useSearchCollections } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import {
   type ActiveFilterItem,
@@ -15,10 +14,11 @@ import {
   Select,
   Skeleton,
 } from '@TheY2T/tmr-ui';
-import { useBrowseHistory } from '@TheY2T/tmr-web-data/browse-history';
-import { listSavedCollectionSlugs } from '@TheY2T/tmr-web-data/collections-api';
-import type { CollectionsFilters } from '@TheY2T/tmr-web-data/collections-shelves';
-import { getProgress } from '@TheY2T/tmr-web-data/progress-api';
+import { useApiData } from '@TheY2T/tmr-web-acl/api-data';
+import { useBrowseHistory } from '@TheY2T/tmr-web-acl/browse-history';
+import { listSavedCollectionSlugs } from '@TheY2T/tmr-web-acl/collections-api';
+import type { CollectionsFilters } from '@TheY2T/tmr-web-acl/collections-shelves';
+import { getProgress } from '@TheY2T/tmr-web-acl/progress-api';
 import { useEffect, useState } from 'react';
 import CollectionCard from './CollectionCard';
 import RecentlyViewedStrip from './RecentlyViewedStrip';
@@ -104,6 +104,7 @@ export function CollectionsGrid({
     }
   }, [showProgress]);
 
+  const { useSearchCollections } = useApiData();
   const { data, isFetching } = useSearchCollections({
     q: q || undefined,
     kind,
@@ -448,9 +449,5 @@ export default function CollectionsBrowser({
   showProgress?: boolean;
   showSave?: boolean;
 }) {
-  return (
-    <ApiProvider>
-      <CollectionsGrid locale={locale} showProgress={showProgress} showSave={showSave} />
-    </ApiProvider>
-  );
+  return <CollectionsGrid locale={locale} showProgress={showProgress} showSave={showSave} />;
 }

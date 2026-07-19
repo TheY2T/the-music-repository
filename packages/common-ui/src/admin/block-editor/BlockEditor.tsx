@@ -16,7 +16,7 @@ import {
   Icon,
   type IconName,
 } from '@TheY2T/tmr-ui';
-import { COLLECTION_ITEM_NODE } from '@TheY2T/tmr-web-data/collection-doc';
+import { COLLECTION_ITEM_NODE } from '@TheY2T/tmr-web-acl/collection-doc';
 import { Extension } from '@tiptap/core';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';

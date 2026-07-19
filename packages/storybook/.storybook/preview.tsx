@@ -1,4 +1,4 @@
-import { ApiProvider } from '@TheY2T/tmr-api-client';
+import { ApiDataProvider } from '@TheY2T/tmr-web-acl/api-data';
 import type { Decorator, Preview } from '@storybook/react-vite';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import { handlers } from '../src/msw-handlers';
@@ -25,12 +25,12 @@ const withTheme: Decorator = (Story, context) => {
   );
 };
 
-// Smart components (catalogue/collections/dashboards) call React-Query hooks via api-client. Provide
-// the client so they mount; with no dev API running they show their own loading/empty states.
+// Smart components (catalogue/collections/dashboards) read data through the web-acl data-access port.
+// Provide it so they mount; with no dev API running they show their own loading/empty states.
 const withProviders: Decorator = (Story) => (
-  <ApiProvider>
+  <ApiDataProvider>
     <Story />
-  </ApiProvider>
+  </ApiDataProvider>
 );
 
 const preview: Preview = {

@@ -1,4 +1,3 @@
-import type { CollectionSummary } from '@TheY2T/tmr-api-client';
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import {
   Badge,
@@ -16,7 +15,8 @@ import {
   TabsTrigger,
   usePagination,
 } from '@TheY2T/tmr-ui';
-import { listMyCollections, listSavedCollections } from '@TheY2T/tmr-web-data/collections-api';
+import { listMyCollections, listSavedCollections } from '@TheY2T/tmr-web-acl/collections-api';
+import type { CollectionSummary } from '@TheY2T/tmr-web-acl/dto';
 import { useEffect, useState } from 'react';
 
 function Grid({

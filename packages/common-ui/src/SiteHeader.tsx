@@ -15,9 +15,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@TheY2T/tmr-ui';
-import type { User } from '@TheY2T/tmr-web-data';
-import { authClient } from '@TheY2T/tmr-web-data/auth-client';
-import type { NavItem } from '@TheY2T/tmr-web-data/nav';
+import type { User } from '@TheY2T/tmr-web-acl';
+import { authClient } from '@TheY2T/tmr-web-acl/auth-client';
+import type { NavItem } from '@TheY2T/tmr-web-acl/nav';
 import { useState } from 'react';
 import LanguageSwitcher from './LanguageSwitcher';
 import ThemeSwitcher from './ThemeSwitcher';

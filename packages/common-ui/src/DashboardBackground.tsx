@@ -3,7 +3,7 @@ import {
   type BackgroundStyle,
   DEFAULT_PREF,
   getBackgroundPref,
-} from '@TheY2T/tmr-web-data/dashboard-background';
+} from '@TheY2T/tmr-web-acl/dashboard-background';
 import { useEffect, useState } from 'react';
 
 /**

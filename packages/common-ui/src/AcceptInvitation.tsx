@@ -1,6 +1,6 @@
 import { type Locale, localizedPath, t } from '@TheY2T/tmr-i18n';
 import { buttonVariants, Card, cn, Icon } from '@TheY2T/tmr-ui';
-import { acceptInvitation } from '@TheY2T/tmr-web-data/classrooms-api';
+import { acceptInvitation } from '@TheY2T/tmr-web-acl/classrooms-api';
 import { useEffect, useState } from 'react';
 
 /** Reads an invitation `token` from the URL and accepts it for the signed-in user (joining the class). */

@@ -1,6 +1,6 @@
 import AmbientBackground from '@TheY2T/tmr-common-ui/AmbientBackground';
 import DashboardBackground from '@TheY2T/tmr-common-ui/DashboardBackground';
-import { BACKGROUND_STYLES } from '@TheY2T/tmr-web-data/dashboard-background';
+import { BACKGROUND_STYLES } from '@TheY2T/tmr-web-acl/dashboard-background';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 // The personalizable dashboard backdrop (ADR 0022) has a `style` enumeration

@@ -1,7 +1,7 @@
 import type { EmbedConfig } from '@TheY2T/tmr-content-serde';
 import type { Locale } from '@TheY2T/tmr-i18n';
 import { Field, Icon, Input, Textarea } from '@TheY2T/tmr-ui';
-import type { FieldKind } from '@TheY2T/tmr-web-data/content-translations-api';
+import type { FieldKind } from '@TheY2T/tmr-web-acl/content-translations-api';
 import type { ReactNode } from 'react';
 import { BlockEditor } from '../admin/block-editor/BlockEditor';
 

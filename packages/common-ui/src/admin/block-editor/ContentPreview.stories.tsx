@@ -1,4 +1,4 @@
-import { PREVIEW_MESSAGE, type PreviewPayload } from '@TheY2T/tmr-web-data/preview-protocol';
+import { PREVIEW_MESSAGE, type PreviewPayload } from '@TheY2T/tmr-web-acl/preview-protocol';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useEffect } from 'react';
 import ContentPreview from './ContentPreview';
