@@ -33,7 +33,7 @@ import {
 } from '@TheY2T/tmr-web-data/feature-flags-api';
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
 
-/** flagd/JSONLogic templates offered in the targeting editor. */
+/** JSONLogic templates offered in the targeting editor. */
 function roleTemplate(role: string): TargetingRule {
   return { if: [{ in: [role, { var: 'roles' }] }, 'on', 'off'] };
 }
@@ -64,6 +64,7 @@ export default function AdminFlagManager({ locale }: { locale: Locale }) {
   const [envOpen, setEnvOpen] = useState(false);
   const [targetingFlag, setTargetingFlag] = useState<FlagAdminRow | null>(null);
   const [revisionsFlag, setRevisionsFlag] = useState<FlagAdminRow | null>(null);
+  const [confirmDeleteFlag, setConfirmDeleteFlag] = useState<FlagAdminRow | null>(null);
 
   const currentEnv = environments.find((e) => e.id === selectedEnvId);
 
@@ -122,6 +123,32 @@ export default function AdminFlagManager({ locale }: { locale: Locale }) {
       await reloadFlags();
     });
 
+  /** Download the selected environment's flags as a re-importable JSON file. */
+  const exportFlags = () => {
+    const envKey = currentEnv?.key ?? 'all';
+    const payload: Record<string, unknown> = {};
+    for (const flag of flags) {
+      const setting = settingFor(flag);
+      if (!setting) continue;
+      payload[flag.key] = {
+        description: flag.description,
+        enabled: setting.enabled,
+        defaultVariant: setting.defaultVariant,
+        variants: setting.variants,
+        targeting: setting.targeting,
+      };
+    }
+    const blob = new Blob([JSON.stringify({ flags: payload }, null, 2)], {
+      type: 'application/json',
+    });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `feature-flags.${envKey}.json`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-4">
       {/* Toolbar */}
@@ -157,6 +184,9 @@ export default function AdminFlagManager({ locale }: { locale: Locale }) {
         <div className="ml-auto flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={() => setEnvOpen(true)}>
             <Icon name="settings" className="size-4" /> {tr('flagadmin.manageEnvironments')}
+          </Button>
+          <Button variant="outline" size="sm" onClick={exportFlags}>
+            <Icon name="download" className="size-4" /> {tr('flagadmin.export')}
           </Button>
           <Button variant="outline" size="sm" onClick={() => setImportOpen(true)}>
             <Icon name="upload" className="size-4" /> {tr('flagadmin.import')}
@@ -253,16 +283,7 @@ export default function AdminFlagManager({ locale }: { locale: Locale }) {
                         {tr('flagadmin.restore')}
                       </Button>
                     ) : (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() =>
-                          run(async () => {
-                            await featureFlagAdminApi.deleteFlag(flag.id);
-                            await reloadFlags();
-                          }, tr('flagadmin.saved'))
-                        }
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => setConfirmDeleteFlag(flag)}>
                         {tr('flagadmin.delete')}
                       </Button>
                     )}
@@ -310,6 +331,24 @@ export default function AdminFlagManager({ locale }: { locale: Locale }) {
               await featureFlagAdminApi.createFlag(body);
               await reloadFlags();
               setCreateOpen(false);
+            }, tr('flagadmin.saved'))
+          }
+        />
+      )}
+
+      {confirmDeleteFlag && (
+        <ConfirmDeleteDialog
+          tr={tr}
+          title={tr('flagadmin.deleteFlagTitle')}
+          body={tr('flagadmin.deleteFlagBody', { key: confirmDeleteFlag.key })}
+          confirmLabel={tr('flagadmin.deleteFlagConfirmLabel')}
+          expected={confirmDeleteFlag.key}
+          onClose={() => setConfirmDeleteFlag(null)}
+          onConfirm={() =>
+            run(async () => {
+              await featureFlagAdminApi.deleteFlag(confirmDeleteFlag.id);
+              setConfirmDeleteFlag(null);
+              await reloadFlags();
             }, tr('flagadmin.saved'))
           }
         />
@@ -578,17 +617,24 @@ function ImportDialog({
   onClose: () => void;
   onImport: (entries: Record<string, unknown>) => void;
 }) {
-  const [json, setJson] = useState('');
+  const [file, setFile] = useState<File | null>(null);
   const [invalid, setInvalid] = useState(false);
-  const doImport = () => {
+
+  const doImport = async () => {
+    if (!file) return;
     try {
-      const parsed = JSON.parse(json);
+      const parsed = JSON.parse(await file.text());
       const entries = parsed.flags ?? parsed; // accept a `{ flags: {...} }` wrapper or a bare map
+      if (typeof entries !== 'object' || entries === null || Array.isArray(entries)) {
+        setInvalid(true);
+        return;
+      }
       onImport(entries);
     } catch {
       setInvalid(true);
     }
   };
+
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-lg">
@@ -596,21 +642,20 @@ function ImportDialog({
           <DialogTitle>{tr('flagadmin.importTitle')}</DialogTitle>
           <DialogDescription>{tr('flagadmin.importBody')}</DialogDescription>
         </DialogHeader>
-        <Textarea
-          value={json}
+        <Input
+          type="file"
+          accept="application/json,.json"
           onChange={(e) => {
-            setJson(e.target.value);
+            setFile(e.target.files?.[0] ?? null);
             setInvalid(false);
           }}
-          rows={10}
-          className="font-mono text-xs"
         />
         {invalid && <p className="text-xs text-destructive">{tr('flagadmin.invalidJson')}</p>}
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
             {tr('flagadmin.cancel')}
           </Button>
-          <Button disabled={!json.trim()} onClick={doImport}>
+          <Button disabled={!file} onClick={doImport}>
             {tr('flagadmin.importAction')}
           </Button>
         </DialogFooter>
@@ -634,6 +679,7 @@ function EnvironmentsDialog({
 }) {
   const [key, setKey] = useState('');
   const [label, setLabel] = useState('');
+  const [confirmEnv, setConfirmEnv] = useState<FlagEnvironmentRow | null>(null);
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-lg">
@@ -655,18 +701,31 @@ function EnvironmentsDialog({
                 size="sm"
                 className="ml-auto"
                 disabled={env.isDefault}
-                onClick={() =>
-                  run(async () => {
-                    await featureFlagAdminApi.deleteEnvironment(env.id);
-                    onChanged();
-                  })
-                }
+                onClick={() => setConfirmEnv(env)}
               >
                 {tr('flagadmin.delete')}
               </Button>
             </div>
           ))}
         </div>
+
+        {confirmEnv && (
+          <ConfirmDeleteDialog
+            tr={tr}
+            title={tr('flagadmin.deleteEnvTitle')}
+            body={tr('flagadmin.deleteEnvBody', { key: confirmEnv.key })}
+            confirmLabel={tr('flagadmin.deleteEnvConfirmLabel')}
+            expected={confirmEnv.key}
+            onClose={() => setConfirmEnv(null)}
+            onConfirm={() =>
+              run(async () => {
+                await featureFlagAdminApi.deleteEnvironment(confirmEnv.id);
+                setConfirmEnv(null);
+                onChanged();
+              })
+            }
+          />
+        )}
         <div className="flex items-end gap-2 border-t border-border pt-3">
           <div className="space-y-1">
             <Label htmlFor="ff-envkey">{tr('flagadmin.envKey')}</Label>
@@ -702,6 +761,57 @@ function EnvironmentsDialog({
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
             {tr('common.close')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/** Type-the-name-to-confirm dialog for a destructive delete (flags + environments). */
+function ConfirmDeleteDialog({
+  tr,
+  title,
+  body,
+  confirmLabel,
+  expected,
+  onClose,
+  onConfirm,
+}: {
+  tr: Tr;
+  title: string;
+  body: string;
+  confirmLabel: string;
+  expected: string;
+  onClose: () => void;
+  onConfirm: () => void;
+}) {
+  const [typed, setTyped] = useState('');
+  const matches = typed.trim() === expected;
+  return (
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{body}</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-1">
+          <Label htmlFor="ff-delete-confirm">{confirmLabel}</Label>
+          <Input
+            id="ff-delete-confirm"
+            value={typed}
+            onChange={(e) => setTyped(e.target.value)}
+            placeholder={expected}
+            className="font-mono"
+            autoComplete="off"
+          />
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>
+            {tr('flagadmin.cancel')}
+          </Button>
+          <Button variant="destructive" disabled={!matches} onClick={onConfirm}>
+            {tr('flagadmin.delete')}
           </Button>
         </DialogFooter>
       </DialogContent>
