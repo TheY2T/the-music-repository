@@ -13,7 +13,10 @@ if (!Astro.locals.user) {
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'nav.drills')} — ${t(locale, 'site.name')}`}>
+<BaseLayout noindex
+  title={`${t(locale, 'nav.drills')} — ${t(locale, 'site.name')}`}
+  description={t(locale, 'seo.drills.description')}
+>
   <PageShell
     title={t(locale, 'nav.drills')}
     subtitle={t(locale, 'drills.subtitle')}

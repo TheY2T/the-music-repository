@@ -15,7 +15,10 @@ const logPracticeEnabled =
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'tool.metronome.title')} — ${t(locale, 'site.name')}`}>
+<BaseLayout
+  title={`${t(locale, 'tool.metronome.title')} — ${t(locale, 'site.name')}`}
+  description={t(locale, 'tool.metronome.summary')}
+>
     <PageShell
       title={t(locale, 'tool.metronome.title')}
       back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}

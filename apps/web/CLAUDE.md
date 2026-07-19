@@ -26,7 +26,9 @@ pass `locale`/`flags`/`user` down as **props**. **`Astro.locals` never leaves `a
 src/
   pages/*.astro        # routes (lowercase/kebab, [slug].astro) — thin shells: read Astro.locals,
                        #   gate flags, mount a package island with props
-  layouts/BaseLayout.astro  # shell entry: global.css + pre-paint theme + composes common-ui chrome
+  layouts/BaseLayout.astro  # shell entry: global.css + pre-paint theme + common-ui chrome; owns <head>
+                       #   SEO (title/description/canonical/OG/hreflang/JSON-LD via src/lib/seo.ts, ADR 0039)
+  pages/sitemap-*.xml.ts, robots.txt.ts  # SSR SEO endpoint routes (src/lib/sitemap.ts)
   lib/admin-guard.ts   # reads Astro.locals (stays in the app)
   styles/global.css    # Tailwind v4 (@import) + @import @TheY2T/tmr-design-tokens + @source globs
   middleware.ts        # OpenFeature SSR eval → Astro.locals.flags; locale + session resolution
@@ -44,6 +46,9 @@ Adding a package island to a route: add it to the package (**`add-ui-component`*
   utilities only** (no hardcoded palette colours); **icons via the `Icon` atom** (no emoji/glyphs).
 - **i18n** (`.claude/rules/i18n.md`, ADR 0017) — no hardcoded UI strings; render via `t(locale, key)`;
   pass `locale` into islands as a plain prop; `/zh/…` URL-prefix routing.
+- **SEO** (`.claude/rules/seo.md`, **`add-seo`**, ADR 0039) — always-on; every page sets `title` +
+  `description` on `BaseLayout`; content detail pages server-fetch metadata via
+  `@TheY2T/tmr-web-acl/server-content`; private routes `noindex`; sitemap/robots are SSR routes.
 - **Islands** — one island root per interactive unit (React context doesn't cross islands); hydrate
   minimally (`client:load` only where immediately interactive; else `client:visible`/`idle`); static
   markup stays in `.astro`.

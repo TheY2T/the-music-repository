@@ -39,6 +39,10 @@ Copy `docs/features/_template.md` → `docs/features/<feature>.md`. Add an ADR i
 significant decision was made. Update Mermaid diagrams if structure changed. Enrich `CLAUDE.md` if a
 new convention/gotcha emerged.
 
+**SEO** (any new web page/route): set `title` + `description` on `BaseLayout`; server-fetch metadata for
+a new content **detail** page; `noindex` private pages; add public routes to the sitemap. Follow
+**`add-seo`** (ADR 0039).
+
 ## 6. Verify
 `pnpm build && pnpm lint && pnpm check-types && pnpm test`, then drive the flow end-to-end
 (flag off → on) with the stack up.

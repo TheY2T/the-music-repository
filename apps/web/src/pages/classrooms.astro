@@ -18,7 +18,7 @@ const showPremium = Astro.locals.flags.premium && Astro.locals.flags.monetizatio
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'nav.classrooms')} — ${t(locale, 'site.name')}`}>
+<BaseLayout noindex title={`${t(locale, 'nav.classrooms')} — ${t(locale, 'site.name')}`}>
   <PageShell
     title={t(locale, 'nav.classrooms')}
     subtitle={t(locale, 'classrooms.subtitle')}

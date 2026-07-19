@@ -13,7 +13,7 @@ if (Astro.locals.user) {
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={t(locale, 'signin.title')}>
+<BaseLayout noindex title={t(locale, 'signin.title')}>
   <PageShell maxWidth="max-w-md" class="flex min-h-screen flex-col justify-center">
     <header class="mb-6 space-y-1 text-center">
       <a

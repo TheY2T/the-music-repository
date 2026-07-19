@@ -10,10 +10,11 @@ loads only when it's needed:
 
 - **Skills** (`.claude/skills/`, invoke `/name`): `add-endpoint`, `add-feature`, `add-adr`,
   `add-feature-doc`, `author-content`, `add-score`, `manage-flags`, `add-ui-component`, `add-pixi-tool`,
-  `add-translations`, `add-tests`, `embed-tool`, `run-local` — step-by-step workflows for repeated tasks.
+  `add-translations`, `add-seo`, `add-tests`, `embed-tool`, `run-local` — step-by-step workflows for
+  repeated tasks.
 - **Path-scoped rules** (`.claude/rules/*.md`, load when you touch matching files): `api-hexagonal`,
   `web-features`, `interactive-tools`, `scores`, `pixi`, `design-system`, `testing`, `content-authoring`,
-  `flags`, `i18n`.
+  `flags`, `i18n`, `seo`.
 - **Per-package `CLAUDE.md`** (load when working in that package): `packages/{music-core,musickit-ui,ui,
   nest-platform}`. Other packages are covered by this file + the rules.
 - **App notes:** `apps/api/CLAUDE.md`, `apps/web/CLAUDE.md`. **Docs:** ADRs in `docs/adr/`, one feature
@@ -96,6 +97,12 @@ Biome + thin ESLint · podman-compose deploy.
   `@TheY2T/tmr-i18n-locales` JSON is the DB **seed** + compile-time `MessageKey` type + fallback, so a
   brand-new code-referenced key still gets added there once. URL-prefix routing (`/zh/…`), gated by
   `platform.i18n`. Follow the **`add-translations`** skill. ADR 0017/0034.
+- **SEO is Definition of Done (web; ADR 0039).** Every indexable page sets **`title` + `description`** on
+  `BaseLayout`, which always emits a self/per-locale canonical, Open Graph/Twitter card, and hreflang.
+  **Content detail pages server-fetch their metadata** (`@TheY2T/tmr-web-acl/server-content`) so the
+  crawler-visible `<head>` carries the real title/description/JSON-LD (never a client-rendered title).
+  Private routes pass **`noindex`**; new content types get a JSON-LD builder (`apps/web/src/lib/seo.ts`) +
+  a sitemap child. Always-on infra (no flag); `PUBLIC_SITE_URL` must be set per env. Follow **`add-seo`**.
 - **Ship features behind a flag (DB-backed, per-environment; ADR 0035).** Add the key to
   `@TheY2T/tmr-flags` (`FlagKeys` + `FlagDefaults`) + map its web field in `FLAG_FIELD_BY_KEY`
   (`@TheY2T/tmr-web-acl`), gate with `@RequireFlagsEnabled` (api) / `Astro.locals.flags` prop (web); it

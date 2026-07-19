@@ -4,25 +4,47 @@ import SiteHeader from '@TheY2T/tmr-common-ui/SiteHeader';
 import { buildAccountNav, buildLegalNav, buildPrimaryNav } from '@TheY2T/tmr-web-acl/nav';
 import { business } from '@/lib/business';
 import '@/styles/global.css';
-import { LOCALES, htmlLang, localizedPath, splitLocalePath, t } from '@TheY2T/tmr-i18n';
+import { htmlLang, localizedPath, splitLocalePath, t } from '@TheY2T/tmr-i18n';
+import {
+  buildSeo,
+  jsonLdScript,
+  organizationJsonLd,
+  websiteJsonLd,
+} from '@/lib/seo';
 
 /**
- * The single HTML shell for every page: dynamic `<html lang>`, the pre-paint dark-mode script,
- * `hreflang` alternates, the CJK font class, and a top bar hosting the global language switcher.
- * Pages render their own `<main>` into the default slot; extra `<head>` tags go in the `head` slot.
- * The locale comes from `Astro.locals.locale` (resolved in middleware). See docs/features/i18n.md.
+ * The single HTML shell for every page. It owns `<head>`: the per-page title/description, the
+ * self-referential (per-locale) canonical, Open Graph + Twitter card, robots directive, `hreflang`
+ * alternates, and the site-wide Organization/WebSite JSON-LD — assembled by `@/lib/seo` from the props
+ * below. Also sets `<html lang>`, the pre-paint dark-mode script, and the CJK font class. Pages render
+ * their own `<main>` into the default slot; extra `<head>` tags go in the `head` slot. The locale comes
+ * from `Astro.locals.locale` (resolved in middleware). See docs/features/seo.md + i18n.md.
  */
 interface Props {
   title: string;
+  /** Meta description + og:description. Pages should always pass one (item summary or a page string). */
+  description?: string;
+  /** Cover-art URL for og:image; falls back to the default share image when omitted. */
+  image?: string;
+  /** og:type — `article` for content detail pages, `website` (default) otherwise. */
+  type?: 'website' | 'article';
+  /** Mark private/duplicate surfaces so crawlers don't index them (kept crawlable, not disallowed). */
+  noindex?: boolean;
+  /** Per-page schema.org JSON-LD objects (breadcrumb, article, course, …) built via `@/lib/seo`. */
+  jsonLd?: object[];
+  /** ISO timestamps for article OG tags (content detail pages). */
+  publishedTime?: string;
+  modifiedTime?: string;
 }
-const { title } = Astro.props;
+const { title, description, image, type, noindex, jsonLd, publishedTime, modifiedTime } =
+  Astro.props;
 const locale = Astro.locals.locale;
 const i18nEnabled = Astro.locals.flags.i18nEnabled;
 const rawPath = new URL(Astro.request.url).pathname;
 const { path } = splitLocalePath(rawPath);
 const site = Astro.site;
-const alternateHref = (target: (typeof LOCALES)[number]) =>
-  site ? new URL(localizedPath(target, path), site).href : localizedPath(target, path);
+
+const seo = buildSeo({ locale, site, path, title, description, image, type, noindex, i18nEnabled });
 
 // Global navigation model (see src/lib/nav.ts) — shared by the header, mobile drawer, and footer.
 const navCtx = { flags: Astro.locals.flags, user: Astro.locals.user, locale, path: rawPath };
@@ -32,26 +54,9 @@ const legalNav = buildLegalNav(navCtx);
 const siteName = t(locale, 'site.name');
 const year = new Date().getFullYear();
 
-// schema.org Organization structured data — publishes the operator's identity (trading name + ABN)
-// and contact point for search engines and business verification. Escape `<` so a value can't break
-// out of the <script> block.
-const orgJsonLd = JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: siteName,
-  legalName: business.tradingName,
-  ...(site ? { url: site.href } : {}),
-  identifier: {
-    '@type': 'PropertyValue',
-    propertyID: 'ABN',
-    value: business.abnRaw,
-  },
-  contactPoint: {
-    '@type': 'ContactPoint',
-    contactType: 'customer support',
-    email: business.contactEmail,
-  },
-}).replace(/</g, '\\u003c');
+// Site-wide structured data: the operator's identity (Organization) and the site entity (WebSite),
+// serialized with `<` escaped so a value can't break out of the <script> block.
+const siteLd = [organizationJsonLd(site?.href), websiteJsonLd(siteName, locale, site?.href)];
 
 // DB-backed UI strings (ADR 0034): the middleware already loaded this catalogue into the i18n engine for
 // SSR; serialize it so client islands hydrate `t()` from the same strings. Escape `<` so a message value
@@ -67,7 +72,39 @@ const i18nCatalogueJson = JSON.stringify(Astro.locals.i18nCatalogue).replace(/</
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
+    <title>{seo.title}</title>
+    {seo.description && <meta name="description" content={seo.description} />}
+    {seo.canonical && <link rel="canonical" href={seo.canonical} />}
+    {seo.robots && <meta name="robots" content={seo.robots} />}
+
+    {/* Open Graph + Twitter card for rich link previews. */}
+    <meta property="og:type" content={seo.ogType} />
+    <meta property="og:title" content={seo.title} />
+    {seo.description && <meta property="og:description" content={seo.description} />}
+    {seo.ogUrl && <meta property="og:url" content={seo.ogUrl} />}
+    <meta property="og:site_name" content={seo.ogSiteName} />
+    <meta property="og:locale" content={seo.ogLocale} />
+    {seo.ogLocaleAlternates.map((l) => <meta property="og:locale:alternate" content={l} />)}
+    {
+      seo.ogImage && (
+        <>
+          <meta property="og:image" content={seo.ogImage} />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+        </>
+      )
+    }
+    {type === 'article' && publishedTime && (
+      <meta property="article:published_time" content={publishedTime} />
+    )}
+    {type === 'article' && modifiedTime && (
+      <meta property="article:modified_time" content={modifiedTime} />
+    )}
+    <meta name="twitter:card" content={seo.twitterCard} />
+
+    {/* Reciprocal per-locale alternates (gated on the i18n flag). */}
+    {seo.alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
+
     <script is:inline>
       // Apply the aesthetic + mode before paint to avoid a flash. Two independent hooks on <html>:
       // aesthetic → `data-theme` (default `hybrid`, from `tmr.aesthetic`); mode → `.dark` class
@@ -90,17 +127,14 @@ const i18nCatalogueJson = JSON.stringify(Astro.locals.i18nCatalogue).replace(/</
       import { hydrateCatalogueFromDom } from '@TheY2T/tmr-i18n';
       hydrateCatalogueFromDom();
     </script>
-    {
-      i18nEnabled && (
-        <>
-          {LOCALES.map((l) => (
-            <link rel="alternate" hreflang={htmlLang(l)} href={alternateHref(l)} />
-          ))}
-          <link rel="alternate" hreflang="x-default" href={alternateHref('en')} />
-        </>
-      )
-    }
-    <script type="application/ld+json" is:inline set:html={orgJsonLd} />
+
+    {/* Site-wide + per-page structured data. */}
+    {siteLd.map((ld) => (
+      <script type="application/ld+json" is:inline set:html={jsonLdScript(ld)} />
+    ))}
+    {jsonLd?.map((ld) => (
+      <script type="application/ld+json" is:inline set:html={jsonLdScript(ld)} />
+    ))}
     <slot name="head" />
   </head>
   <body class="flex min-h-svh flex-col">

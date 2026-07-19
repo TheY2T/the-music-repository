@@ -14,7 +14,7 @@ const locale = Astro.locals.locale;
 const includeSaved = Astro.locals.flags.collectionBookmarks;
 ---
 
-<BaseLayout title={`${t(locale, 'nav.myProgress')} — ${t(locale, 'site.name')}`}>
+<BaseLayout noindex title={`${t(locale, 'nav.myProgress')} — ${t(locale, 'site.name')}`}>
   <PageShell
     title={t(locale, 'nav.myProgress')}
     back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}

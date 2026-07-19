@@ -15,6 +15,6 @@ const locale = Astro.locals.locale;
 const interactive = Astro.locals.flags.interactiveScores;
 ---
 
-<BaseLayout title={`${t(locale, 'blockEditor.previewTitle')} — ${t(locale, 'site.name')}`}>
+<BaseLayout noindex title={`${t(locale, 'blockEditor.previewTitle')} — ${t(locale, 'site.name')}`}>
   <ContentPreview client:only="react" locale={locale} interactive={interactive} />
 </BaseLayout>

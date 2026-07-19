@@ -13,6 +13,6 @@ if (redirect) {
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'blockEditor.previewTitle')} — ${t(locale, 'site.name')}`}>
+<BaseLayout noindex title={`${t(locale, 'blockEditor.previewTitle')} — ${t(locale, 'site.name')}`}>
   <CollectionPreview client:only="react" locale={locale} />
 </BaseLayout>

@@ -34,6 +34,25 @@ export const MOCK_CATALOGUE = {
   pageSize: 20,
 };
 
+/** Full detail view for the `mock-song` slug — feeds the SSR page-metadata fetch (title/description/
+ * OG/JSON-LD) exercised by the SEO spec. */
+export const MOCK_CONTENT_DETAIL = {
+  slug: 'mock-song',
+  title: 'Mock Song',
+  summary: 'A mock song used to exercise catalogue detail metadata.',
+  type: 'song',
+  visibility: 'public',
+  genres: [],
+  instruments: [],
+  topics: [],
+  tags: [],
+  media: [],
+  id: 'c-mock',
+  details: { composer: 'Test Composer', key: 'C major' },
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-07-19T00:00:00.000Z',
+};
+
 /** Absolute path to a role's saved storageState (auth.setup.ts writes it; specs read it). */
 export function authFile(role) {
   return fileURLToPath(new URL(`../.auth/${role}.json`, import.meta.url));

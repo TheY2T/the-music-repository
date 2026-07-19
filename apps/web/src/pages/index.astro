@@ -21,7 +21,7 @@ const showCollections = collections;
 const showUpgrade = premium && monetizationMessaging && !!user;
 ---
 
-<BaseLayout title={t(locale, 'home.pageTitle')}>
+<BaseLayout title={t(locale, 'home.pageTitle')} description={t(locale, 'seo.home.description')}>
   <HomePage
     client:load
     locale={locale}

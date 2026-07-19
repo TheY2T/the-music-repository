@@ -12,7 +12,7 @@ if (redirect) {
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'admin.newContent')} — ${t(locale, 'site.name')}`}>
+<BaseLayout noindex title={`${t(locale, 'admin.newContent')} — ${t(locale, 'site.name')}`}>
   <PageShell
     title={t(locale, 'admin.newContent')}
     back={{ href: localizedPath(locale, '/admin'), label: t(locale, 'common.backContent') }}

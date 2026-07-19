@@ -5,6 +5,15 @@
   "common.loading": "Loading…",
 
   "site.name": "The Music Repository",
+  "seo.home.description": "Public-domain scores, lessons, and songs for piano and guitar, paired with dozens of interactive practice tools you can use right in your browser.",
+  "seo.catalogue.description": "Browse public-domain scores, songs, and lessons for piano and guitar — filter by type, genre, instrument, era, and skill level.",
+  "seo.collections.description": "Guided collections, courses, and learning paths that carry you from fundamentals to fluency on piano and guitar.",
+  "seo.about.description": "About The Music Repository — a growing public-domain library of lessons, songs, and interactive tools for piano and guitar.",
+  "seo.tools.description": "Free interactive music tools — metronome, tuner, fretboard, circle of fifths, ear trainers, and more — right in your browser.",
+  "seo.drills.description": "Objective practice drills for ear training, theory, and fretboard fluency, with scoring and spaced review.",
+  "seo.privacy.description": "How The Music Repository collects, uses, and protects your personal information.",
+  "seo.terms.description": "The terms of service governing your use of The Music Repository.",
+  "seo.cookies.description": "How The Music Repository uses cookies and similar technologies.",
 
   "nav.catalogue": "Browse the catalogue",
   "nav.collections": "Collections",

@@ -15,7 +15,10 @@ const logPracticeEnabled =
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'tool.caged.title')} — ${t(locale, 'site.name')}`}>
+<BaseLayout
+  title={`${t(locale, 'tool.caged.title')} — ${t(locale, 'site.name')}`}
+  description={t(locale, 'tool.caged.summary')}
+>
     <PageShell
       title={t(locale, 'tool.caged.title')}
       subtitle={t(locale, 'tool.caged.summary')}

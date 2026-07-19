@@ -14,7 +14,7 @@ if (!Astro.locals.user) {
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={t(locale, 'checkout.pageTitle')}>
+<BaseLayout noindex title={t(locale, 'checkout.pageTitle')}>
   <PageShell
     title={t(locale, 'checkout.title')}
     subtitle={t(locale, 'checkout.subtitle')}

@@ -15,7 +15,10 @@ const logPracticeEnabled =
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'tool.intervals.title')} — ${t(locale, 'site.name')}`}>
+<BaseLayout
+  title={`${t(locale, 'tool.intervals.title')} — ${t(locale, 'site.name')}`}
+  description={t(locale, 'tool.intervals.summary')}
+>
     <PageShell
       title={t(locale, 'tool.intervals.title')}
       back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}

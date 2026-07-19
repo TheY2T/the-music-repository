@@ -15,7 +15,7 @@ if (!Astro.locals.flags.collections) {
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'admin.collections')} — ${t(locale, 'nav.admin')}`}>
+<BaseLayout noindex title={`${t(locale, 'admin.collections')} — ${t(locale, 'nav.admin')}`}>
   <PageShell
     title={t(locale, 'admin.collections')}
     back={{ href: localizedPath(locale, '/admin'), label: t(locale, 'common.backContent') }}

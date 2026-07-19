@@ -13,7 +13,7 @@ const { slug } = Astro.params;
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'admin.editContent')} — ${t(locale, 'site.name')}`}>
+<BaseLayout noindex title={`${t(locale, 'admin.editContent')} — ${t(locale, 'site.name')}`}>
   <PageShell
     title={t(locale, 'admin.editContent')}
     back={{ href: localizedPath(locale, '/admin'), label: t(locale, 'common.backContent') }}

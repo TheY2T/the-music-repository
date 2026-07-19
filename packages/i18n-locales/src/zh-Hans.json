@@ -5,6 +5,15 @@
   "common.loading": "加载中…",
 
   "site.name": "音乐资料库",
+  "seo.home.description": "面向钢琴与吉他的公共领域乐谱、课程与歌曲，配有数十种可在浏览器中直接使用的互动练习工具。",
+  "seo.catalogue.description": "浏览面向钢琴与吉他的公共领域乐谱、歌曲与课程——可按类型、风格、乐器、年代和难度筛选。",
+  "seo.collections.description": "循序渐进的合集、课程与学习路径，带你从基础走向精通钢琴与吉他。",
+  "seo.about.description": "关于音乐资料库——一个不断成长的公共领域曲库，提供钢琴与吉他的课程、歌曲与互动工具。",
+  "seo.tools.description": "免费的互动音乐工具——节拍器、调音器、指板、五度圈、听力训练等，尽在浏览器中。",
+  "seo.drills.description": "针对听力、乐理与指板熟练度的客观练习，配有评分与间隔复习。",
+  "seo.privacy.description": "音乐资料库如何收集、使用和保护您的个人信息。",
+  "seo.terms.description": "管辖您使用音乐资料库的服务条款。",
+  "seo.cookies.description": "音乐资料库如何使用 Cookie 及类似技术。",
 
   "nav.catalogue": "浏览曲库",
   "nav.collections": "合辑",

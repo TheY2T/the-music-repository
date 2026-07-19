@@ -16,7 +16,10 @@ const syncEnabled = Astro.locals.flags.savedProgressions && !!Astro.locals.user;
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'tool.analyzer.title')} — ${t(locale, 'site.name')}`}>
+<BaseLayout
+  title={`${t(locale, 'tool.analyzer.title')} — ${t(locale, 'site.name')}`}
+  description={t(locale, 'tool.analyzer.summary')}
+>
     <PageShell
       title={t(locale, 'tool.analyzer.title')}
       subtitle={t(locale, 'tool.analyzer.summary')}

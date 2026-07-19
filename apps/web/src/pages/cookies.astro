@@ -6,7 +6,10 @@ import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'nav.cookies')} — ${t(locale, 'site.name')}`}>
+<BaseLayout
+  title={`${t(locale, 'nav.cookies')} — ${t(locale, 'site.name')}`}
+  description={t(locale, 'seo.cookies.description')}
+>
   <PageShell
     title={t(locale, 'nav.cookies')}
     back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}

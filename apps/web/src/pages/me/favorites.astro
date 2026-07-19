@@ -15,7 +15,7 @@ const locale = Astro.locals.locale;
 const showMonetization = Astro.locals.flags.monetizationMessaging;
 ---
 
-<BaseLayout title={`${t(locale, 'nav.myFavorites')} — ${t(locale, 'site.name')}`}>
+<BaseLayout noindex title={`${t(locale, 'nav.myFavorites')} — ${t(locale, 'site.name')}`}>
   <PageShell
     title={t(locale, 'nav.myFavorites')}
     back={{ href: localizedPath(locale, '/catalogue'), label: t(locale, 'common.backCatalogue') }}

@@ -19,7 +19,7 @@ const showBackground = Astro.locals.flags.dashboardBackground;
 const showMonetization = Astro.locals.flags.monetizationMessaging;
 ---
 
-<BaseLayout title={`${t(locale, 'dashboard.title')} — ${t(locale, 'site.name')}`}>
+<BaseLayout noindex title={`${t(locale, 'dashboard.title')} — ${t(locale, 'site.name')}`}>
   <div class="relative">
     {
       showBackground && (

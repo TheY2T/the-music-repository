@@ -29,7 +29,11 @@ to the in-repo catalogues so `MessageKey` widens and the key seeds, then ship on
 
 After deploy + `db:seed`, that key's wording is CMS-editable like any other (path A).
 
-Key naming: `domain.thing` (camelCase after the dot), e.g. `catalogue.search`, `upgrade.subtitle`.
+Key naming: `domain.thing` (camelCase after the dot), e.g. `catalogue.search`, `upgrade.subtitle`. A
+page's **SEO meta description** uses the **`seo.<page>.description`** namespace (rendered by `BaseLayout`,
+ADR 0039). After editing `en.json`, **rebuild** the i18n packages
+(`pnpm --filter @TheY2T/tmr-i18n-locales build && pnpm --filter @TheY2T/tmr-i18n build`) so `MessageKey`
+picks up the new key before typechecking the web app.
 Interpolate with `{name}` placeholders: `"catalogue.results": "{count} results"`.
 
 **No glyphs in strings.** Never embed emoji or unicode icon-glyphs (`←`/`→` arrows, `✓`, `♥`, `🎉`,

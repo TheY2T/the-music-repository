@@ -16,7 +16,7 @@ const locale = Astro.locals.locale;
 const { drillEngine, drillCelebrations } = Astro.locals.flags;
 ---
 
-<BaseLayout title={`${t(locale, 'drills.review')} — ${t(locale, 'site.name')}`}>
+<BaseLayout noindex title={`${t(locale, 'drills.review')} — ${t(locale, 'site.name')}`}>
   <PageShell
     title={t(locale, 'drills.review')}
     back={{ href: localizedPath(locale, '/drills'), label: t(locale, 'common.backDrills') }}

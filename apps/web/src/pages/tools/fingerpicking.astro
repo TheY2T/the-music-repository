@@ -15,7 +15,10 @@ const logPracticeEnabled =
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'tool.fingerpicking.title')} — ${t(locale, 'site.name')}`}>
+<BaseLayout
+  title={`${t(locale, 'tool.fingerpicking.title')} — ${t(locale, 'site.name')}`}
+  description={t(locale, 'tool.fingerpicking.summary')}
+>
     <PageShell
       title={t(locale, 'tool.fingerpicking.title')}
       subtitle={t(locale, 'tool.fingerpicking.summary')}

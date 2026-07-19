@@ -31,6 +31,9 @@ generated `seed-*.ts` bundle by hand — edit the source file and rebuild.
 
 - **Licensing:** originally-hosted or public-domain only — see `docs/content/licensing.md`. Cite the source.
 - **Commit the rebuilt `seed-*.ts`** alongside the source file.
+- **SEO:** the detail page turns a catalogue item's `title` + `summary` into its `<title>` + meta
+  description + Article/MusicComposition JSON-LD (server-fetched, ADR 0039). Write a genuinely descriptive
+  **`summary`** and accurate `details` (composer/key) — they are the search snippet + structured data.
 - Content is authored in **English**; per-locale **catalogue** translations (title/summary/body) are
   overlaid at read time from the DB `entity_translations` table via `?locale=` (ADR 0034 Phase 2, edited
   in the CMS — not in these source files). Taxonomy names + collections/help translations are not built

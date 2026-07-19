@@ -9,7 +9,10 @@ const locale = Astro.locals.locale;
 const contact = `mailto:${business.contactEmail}`;
 ---
 
-<BaseLayout title={`${t(locale, 'nav.about')} — ${t(locale, 'site.name')}`}>
+<BaseLayout
+  title={`${t(locale, 'nav.about')} — ${t(locale, 'site.name')}`}
+  description={t(locale, 'seo.about.description')}
+>
   <PageShell
     title={t(locale, 'nav.about')}
     back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}

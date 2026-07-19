@@ -14,7 +14,7 @@ if (!user) {
 const { slug = '' } = Astro.params;
 ---
 
-<BaseLayout title={t(locale, 'ucoll.pageTitleEdit')}>
+<BaseLayout noindex title={t(locale, 'ucoll.pageTitleEdit')}>
   <PageShell
     title={t(locale, 'ucoll.titleEdit')}
     back={{ href: localizedPath(locale, '/me/collections'), label: t(locale, 'collections.savedTitle') }}

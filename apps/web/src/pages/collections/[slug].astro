@@ -1,6 +1,9 @@
 ---
 import CollectionDetail from '@/components/islands/CollectionDetail';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { apiBaseUrl } from '@/lib/api-base';
+import { breadcrumbJsonLd, courseJsonLd, pageTitle } from '@/lib/seo';
+import { fetchCollectionMeta } from '@TheY2T/tmr-web-acl/server-content';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
@@ -13,9 +16,36 @@ const { flags, user } = Astro.locals;
 const showProgress = flags.progress && !!user;
 const showSave = flags.collectionBookmarks && !!user;
 const showRating = flags.collectionRatings && !!user;
+const siteName = t(locale, 'site.name');
+const site = Astro.site;
+
+// Server-fetch the collection so the <head> carries its real title, description, and Course/breadcrumb
+// structured data; the island re-fetches client-side for the interactive view.
+const meta = await fetchCollectionMeta(slug, { apiBaseUrl: apiBaseUrl(), locale });
+
+const abs = (path: string) => (site ? new URL(path, site).href : path);
+const collectionUrl = abs(localizedPath(locale, `/collections/${slug}`));
+const title = meta ? pageTitle(meta.title, siteName) : t(locale, 'collections.detailPageTitle');
+const description = meta?.summary ?? t(locale, 'seo.collections.description');
+
+const jsonLd = meta
+  ? [
+      breadcrumbJsonLd([
+        { name: t(locale, 'common.home'), url: abs(localizedPath(locale, '/')) },
+        { name: t(locale, 'collections.title'), url: abs(localizedPath(locale, '/collections')) },
+        { name: meta.title, url: collectionUrl },
+      ]),
+      courseJsonLd({
+        name: meta.title,
+        description: meta.summary,
+        url: collectionUrl,
+        siteUrl: site?.href,
+      }),
+    ]
+  : undefined;
 ---
 
-<BaseLayout title={t(locale, 'collections.detailPageTitle')}>
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
   <PageShell
     back={{ href: localizedPath(locale, '/collections'), label: t(locale, 'common.backCollections') }}
     maxWidth="max-w-4xl"

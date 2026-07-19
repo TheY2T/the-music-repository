@@ -4,7 +4,16 @@ import ContentDetail from '@/components/islands/ContentDetail';
 import FavoriteButton from '@TheY2T/tmr-common-ui/FavoriteButton';
 import InfoView from '@TheY2T/tmr-common-ui/InfoView';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { t } from '@TheY2T/tmr-i18n';
+import { business } from '@/lib/business';
+import { apiBaseUrl } from '@/lib/api-base';
+import {
+  articleJsonLd,
+  breadcrumbJsonLd,
+  musicCompositionJsonLd,
+  pageTitle,
+} from '@/lib/seo';
+import { fetchContentMeta } from '@TheY2T/tmr-web-acl/server-content';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
 const { slug = '' } = Astro.params;
@@ -15,9 +24,61 @@ const showInfoView = Astro.locals.flags.infoView;
 const interactiveScores = Astro.locals.flags.interactiveScores;
 const showMonetization = Astro.locals.flags.monetizationMessaging;
 const locale = Astro.locals.locale;
+const siteName = t(locale, 'site.name');
+const site = Astro.site;
+
+// Fetch the item server-side so the crawler-visible <head> carries the real title, description, share
+// image, and structured data (the island re-fetches client-side for the interactive view). A miss (404
+// or unreachable API) falls back to generic catalogue metadata rather than failing the render.
+const meta = await fetchContentMeta(slug, {
+  apiBaseUrl: apiBaseUrl(),
+  locale,
+  cookie: Astro.request.headers.get('cookie') ?? undefined,
+});
+
+const abs = (path: string) => (site ? new URL(path, site).href : path);
+const itemUrl = abs(localizedPath(locale, `/catalogue/${slug}`));
+
+const title = meta ? pageTitle(meta.title, siteName) : t(locale, 'catalogue.pageTitle');
+const description = meta?.summary ?? t(locale, 'seo.catalogue.description');
+
+const jsonLd = meta
+  ? [
+      breadcrumbJsonLd([
+        { name: t(locale, 'common.home'), url: abs(localizedPath(locale, '/')) },
+        { name: t(locale, 'catalogue.title'), url: abs(localizedPath(locale, '/catalogue')) },
+        { name: meta.title, url: itemUrl },
+      ]),
+      articleJsonLd({
+        headline: meta.title,
+        description: meta.summary,
+        image: meta.imageUrl,
+        url: itemUrl,
+        dateModified: meta.updatedAt,
+        authorName: business.tradingName,
+      }),
+      ...(meta.details?.composer || meta.details?.key
+        ? [
+            musicCompositionJsonLd({
+              name: meta.title,
+              composer: meta.details.composer,
+              musicalKey: meta.details.key,
+              locale,
+            }),
+          ]
+        : []),
+    ]
+  : undefined;
 ---
 
-<BaseLayout title={t(locale, 'home.title')}>
+<BaseLayout
+  title={title}
+  description={description}
+  image={meta?.imageUrl}
+  type="article"
+  modifiedTime={meta?.updatedAt}
+  jsonLd={jsonLd}
+>
   <PageShell maxWidth="max-w-4xl">
     {
       (showComplete || showFavorite) && (

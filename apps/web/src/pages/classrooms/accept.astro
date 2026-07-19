@@ -15,7 +15,7 @@ if (!Astro.locals.user) {
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'classrooms.acceptHeading')} — ${t(locale, 'site.name')}`}>
+<BaseLayout noindex title={`${t(locale, 'classrooms.acceptHeading')} — ${t(locale, 'site.name')}`}>
   <PageShell title={t(locale, 'classrooms.acceptHeading')} maxWidth="max-w-lg">
     <AcceptInvitation client:load locale={locale} />
   </PageShell>

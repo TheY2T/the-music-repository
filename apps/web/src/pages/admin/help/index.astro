@@ -15,7 +15,7 @@ if (!Astro.locals.flags.infoView) {
 const locale = Astro.locals.locale;
 ---
 
-<BaseLayout title={`${t(locale, 'admin.helpTopics')} — ${t(locale, 'nav.admin')}`}>
+<BaseLayout noindex title={`${t(locale, 'admin.helpTopics')} — ${t(locale, 'nav.admin')}`}>
   <PageShell
     title={t(locale, 'admin.helpTopics')}
     subtitle={t(locale, 'admin.helpSubtitle')}
