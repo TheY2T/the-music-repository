@@ -701,3 +701,81 @@ export const featureFlagVersions = pgTable('feature_flag_versions', {
   version: text('version').notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
+// --- Feedback (ADR 0041): user-submitted suggestions, bug reports, and praise. Logged-in only, private
+//     to admins for triage. `type` discriminates the submission; `status` tracks the triage lifecycle;
+//     `is_public` surfaces an item on the /roadmap board; `upvote_count` is denormalised for board sort;
+//     `page_url`/`user_agent` are captured only for bug reports. ---
+export const feedbackSubmissions = pgTable(
+  'feedback_submissions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    type: text('type').notNull(), // idea | bug | praise | other
+    title: text('title'),
+    message: text('message').notNull(),
+    // new | triaging | planned | in_progress | shipped | declined | closed
+    status: text('status').notNull().default('new'),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    locale: text('locale'),
+    pageUrl: text('page_url'),
+    userAgent: text('user_agent'),
+    isPublic: boolean('is_public').notNull().default(false),
+    upvoteCount: integer('upvote_count').notNull().default(0),
+    adminNotes: text('admin_notes'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('feedback_submissions_status_idx').on(t.status),
+    index('feedback_submissions_type_idx').on(t.type),
+    index('feedback_submissions_public_idx').on(t.isPublic),
+  ],
+);
+
+// --- Feedback board votes: one upvote per (submission, user). The composite primary key makes voting
+//     idempotent; `feedback_submissions.upvote_count` is kept in step by the vote use-case. ---
+export const feedbackVotes = pgTable(
+  'feedback_votes',
+  {
+    submissionId: uuid('submission_id')
+      .notNull()
+      .references(() => feedbackSubmissions.id, { onDelete: 'cascade' }),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.submissionId, t.userId] })],
+);
+
+// --- Net Promoter Score responses (ADR 0041): one row per submitted score (0..10). The promoter/
+//     passive/detractor bucket is derived from `score` on read, never stored. `source` records where the
+//     prompt was shown for close-the-loop context. ---
+export const npsResponses = pgTable(
+  'nps_responses',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    score: integer('score').notNull(),
+    comment: text('comment'),
+    source: text('source'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('nps_responses_created_idx').on(t.createdAt)],
+);
+
+// --- NPS prompt throttle state (ADR 0041): one row per user recording when they were last shown,
+//     dismissed, or responded to the NPS prompt. Drives eligibility (activated learners, ~quarterly)
+//     without scanning the responses table. ---
+export const npsPromptState = pgTable('nps_prompt_state', {
+  userId: text('user_id')
+    .primaryKey()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  lastShownAt: timestamp('last_shown_at', { withTimezone: true }),
+  lastDismissedAt: timestamp('last_dismissed_at', { withTimezone: true }),
+  lastRespondedAt: timestamp('last_responded_at', { withTimezone: true }),
+});

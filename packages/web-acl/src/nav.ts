@@ -109,6 +109,10 @@ export function buildLegalNav(ctx: NavContext): NavItem[] {
     makeItem(ctx, 'cookies', '/cookies', 'nav.cookies', 'cookie'),
   ];
   if (ctx.flags.faq) items.push(makeItem(ctx, 'faq', '/faq', 'nav.faq', 'help-circle'));
+  if (ctx.flags.feedbackForm)
+    items.push(makeItem(ctx, 'feedback', '/feedback', 'nav.feedback', 'message-square'));
+  if (ctx.flags.feedbackBoard)
+    items.push(makeItem(ctx, 'roadmap', '/roadmap', 'board.title', 'list-ordered'));
   if (ctx.flags.support) items.push(makeItem(ctx, 'support', '/support', 'nav.support', 'coffee'));
   return items;
 }

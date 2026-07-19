@@ -14,6 +14,7 @@ import { EntitlementsModule } from './entitlements/entitlements.module';
 import { FaqModule } from './faq/faq.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { FeatureFlagsModule } from './feature-flags/feature-flags.module';
+import { FeedbackModule } from './feedback/feedback.module';
 import { HealthModule } from './health/health.module';
 import { HelpModule } from './help/help.module';
 import { I18nModule } from './i18n/i18n.module';
@@ -58,6 +59,7 @@ import { TranslationsModule } from './translations/translations.module';
     I18nModule,
     TranslationsModule,
     SupportModule,
+    FeedbackModule,
   ],
 })
 export class AppModule {}

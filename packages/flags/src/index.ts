@@ -209,6 +209,19 @@ export const FlagKeys = {
   /** Feature-flag admin (ADR 0035) — gates `/admin/feature-flags` (flag CRUD + per-env targeting).
    *  Defaults ON; the CMS refuses to disable it in the resolved environment (self-lockout guardrail). */
   FeatureFlags: 'admin.feature-flags',
+  /** Feedback (ADR 0041) — the /feedback page + footer link, the submit endpoint, and the
+   *  /admin/feedback triage surface. The baseline of the feedback area. */
+  FeedbackForm: 'feedback.form',
+  /** Feedback (ADR 0041) — the global floating launcher button rendered on every page. */
+  FeedbackLauncher: 'feedback.launcher',
+  /** Feedback (ADR 0041) — the "bug" submission type plus page/user-agent context capture. */
+  FeedbackBugs: 'feedback.bugs',
+  /** Feedback (ADR 0041) — the in-app Net Promoter Score prompt (logged-in learners), the NPS
+   *  endpoints, and the admin NPS analytics dashboard. */
+  FeedbackNps: 'feedback.nps',
+  /** Feedback (ADR 0041) — the public /roadmap voting board (upvote + status) over submissions an
+   *  admin has marked public, and the vote endpoints. */
+  FeedbackBoard: 'feedback.board',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -308,6 +321,12 @@ export const FlagDefaults = {
   [FlagKeys.I18n]: true,
   [FlagKeys.LocaleStrings]: true,
   [FlagKeys.FeatureFlags]: true,
+  // The general feedback form ships on; the other feedback surfaces stay off until reviewed per-env.
+  [FlagKeys.FeedbackForm]: true,
+  [FlagKeys.FeedbackLauncher]: false,
+  [FlagKeys.FeedbackBugs]: false,
+  [FlagKeys.FeedbackNps]: false,
+  [FlagKeys.FeedbackBoard]: false,
 } satisfies Record<FlagKey, boolean>;
 
 /**

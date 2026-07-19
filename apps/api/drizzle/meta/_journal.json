@@ -204,6 +204,13 @@
       "when": 1784458392007,
       "tag": "0028_wise_tusk",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1784464503874,
+      "tag": "0029_harsh_red_hulk",
+      "breakpoints": true
     }
   ]
 }

@@ -1,4 +1,6 @@
 ---
+import FeedbackLauncher from '@TheY2T/tmr-common-ui/FeedbackLauncher';
+import NpsPrompt from '@TheY2T/tmr-common-ui/NpsPrompt';
 import SiteFooter from '@TheY2T/tmr-common-ui/astro/SiteFooter.astro';
 import SiteHeader from '@TheY2T/tmr-common-ui/SiteHeader';
 import { buildAccountNav, buildLegalNav, buildPrimaryNav } from '@TheY2T/tmr-web-acl/nav';
@@ -162,5 +164,20 @@ const i18nCatalogueJson = JSON.stringify(Astro.locals.i18nCatalogue).replace(/</
       abn={business.abn}
       year={year}
     />
+    {
+      Astro.locals.flags.feedbackLauncher && (
+        <FeedbackLauncher
+          client:idle
+          locale={locale}
+          bugsEnabled={Astro.locals.flags.feedbackBugs}
+          signedIn={Boolean(Astro.locals.user)}
+        />
+      )
+    }
+    {
+      Astro.locals.flags.feedbackNps && Astro.locals.user && (
+        <NpsPrompt client:idle locale={locale} signedIn source={path} />
+      )
+    }
   </body>
 </html>

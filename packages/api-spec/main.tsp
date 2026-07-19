@@ -1225,6 +1225,271 @@ op deleteFaqEntry(@path slug: string): {
   @statusCode statusCode: 204;
 };
 
+// ===================== Feedback & NPS (ADR 0041) =====================
+// A user-submitted feedback surface (suggestions / bug reports / praise) plus a Net Promoter Score
+// programme. Submissions are logged-in only and private to admins for triage; an admin may mark an item
+// public to surface it on the /roadmap voting board. NPS is an in-app prompt shown to activated learners.
+
+/** Submission category. */
+union FeedbackType {
+  idea: "idea",
+  bug: "bug",
+  praise: "praise",
+  other: "other",
+}
+
+/** Triage lifecycle state. */
+union FeedbackStatus {
+  new: "new",
+  triaging: "triaging",
+  planned: "planned",
+  in_progress: "in_progress",
+  shipped: "shipped",
+  declined: "declined",
+  closed: "closed",
+}
+
+/** A feedback submission as seen by an admin during triage. */
+model FeedbackSubmission {
+  id: string;
+  type: FeedbackType;
+  title?: string;
+  message: string;
+  status: FeedbackStatus;
+  /** Better Auth id of the submitter. */
+  userId: string;
+  /** Submitter email, included in the admin view for close-the-loop follow-up. */
+  userEmail?: string;
+  locale?: string;
+  /** Page the submission was sent from (captured for bug reports). */
+  pageUrl?: string;
+  /** Browser user-agent (captured for bug reports). */
+  userAgent?: string;
+  /** Whether the item is surfaced on the public /roadmap board. */
+  isPublic: boolean;
+  upvoteCount: int32;
+  adminNotes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** What a signed-in user submits. `pageUrl`/`userAgent` are only honoured for bug reports. */
+model SubmitFeedbackInput {
+  type: FeedbackType;
+  title?: string;
+  message: string;
+  pageUrl?: string;
+  userAgent?: string;
+}
+
+/** A paginated page of submissions for the admin triage table. */
+model FeedbackSubmissionList {
+  items: FeedbackSubmission[];
+  total: int32;
+  page: int32;
+  pageSize: int32;
+}
+
+/** Admin triage mutation — every field optional (partial update). */
+model UpdateFeedbackInput {
+  status?: FeedbackStatus;
+  adminNotes?: string;
+  isPublic?: boolean;
+}
+
+/** Public projection of a submission on the /roadmap board (no submitter identity). */
+model FeedbackBoardItem {
+  id: string;
+  type: FeedbackType;
+  title?: string;
+  message: string;
+  status: FeedbackStatus;
+  upvoteCount: int32;
+  /** Whether the current viewer has upvoted this item (false for anonymous). */
+  hasVoted: boolean;
+  createdAt: string;
+}
+
+/** A paginated page of public board items. */
+model FeedbackBoardList {
+  items: FeedbackBoardItem[];
+  total: int32;
+  page: int32;
+  pageSize: int32;
+}
+
+/** Submit a suggestion / bug / praise. Logged-in only. */
+@route("/feedback")
+@tag("feedback")
+@post
+op submitFeedback(@body body: SubmitFeedbackInput): {
+  @statusCode statusCode: 201;
+  @body body: FeedbackSubmission;
+};
+
+/** Public roadmap board — submissions an admin has marked public. */
+@route("/feedback/board")
+@tag("feedback")
+@get
+op listFeedbackBoard(
+  /** "top" (most upvoted) or "new" (most recent). */
+  @query sort?: string,
+
+  @query page?: int32,
+  @query pageSize?: int32,
+): FeedbackBoardList;
+
+/** Upvote a board item (idempotent). Logged-in only. */
+@route("/feedback/{id}/vote")
+@tag("feedback")
+@post
+op voteFeedback(@path id: string): FeedbackBoardItem | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+/** Remove the viewer's upvote from a board item (idempotent). Logged-in only. */
+@route("/feedback/{id}/vote")
+@tag("feedback")
+@delete
+op unvoteFeedback(@path id: string): FeedbackBoardItem | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+// --- Net Promoter Score ---
+
+/** Whether the current user should be shown the NPS prompt now. */
+model NpsEligibility {
+  eligible: boolean;
+}
+
+/** An NPS score (0..10) with an optional verbatim comment. */
+model NpsResponseInput {
+  score: int32;
+  comment?: string;
+  /** Page/context the prompt was shown on. */
+  source?: string;
+}
+
+model NpsSubmitResult {
+  recorded: boolean;
+}
+
+/** A single NPS response as seen by an admin. */
+model NpsResponseView {
+  id: string;
+  userId: string;
+  userEmail?: string;
+  score: int32;
+  /** Derived from the score: "promoter" (9-10), "passive" (7-8), "detractor" (0-6). */
+  bucket: string;
+  comment?: string;
+  source?: string;
+  createdAt: string;
+}
+
+/** A paginated page of NPS responses for the admin. */
+model NpsResponseList {
+  items: NpsResponseView[];
+  total: int32;
+  page: int32;
+  pageSize: int32;
+}
+
+/** One point on the NPS trend line (a calendar month). */
+model NpsTrendPoint {
+  /** ISO year-month, e.g. "2026-07". */
+  period: string;
+
+  score: int32;
+  responseCount: int32;
+}
+
+/** Aggregated NPS for the admin dashboard. `score` = %promoters − %detractors (−100..100). */
+model NpsAnalytics {
+  score: int32;
+  promoters: int32;
+  passives: int32;
+  detractors: int32;
+  responseCount: int32;
+  trend: NpsTrendPoint[];
+}
+
+/** Should the NPS prompt be shown to the current user right now? Logged-in only. */
+@route("/feedback/nps/eligibility")
+@tag("feedback")
+@get
+op getNpsEligibility(): NpsEligibility;
+
+/** Record an NPS response. Logged-in only. */
+@route("/feedback/nps")
+@tag("feedback")
+@post
+op submitNps(@body body: NpsResponseInput): {
+  @statusCode statusCode: 201;
+  @body body: NpsSubmitResult;
+};
+
+/** Dismiss the NPS prompt without answering (throttles re-prompting). Logged-in only. */
+@route("/feedback/nps/dismiss")
+@tag("feedback")
+@post
+op dismissNps(): {
+  @statusCode statusCode: 204;
+};
+
+// --- Admin triage & analytics (RBAC-gated in NestJS on the `feedback` resource) ---
+
+@route("/admin/feedback")
+@tag("feedback")
+@get
+op listFeedback(
+  @query type?: FeedbackType,
+  @query status?: FeedbackStatus,
+  @query page?: int32,
+  @query pageSize?: int32,
+): FeedbackSubmissionList;
+
+@route("/admin/feedback/{id}")
+@tag("feedback")
+@get
+op getFeedback(@path id: string): FeedbackSubmission | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+@route("/admin/feedback/{id}")
+@tag("feedback")
+@patch
+op updateFeedback(@path id: string, @body body: UpdateFeedbackInput): FeedbackSubmission | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+@route("/admin/feedback/{id}")
+@tag("feedback")
+@delete
+op deleteFeedback(@path id: string): {
+  @statusCode statusCode: 204;
+};
+
+@route("/admin/feedback/nps")
+@tag("feedback")
+@get
+op listNpsResponses(@query page?: int32, @query pageSize?: int32): NpsResponseList;
+
+@route("/admin/feedback/nps/analytics")
+@tag("feedback")
+@get
+op getNpsAnalytics(
+  /** ISO date lower bound (inclusive). */
+  @query from?: string,
+
+  /** ISO date upper bound (inclusive). */
+  @query to?: string,
+): NpsAnalytics;
+
 // ===================== Monetization (Phase 6) =====================
 // Premium entitlements gate `visibility: "premium"` content. The subscription endpoints are a local,
 // mock stand-in for a payment provider's checkout + webhook (no real billing wired yet). Auth-gated.

@@ -17,6 +17,8 @@ export default function AdminNav({
   showCollections,
   showHelp,
   showFaq,
+  showFeedback,
+  showNps,
   showLocaleStrings,
   showFeatureFlags,
 }: {
@@ -24,6 +26,8 @@ export default function AdminNav({
   showCollections: boolean;
   showHelp: boolean;
   showFaq?: boolean;
+  showFeedback?: boolean;
+  showNps?: boolean;
   showLocaleStrings?: boolean;
   showFeatureFlags?: boolean;
 }) {
@@ -57,6 +61,22 @@ export default function AdminNav({
       icon: 'message-circle-question',
       title: t(locale, 'admin.faq'),
       description: t(locale, 'admin.faqSubtitle'),
+    });
+  }
+  if (showFeedback) {
+    tiles.push({
+      href: localizedPath(locale, '/admin/feedback'),
+      icon: 'message-square',
+      title: t(locale, 'admin.feedback'),
+      description: t(locale, 'admin.feedbackSubtitle'),
+    });
+  }
+  if (showNps) {
+    tiles.push({
+      href: localizedPath(locale, '/admin/feedback/nps'),
+      icon: 'trending-up',
+      title: t(locale, 'admin.feedbackNps'),
+      description: t(locale, 'admin.feedbackNpsSubtitle'),
     });
   }
   if (showLocaleStrings) {

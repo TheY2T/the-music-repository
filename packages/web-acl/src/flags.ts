@@ -101,6 +101,11 @@ export const FLAG_FIELD_BY_KEY = {
   [FlagKeys.I18n]: 'i18nEnabled',
   [FlagKeys.LocaleStrings]: 'localeStrings',
   [FlagKeys.FeatureFlags]: 'featureFlags',
+  [FlagKeys.FeedbackForm]: 'feedbackForm',
+  [FlagKeys.FeedbackLauncher]: 'feedbackLauncher',
+  [FlagKeys.FeedbackBugs]: 'feedbackBugs',
+  [FlagKeys.FeedbackNps]: 'feedbackNps',
+  [FlagKeys.FeedbackBoard]: 'feedbackBoard',
 } as const satisfies Record<FlagKey, string>;
 
 /** The camelCase field names on `Flags` (derived from the map values). */

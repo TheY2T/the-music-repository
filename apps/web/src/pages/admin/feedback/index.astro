@@ -1,0 +1,26 @@
+---
+import AdminFeedbackManager from '@TheY2T/tmr-common-ui/AdminFeedbackManager';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { guardAdmin } from '@/lib/admin-guard';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+const redirect = guardAdmin(Astro);
+if (redirect) {
+  return redirect;
+}
+if (!Astro.locals.flags.feedbackForm) {
+  return Astro.redirect('/admin');
+}
+const locale = Astro.locals.locale;
+---
+
+<BaseLayout noindex title={`${t(locale, 'admin.feedback')} — ${t(locale, 'nav.admin')}`}>
+  <PageShell
+    title={t(locale, 'admin.feedback')}
+    subtitle={t(locale, 'admin.feedbackSubtitle')}
+    back={{ href: localizedPath(locale, '/admin'), label: t(locale, 'common.backContent') }}
+  >
+    <AdminFeedbackManager client:load locale={locale} />
+  </PageShell>
+</BaseLayout>

@@ -17,6 +17,8 @@ export const GET: APIRoute = (context) => {
     { path: '/terms' },
     { path: '/cookies' },
     ...(flags.faq ? [{ path: '/faq' }] : []),
+    ...(flags.feedbackForm ? [{ path: '/feedback' }] : []),
+    ...(flags.feedbackBoard ? [{ path: '/roadmap' }] : []),
     ...(flags.support ? [{ path: '/support' }] : []),
   ];
   return new Response(renderUrlset(entries, context.site, flags.i18nEnabled), {

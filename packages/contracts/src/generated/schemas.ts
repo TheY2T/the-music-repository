@@ -1241,6 +1241,137 @@ export const ListAllFeatureFlagRevisionsResponse = zod.object({
 })
 
 
+export const ListFeedbackQueryParams = zod.object({
+  "type": zod.enum(['idea', 'bug', 'praise', 'other']).optional(),
+  "status": zod.enum(['new', 'triaging', 'planned', 'in_progress', 'shipped', 'declined', 'closed']).optional(),
+  "page": zod.number().optional(),
+  "pageSize": zod.number().optional()
+})
+
+export const ListFeedbackResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "type": zod.enum(['idea', 'bug', 'praise', 'other']).describe('Submission category.'),
+  "title": zod.string().optional(),
+  "message": zod.string(),
+  "status": zod.enum(['new', 'triaging', 'planned', 'in_progress', 'shipped', 'declined', 'closed']).describe('Triage lifecycle state.'),
+  "userId": zod.string().describe('Better Auth id of the submitter.'),
+  "userEmail": zod.string().optional().describe('Submitter email, included in the admin view for close-the-loop follow-up.'),
+  "locale": zod.string().optional(),
+  "pageUrl": zod.string().optional().describe('Page the submission was sent from (captured for bug reports).'),
+  "userAgent": zod.string().optional().describe('Browser user-agent (captured for bug reports).'),
+  "isPublic": zod.boolean().describe('Whether the item is surfaced on the public \/roadmap board.'),
+  "upvoteCount": zod.number(),
+  "adminNotes": zod.string().optional(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+}).describe('A feedback submission as seen by an admin during triage.')),
+  "total": zod.number(),
+  "page": zod.number(),
+  "pageSize": zod.number()
+}).describe('A paginated page of submissions for the admin triage table.')
+
+
+export const ListNpsResponsesQueryParams = zod.object({
+  "page": zod.number().optional(),
+  "pageSize": zod.number().optional()
+})
+
+export const ListNpsResponsesResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "userEmail": zod.string().optional(),
+  "score": zod.number(),
+  "bucket": zod.string().describe('Derived from the score: \"promoter\" (9-10), \"passive\" (7-8), \"detractor\" (0-6).'),
+  "comment": zod.string().optional(),
+  "source": zod.string().optional(),
+  "createdAt": zod.string()
+}).describe('A single NPS response as seen by an admin.')),
+  "total": zod.number(),
+  "page": zod.number(),
+  "pageSize": zod.number()
+}).describe('A paginated page of NPS responses for the admin.')
+
+
+export const GetNpsAnalyticsQueryParams = zod.object({
+  "from": zod.string().optional().describe('ISO date lower bound (inclusive).'),
+  "to": zod.string().optional().describe('ISO date upper bound (inclusive).')
+})
+
+export const GetNpsAnalyticsResponse = zod.object({
+  "score": zod.number(),
+  "promoters": zod.number(),
+  "passives": zod.number(),
+  "detractors": zod.number(),
+  "responseCount": zod.number(),
+  "trend": zod.array(zod.object({
+  "period": zod.string().describe('ISO year-month, e.g. \"2026-07\".'),
+  "score": zod.number(),
+  "responseCount": zod.number()
+}).describe('One point on the NPS trend line (a calendar month).'))
+}).describe('Aggregated NPS for the admin dashboard. `score` = %promoters − %detractors (−100..100).')
+
+
+export const GetFeedbackParams = zod.object({
+  "id": zod.string()
+})
+
+export const GetFeedbackResponse = zod.object({
+  "id": zod.string(),
+  "type": zod.enum(['idea', 'bug', 'praise', 'other']).describe('Submission category.'),
+  "title": zod.string().optional(),
+  "message": zod.string(),
+  "status": zod.enum(['new', 'triaging', 'planned', 'in_progress', 'shipped', 'declined', 'closed']).describe('Triage lifecycle state.'),
+  "userId": zod.string().describe('Better Auth id of the submitter.'),
+  "userEmail": zod.string().optional().describe('Submitter email, included in the admin view for close-the-loop follow-up.'),
+  "locale": zod.string().optional(),
+  "pageUrl": zod.string().optional().describe('Page the submission was sent from (captured for bug reports).'),
+  "userAgent": zod.string().optional().describe('Browser user-agent (captured for bug reports).'),
+  "isPublic": zod.boolean().describe('Whether the item is surfaced on the public \/roadmap board.'),
+  "upvoteCount": zod.number(),
+  "adminNotes": zod.string().optional(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+}).describe('A feedback submission as seen by an admin during triage.')
+
+
+export const UpdateFeedbackParams = zod.object({
+  "id": zod.string()
+})
+
+export const UpdateFeedbackBody = zod.object({
+  "status": zod.enum(['new', 'triaging', 'planned', 'in_progress', 'shipped', 'declined', 'closed']).optional().describe('Triage lifecycle state.'),
+  "adminNotes": zod.string().optional(),
+  "isPublic": zod.boolean().optional()
+}).describe('Admin triage mutation — every field optional (partial update).')
+
+export const UpdateFeedbackResponse = zod.object({
+  "id": zod.string(),
+  "type": zod.enum(['idea', 'bug', 'praise', 'other']).describe('Submission category.'),
+  "title": zod.string().optional(),
+  "message": zod.string(),
+  "status": zod.enum(['new', 'triaging', 'planned', 'in_progress', 'shipped', 'declined', 'closed']).describe('Triage lifecycle state.'),
+  "userId": zod.string().describe('Better Auth id of the submitter.'),
+  "userEmail": zod.string().optional().describe('Submitter email, included in the admin view for close-the-loop follow-up.'),
+  "locale": zod.string().optional(),
+  "pageUrl": zod.string().optional().describe('Page the submission was sent from (captured for bug reports).'),
+  "userAgent": zod.string().optional().describe('Browser user-agent (captured for bug reports).'),
+  "isPublic": zod.boolean().describe('Whether the item is surfaced on the public \/roadmap board.'),
+  "upvoteCount": zod.number(),
+  "adminNotes": zod.string().optional(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+}).describe('A feedback submission as seen by an admin during triage.')
+
+
+export const DeleteFeedbackParams = zod.object({
+  "id": zod.string()
+})
+
+export const DeleteFeedbackResponse = zod.void()
+
+
 export const CreateHelpTopicBody = zod.object({
   "slug": zod.string(),
   "term": zod.string(),
@@ -3319,6 +3450,128 @@ export const GetFeatureFlagSnapshotResponse = zod.object({
 
 })
 }).describe('The full evaluatable snapshot for one environment + its version tag.')
+
+
+/**
+ * Submit a suggestion / bug / praise. Logged-in only.
+ */
+export const SubmitFeedbackBody = zod.object({
+  "type": zod.enum(['idea', 'bug', 'praise', 'other']).describe('Submission category.'),
+  "title": zod.string().optional(),
+  "message": zod.string(),
+  "pageUrl": zod.string().optional(),
+  "userAgent": zod.string().optional()
+}).describe('What a signed-in user submits. `pageUrl`\/`userAgent` are only honoured for bug reports.')
+
+export const SubmitFeedbackResponse = zod.object({
+  "id": zod.string(),
+  "type": zod.enum(['idea', 'bug', 'praise', 'other']).describe('Submission category.'),
+  "title": zod.string().optional(),
+  "message": zod.string(),
+  "status": zod.enum(['new', 'triaging', 'planned', 'in_progress', 'shipped', 'declined', 'closed']).describe('Triage lifecycle state.'),
+  "userId": zod.string().describe('Better Auth id of the submitter.'),
+  "userEmail": zod.string().optional().describe('Submitter email, included in the admin view for close-the-loop follow-up.'),
+  "locale": zod.string().optional(),
+  "pageUrl": zod.string().optional().describe('Page the submission was sent from (captured for bug reports).'),
+  "userAgent": zod.string().optional().describe('Browser user-agent (captured for bug reports).'),
+  "isPublic": zod.boolean().describe('Whether the item is surfaced on the public \/roadmap board.'),
+  "upvoteCount": zod.number(),
+  "adminNotes": zod.string().optional(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+}).describe('A feedback submission as seen by an admin during triage.')
+
+
+/**
+ * Public roadmap board — submissions an admin has marked public.
+ */
+export const ListFeedbackBoardQueryParams = zod.object({
+  "sort": zod.string().optional().describe('\"top\" (most upvoted) or \"new\" (most recent).'),
+  "page": zod.number().optional(),
+  "pageSize": zod.number().optional()
+})
+
+export const ListFeedbackBoardResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "type": zod.enum(['idea', 'bug', 'praise', 'other']).describe('Submission category.'),
+  "title": zod.string().optional(),
+  "message": zod.string(),
+  "status": zod.enum(['new', 'triaging', 'planned', 'in_progress', 'shipped', 'declined', 'closed']).describe('Triage lifecycle state.'),
+  "upvoteCount": zod.number(),
+  "hasVoted": zod.boolean().describe('Whether the current viewer has upvoted this item (false for anonymous).'),
+  "createdAt": zod.string()
+}).describe('Public projection of a submission on the \/roadmap board (no submitter identity).')),
+  "total": zod.number(),
+  "page": zod.number(),
+  "pageSize": zod.number()
+}).describe('A paginated page of public board items.')
+
+
+/**
+ * Record an NPS response. Logged-in only.
+ */
+export const SubmitNpsBody = zod.object({
+  "score": zod.number(),
+  "comment": zod.string().optional(),
+  "source": zod.string().optional().describe('Page\/context the prompt was shown on.')
+}).describe('An NPS score (0..10) with an optional verbatim comment.')
+
+export const SubmitNpsResponse = zod.object({
+  "recorded": zod.boolean()
+})
+
+
+/**
+ * Dismiss the NPS prompt without answering (throttles re-prompting). Logged-in only.
+ */
+export const DismissNpsResponse = zod.void()
+
+
+/**
+ * Should the NPS prompt be shown to the current user right now? Logged-in only.
+ */
+export const GetNpsEligibilityResponse = zod.object({
+  "eligible": zod.boolean()
+}).describe('Whether the current user should be shown the NPS prompt now.')
+
+
+/**
+ * Upvote a board item (idempotent). Logged-in only.
+ */
+export const VoteFeedbackParams = zod.object({
+  "id": zod.string()
+})
+
+export const VoteFeedbackResponse = zod.object({
+  "id": zod.string(),
+  "type": zod.enum(['idea', 'bug', 'praise', 'other']).describe('Submission category.'),
+  "title": zod.string().optional(),
+  "message": zod.string(),
+  "status": zod.enum(['new', 'triaging', 'planned', 'in_progress', 'shipped', 'declined', 'closed']).describe('Triage lifecycle state.'),
+  "upvoteCount": zod.number(),
+  "hasVoted": zod.boolean().describe('Whether the current viewer has upvoted this item (false for anonymous).'),
+  "createdAt": zod.string()
+}).describe('Public projection of a submission on the \/roadmap board (no submitter identity).')
+
+
+/**
+ * Remove the viewer's upvote from a board item (idempotent). Logged-in only.
+ */
+export const UnvoteFeedbackParams = zod.object({
+  "id": zod.string()
+})
+
+export const UnvoteFeedbackResponse = zod.object({
+  "id": zod.string(),
+  "type": zod.enum(['idea', 'bug', 'praise', 'other']).describe('Submission category.'),
+  "title": zod.string().optional(),
+  "message": zod.string(),
+  "status": zod.enum(['new', 'triaging', 'planned', 'in_progress', 'shipped', 'declined', 'closed']).describe('Triage lifecycle state.'),
+  "upvoteCount": zod.number(),
+  "hasVoted": zod.boolean().describe('Whether the current viewer has upvoted this item (false for anonymous).'),
+  "createdAt": zod.string()
+}).describe('Public projection of a submission on the \/roadmap board (no submitter identity).')
 
 
 export const GetHealthResponse = zod.object({

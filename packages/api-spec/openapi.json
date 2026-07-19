@@ -43,6 +43,9 @@
       "name": "faq"
     },
     {
+      "name": "feedback"
+    },
+    {
       "name": "monetization"
     },
     {
@@ -933,6 +936,259 @@
         },
         "tags": [
           "feature-flags"
+        ]
+      }
+    },
+    "/admin/feedback": {
+      "get": {
+        "operationId": "listFeedback",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/FeedbackType"
+            },
+            "explode": false
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/FeedbackStatus"
+            },
+            "explode": false
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "explode": false
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackSubmissionList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feedback"
+        ]
+      }
+    },
+    "/admin/feedback/nps": {
+      "get": {
+        "operationId": "listNpsResponses",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "explode": false
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NpsResponseList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feedback"
+        ]
+      }
+    },
+    "/admin/feedback/nps/analytics": {
+      "get": {
+        "operationId": "getNpsAnalytics",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "ISO date lower bound (inclusive).",
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "ISO date upper bound (inclusive).",
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NpsAnalytics"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feedback"
+        ]
+      }
+    },
+    "/admin/feedback/{id}": {
+      "get": {
+        "operationId": "getFeedback",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackSubmission"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feedback"
+        ]
+      },
+      "patch": {
+        "operationId": "updateFeedback",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackSubmission"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feedback"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFeedbackInput"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteFeedback",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "feedback"
         ]
       }
     },
@@ -3278,6 +3534,240 @@
         },
         "tags": [
           "feature-flags"
+        ]
+      }
+    },
+    "/feedback": {
+      "post": {
+        "operationId": "submitFeedback",
+        "description": "Submit a suggestion / bug / praise. Logged-in only.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackSubmission"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feedback"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitFeedbackInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feedback/board": {
+      "get": {
+        "operationId": "listFeedbackBoard",
+        "description": "Public roadmap board — submissions an admin has marked public.",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "\"top\" (most upvoted) or \"new\" (most recent).",
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "explode": false
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackBoardList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feedback"
+        ]
+      }
+    },
+    "/feedback/nps": {
+      "post": {
+        "operationId": "submitNps",
+        "description": "Record an NPS response. Logged-in only.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NpsSubmitResult"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feedback"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NpsResponseInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feedback/nps/dismiss": {
+      "post": {
+        "operationId": "dismissNps",
+        "description": "Dismiss the NPS prompt without answering (throttles re-prompting). Logged-in only.",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        },
+        "tags": [
+          "feedback"
+        ]
+      }
+    },
+    "/feedback/nps/eligibility": {
+      "get": {
+        "operationId": "getNpsEligibility",
+        "description": "Should the NPS prompt be shown to the current user right now? Logged-in only.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NpsEligibility"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feedback"
+        ]
+      }
+    },
+    "/feedback/{id}/vote": {
+      "post": {
+        "operationId": "voteFeedback",
+        "description": "Upvote a board item (idempotent). Logged-in only.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackBoardItem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feedback"
+        ]
+      },
+      "delete": {
+        "operationId": "unvoteFeedback",
+        "description": "Remove the viewer's upvote from a board item (idempotent). Logged-in only.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackBoardItem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feedback"
         ]
       }
     },
@@ -6858,6 +7348,198 @@
         },
         "description": "The full evaluatable snapshot for one environment + its version tag."
       },
+      "FeedbackBoardItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "message",
+          "status",
+          "upvoteCount",
+          "hasVoted",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/FeedbackType"
+          },
+          "title": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FeedbackStatus"
+          },
+          "upvoteCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasVoted": {
+            "type": "boolean",
+            "description": "Whether the current viewer has upvoted this item (false for anonymous)."
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "description": "Public projection of a submission on the /roadmap board (no submitter identity)."
+      },
+      "FeedbackBoardList": {
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeedbackBoardItem"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "A paginated page of public board items."
+      },
+      "FeedbackStatus": {
+        "type": "string",
+        "enum": [
+          "new",
+          "triaging",
+          "planned",
+          "in_progress",
+          "shipped",
+          "declined",
+          "closed"
+        ],
+        "description": "Triage lifecycle state."
+      },
+      "FeedbackSubmission": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "message",
+          "status",
+          "userId",
+          "isPublic",
+          "upvoteCount",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/FeedbackType"
+          },
+          "title": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FeedbackStatus"
+          },
+          "userId": {
+            "type": "string",
+            "description": "Better Auth id of the submitter."
+          },
+          "userEmail": {
+            "type": "string",
+            "description": "Submitter email, included in the admin view for close-the-loop follow-up."
+          },
+          "locale": {
+            "type": "string"
+          },
+          "pageUrl": {
+            "type": "string",
+            "description": "Page the submission was sent from (captured for bug reports)."
+          },
+          "userAgent": {
+            "type": "string",
+            "description": "Browser user-agent (captured for bug reports)."
+          },
+          "isPublic": {
+            "type": "boolean",
+            "description": "Whether the item is surfaced on the public /roadmap board."
+          },
+          "upvoteCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "adminNotes": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "description": "A feedback submission as seen by an admin during triage."
+      },
+      "FeedbackSubmissionList": {
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeedbackSubmission"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "A paginated page of submissions for the admin triage table."
+      },
+      "FeedbackType": {
+        "type": "string",
+        "enum": [
+          "idea",
+          "bug",
+          "praise",
+          "other"
+        ],
+        "description": "Submission category."
+      },
       "FlagEnvironmentAdminList": {
         "type": "object",
         "required": [
@@ -7412,6 +8094,181 @@
         },
         "description": "A member's completion across the class's assigned content."
       },
+      "NpsAnalytics": {
+        "type": "object",
+        "required": [
+          "score",
+          "promoters",
+          "passives",
+          "detractors",
+          "responseCount",
+          "trend"
+        ],
+        "properties": {
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "promoters": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "passives": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "detractors": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "responseCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "trend": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NpsTrendPoint"
+            }
+          }
+        },
+        "description": "Aggregated NPS for the admin dashboard. `score` = %promoters − %detractors (−100..100)."
+      },
+      "NpsEligibility": {
+        "type": "object",
+        "required": [
+          "eligible"
+        ],
+        "properties": {
+          "eligible": {
+            "type": "boolean"
+          }
+        },
+        "description": "Whether the current user should be shown the NPS prompt now."
+      },
+      "NpsResponseInput": {
+        "type": "object",
+        "required": [
+          "score"
+        ],
+        "properties": {
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "description": "Page/context the prompt was shown on."
+          }
+        },
+        "description": "An NPS score (0..10) with an optional verbatim comment."
+      },
+      "NpsResponseList": {
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NpsResponseView"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "A paginated page of NPS responses for the admin."
+      },
+      "NpsResponseView": {
+        "type": "object",
+        "required": [
+          "id",
+          "userId",
+          "score",
+          "bucket",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "userEmail": {
+            "type": "string"
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bucket": {
+            "type": "string",
+            "description": "Derived from the score: \"promoter\" (9-10), \"passive\" (7-8), \"detractor\" (0-6)."
+          },
+          "comment": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "description": "A single NPS response as seen by an admin."
+      },
+      "NpsSubmitResult": {
+        "type": "object",
+        "required": [
+          "recorded"
+        ],
+        "properties": {
+          "recorded": {
+            "type": "boolean"
+          }
+        }
+      },
+      "NpsTrendPoint": {
+        "type": "object",
+        "required": [
+          "period",
+          "score",
+          "responseCount"
+        ],
+        "properties": {
+          "period": {
+            "type": "string",
+            "description": "ISO year-month, e.g. \"2026-07\"."
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "responseCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "One point on the NPS trend line (a calendar month)."
+      },
       "PracticeInput": {
         "type": "object",
         "required": [
@@ -7767,6 +8624,31 @@
         },
         "description": "Body for starting a checkout."
       },
+      "SubmitFeedbackInput": {
+        "type": "object",
+        "required": [
+          "type",
+          "message"
+        ],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/FeedbackType"
+          },
+          "title": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "pageUrl": {
+            "type": "string"
+          },
+          "userAgent": {
+            "type": "string"
+          }
+        },
+        "description": "What a signed-in user submits. `pageUrl`/`userAgent` are only honoured for bug reports."
+      },
       "SubscriptionStatus": {
         "type": "object",
         "required": [
@@ -8104,6 +8986,21 @@
           }
         },
         "description": "Edit a flag's registry fields (not per-environment)."
+      },
+      "UpdateFeedbackInput": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/FeedbackStatus"
+          },
+          "adminNotes": {
+            "type": "string"
+          },
+          "isPublic": {
+            "type": "boolean"
+          }
+        },
+        "description": "Admin triage mutation — every field optional (partial update)."
       },
       "UserCollectionWriteInput": {
         "type": "object",

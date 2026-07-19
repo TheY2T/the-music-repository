@@ -1,0 +1,37 @@
+---
+import FeedbackBoard from '@TheY2T/tmr-common-ui/FeedbackBoard';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { breadcrumbJsonLd, pageTitle } from '@/lib/seo';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+if (!Astro.locals.flags.feedbackBoard) {
+  return Astro.redirect('/');
+}
+const locale = Astro.locals.locale;
+const siteName = t(locale, 'site.name');
+const site = Astro.site;
+
+const abs = (path: string) => (site ? new URL(path, site).href : path);
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: t(locale, 'common.home'), url: abs(localizedPath(locale, '/')) },
+    { name: t(locale, 'board.title'), url: abs(localizedPath(locale, '/roadmap')) },
+  ]),
+];
+---
+
+<BaseLayout
+  title={pageTitle(t(locale, 'board.title'), siteName)}
+  description={t(locale, 'seo.roadmap.description')}
+  jsonLd={jsonLd}
+>
+  <PageShell
+    title={t(locale, 'board.title')}
+    subtitle={t(locale, 'board.subtitle')}
+    back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
+    maxWidth="max-w-3xl"
+  >
+    <FeedbackBoard client:load locale={locale} signedIn={Boolean(Astro.locals.user)} />
+  </PageShell>
+</BaseLayout>

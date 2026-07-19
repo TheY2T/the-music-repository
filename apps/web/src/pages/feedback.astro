@@ -1,0 +1,42 @@
+---
+import FeedbackForm from '@TheY2T/tmr-common-ui/FeedbackForm';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { breadcrumbJsonLd, pageTitle } from '@/lib/seo';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+if (!Astro.locals.flags.feedbackForm) {
+  return Astro.redirect('/');
+}
+const locale = Astro.locals.locale;
+const siteName = t(locale, 'site.name');
+const site = Astro.site;
+
+const abs = (path: string) => (site ? new URL(path, site).href : path);
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: t(locale, 'common.home'), url: abs(localizedPath(locale, '/')) },
+    { name: t(locale, 'nav.feedback'), url: abs(localizedPath(locale, '/feedback')) },
+  ]),
+];
+---
+
+<BaseLayout
+  title={pageTitle(t(locale, 'feedback.title'), siteName)}
+  description={t(locale, 'seo.feedback.description')}
+  jsonLd={jsonLd}
+>
+  <PageShell
+    title={t(locale, 'feedback.title')}
+    subtitle={t(locale, 'feedback.subtitle')}
+    back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
+    maxWidth="max-w-2xl"
+  >
+    <FeedbackForm
+      client:load
+      locale={locale}
+      bugsEnabled={Astro.locals.flags.feedbackBugs}
+      signedIn={Boolean(Astro.locals.user)}
+    />
+  </PageShell>
+</BaseLayout>

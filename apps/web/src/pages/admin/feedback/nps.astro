@@ -1,0 +1,26 @@
+---
+import NpsAnalyticsDashboard from '@TheY2T/tmr-common-ui/NpsAnalyticsDashboard';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { guardAdmin } from '@/lib/admin-guard';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+const redirect = guardAdmin(Astro);
+if (redirect) {
+  return redirect;
+}
+if (!Astro.locals.flags.feedbackNps) {
+  return Astro.redirect('/admin');
+}
+const locale = Astro.locals.locale;
+---
+
+<BaseLayout noindex title={`${t(locale, 'admin.feedbackNps')} — ${t(locale, 'nav.admin')}`}>
+  <PageShell
+    title={t(locale, 'anps.title')}
+    subtitle={t(locale, 'admin.feedbackNpsSubtitle')}
+    back={{ href: localizedPath(locale, '/admin'), label: t(locale, 'common.backContent') }}
+  >
+    <NpsAnalyticsDashboard client:load locale={locale} />
+  </PageShell>
+</BaseLayout>
