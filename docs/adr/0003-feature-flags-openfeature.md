@@ -1,6 +1,8 @@
 # ADR 0003 — Feature flags: OpenFeature + flagd
 
-- **Status:** Accepted
+- **Status:** Superseded by **ADR 0035** (DB-backed feature flags). The OpenFeature *abstraction* below is
+  retained; the **flagd** provider + `flags/flags.json` file described here are replaced by a custom
+  Postgres-backed provider with per-environment targeting and admin-CMS CRUD. Read ADR 0035 first.
 - **Context:** Every phase ships behind a flag; we want vendor-neutrality and cheap self-hosting.
 - **Decision:** **OpenFeature** (CNCF, vendor-neutral) as the abstraction + **flagd** as the
   self-hosted provider — flags are JSON in git (`flags/flags.json`), no DB/UI, one container.

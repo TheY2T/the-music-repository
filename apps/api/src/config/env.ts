@@ -5,8 +5,10 @@ export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().positive().default(3000),
   DATABASE_URL: z.string().min(1),
-  FLAGD_HOST: z.string().default('localhost'),
-  FLAGD_PORT: z.coerce.number().int().positive().default(8013),
+  // Names which feature-flag environment this deployment resolves against (matches a
+  // `feature_flag_environments.key`; unmatched values fall back to the `is_default` env). Free-form
+  // because environments are DB-managed/CRUD-able, not a fixed enum. Seeded envs: dev | uat | prod.
+  APP_ENV: z.string().default('dev'),
 
   // Catalogue search (Meilisearch). Defaults match `pnpm infra:up` on localhost.
   MEILI_HOST: z.string().default('http://localhost:7700'),

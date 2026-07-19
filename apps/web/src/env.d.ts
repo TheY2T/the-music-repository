@@ -7,6 +7,8 @@ declare namespace App {
   interface Locals {
     /** Feature-flag values evaluated once per request in middleware (see src/middleware.ts). */
     flags: import('@TheY2T/tmr-web-data').Flags;
+    /** Raw `flagKey → boolean` map for this request — includes admin-created runtime keys not on `flags`. */
+    flagSnapshot: Record<string, boolean>;
     /** Active locale resolved per request (URL prefix > cookie > Accept-Language > default). */
     locale: import('@TheY2T/tmr-web-data').Locale;
     /** DB-backed UI-string catalogue for the active locale (serialized into the page by BaseLayout). */
@@ -19,8 +21,8 @@ declare namespace App {
 interface ImportMetaEnv {
   readonly PUBLIC_API_BASE_URL?: string;
   readonly PUBLIC_OFREP_BASE_URL?: string;
-  readonly FLAGD_HOST?: string;
-  readonly FLAGD_PORT?: string;
+  /** Feature-flag environment this deployment resolves against (dev | uat | prod | …). */
+  readonly APP_ENV?: string;
 }
 interface ImportMeta {
   readonly env: ImportMetaEnv;

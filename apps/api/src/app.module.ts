@@ -12,7 +12,7 @@ import { validateEnv } from './config/env';
 import { DemoModule } from './demo/demo.module';
 import { EntitlementsModule } from './entitlements/entitlements.module';
 import { FavoritesModule } from './favorites/favorites.module';
-import { FeatureFlagsModule } from './flags/feature-flags.module';
+import { FeatureFlagsModule } from './feature-flags/feature-flags.module';
 import { HealthModule } from './health/health.module';
 import { HelpModule } from './help/help.module';
 import { I18nModule } from './i18n/i18n.module';

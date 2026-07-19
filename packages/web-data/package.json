@@ -20,6 +20,7 @@
   "dependencies": {
     "@TheY2T/tmr-api-client": "workspace:*",
     "@TheY2T/tmr-content-serde": "workspace:*",
+    "@TheY2T/tmr-flags": "workspace:*",
     "@TheY2T/tmr-i18n": "workspace:*",
     "@TheY2T/tmr-ui": "workspace:*",
     "better-auth": "catalog:"

@@ -579,3 +579,93 @@ export const entityTranslationRevisions = pgTable('entity_translation_revisions'
   editedBy: text('edited_by'),
   editedAt: timestamp('edited_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
+// --- Feature flags (ADR 0035): flag configuration lives in the DB and is toggled per environment via the
+//     admin CMS. Evaluated by an OpenFeature provider (@TheY2T/tmr-flags-eval) that reads a per-environment
+//     snapshot. The typed @TheY2T/tmr-flags registry seeds these tables + types the code-referenced keys. ---
+
+/** The deployable environments a flag can be targeted at (dev/uat/prod + any admin-created ones). A running
+ *  app resolves its own environment by matching `APP_ENV` to a `key` (falling back to the `is_default` row). */
+export const featureFlagEnvironments = pgTable('feature_flag_environments', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  key: text('key').notNull().unique(), // matches APP_ENV, e.g. 'dev' | 'uat' | 'prod'
+  label: text('label').notNull(), // display name, e.g. 'Development'
+  rank: integer('rank').notNull().default(0), // ordering in the admin UI
+  isDefault: boolean('is_default').notNull().default(false), // fallback when APP_ENV matches no key
+  archivedAt: timestamp('archived_at', { withTimezone: true }), // hidden from targeting but retained
+  deletedAt: timestamp('deleted_at', { withTimezone: true }), // soft delete (restorable)
+  updatedBy: text('updated_by'), // Better Auth user id of last editor
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** One row per flag key (the runtime registry). `source: 'code'` rows mirror the typed @TheY2T/tmr-flags
+ *  registry (seeded, code references them); `source: 'runtime'` rows are admin-created in the CMS. */
+export const featureFlags = pgTable(
+  'feature_flags',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    key: text('key').notNull(), // '<domain>.<capability>', e.g. 'tools.metronome'
+    description: text('description').notNull().default(''),
+    domain: text('domain').notNull().default(''), // prefix before the first dot, for UI grouping
+    flagType: text('flag_type').notNull().default('boolean'), // boolean (variant-ready for later)
+    defaultValue: jsonb('default_value').notNull(), // code-registry fallback (FlagDefaults[key])
+    source: text('source').notNull().default('runtime'), // code | runtime
+    seeded: boolean('seeded').notNull().default(false), // true = pristine seeded baseline row
+    deletedAt: timestamp('deleted_at', { withTimezone: true }), // soft delete (restorable)
+    updatedBy: text('updated_by'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [unique('feature_flags_key_uq').on(t.key), index('feature_flags_domain_idx').on(t.domain)],
+);
+
+/** The (flag × environment) configuration matrix — the actual per-environment on/off + targeting.
+ *  `enabled` is the admin master switch (off ⇒ the feature is off for that environment). */
+export const featureFlagSettings = pgTable(
+  'feature_flag_settings',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    flagId: uuid('flag_id')
+      .notNull()
+      .references(() => featureFlags.id, { onDelete: 'cascade' }),
+    environmentId: uuid('environment_id')
+      .notNull()
+      .references(() => featureFlagEnvironments.id, { onDelete: 'cascade' }),
+    enabled: boolean('enabled').notNull().default(false), // master switch for this environment
+    defaultVariant: text('default_variant').notNull().default('off'), // variant when no targeting matches
+    variants: jsonb('variants').notNull(), // { on: true, off: false }
+    targeting: jsonb('targeting'), // flagd-style JSONLogic rule; null = none
+    updatedBy: text('updated_by'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    unique('feature_flag_settings_flag_env_uq').on(t.flagId, t.environmentId),
+    index('feature_flag_settings_env_idx').on(t.environmentId),
+  ],
+);
+
+/** Append-only audit of every flag/setting/environment change — for diff + one-click restore (flags apply
+ *  immediately, so this history is the safety net rather than a draft/publish gate). */
+export const featureFlagRevisions = pgTable('feature_flag_revisions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  flagId: uuid('flag_id'), // null for environment-level actions
+  environmentId: uuid('environment_id'), // null for flag-registry actions
+  // create | update | delete | restore | toggle | targeting | env-create | env-update | env-delete
+  action: text('action').notNull(),
+  before: jsonb('before'), // state before the change (null for a create)
+  after: jsonb('after'), // state after the change (null for a delete)
+  actorId: text('actor_id'), // Better Auth user id; null if unknown/seed
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** One row per environment: the snapshot version tag (epoch-ms of last change) used as the ETag and the
+ *  web-side cache-bust signal. Bumped whenever any flag/setting affecting that environment changes. */
+export const featureFlagVersions = pgTable('feature_flag_versions', {
+  environmentId: uuid('environment_id')
+    .primaryKey()
+    .references(() => featureFlagEnvironments.id, { onDelete: 'cascade' }),
+  version: text('version').notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});

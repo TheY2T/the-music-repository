@@ -1,4 +1,5 @@
-import { FlagDefaults, FlagKeys } from '@TheY2T/tmr-flags';
+import { FlagDefaults } from '@TheY2T/tmr-flags';
+import { evaluateFlag, type FlagSnapshot, HttpSnapshotSource } from '@TheY2T/tmr-flags-eval';
 import {
   DEFAULT_LOCALE,
   localePrefix,
@@ -6,14 +7,9 @@ import {
   preferredLocale,
   splitLocalePath,
 } from '@TheY2T/tmr-i18n';
+import { FLAG_FIELD_BY_KEY, type Flags } from '@TheY2T/tmr-web-data';
 import { defineMiddleware } from 'astro:middleware';
-import { FlagdProvider } from '@openfeature/flagd-provider';
-import { type Logger, OpenFeature } from '@openfeature/server-sdk';
 import { ensureCatalogue } from './lib/i18n-catalogue';
-
-const FLAGD_HOST = process.env.FLAGD_HOST ?? 'localhost';
-const FLAGD_PORT = Number(process.env.FLAGD_PORT ?? 8013);
-const CONNECTION_ERROR = /deadline|connect|unavailable|initialization/i;
 
 // SSR runs on the server, so it needs a server-reachable API origin. In a container that's the compose
 // service name (`http://api:3000`), NOT the browser's host-published `PUBLIC_API_BASE_URL`
@@ -21,6 +17,15 @@ const CONNECTION_ERROR = /deadline|connect|unavailable|initialization/i;
 // the server-only `API_INTERNAL_URL`; fall back to the public URL for local dev where SSR runs on the host.
 const API_BASE =
   process.env.API_INTERNAL_URL ?? process.env.PUBLIC_API_BASE_URL ?? 'http://localhost:3000';
+
+// Which feature-flag environment this deployment resolves against (matches a DB environment key; unmatched
+// falls back to the default env server-side). Free-form because environments are CRUD-able (ADR 0035).
+const APP_ENV = process.env.APP_ENV ?? 'dev';
+
+// The flag snapshot source: fetches `GET /feature-flags/snapshot/:env` from the API and caches it per SSR
+// process, revalidating with an ETag (conditional GET → 304). Flags are evaluated in-process by the shared
+// engine (`@TheY2T/tmr-flags-eval`), the same engine the API uses, so a flag resolves identically in both.
+const snapshotSource = new HttpSnapshotSource(`${API_BASE}/feature-flags/snapshot/${APP_ENV}`);
 
 /**
  * Resolve the session server-side by forwarding the request's cookies to the API's Better Auth
@@ -51,472 +56,60 @@ async function resolveSessionUser(cookie: string): Promise<App.Locals['user']> {
   }
 }
 
-/** Replaces flagd's noisy connection stack traces with a single actionable hint. */
-function createFlagdLogger(endpoint: string): Logger {
-  let hintShown = false;
-  const describe = (arg: unknown) => (arg instanceof Error ? arg.message : String(arg));
-  return {
-    error(...args: unknown[]) {
-      if (args.some((arg) => CONNECTION_ERROR.test(describe(arg)))) {
-        if (!hintShown) {
-          hintShown = true;
-          console.warn(
-            `[flags] Could not reach flagd at ${endpoint} — flags will use their default values. ` +
-              'Start the infrastructure first: `pnpm infra:up`.',
-          );
-        }
-        return;
-      }
-      console.error('[flags]', ...args);
-    },
-    warn: (...args: unknown[]) => console.warn('[flags]', ...args),
-    info: () => {},
-    debug: () => {},
-  };
+/** Build the OpenFeature-style evaluation context from the resolved user (drives per-env targeting). */
+function evalContext(user: App.Locals['user']) {
+  if (!user) return {};
+  return { targetingKey: user.id, roles: user.role ? [user.role] : [] };
 }
 
-// Set the OpenFeature provider once for the SSR process. Phase 3 can add live client sync;
-// Phase 1 will build the per-request evaluation context from the authenticated session.
-let providerConfigured = false;
-function ensureProvider(): void {
-  if (providerConfigured) {
-    return;
+/**
+ * Evaluate every flag for this request from the snapshot. Returns the typed `Flags` object (for
+ * `Astro.locals.flags`, one field per code key via {@link FLAG_FIELD_BY_KEY}) plus a raw `key → boolean`
+ * map that also includes admin-created **runtime** keys not in the typed registry. When the snapshot is
+ * unavailable (API down) every flag degrades to its code-level {@link FlagDefaults} — the app still renders.
+ */
+function buildFlags(
+  snapshot: FlagSnapshot | null,
+  user: App.Locals['user'],
+): { flags: Flags; raw: Record<string, boolean> } {
+  const ctx = evalContext(user);
+  const defaults = FlagDefaults as Record<string, boolean>;
+  const raw: Record<string, boolean> = {};
+
+  // Every flag present in the snapshot (code + runtime keys).
+  if (snapshot) {
+    for (const key of Object.keys(snapshot.flags)) {
+      raw[key] = Boolean(evaluateFlag(snapshot, key, ctx, defaults[key] ?? false).value);
+    }
   }
-  providerConfigured = true;
-  OpenFeature.setLogger(createFlagdLogger(`${FLAGD_HOST}:${FLAGD_PORT}`));
-  OpenFeature.setProvider(
-    new FlagdProvider({ host: FLAGD_HOST, port: FLAGD_PORT, resolverType: 'rpc', deadlineMs: 500 }),
-  );
+
+  // The typed shape: one field per registered code key (fills any not present in the snapshot).
+  const flags = {} as Record<string, boolean>;
+  for (const [key, field] of Object.entries(FLAG_FIELD_BY_KEY)) {
+    const fallback = defaults[key] ?? false;
+    const value =
+      key in raw
+        ? raw[key]
+        : snapshot
+          ? Boolean(evaluateFlag(snapshot, key, ctx, fallback).value)
+          : fallback;
+    flags[field] = value;
+    raw[key] = value;
+  }
+
+  return { flags: flags as Flags, raw };
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  ensureProvider();
-  const client = OpenFeature.getClient();
+  // Resolve the user first so flag targeting (roles / percentage rollout) can use it.
+  context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
 
-  const demoNewBanner = await client.getBooleanValue(
-    FlagKeys.DemoNewBanner,
-    FlagDefaults[FlagKeys.DemoNewBanner],
-  );
-  const authEnabled = await client.getBooleanValue(
-    FlagKeys.AuthEnabled,
-    FlagDefaults[FlagKeys.AuthEnabled],
-  );
-  const adminCms = await client.getBooleanValue(FlagKeys.AdminCms, FlagDefaults[FlagKeys.AdminCms]);
-  const localeStrings = await client.getBooleanValue(
-    FlagKeys.LocaleStrings,
-    FlagDefaults[FlagKeys.LocaleStrings],
-  );
-  const blockEditor = await client.getBooleanValue(
-    FlagKeys.BlockEditor,
-    FlagDefaults[FlagKeys.BlockEditor],
-  );
-  const blockEditorPreview = await client.getBooleanValue(
-    FlagKeys.BlockEditorPreview,
-    FlagDefaults[FlagKeys.BlockEditorPreview],
-  );
-  const contentRevisions = await client.getBooleanValue(
-    FlagKeys.ContentRevisions,
-    FlagDefaults[FlagKeys.ContentRevisions],
-  );
-  const favorites = await client.getBooleanValue(
-    FlagKeys.Favorites,
-    FlagDefaults[FlagKeys.Favorites],
-  );
-  const savedProgressions = await client.getBooleanValue(
-    FlagKeys.SavedProgressions,
-    FlagDefaults[FlagKeys.SavedProgressions],
-  );
-  const toolPractice = await client.getBooleanValue(
-    FlagKeys.ToolPractice,
-    FlagDefaults[FlagKeys.ToolPractice],
-  );
-  const catalogueHub = await client.getBooleanValue(
-    FlagKeys.CatalogueHub,
-    FlagDefaults[FlagKeys.CatalogueHub],
-  );
-  const learnerDashboard = await client.getBooleanValue(
-    FlagKeys.LearnerDashboard,
-    FlagDefaults[FlagKeys.LearnerDashboard],
-  );
-  const dashboardBackground = await client.getBooleanValue(
-    FlagKeys.DashboardBackground,
-    FlagDefaults[FlagKeys.DashboardBackground],
-  );
-  const collections = await client.getBooleanValue(
-    FlagKeys.Collections,
-    FlagDefaults[FlagKeys.Collections],
-  );
-  const collectionDiscovery = await client.getBooleanValue(
-    FlagKeys.CollectionDiscovery,
-    FlagDefaults[FlagKeys.CollectionDiscovery],
-  );
-  const collectionsHub = await client.getBooleanValue(
-    FlagKeys.CollectionsHub,
-    FlagDefaults[FlagKeys.CollectionsHub],
-  );
-  const collectionBookmarks = await client.getBooleanValue(
-    FlagKeys.CollectionBookmarks,
-    FlagDefaults[FlagKeys.CollectionBookmarks],
-  );
-  const collectionRatings = await client.getBooleanValue(
-    FlagKeys.CollectionRatings,
-    FlagDefaults[FlagKeys.CollectionRatings],
-  );
-  const userCollections = await client.getBooleanValue(
-    FlagKeys.UserCollections,
-    FlagDefaults[FlagKeys.UserCollections],
-  );
-  const progress = await client.getBooleanValue(FlagKeys.Progress, FlagDefaults[FlagKeys.Progress]);
-  const infoView = await client.getBooleanValue(FlagKeys.InfoView, FlagDefaults[FlagKeys.InfoView]);
-  const interactiveScores = await client.getBooleanValue(
-    FlagKeys.InteractiveScores,
-    FlagDefaults[FlagKeys.InteractiveScores],
-  );
-  const toolKeyboard = await client.getBooleanValue(
-    FlagKeys.ToolKeyboard,
-    FlagDefaults[FlagKeys.ToolKeyboard],
-  );
-  const toolCircleOfFifths = await client.getBooleanValue(
-    FlagKeys.ToolCircleOfFifths,
-    FlagDefaults[FlagKeys.ToolCircleOfFifths],
-  );
-  const toolFretboard = await client.getBooleanValue(
-    FlagKeys.ToolFretboard,
-    FlagDefaults[FlagKeys.ToolFretboard],
-  );
-  const toolChords = await client.getBooleanValue(
-    FlagKeys.ToolChords,
-    FlagDefaults[FlagKeys.ToolChords],
-  );
-  const toolScaleExplorer = await client.getBooleanValue(
-    FlagKeys.ToolScaleExplorer,
-    FlagDefaults[FlagKeys.ToolScaleExplorer],
-  );
-  const toolChordId = await client.getBooleanValue(
-    FlagKeys.ToolChordId,
-    FlagDefaults[FlagKeys.ToolChordId],
-  );
-  const toolModes = await client.getBooleanValue(
-    FlagKeys.ToolModes,
-    FlagDefaults[FlagKeys.ToolModes],
-  );
-  const toolProgression = await client.getBooleanValue(
-    FlagKeys.ToolProgression,
-    FlagDefaults[FlagKeys.ToolProgression],
-  );
-  const toolMetronome = await client.getBooleanValue(
-    FlagKeys.ToolMetronome,
-    FlagDefaults[FlagKeys.ToolMetronome],
-  );
-  const toolTuner = await client.getBooleanValue(
-    FlagKeys.ToolTuner,
-    FlagDefaults[FlagKeys.ToolTuner],
-  );
-  const toolIntervals = await client.getBooleanValue(
-    FlagKeys.ToolIntervals,
-    FlagDefaults[FlagKeys.ToolIntervals],
-  );
-  const toolStaff = await client.getBooleanValue(
-    FlagKeys.ToolStaff,
-    FlagDefaults[FlagKeys.ToolStaff],
-  );
-  const toolEarTrainer = await client.getBooleanValue(
-    FlagKeys.ToolEarTrainer,
-    FlagDefaults[FlagKeys.ToolEarTrainer],
-  );
-  const toolSequencer = await client.getBooleanValue(
-    FlagKeys.ToolSequencer,
-    FlagDefaults[FlagKeys.ToolSequencer],
-  );
-  const trainers = await client.getBooleanValue(FlagKeys.Trainers, FlagDefaults[FlagKeys.Trainers]);
-  const drillEngine = await client.getBooleanValue(
-    FlagKeys.DrillEngine,
-    FlagDefaults[FlagKeys.DrillEngine],
-  );
-  const drillCelebrations = await client.getBooleanValue(
-    FlagKeys.DrillCelebrations,
-    FlagDefaults[FlagKeys.DrillCelebrations],
-  );
-  const drillPlay = await client.getBooleanValue(
-    FlagKeys.DrillPlay,
-    FlagDefaults[FlagKeys.DrillPlay],
-  );
-  const drillEar = await client.getBooleanValue(FlagKeys.DrillEar, FlagDefaults[FlagKeys.DrillEar]);
-  const drillPitch = await client.getBooleanValue(
-    FlagKeys.DrillPitch,
-    FlagDefaults[FlagKeys.DrillPitch],
-  );
-  const drillRhythm = await client.getBooleanValue(
-    FlagKeys.DrillRhythm,
-    FlagDefaults[FlagKeys.DrillRhythm],
-  );
-  const toolSightReading = await client.getBooleanValue(
-    FlagKeys.ToolSightReading,
-    FlagDefaults[FlagKeys.ToolSightReading],
-  );
-  const toolBackingTrack = await client.getBooleanValue(
-    FlagKeys.ToolBackingTrack,
-    FlagDefaults[FlagKeys.ToolBackingTrack],
-  );
-  const toolVoicings = await client.getBooleanValue(
-    FlagKeys.ToolVoicings,
-    FlagDefaults[FlagKeys.ToolVoicings],
-  );
-  const toolNotationPlayer = await client.getBooleanValue(
-    FlagKeys.ToolNotationPlayer,
-    FlagDefaults[FlagKeys.ToolNotationPlayer],
-  );
-  const toolLicks = await client.getBooleanValue(
-    FlagKeys.ToolLicks,
-    FlagDefaults[FlagKeys.ToolLicks],
-  );
-  const toolChordDiagrams = await client.getBooleanValue(
-    FlagKeys.ToolChordDiagrams,
-    FlagDefaults[FlagKeys.ToolChordDiagrams],
-  );
-  const toolStrumming = await client.getBooleanValue(
-    FlagKeys.ToolStrumming,
-    FlagDefaults[FlagKeys.ToolStrumming],
-  );
-  const toolFingerpicking = await client.getBooleanValue(
-    FlagKeys.ToolFingerpicking,
-    FlagDefaults[FlagKeys.ToolFingerpicking],
-  );
-  const toolArpeggio = await client.getBooleanValue(
-    FlagKeys.ToolArpeggio,
-    FlagDefaults[FlagKeys.ToolArpeggio],
-  );
-  const toolProgressionPlayer = await client.getBooleanValue(
-    FlagKeys.ToolProgressionPlayer,
-    FlagDefaults[FlagKeys.ToolProgressionPlayer],
-  );
-  const toolRhythm = await client.getBooleanValue(
-    FlagKeys.ToolRhythm,
-    FlagDefaults[FlagKeys.ToolRhythm],
-  );
-  const toolCaged = await client.getBooleanValue(
-    FlagKeys.ToolCaged,
-    FlagDefaults[FlagKeys.ToolCaged],
-  );
-  const toolScaleBoxes = await client.getBooleanValue(
-    FlagKeys.ToolScaleBoxes,
-    FlagDefaults[FlagKeys.ToolScaleBoxes],
-  );
-  const toolSong = await client.getBooleanValue(FlagKeys.ToolSong, FlagDefaults[FlagKeys.ToolSong]);
-  const toolProgressionEar = await client.getBooleanValue(
-    FlagKeys.ToolProgressionEar,
-    FlagDefaults[FlagKeys.ToolProgressionEar],
-  );
-  const toolChordQualityEar = await client.getBooleanValue(
-    FlagKeys.ToolChordQualityEar,
-    FlagDefaults[FlagKeys.ToolChordQualityEar],
-  );
-  const toolFretQuiz = await client.getBooleanValue(
-    FlagKeys.ToolFretQuiz,
-    FlagDefaults[FlagKeys.ToolFretQuiz],
-  );
-  const toolMusicXml = await client.getBooleanValue(
-    FlagKeys.ToolMusicXml,
-    FlagDefaults[FlagKeys.ToolMusicXml],
-  );
-  const toolMultiVoice = await client.getBooleanValue(
-    FlagKeys.ToolMultiVoice,
-    FlagDefaults[FlagKeys.ToolMultiVoice],
-  );
-  const toolPracticePlayer = await client.getBooleanValue(
-    FlagKeys.ToolPracticePlayer,
-    FlagDefaults[FlagKeys.ToolPracticePlayer],
-  );
-  const toolAnalyzer = await client.getBooleanValue(
-    FlagKeys.ToolAnalyzer,
-    FlagDefaults[FlagKeys.ToolAnalyzer],
-  );
-  const toolTransposer = await client.getBooleanValue(
-    FlagKeys.ToolTransposer,
-    FlagDefaults[FlagKeys.ToolTransposer],
-  );
-  const toolBassline = await client.getBooleanValue(
-    FlagKeys.ToolBassline,
-    FlagDefaults[FlagKeys.ToolBassline],
-  );
-  const toolMelodicDictation = await client.getBooleanValue(
-    FlagKeys.ToolMelodicDictation,
-    FlagDefaults[FlagKeys.ToolMelodicDictation],
-  );
-  const toolRhythmDictation = await client.getBooleanValue(
-    FlagKeys.ToolRhythmDictation,
-    FlagDefaults[FlagKeys.ToolRhythmDictation],
-  );
-  const toolGrooves = await client.getBooleanValue(
-    FlagKeys.ToolGrooves,
-    FlagDefaults[FlagKeys.ToolGrooves],
-  );
-  const toolSolfege = await client.getBooleanValue(
-    FlagKeys.ToolSolfege,
-    FlagDefaults[FlagKeys.ToolSolfege],
-  );
-  const toolKeyQuiz = await client.getBooleanValue(
-    FlagKeys.ToolKeyQuiz,
-    FlagDefaults[FlagKeys.ToolKeyQuiz],
-  );
-  const toolIntervalQuiz = await client.getBooleanValue(
-    FlagKeys.ToolIntervalQuiz,
-    FlagDefaults[FlagKeys.ToolIntervalQuiz],
-  );
-  const toolPracticeRoom = await client.getBooleanValue(
-    FlagKeys.ToolPracticeRoom,
-    FlagDefaults[FlagKeys.ToolPracticeRoom],
-  );
-  const toolScore = await client.getBooleanValue(
-    FlagKeys.ToolScore,
-    FlagDefaults[FlagKeys.ToolScore],
-  );
-  const toolSoundfont = await client.getBooleanValue(
-    FlagKeys.ToolSoundfont,
-    FlagDefaults[FlagKeys.ToolSoundfont],
-  );
-  const toolImprovise = await client.getBooleanValue(
-    FlagKeys.ToolImprovise,
-    FlagDefaults[FlagKeys.ToolImprovise],
-  );
-  const toolProgressionGen = await client.getBooleanValue(
-    FlagKeys.ToolProgressionGen,
-    FlagDefaults[FlagKeys.ToolProgressionGen],
-  );
-  const toolFretGame = await client.getBooleanValue(
-    FlagKeys.ToolFretGame,
-    FlagDefaults[FlagKeys.ToolFretGame],
-  );
-  const toolScaleMap = await client.getBooleanValue(
-    FlagKeys.ToolScaleMap,
-    FlagDefaults[FlagKeys.ToolScaleMap],
-  );
-  const toolStaffGame = await client.getBooleanValue(
-    FlagKeys.ToolStaffGame,
-    FlagDefaults[FlagKeys.ToolStaffGame],
-  );
-  const toolRhythmGame = await client.getBooleanValue(
-    FlagKeys.ToolRhythmGame,
-    FlagDefaults[FlagKeys.ToolRhythmGame],
-  );
-  const toolVoiceLeading = await client.getBooleanValue(
-    FlagKeys.ToolVoiceLeading,
-    FlagDefaults[FlagKeys.ToolVoiceLeading],
-  );
-  const toolSpeedTrainer = await client.getBooleanValue(
-    FlagKeys.ToolSpeedTrainer,
-    FlagDefaults[FlagKeys.ToolSpeedTrainer],
-  );
-  const toolKeySigGame = await client.getBooleanValue(
-    FlagKeys.ToolKeySigGame,
-    FlagDefaults[FlagKeys.ToolKeySigGame],
-  );
-  const toolPracticePlanner = await client.getBooleanValue(
-    FlagKeys.ToolPracticePlanner,
-    FlagDefaults[FlagKeys.ToolPracticePlanner],
-  );
-  const premium = await client.getBooleanValue(FlagKeys.Premium, FlagDefaults[FlagKeys.Premium]);
-  const monetizationMessaging = await client.getBooleanValue(
-    FlagKeys.MonetizationMessaging,
-    FlagDefaults[FlagKeys.MonetizationMessaging],
-  );
-  const classrooms = await client.getBooleanValue(
-    FlagKeys.Classrooms,
-    FlagDefaults[FlagKeys.Classrooms],
-  );
-  const i18nEnabled = await client.getBooleanValue(FlagKeys.I18n, FlagDefaults[FlagKeys.I18n]);
+  const snapshot = await snapshotSource.getSnapshot();
+  const { flags, raw } = buildFlags(snapshot, context.locals.user);
+  context.locals.flags = flags;
+  context.locals.flagSnapshot = raw;
 
-  context.locals.flags = {
-    demoNewBanner,
-    authEnabled,
-    adminCms,
-    localeStrings,
-    blockEditor,
-    blockEditorPreview,
-    contentRevisions,
-    favorites,
-    savedProgressions,
-    toolPractice,
-    catalogueHub,
-    learnerDashboard,
-    dashboardBackground,
-    collections,
-    collectionDiscovery,
-    collectionsHub,
-    collectionBookmarks,
-    collectionRatings,
-    userCollections,
-    progress,
-    infoView,
-    interactiveScores,
-    toolKeyboard,
-    toolCircleOfFifths,
-    toolFretboard,
-    toolChords,
-    toolScaleExplorer,
-    toolChordId,
-    toolModes,
-    toolProgression,
-    toolMetronome,
-    toolTuner,
-    toolIntervals,
-    toolStaff,
-    toolEarTrainer,
-    toolSequencer,
-    trainers,
-    drillEngine,
-    drillCelebrations,
-    drillPlay,
-    drillEar,
-    drillPitch,
-    drillRhythm,
-    toolSightReading,
-    toolBackingTrack,
-    toolVoicings,
-    toolNotationPlayer,
-    toolLicks,
-    toolChordDiagrams,
-    toolStrumming,
-    toolFingerpicking,
-    toolArpeggio,
-    toolProgressionPlayer,
-    toolRhythm,
-    toolCaged,
-    toolScaleBoxes,
-    toolSong,
-    toolProgressionEar,
-    toolChordQualityEar,
-    toolFretQuiz,
-    toolMusicXml,
-    toolMultiVoice,
-    toolPracticePlayer,
-    toolAnalyzer,
-    toolTransposer,
-    toolBassline,
-    toolMelodicDictation,
-    toolRhythmDictation,
-    toolGrooves,
-    toolSolfege,
-    toolKeyQuiz,
-    toolIntervalQuiz,
-    toolPracticeRoom,
-    toolScore,
-    toolSoundfont,
-    toolImprovise,
-    toolProgressionGen,
-    toolFretGame,
-    toolScaleMap,
-    toolStaffGame,
-    toolRhythmGame,
-    toolVoiceLeading,
-    toolSpeedTrainer,
-    toolKeySigGame,
-    toolPracticePlanner,
-    premium,
-    monetizationMessaging,
-    classrooms,
-    i18nEnabled,
-  };
+  const i18nEnabled = flags.i18nEnabled;
 
   // Locale resolution + URL-prefix routing. One set of page files serves every locale: a `/zh/…`
   // request is rewritten to its canonical (un-prefixed) path while the browser URL is left unchanged,
@@ -540,8 +133,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
       }
     }
   }
-
-  context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
 
   // Load the DB-backed UI-string catalogue for the active locale (ADR 0034). This populates the i18n
   // engine registry so SSR `t()` resolves from the DB, and yields the blob BaseLayout serializes for the

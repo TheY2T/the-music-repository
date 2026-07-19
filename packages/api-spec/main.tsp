@@ -1789,3 +1789,275 @@ op listTranslationRevisions(@path id: string): TranslationRevisionList;
 @tag("localization")
 @post
 op publishTranslations(@body body: TranslationPublishInput): TranslationPublishResult;
+
+// ===================== Feature flags (ADR 00XX) =====================
+// Flag configuration lives in the DB and is toggled per environment via the admin CMS with no redeploy.
+// The public snapshot feeds the web SSR OpenFeature provider (@TheY2T/tmr-flags-eval); it is cache-busted
+// by a per-environment version tag (ETag / conditional GET → 304). Admin CRUD ops land in a later slice.
+
+/** One flag's resolved configuration for an environment (as evaluated by @TheY2T/tmr-flags-eval). */
+model FeatureFlagSettingDto {
+  key: string;
+
+  /** Admin master switch for this environment (off ⇒ the feature is off). */
+  enabled: boolean;
+
+  /** Variant returned when enabled and no targeting rule matches (e.g. "on"). */
+  defaultVariant: string;
+
+  /** Named variant → value map (e.g. { on: true, off: false }). */
+  variants: Record<unknown>;
+
+  /** Optional flagd-style JSONLogic targeting rule; null ⇒ use defaultVariant. */
+  targeting: unknown;
+
+  /** Code-registry fallback used if a variant can't be resolved. */
+  defaultValue: unknown;
+}
+
+/** The full evaluatable snapshot for one environment + its version tag. */
+model FeatureFlagSnapshot {
+  environment: string;
+  version: string;
+  flags: Record<FeatureFlagSettingDto>;
+}
+
+/** A deployable environment flags can be targeted at. */
+model FeatureFlagEnvironmentDto {
+  key: string;
+  label: string;
+  rank: int32;
+  isDefault: boolean;
+}
+
+model FeatureFlagEnvironmentList {
+  items: FeatureFlagEnvironmentDto[];
+}
+
+/** The evaluatable snapshot for an environment (public; consumed by the web SSR provider). Cache-busted
+ *  by the per-environment version via ETag / conditional GET → 304. */
+@route("/feature-flags/snapshot/{env}")
+@tag("feature-flags")
+@get
+op getFeatureFlagSnapshot(@path env: string): FeatureFlagSnapshot;
+
+/** The active (non-deleted, non-archived) environments, for the admin environment picker. */
+@route("/feature-flags/environments")
+@tag("feature-flags")
+@get
+op listFeatureFlagEnvironments(): FeatureFlagEnvironmentList;
+
+// --- Feature-flag admin CRUD (ADR 00XX) — RBAC-gated (`featureFlags` resource, admin-only) + method-level
+//     flag-gated on `admin.feature-flags`. Toggles apply immediately (no draft/publish); the revision log
+//     is the safety net. Every write bumps the affected environment's version tag. ---
+
+model FeatureFlagSettingAdmin {
+  environmentId: string;
+  environmentKey: string;
+  enabled: boolean;
+  defaultVariant: string;
+  variants: Record<unknown>;
+  targeting: unknown;
+}
+
+model FeatureFlagAdminRow {
+  id: string;
+  key: string;
+  description: string;
+  domain: string;
+  flagType: string;
+  defaultValue: unknown;
+  source: string; // code | runtime
+  seeded: boolean;
+  deleted: boolean;
+  updatedAt: string;
+  updatedBy?: string;
+  settings: FeatureFlagSettingAdmin[];
+}
+
+model FeatureFlagAdminList {
+  items: FeatureFlagAdminRow[];
+}
+
+/** Create a new (runtime) flag; initialised disabled in every environment. */
+model CreateFeatureFlagInput {
+  key: string;
+  description?: string;
+  defaultValue?: boolean;
+}
+
+/** Edit a flag's registry fields (not per-environment). */
+model UpdateFeatureFlagInput {
+  description?: string;
+  defaultValue?: boolean;
+}
+
+/** Upsert one flag's per-environment setting (the core toggle + targeting). */
+model FlagSettingWriteInput {
+  enabled?: boolean;
+  defaultVariant?: string;
+  variants?: Record<unknown>;
+  targeting?: unknown;
+}
+
+model FlagRevisionRow {
+  id: string;
+  flagId?: string;
+  flagKey?: string;
+  environmentId?: string;
+  environmentKey?: string;
+  action: string;
+  before?: unknown;
+  after?: unknown;
+  actorId?: string;
+  createdAt: string;
+}
+
+model FlagRevisionList {
+  items: FlagRevisionRow[];
+}
+
+model FlagEnvironmentAdminRow {
+  id: string;
+  key: string;
+  label: string;
+  rank: int32;
+  isDefault: boolean;
+  archived: boolean;
+  deleted: boolean;
+  updatedAt: string;
+}
+
+model FlagEnvironmentAdminList {
+  items: FlagEnvironmentAdminRow[];
+}
+
+model CreateEnvironmentInput {
+  key: string;
+  label: string;
+  rank?: int32;
+  isDefault?: boolean;
+}
+
+model UpdateEnvironmentInput {
+  label?: string;
+  rank?: int32;
+  isDefault?: boolean;
+  archived?: boolean;
+}
+
+/** Bulk-import flags from a flags.json-shaped map (`key → { variants, defaultVariant, targeting, … }`). */
+model ImportFlagsInput {
+  entries: Record<unknown>;
+}
+
+model ImportFlagsResult {
+  imported: int32;
+}
+
+/** List flags with their per-environment settings for the admin matrix. */
+@route("/admin/feature-flags/flags")
+@tag("feature-flags")
+@get
+op listFeatureFlags(
+  @query search?: string,
+  @query domain?: string,
+  @query includeDeleted?: boolean,
+): FeatureFlagAdminList;
+
+/** Create a new runtime flag. */
+@route("/admin/feature-flags/flags")
+@tag("feature-flags")
+@post
+op createFeatureFlag(@body body: CreateFeatureFlagInput): {
+  @statusCode statusCode: 201;
+  @body body: FeatureFlagAdminRow;
+};
+
+/** Edit a flag's registry fields. */
+@route("/admin/feature-flags/flags/{id}")
+@tag("feature-flags")
+@put
+op updateFeatureFlag(@path id: string, @body body: UpdateFeatureFlagInput): FeatureFlagAdminRow | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+/** Soft-delete a flag (restorable). */
+@route("/admin/feature-flags/flags/{id}")
+@tag("feature-flags")
+@delete
+op deleteFeatureFlag(@path id: string): FeatureFlagAdminRow | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+/** Restore a soft-deleted flag. */
+@route("/admin/feature-flags/flags/{id}/restore")
+@tag("feature-flags")
+@post
+op restoreFeatureFlag(@path id: string): FeatureFlagAdminRow;
+
+/** Upsert one flag's setting for one environment (enable/disable + targeting). */
+@route("/admin/feature-flags/flags/{id}/settings/{envId}")
+@tag("feature-flags")
+@put
+op upsertFlagSetting(
+  @path id: string,
+  @path envId: string,
+  @body body: FlagSettingWriteInput,
+): FeatureFlagAdminRow | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+/** A flag's change history (newest first). */
+@route("/admin/feature-flags/flags/{id}/revisions")
+@tag("feature-flags")
+@get
+op listFeatureFlagRevisions(@path id: string): FlagRevisionList;
+
+/** The whole change history (newest first). */
+@route("/admin/feature-flags/revisions")
+@tag("feature-flags")
+@get
+op listAllFeatureFlagRevisions(): FlagRevisionList;
+
+/** Bulk-import flags from a flags.json-shaped payload. */
+@route("/admin/feature-flags/import")
+@tag("feature-flags")
+@post
+op importFeatureFlags(@body body: ImportFlagsInput): ImportFlagsResult;
+
+/** List environments (for the admin environment manager). */
+@route("/admin/feature-flags/environments")
+@tag("feature-flags")
+@get
+op listAdminEnvironments(@query includeInactive?: boolean): FlagEnvironmentAdminList;
+
+/** Create a new environment (backfills a setting for every flag). */
+@route("/admin/feature-flags/environments")
+@tag("feature-flags")
+@post
+op createEnvironment(@body body: CreateEnvironmentInput): {
+  @statusCode statusCode: 201;
+  @body body: FlagEnvironmentAdminRow;
+};
+
+/** Edit an environment. */
+@route("/admin/feature-flags/environments/{id}")
+@tag("feature-flags")
+@put
+op updateEnvironment(@path id: string, @body body: UpdateEnvironmentInput): FlagEnvironmentAdminRow | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};
+
+/** Soft-delete an environment. */
+@route("/admin/feature-flags/environments/{id}")
+@tag("feature-flags")
+@delete
+op deleteEnvironment(@path id: string): FlagEnvironmentAdminRow | {
+  @statusCode statusCode: 404;
+  @body body: ProblemDetails;
+};

@@ -47,6 +47,9 @@
     },
     {
       "name": "localization"
+    },
+    {
+      "name": "feature-flags"
     }
   ],
   "paths": {
@@ -338,6 +341,503 @@
         },
         "tags": [
           "collections"
+        ]
+      }
+    },
+    "/admin/feature-flags/environments": {
+      "get": {
+        "operationId": "listAdminEnvironments",
+        "description": "List environments (for the admin environment manager).",
+        "parameters": [
+          {
+            "name": "includeInactive",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlagEnvironmentAdminList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feature-flags"
+        ]
+      },
+      "post": {
+        "operationId": "createEnvironment",
+        "description": "Create a new environment (backfills a setting for every flag).",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlagEnvironmentAdminRow"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feature-flags"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEnvironmentInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/feature-flags/environments/{id}": {
+      "put": {
+        "operationId": "updateEnvironment",
+        "description": "Edit an environment.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlagEnvironmentAdminRow"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feature-flags"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEnvironmentInput"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteEnvironment",
+        "description": "Soft-delete an environment.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlagEnvironmentAdminRow"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feature-flags"
+        ]
+      }
+    },
+    "/admin/feature-flags/flags": {
+      "get": {
+        "operationId": "listFeatureFlags",
+        "description": "List flags with their per-environment settings for the admin matrix.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "includeDeleted",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureFlagAdminList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feature-flags"
+        ]
+      },
+      "post": {
+        "operationId": "createFeatureFlag",
+        "description": "Create a new runtime flag.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureFlagAdminRow"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feature-flags"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFeatureFlagInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/feature-flags/flags/{id}": {
+      "put": {
+        "operationId": "updateFeatureFlag",
+        "description": "Edit a flag's registry fields.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureFlagAdminRow"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feature-flags"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFeatureFlagInput"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteFeatureFlag",
+        "description": "Soft-delete a flag (restorable).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureFlagAdminRow"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feature-flags"
+        ]
+      }
+    },
+    "/admin/feature-flags/flags/{id}/restore": {
+      "post": {
+        "operationId": "restoreFeatureFlag",
+        "description": "Restore a soft-deleted flag.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureFlagAdminRow"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feature-flags"
+        ]
+      }
+    },
+    "/admin/feature-flags/flags/{id}/revisions": {
+      "get": {
+        "operationId": "listFeatureFlagRevisions",
+        "description": "A flag's change history (newest first).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlagRevisionList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feature-flags"
+        ]
+      }
+    },
+    "/admin/feature-flags/flags/{id}/settings/{envId}": {
+      "put": {
+        "operationId": "upsertFlagSetting",
+        "description": "Upsert one flag's setting for one environment (enable/disable + targeting).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "envId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureFlagAdminRow"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feature-flags"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlagSettingWriteInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/feature-flags/import": {
+      "post": {
+        "operationId": "importFeatureFlags",
+        "description": "Bulk-import flags from a flags.json-shaped payload.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportFlagsResult"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feature-flags"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportFlagsInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/feature-flags/revisions": {
+      "get": {
+        "operationId": "listAllFeatureFlagRevisions",
+        "description": "The whole change history (newest first).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlagRevisionList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feature-flags"
         ]
       }
     },
@@ -2549,6 +3049,59 @@
         },
         "tags": [
           "demo"
+        ]
+      }
+    },
+    "/feature-flags/environments": {
+      "get": {
+        "operationId": "listFeatureFlagEnvironments",
+        "description": "The active (non-deleted, non-archived) environments, for the admin environment picker.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureFlagEnvironmentList"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feature-flags"
+        ]
+      }
+    },
+    "/feature-flags/snapshot/{env}": {
+      "get": {
+        "operationId": "getFeatureFlagSnapshot",
+        "description": "The evaluatable snapshot for an environment (public; consumed by the web SSR provider). Cache-busted\nby the per-environment version via ETag / conditional GET → 304.",
+        "parameters": [
+          {
+            "name": "env",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureFlagSnapshot"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "feature-flags"
         ]
       }
     },
@@ -5455,6 +6008,46 @@
           }
         }
       },
+      "CreateEnvironmentInput": {
+        "type": "object",
+        "required": [
+          "key",
+          "label"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "rank": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isDefault": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreateFeatureFlagInput": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "boolean"
+          }
+        },
+        "description": "Create a new (runtime) flag; initialised disabled in every environment."
+      },
       "CreateLocaleInput": {
         "type": "object",
         "required": [
@@ -5817,6 +6410,324 @@
           }
         }
       },
+      "FeatureFlagAdminList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeatureFlagAdminRow"
+            }
+          }
+        }
+      },
+      "FeatureFlagAdminRow": {
+        "type": "object",
+        "required": [
+          "id",
+          "key",
+          "description",
+          "domain",
+          "flagType",
+          "defaultValue",
+          "source",
+          "seeded",
+          "deleted",
+          "updatedAt",
+          "settings"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "flagType": {
+            "type": "string"
+          },
+          "defaultValue": {},
+          "source": {
+            "type": "string"
+          },
+          "seeded": {
+            "type": "boolean"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "updatedBy": {
+            "type": "string"
+          },
+          "settings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeatureFlagSettingAdmin"
+            }
+          }
+        }
+      },
+      "FeatureFlagEnvironmentDto": {
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "rank",
+          "isDefault"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "rank": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isDefault": {
+            "type": "boolean"
+          }
+        },
+        "description": "A deployable environment flags can be targeted at."
+      },
+      "FeatureFlagEnvironmentList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeatureFlagEnvironmentDto"
+            }
+          }
+        }
+      },
+      "FeatureFlagSettingAdmin": {
+        "type": "object",
+        "required": [
+          "environmentId",
+          "environmentKey",
+          "enabled",
+          "defaultVariant",
+          "variants",
+          "targeting"
+        ],
+        "properties": {
+          "environmentId": {
+            "type": "string"
+          },
+          "environmentKey": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "defaultVariant": {
+            "type": "string"
+          },
+          "variants": {
+            "type": "object",
+            "unevaluatedProperties": {}
+          },
+          "targeting": {}
+        }
+      },
+      "FeatureFlagSettingDto": {
+        "type": "object",
+        "required": [
+          "key",
+          "enabled",
+          "defaultVariant",
+          "variants",
+          "targeting",
+          "defaultValue"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Admin master switch for this environment (off ⇒ the feature is off)."
+          },
+          "defaultVariant": {
+            "type": "string",
+            "description": "Variant returned when enabled and no targeting rule matches (e.g. \"on\")."
+          },
+          "variants": {
+            "type": "object",
+            "unevaluatedProperties": {},
+            "description": "Named variant → value map (e.g. { on: true, off: false })."
+          },
+          "targeting": {
+            "description": "Optional flagd-style JSONLogic targeting rule; null ⇒ use defaultVariant."
+          },
+          "defaultValue": {
+            "description": "Code-registry fallback used if a variant can't be resolved."
+          }
+        },
+        "description": "One flag's resolved configuration for an environment (as evaluated by"
+      },
+      "FeatureFlagSnapshot": {
+        "type": "object",
+        "required": [
+          "environment",
+          "version",
+          "flags"
+        ],
+        "properties": {
+          "environment": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "flags": {
+            "type": "object",
+            "unevaluatedProperties": {
+              "$ref": "#/components/schemas/FeatureFlagSettingDto"
+            }
+          }
+        },
+        "description": "The full evaluatable snapshot for one environment + its version tag."
+      },
+      "FlagEnvironmentAdminList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlagEnvironmentAdminRow"
+            }
+          }
+        }
+      },
+      "FlagEnvironmentAdminRow": {
+        "type": "object",
+        "required": [
+          "id",
+          "key",
+          "label",
+          "rank",
+          "isDefault",
+          "archived",
+          "deleted",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "rank": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        }
+      },
+      "FlagRevisionList": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlagRevisionRow"
+            }
+          }
+        }
+      },
+      "FlagRevisionRow": {
+        "type": "object",
+        "required": [
+          "id",
+          "action",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "flagId": {
+            "type": "string"
+          },
+          "flagKey": {
+            "type": "string"
+          },
+          "environmentId": {
+            "type": "string"
+          },
+          "environmentKey": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "before": {},
+          "after": {},
+          "actorId": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        }
+      },
+      "FlagSettingWriteInput": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "defaultVariant": {
+            "type": "string"
+          },
+          "variants": {
+            "type": "object",
+            "unevaluatedProperties": {}
+          },
+          "targeting": {}
+        },
+        "description": "Upsert one flag's per-environment setting (the core toggle + targeting)."
+      },
       "HealthChecks": {
         "type": "object",
         "required": [
@@ -5926,6 +6837,31 @@
           },
           "linkSlug": {
             "type": "string"
+          }
+        }
+      },
+      "ImportFlagsInput": {
+        "type": "object",
+        "required": [
+          "entries"
+        ],
+        "properties": {
+          "entries": {
+            "type": "object",
+            "unevaluatedProperties": {}
+          }
+        },
+        "description": "Bulk-import flags from a flags.json-shaped map (`key → { variants, defaultVariant, targeting, … }`)."
+      },
+      "ImportFlagsResult": {
+        "type": "object",
+        "required": [
+          "imported"
+        ],
+        "properties": {
+          "imported": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -6884,6 +7820,36 @@
           }
         },
         "description": "Create a new message string (starts as a draft, `seeded=false`)."
+      },
+      "UpdateEnvironmentInput": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "rank": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "archived": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdateFeatureFlagInput": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "boolean"
+          }
+        },
+        "description": "Edit a flag's registry fields (not per-environment)."
       },
       "UserCollectionWriteInput": {
         "type": "object",

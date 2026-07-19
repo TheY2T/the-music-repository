@@ -28,7 +28,7 @@ The full build plan is at `~/.claude/plans/mutable-inventing-acorn.md`.
 ## Stack
 
 Turborepo + pnpm workspaces (+ **catalogs**) · Astro SSR + React islands + Tailwind v4 + shadcn
-(`apps/web`) · NestJS hexagonal + Postgres/Drizzle (`apps/api`) · OpenFeature + flagd (flags) ·
+(`apps/web`) · NestJS hexagonal + Postgres/Drizzle (`apps/api`) · OpenFeature + DB-backed flags (ADR 0035) ·
 Biome + thin ESLint · podman-compose deploy.
 
 **Platform (Phase P) — every backend feature uses these:**
@@ -89,8 +89,11 @@ Biome + thin ESLint · podman-compose deploy.
   `@TheY2T/tmr-i18n-locales` JSON is the DB **seed** + compile-time `MessageKey` type + fallback, so a
   brand-new code-referenced key still gets added there once. URL-prefix routing (`/zh/…`), gated by
   `platform.i18n`. Follow the **`add-translations`** skill. ADR 0017/0034.
-- **Ship features behind a flag.** Add the key to `@TheY2T/tmr-flags`, define it in
-  `flags/flags.json`, gate with `@RequireFlagsEnabled` (api) / `useFlag` (web).
+- **Ship features behind a flag (DB-backed, per-environment; ADR 0035).** Add the key to
+  `@TheY2T/tmr-flags` (`FlagKeys` + `FlagDefaults`) + map its web field in `FLAG_FIELD_BY_KEY`
+  (`@TheY2T/tmr-web-data`), gate with `@RequireFlagsEnabled` (api) / `Astro.locals.flags` prop (web); it
+  **seeds into the DB** on `db:seed`. Toggle per environment in the admin CMS (`/admin/feature-flags`) with
+  **no redeploy** — flagd is gone. Follow the **`manage-flags`** skill.
 - **Test every feature (Definition of Done).** Ship tests with the code: **unit** for logic/use-cases
   (mock **ports**, never Drizzle), **component** for islands/UI (i18n-by-prop), **E2E** for user flows.
   Vitest (unit/component) + Playwright (E2E) + Testcontainers (api integration); shared runner config
@@ -111,6 +114,14 @@ Biome + thin ESLint · podman-compose deploy.
 kebab-case files in `apps/api`; PascalCase component files in `apps/web`; Astro pages lowercase/kebab;
 PascalCase types/classes; camelCase vars; UPPER_SNAKE constants/env; snake_case DB columns.
 
+## Comments & copy — describe current functionality only
+
+In UI copy, docs, and code comments/JSDoc, describe **what the thing does**, written as if the code was
+always this way. **No change-narration or editorializing** — drop "drop-in replacement for X", "replaces
+the old Y", "now backed by…", "unchanged after the swap", "mirrors Z", "Phase N", and marketing asides
+("no redeploy", "instantly", "safety net"). Nobody (user, admin, developer) benefits from what it used to
+be. ADRs are the exception — they record decisions and what they supersede.
+
 ## Commands
 
 ```bash
@@ -122,7 +133,7 @@ pnpm build | pnpm lint | pnpm check-types | pnpm test   # turbo across workspace
 pnpm test:coverage | pnpm test:integration              # v8 coverage · api Testcontainers (Docker)
 pnpm test:e2e | pnpm test:e2e:live                      # Playwright: mocked (hermetic) · full stack
 pnpm --filter @TheY2T/tmr-api db:generate               # drizzle migration from schema
-pnpm infra:up                                           # backing services only: db+flagd+meili+minio (run api/web on host); infra:down to stop
+pnpm infra:up                                           # backing services only: db+meili+minio (run api/web on host); infra:down to stop
 pnpm app:up                                             # full containerized app: infra + api + web via `--profile app` (builds images); app:down to stop
 pnpm obs:up                                             # optional observability stack (separate project); obs:down to stop
 ```
@@ -149,10 +160,11 @@ pnpm obs:up                                             # optional observability
   tooling and typescript-eslint). Don't bump these blindly.
 - Don't set `rootDir`/`outDir` in the shared `config-typescript/*.json` — TS resolves those relative
   to the config package, not the consumer. Set output paths in each app's own tsconfig.
-- flagd must be running (`pnpm infra:up`) for live flag evaluation; otherwise providers return
-  defaults and a single `[FeatureFlags] Could not reach flagd … run pnpm infra:up` hint is logged
-  (the raw connection stack is suppressed by `apps/*/…/flagd-logger`). Don't add a disable-flag env
-  toggle — the graceful hint is the intended behaviour.
+- **Feature flags are DB-backed (ADR 0035), not flagd.** The api evaluates in-process from Postgres for
+  `APP_ENV`; the web SSR fetches `GET /feature-flags/snapshot/:env` (ETag/304) and evaluates with the same
+  `@TheY2T/tmr-flags-eval` engine. Toggle per-environment in `/admin/feature-flags` (no redeploy). If the
+  snapshot source is unreachable, flags fall back to code `FlagDefaults` (the app still boots). There is no
+  flagd container / `flags/flags.json` — don't reintroduce them.
 - **PixiJS is client-only + lazy (web).** The WebGL layer (ADR 0022) is added via
   `apps/web/src/components/PixiCanvas.tsx` — it lazy-imports scenes and renders an accessible DOM
   fallback during SSR, so tool pages keep `client:load`. `pixi.js`/`@pixi/react` are cataloged (one

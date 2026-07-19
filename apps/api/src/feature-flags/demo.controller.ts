@@ -4,9 +4,9 @@ import { OpenFeatureClient, RequireFlagsEnabled } from '@openfeature/nestjs-sdk'
 import type { Client } from '@openfeature/server-sdk';
 
 /**
- * Phase 0 demo of the feature-flag rig. `GET /demo/flags` always responds with the current
- * value (consumed by the web health island); `GET /demo/banner` is gated by the flag and 404s
- * when it is disabled — proving both imperative evaluation and route gating.
+ * Demo of the feature-flag rig. `GET /demo/flags` returns the current value (consumed by the web health
+ * island); `GET /demo/banner` is gated by the flag and 404s when it is disabled — exercising both
+ * imperative evaluation and route gating.
  */
 @Controller('demo')
 export class DemoController {

@@ -1,48 +1,49 @@
 ---
 name: manage-flags
-description: Add, gate, and verify an OpenFeature/flagd feature flag in The Music Repository — register the typed key in @TheY2T/tmr-flags, define it in flags/flags.json, then gate the API route (@RequireFlagsEnabled) and web usage (SSR eval → island prop). Use whenever shipping a feature behind a flag or wiring an existing flag. See docs/features/feature-flags.md + ADR 0003.
+description: Add, gate, toggle, and verify a DB-backed feature flag in The Music Repository — register the typed key in @TheY2T/tmr-flags, map its web field, gate the API route (@RequireFlagsEnabled) and web usage (SSR eval → island prop), then toggle it per-environment in the admin CMS (/admin/feature-flags) with no redeploy. Use whenever shipping a feature behind a flag or wiring an existing flag. See docs/features/feature-flags.md + ADR 0035.
 ---
 
 # manage-flags
 
-Every feature ships behind a flag. A flag has **two sources that must stay in sync** — the typed key
-registry and the flagd config — plus the gates that read it.
+Flag **config is DB-backed** and toggled **per environment** in the admin CMS with **no redeploy** (ADR
+0035). The OpenFeature abstraction is kept — every gate site is unchanged — but the provider is a custom
+Postgres-backed one (`@TheY2T/tmr-flags-eval`); **flagd is gone**. To *ship* a new code flag you touch the
+typed registry + the gate; to *toggle* an existing one you use the CMS.
 
-## 1. Register the key (source of truth)
+## 1. Register the key (type source + DB seed + fallback)
 
-Add to `FlagKeys` in `packages/flags/src/index.ts`. Naming convention: **`<domain>.<capability>`**
-(e.g. `learning.collections`, `tools.keyboard`, `monetization.premium`). Add a one-line JSDoc saying what
-it gates + its phase. This registry is imported by **both** the API and web, so keys evaluate identically.
+Add to `FlagKeys` **and** a boolean to `FlagDefaults` in `packages/flags/src/index.ts`. Naming:
+**`<domain>.<capability>`** (e.g. `learning.collections`, `tools.keyboard`). One-line JSDoc = what it
+gates + phase. This registry is imported by both API and web, **seeds the DB** (`seed-feature-flags.ts`,
+idempotent), and is the **fallback** when the snapshot source is down. If the flag needs a rollout/role
+rule at seed time, add it to `FlagTargeting` in the same file.
 
-## 2. Define it in flagd
+## 2. Map the web field
 
-Add the flag to `flags/flags.json` (flagd schema):
-
-```json
-"<domain>.<capability>": {
-  "state": "ENABLED",
-  "variants": { "on": true, "off": false },
-  "defaultVariant": "on"
-}
-```
-
-Deferred/not-ready features default `"off"`. Keep the `FlagDefaults` (if the feature has one) consistent.
+Add the key → its camelCase `Astro.locals.flags` field in `FLAG_FIELD_BY_KEY`
+(`packages/web-data/src/flags.ts`). The `Flags` type derives from this map — a missing mapping won't
+compile. (Bespoke names exist: `platform.i18n` → `i18nEnabled`, `learning.dashboard` → `learnerDashboard`.)
 
 ## 3. Gate the code
 
-- **API:** `@RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.X }] })` on the route. Use **method-level**
-  for deferred features — a class-level decorator drops the route mapping entirely. Evaluate imperatively
-  with an injected `@OpenFeatureClient()` when you need a value mid-use-case.
-- **Web:** `src/middleware.ts` evaluates flags per request into `Astro.locals.flags`. Read the flag in the
-  page frontmatter and **pass it into the island as a prop** so first paint matches the server — never call
-  `useFlag` inside an island for gating.
+- **API:** `@RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.X }] })` on the route — **method-level**
+  (class-level drops the route mapping). Evaluate imperatively with an injected `@OpenFeatureClient()` when
+  you need a value mid-use-case (the provider now reads the DB, not flagd).
+- **Web:** the middleware evaluates flags per request into `Astro.locals.flags`. Read the flag in the page
+  frontmatter and **pass it into the island as a prop** — never `useFlag` inside an island for gating.
 
-## 4. Verify
+## 4. Seed + toggle
 
-- **Reload flagd after adding a key:** `docker compose -f infra/podman/compose.yaml restart flagd` — a new
-  key that flagd hasn't loaded makes `@RequireFlagsEnabled` route-gates **404** (while the imperative
-  `getBooleanValue(default)` path still returns the default). This is the #1 gotcha.
-- flagd must be running (`pnpm infra:up`); without it, providers return defaults and log one graceful hint.
-  **Don't** add a disable-flag env toggle — the hint is intended behaviour.
-- Toggle the flag off and confirm the feature disappears (API 404s / route redirects; web hides the UI).
+- **New code key:** `pnpm --filter @TheY2T/tmr-api db:seed` (idempotent — seeds the flag into every
+  environment; never clobbers admin edits). No flagd reload, no `flags.json`.
+- **Toggle an existing flag:** in `/admin/feature-flags` pick the environment and flip **Enabled** (or edit
+  its targeting). It applies **immediately** — the env version tag bumps and the API/web caches invalidate
+  within a request. Mutations are admin-only (RBAC `featureFlags`). The CMS refuses to disable
+  `admin.feature-flags`/`admin.cms` in the environment you're resolving through (self-lockout guardrail).
+
+## 5. Verify
+
+- `curl :3000/feature-flags/snapshot/dev` shows the flag; toggle it off for `dev` in the CMS → the gated
+  route flips (API 404 / web redirect) with **no restart**, while `uat`/`prod` stay as they were.
+- If the API/snapshot is unreachable, flags fall back to code `FlagDefaults` (the app still boots).
 - Add the flag key to the feature's `docs/features/<feature>.md` (**`add-feature-doc`**).

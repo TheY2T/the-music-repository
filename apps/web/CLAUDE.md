@@ -88,8 +88,11 @@ there, not inline per-page.**
 
 ## Feature flags & testing
 
-- **Flags** (`.claude/rules/flags.md`, **`manage-flags`**) — `middleware.ts` evaluates per request into
-  `Astro.locals.flags`; **pass values into islands as props** so first paint matches the server.
+- **Flags** (`.claude/rules/flags.md`, **`manage-flags`**, ADR 0035) — **DB-backed** (no flagd):
+  `middleware.ts` fetches `GET /feature-flags/snapshot/:APP_ENV` from the API and evaluates per request into
+  `Astro.locals.flags` (typed, derived from the registry) + `Astro.locals.flagSnapshot` (raw map incl.
+  admin-created runtime keys). **Pass values into islands as props** so first paint matches the server.
+  Toggle per-environment in `/admin/feature-flags` (no redeploy).
 - **Testing** (`.claude/rules/testing.md`, ADR 0020) — Vitest unit/component (i18n-by-prop, render the
   island root; `.astro` covered by E2E) + Playwright E2E (mock default / `TMR_E2E_MODE=live`). Islands that
   hit the duplicate-React optimizer (Pixi/`smplr`) are E2E-only. Clean up test artifacts after runs.

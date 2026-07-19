@@ -12,6 +12,8 @@ export const statement = {
   taxonomy: ['create', 'read', 'update', 'delete'],
   // Teacher mode: only teachers (and admins) may create classrooms.
   classroom: ['create'],
+  // Feature-flag admin (ADR 00XX): mutations are admin-only (flags can gate auth); editors read-only.
+  featureFlags: ['create', 'read', 'update', 'delete'],
 } as const;
 
 export const ac = createAccessControl(statement);
@@ -23,11 +25,13 @@ export const roles = {
     media: ['create', 'read', 'delete'],
     taxonomy: ['create', 'read', 'update', 'delete'],
     classroom: ['create'],
+    featureFlags: ['create', 'read', 'update', 'delete'],
   }),
   editor: ac.newRole({
     content: ['create', 'read', 'update', 'publish'],
     media: ['create', 'read', 'delete'],
     taxonomy: ['create', 'read', 'update'],
+    featureFlags: ['read'],
   }),
   teacher: ac.newRole({
     content: ['read'],

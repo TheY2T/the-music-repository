@@ -17,11 +17,13 @@ export default function AdminNav({
   showCollections,
   showHelp,
   showLocaleStrings,
+  showFeatureFlags,
 }: {
   locale: Locale;
   showCollections: boolean;
   showHelp: boolean;
   showLocaleStrings?: boolean;
+  showFeatureFlags?: boolean;
 }) {
   const tiles: Tile[] = [
     {
@@ -53,6 +55,14 @@ export default function AdminNav({
       icon: 'globe',
       title: t(locale, 'admin.localization'),
       description: t(locale, 'admin.localizationDesc'),
+    });
+  }
+  if (showFeatureFlags) {
+    tiles.push({
+      href: localizedPath(locale, '/admin/feature-flags'),
+      icon: 'sliders',
+      title: t(locale, 'admin.featureFlags'),
+      description: t(locale, 'admin.featureFlagsDesc'),
     });
   }
 

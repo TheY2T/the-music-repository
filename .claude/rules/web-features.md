@@ -35,8 +35,11 @@ UX-only (the API re-authorizes mutations). Client auth: `src/lib/auth-client.ts`
 
 ## Feature-flag SSR pattern
 
-`src/middleware.ts` evaluates flags per request into `Astro.locals.flags`; **pass values into islands as
-props** so first paint matches the server (never read flags inside an island). Follow **`manage-flags`**.
+Flags are **DB-backed** (ADR 0035, no flagd): `src/middleware.ts` fetches the per-env snapshot from the API
+(`GET /feature-flags/snapshot/:APP_ENV`, ETag/304) and evaluates per request into `Astro.locals.flags`
+(typed, one field per code key) + `Astro.locals.flagSnapshot` (raw map incl. runtime keys). **Pass values
+into islands as props** so first paint matches the server (never read flags inside an island). Toggle
+per-environment in `/admin/feature-flags`. Follow **`manage-flags`**.
 
 ## Feature docs (read before editing)
 

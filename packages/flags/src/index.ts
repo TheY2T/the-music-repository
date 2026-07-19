@@ -200,6 +200,9 @@ export const FlagKeys = {
   I18n: 'platform.i18n',
   /** Localization CMS (ADR 0034) — gates the admin surface for editing DB-backed UI message strings. */
   LocaleStrings: 'admin.locale-strings',
+  /** Feature-flag admin (ADR 0035) — gates `/admin/feature-flags` (flag CRUD + per-env targeting).
+   *  Defaults ON; the CMS refuses to disable it in the resolved environment (self-lockout guardrail). */
+  FeatureFlags: 'admin.feature-flags',
 } as const;
 
 export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
@@ -296,4 +299,26 @@ export const FlagDefaults = {
   [FlagKeys.Classrooms]: true,
   [FlagKeys.I18n]: true,
   [FlagKeys.LocaleStrings]: true,
+  [FlagKeys.FeatureFlags]: true,
 } satisfies Record<FlagKey, boolean>;
+
+/**
+ * Authored targeting rules for the flag seed (ADR 0035). Keyed by flag key; the value is a JSONLogic rule
+ * (see `@TheY2T/tmr-flags-eval`). Only flags with a non-trivial rollout appear here — everything else seeds
+ * as a plain per-environment on/off. The seeder copies these into `feature_flag_settings.targeting`.
+ */
+export const FlagTargeting: Partial<Record<FlagKey, Record<string, unknown>>> = {
+  // beta role → on; everyone else → a 10% rollout bucketed by targeting key.
+  [FlagKeys.DemoNewBanner]: {
+    if: [
+      { in: ['beta', { var: 'roles' }] },
+      'on',
+      {
+        fractional: [
+          ['on', 10],
+          ['off', 90],
+        ],
+      },
+    ],
+  },
+};

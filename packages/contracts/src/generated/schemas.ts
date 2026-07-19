@@ -837,6 +837,363 @@ export const UnpublishCollectionResponse = zod.object({
 }).describe('Full collection with its ordered items grouped into sections.')
 
 
+/**
+ * List environments (for the admin environment manager).
+ */
+export const ListAdminEnvironmentsQueryParams = zod.object({
+  "includeInactive": zod.boolean().optional()
+})
+
+export const ListAdminEnvironmentsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "label": zod.string(),
+  "rank": zod.number(),
+  "isDefault": zod.boolean(),
+  "archived": zod.boolean(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+}))
+})
+
+
+/**
+ * Create a new environment (backfills a setting for every flag).
+ */
+export const CreateEnvironmentBody = zod.object({
+  "key": zod.string(),
+  "label": zod.string(),
+  "rank": zod.number().optional(),
+  "isDefault": zod.boolean().optional()
+})
+
+export const CreateEnvironmentResponse = zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "label": zod.string(),
+  "rank": zod.number(),
+  "isDefault": zod.boolean(),
+  "archived": zod.boolean(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * Edit an environment.
+ */
+export const UpdateEnvironmentParams = zod.object({
+  "id": zod.string()
+})
+
+export const UpdateEnvironmentBody = zod.object({
+  "label": zod.string().optional(),
+  "rank": zod.number().optional(),
+  "isDefault": zod.boolean().optional(),
+  "archived": zod.boolean().optional()
+})
+
+export const UpdateEnvironmentResponse = zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "label": zod.string(),
+  "rank": zod.number(),
+  "isDefault": zod.boolean(),
+  "archived": zod.boolean(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * Soft-delete an environment.
+ */
+export const DeleteEnvironmentParams = zod.object({
+  "id": zod.string()
+})
+
+export const DeleteEnvironmentResponse = zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "label": zod.string(),
+  "rank": zod.number(),
+  "isDefault": zod.boolean(),
+  "archived": zod.boolean(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * List flags with their per-environment settings for the admin matrix.
+ */
+export const ListFeatureFlagsQueryParams = zod.object({
+  "search": zod.string().optional(),
+  "domain": zod.string().optional(),
+  "includeDeleted": zod.boolean().optional()
+})
+
+export const ListFeatureFlagsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "description": zod.string(),
+  "domain": zod.string(),
+  "flagType": zod.string(),
+  "defaultValue": zod.unknown(),
+  "source": zod.string(),
+  "seeded": zod.boolean(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional(),
+  "settings": zod.array(zod.object({
+  "environmentId": zod.string(),
+  "environmentKey": zod.string(),
+  "enabled": zod.boolean(),
+  "defaultVariant": zod.string(),
+  "variants": zod.looseObject({
+
+}),
+  "targeting": zod.unknown()
+}))
+}))
+})
+
+
+/**
+ * Create a new runtime flag.
+ */
+export const CreateFeatureFlagBody = zod.object({
+  "key": zod.string(),
+  "description": zod.string().optional(),
+  "defaultValue": zod.boolean().optional()
+}).describe('Create a new (runtime) flag; initialised disabled in every environment.')
+
+export const CreateFeatureFlagResponse = zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "description": zod.string(),
+  "domain": zod.string(),
+  "flagType": zod.string(),
+  "defaultValue": zod.unknown(),
+  "source": zod.string(),
+  "seeded": zod.boolean(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional(),
+  "settings": zod.array(zod.object({
+  "environmentId": zod.string(),
+  "environmentKey": zod.string(),
+  "enabled": zod.boolean(),
+  "defaultVariant": zod.string(),
+  "variants": zod.looseObject({
+
+}),
+  "targeting": zod.unknown()
+}))
+})
+
+
+/**
+ * Edit a flag's registry fields.
+ */
+export const UpdateFeatureFlagParams = zod.object({
+  "id": zod.string()
+})
+
+export const UpdateFeatureFlagBody = zod.object({
+  "description": zod.string().optional(),
+  "defaultValue": zod.boolean().optional()
+}).describe('Edit a flag\'s registry fields (not per-environment).')
+
+export const UpdateFeatureFlagResponse = zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "description": zod.string(),
+  "domain": zod.string(),
+  "flagType": zod.string(),
+  "defaultValue": zod.unknown(),
+  "source": zod.string(),
+  "seeded": zod.boolean(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional(),
+  "settings": zod.array(zod.object({
+  "environmentId": zod.string(),
+  "environmentKey": zod.string(),
+  "enabled": zod.boolean(),
+  "defaultVariant": zod.string(),
+  "variants": zod.looseObject({
+
+}),
+  "targeting": zod.unknown()
+}))
+})
+
+
+/**
+ * Soft-delete a flag (restorable).
+ */
+export const DeleteFeatureFlagParams = zod.object({
+  "id": zod.string()
+})
+
+export const DeleteFeatureFlagResponse = zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "description": zod.string(),
+  "domain": zod.string(),
+  "flagType": zod.string(),
+  "defaultValue": zod.unknown(),
+  "source": zod.string(),
+  "seeded": zod.boolean(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional(),
+  "settings": zod.array(zod.object({
+  "environmentId": zod.string(),
+  "environmentKey": zod.string(),
+  "enabled": zod.boolean(),
+  "defaultVariant": zod.string(),
+  "variants": zod.looseObject({
+
+}),
+  "targeting": zod.unknown()
+}))
+})
+
+
+/**
+ * Restore a soft-deleted flag.
+ */
+export const RestoreFeatureFlagParams = zod.object({
+  "id": zod.string()
+})
+
+export const RestoreFeatureFlagResponse = zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "description": zod.string(),
+  "domain": zod.string(),
+  "flagType": zod.string(),
+  "defaultValue": zod.unknown(),
+  "source": zod.string(),
+  "seeded": zod.boolean(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional(),
+  "settings": zod.array(zod.object({
+  "environmentId": zod.string(),
+  "environmentKey": zod.string(),
+  "enabled": zod.boolean(),
+  "defaultVariant": zod.string(),
+  "variants": zod.looseObject({
+
+}),
+  "targeting": zod.unknown()
+}))
+})
+
+
+/**
+ * A flag's change history (newest first).
+ */
+export const ListFeatureFlagRevisionsParams = zod.object({
+  "id": zod.string()
+})
+
+export const ListFeatureFlagRevisionsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "flagId": zod.string().optional(),
+  "flagKey": zod.string().optional(),
+  "environmentId": zod.string().optional(),
+  "environmentKey": zod.string().optional(),
+  "action": zod.string(),
+  "before": zod.unknown().optional(),
+  "after": zod.unknown().optional(),
+  "actorId": zod.string().optional(),
+  "createdAt": zod.string()
+}))
+})
+
+
+/**
+ * Upsert one flag's setting for one environment (enable/disable + targeting).
+ */
+export const UpsertFlagSettingParams = zod.object({
+  "id": zod.string(),
+  "envId": zod.string()
+})
+
+export const UpsertFlagSettingBody = zod.object({
+  "enabled": zod.boolean().optional(),
+  "defaultVariant": zod.string().optional(),
+  "variants": zod.looseObject({
+
+}).optional(),
+  "targeting": zod.unknown().optional()
+}).describe('Upsert one flag\'s per-environment setting (the core toggle + targeting).')
+
+export const UpsertFlagSettingResponse = zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "description": zod.string(),
+  "domain": zod.string(),
+  "flagType": zod.string(),
+  "defaultValue": zod.unknown(),
+  "source": zod.string(),
+  "seeded": zod.boolean(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string(),
+  "updatedBy": zod.string().optional(),
+  "settings": zod.array(zod.object({
+  "environmentId": zod.string(),
+  "environmentKey": zod.string(),
+  "enabled": zod.boolean(),
+  "defaultVariant": zod.string(),
+  "variants": zod.looseObject({
+
+}),
+  "targeting": zod.unknown()
+}))
+})
+
+
+/**
+ * Bulk-import flags from a flags.json-shaped payload.
+ */
+export const ImportFeatureFlagsBody = zod.object({
+  "entries": zod.looseObject({
+
+})
+}).describe('Bulk-import flags from a flags.json-shaped map (`key → { variants, defaultVariant, targeting, … }`).')
+
+export const ImportFeatureFlagsResponse = zod.object({
+  "imported": zod.number()
+})
+
+
+/**
+ * The whole change history (newest first).
+ */
+export const ListAllFeatureFlagRevisionsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "flagId": zod.string().optional(),
+  "flagKey": zod.string().optional(),
+  "environmentId": zod.string().optional(),
+  "environmentKey": zod.string().optional(),
+  "action": zod.string(),
+  "before": zod.unknown().optional(),
+  "after": zod.unknown().optional(),
+  "actorId": zod.string().optional(),
+  "createdAt": zod.string()
+}))
+})
+
+
 export const CreateHelpTopicBody = zod.object({
   "slug": zod.string(),
   "term": zod.string(),
@@ -2847,6 +3204,36 @@ export const UnpublishContentResponse = zod.object({
  * Reference endpoint that always fails with a Problem Details 404 (proves the error pipeline).
  */
 export const GetDemoErrorResponse = zod.void()
+
+
+/**
+ * The active (non-deleted, non-archived) environments, for the admin environment picker.
+ */
+export const ListFeatureFlagEnvironmentsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "key": zod.string(),
+  "label": zod.string(),
+  "rank": zod.number(),
+  "isDefault": zod.boolean()
+}).describe('A deployable environment flags can be targeted at.'))
+})
+
+
+/**
+ * The evaluatable snapshot for an environment (public; consumed by the web SSR provider). Cache-busted
+ * by the per-environment version via ETag / conditional GET → 304.
+ */
+export const GetFeatureFlagSnapshotParams = zod.object({
+  "env": zod.string()
+})
+
+export const GetFeatureFlagSnapshotResponse = zod.object({
+  "environment": zod.string(),
+  "version": zod.string(),
+  "flags": zod.looseObject({
+
+})
+}).describe('The full evaluatable snapshot for one environment + its version tag.')
 
 
 export const GetHealthResponse = zod.object({

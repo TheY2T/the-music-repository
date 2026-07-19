@@ -55,11 +55,17 @@ All authored as **files → `*:build` → committed seed bundle → `db:seed`**.
   Gotchas + licensing in `.claude/rules/scores.md`; `scores:validate` gates structure; `scores:migrate`
   converts legacy MusicXML losslessly. `docs/features/scores.md`.
 
-## Feature flags
+## Feature flags (ADR 0035, `src/feature-flags/`)
 
-`FeatureFlagsModule` registers OpenFeature + flagd with a per-request `contextFactory`. Gate routes
-with `@RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.X }] })`; evaluate imperatively via an
-injected `@OpenFeatureClient()` client. Keys come from `@TheY2T/tmr-flags`. See `src/flags/`.
+**DB-backed** (flagd removed). `FeatureFlagsModule` registers OpenFeature with a custom
+`TmrFlagProvider` (`@TheY2T/tmr-flags-eval`) that resolves flags **in-process from Postgres** for `APP_ENV`
+(set on `onApplicationBootstrap` via `InProcessSnapshotSource` + the `FeatureFlagCatalogue` read port).
+Gate routes with `@RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.X }] })` (method-level); evaluate
+imperatively via an injected `@OpenFeatureClient()`. Keys come from `@TheY2T/tmr-flags` (type source + DB
+seed via `seed-feature-flags.ts` + fallback). Hexagonal write side: `FeatureFlagAuthoring` /
+`FlagEnvironmentRegistry` ports → Drizzle adapters → `/admin/feature-flags` CRUD (RBAC `featureFlags`
+resource, admin-only). Public read: `GET /feature-flags/snapshot/:env` (ETag/304) feeds the web provider.
+Follow **`manage-flags`**.
 
 ## Auth & RBAC (Slice 2, ADR 0013)
 
@@ -146,9 +152,10 @@ its feature doc — read that before editing:
 - **Mail** (`src/mail/`) — `MailSender` port, `LogMailSender` (dev/CI) / `SmtpMailSender` when `SMTP_URL` set.
 
 **Recurring gotchas across all of these:** gate deferred routes with **method-level**
-`@RequireFlagsEnabled` (class-level drops route mapping) and **reload flagd** after a new key
-(`.claude/rules/flags.md`); read the viewer on public routes with `ResolveOptionalAuth()` (never
-`@RequireAuth()`); Stripe signature verification needs raw bytes that `bodyParser:false` doesn't capture.
+`@RequireFlagsEnabled` (class-level drops route mapping); a new flag key goes live on `db:seed` (flags are
+DB-backed — no flagd reload; `.claude/rules/flags.md`); read the viewer on public routes with
+`ResolveOptionalAuth()` (never `@RequireAuth()`); Stripe signature verification needs raw bytes that
+`bodyParser:false` doesn't capture.
 
 ## Config
 

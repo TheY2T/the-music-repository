@@ -55,7 +55,6 @@ catalog:
 
   # --- Feature flags (OpenFeature + flagd) ---
   "@openfeature/server-sdk": ^1.22.0
-  "@openfeature/flagd-provider": ^0.16.0
   "@openfeature/nestjs-sdk": ^0.2.7
   "@openfeature/web-sdk": ^1.9.0
   "@openfeature/react-sdk": ^1.4.1

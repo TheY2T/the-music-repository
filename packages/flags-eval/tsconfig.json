@@ -1,0 +1,16 @@
+{
+  "extends": "../config-typescript/base.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    // DOM adds the type-only `fetch`/`Response`/`Headers` globals used by HttpSnapshotSource (available at
+    // runtime on both Node 18+ SSR and the browser); ES2023 alone doesn't declare them.
+    "lib": ["ES2023", "DOM"],
+    "outDir": "dist",
+    "rootDir": "src",
+    "declaration": true,
+    "declarationMap": true,
+    "isolatedModules": false
+  },
+  "include": ["src"]
+}

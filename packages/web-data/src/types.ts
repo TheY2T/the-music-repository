@@ -15,98 +15,10 @@ export interface I18nCatalogue {
   fallback?: Record<string, string>;
 }
 
-/** Feature-flag values evaluated once per request in the web middleware (see apps/web/src/middleware.ts). */
-export interface Flags {
-  demoNewBanner: boolean;
-  authEnabled: boolean;
-  adminCms: boolean;
-  localeStrings: boolean;
-  blockEditor: boolean;
-  blockEditorPreview: boolean;
-  contentRevisions: boolean;
-  favorites: boolean;
-  savedProgressions: boolean;
-  catalogueHub: boolean;
-  learnerDashboard: boolean;
-  dashboardBackground: boolean;
-  collections: boolean;
-  collectionDiscovery: boolean;
-  collectionsHub: boolean;
-  collectionBookmarks: boolean;
-  collectionRatings: boolean;
-  userCollections: boolean;
-  progress: boolean;
-  toolPractice: boolean;
-  infoView: boolean;
-  interactiveScores: boolean;
-  toolKeyboard: boolean;
-  toolCircleOfFifths: boolean;
-  toolFretboard: boolean;
-  toolChords: boolean;
-  toolScaleExplorer: boolean;
-  toolChordId: boolean;
-  toolModes: boolean;
-  toolProgression: boolean;
-  toolMetronome: boolean;
-  toolTuner: boolean;
-  toolIntervals: boolean;
-  toolStaff: boolean;
-  toolEarTrainer: boolean;
-  toolSequencer: boolean;
-  trainers: boolean;
-  drillEngine: boolean;
-  drillCelebrations: boolean;
-  drillPlay: boolean;
-  drillEar: boolean;
-  drillPitch: boolean;
-  drillRhythm: boolean;
-  toolSightReading: boolean;
-  toolBackingTrack: boolean;
-  toolVoicings: boolean;
-  toolNotationPlayer: boolean;
-  toolLicks: boolean;
-  toolChordDiagrams: boolean;
-  toolStrumming: boolean;
-  toolFingerpicking: boolean;
-  toolArpeggio: boolean;
-  toolProgressionPlayer: boolean;
-  toolRhythm: boolean;
-  toolCaged: boolean;
-  toolScaleBoxes: boolean;
-  toolSong: boolean;
-  toolProgressionEar: boolean;
-  toolChordQualityEar: boolean;
-  toolFretQuiz: boolean;
-  toolMusicXml: boolean;
-  toolMultiVoice: boolean;
-  toolPracticePlayer: boolean;
-  toolAnalyzer: boolean;
-  toolTransposer: boolean;
-  toolImprovise: boolean;
-  toolProgressionGen: boolean;
-  toolFretGame: boolean;
-  toolScaleMap: boolean;
-  toolStaffGame: boolean;
-  toolRhythmGame: boolean;
-  toolVoiceLeading: boolean;
-  toolSpeedTrainer: boolean;
-  toolKeySigGame: boolean;
-  toolPracticePlanner: boolean;
-  toolBassline: boolean;
-  toolMelodicDictation: boolean;
-  toolRhythmDictation: boolean;
-  toolGrooves: boolean;
-  toolSolfege: boolean;
-  toolKeyQuiz: boolean;
-  toolIntervalQuiz: boolean;
-  toolPracticeRoom: boolean;
-  toolScore: boolean;
-  toolSoundfont: boolean;
-  premium: boolean;
-  monetizationMessaging: boolean;
-  classrooms: boolean;
-  i18nEnabled: boolean;
-}
+// `Flags` (the per-request feature-flag values) is derived from the typed registry in `./flags` so it can
+// never drift from `@TheY2T/tmr-flags`. Re-exported here for the historical `import { Flags }` path.
+export type { FlagField, Flags } from './flags';
+export { FLAG_FIELD_BY_KEY } from './flags';
 
 /** Authenticated user resolved per request from the API session, or null when anonymous. */
 export type User = {

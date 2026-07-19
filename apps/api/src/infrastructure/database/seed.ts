@@ -11,6 +11,7 @@ import * as schema from './schema';
 import { SEED_COLLECTIONS } from './seed-collections';
 import { SEED_CONTENT } from './seed-content';
 import { CONTENT, GENRES, HELP_TOPICS, INSTRUMENTS, SKILL_TOPICS, TAGS } from './seed-data';
+import { seedFeatureFlags } from './seed-feature-flags';
 import { seedI18n } from './seed-i18n';
 import { SCORE_ALPHATEX, SCORE_META } from './seed-scores';
 
@@ -261,6 +262,12 @@ async function main(): Promise<void> {
     `Seeded UI strings: ${Object.entries(i18nCounts)
       .map(([locale, n]) => `${locale}=${n}`)
       .join(', ')}.`,
+  );
+
+  const flagCounts = await seedFeatureFlags(db);
+  log.log(
+    `Seeded feature flags: ${flagCounts.flags} flags × ${flagCounts.environments} environments ` +
+      `(${flagCounts.settings} settings).`,
   );
 
   await app.close();
