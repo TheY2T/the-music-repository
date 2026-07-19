@@ -64,6 +64,14 @@ export default function SignInForm({
         <Button type="submit" disabled={busy} className="w-full">
           {busy ? t(locale, 'signin.submitBusy') : t(locale, 'signin.submit')}
         </Button>
+        <div className="text-center">
+          <a
+            href="/forgot-password"
+            className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+          >
+            {t(locale, 'signin.forgotLink')}
+          </a>
+        </div>
       </form>
 
       <div className="space-y-2 border-t border-border pt-4">
