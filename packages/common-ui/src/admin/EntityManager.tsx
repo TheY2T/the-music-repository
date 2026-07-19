@@ -211,7 +211,9 @@ function EntityCard<Row>({
       draggable={draggable}
       onDragStart={onDragStart}
       className={cn(
-        'flex flex-col gap-2 p-4',
+        // `relative` anchors the title's stretched click target (`after:absolute inset-0`) so the
+        // whole card navigates to the edit page.
+        'relative flex flex-col gap-2 p-4 transition-colors hover:bg-accent/10',
         // Equal-height across a Hub shelf row; on the board a card keeps its natural height so a
         // lone card doesn't stretch to fill the (tallest-column-matched) column.
         !draggable && 'h-full',
@@ -219,13 +221,14 @@ function EntityCard<Row>({
         draggable && 'cursor-grab active:cursor-grabbing',
       )}
     >
-      <div className="flex items-start justify-between gap-2">
+      {/* Sits above the title's stretched click target so the actions menu stays clickable. */}
+      <div className="relative z-10 flex items-start justify-between gap-2">
         {config.cardBadge?.(row) ?? <span />}
         <ActionsMenu row={row} config={config} onMove={onMove} onDuplicate={onDuplicate} />
       </div>
       <a
         href={config.editHref(config.getKey(row))}
-        className="font-medium text-foreground hover:underline"
+        className="font-medium text-foreground after:absolute after:inset-0 hover:underline"
       >
         {config.getTitle(row)}
       </a>
