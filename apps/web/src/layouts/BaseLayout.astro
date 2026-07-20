@@ -42,6 +42,7 @@ const { title, description, image, type, noindex, jsonLd, publishedTime, modifie
   Astro.props;
 const locale = Astro.locals.locale;
 const i18nEnabled = Astro.locals.flags.i18nEnabled;
+const infoViewEnabled = Astro.locals.flags.infoView;
 const rawPath = new URL(Astro.request.url).pathname;
 const { path } = splitLocalePath(rawPath);
 const site = Astro.site;
@@ -148,6 +149,7 @@ const i18nCatalogueJson = JSON.stringify(Astro.locals.i18nCatalogue).replace(/</
       accountNav={accountNav}
       user={Astro.locals.user}
       i18nEnabled={i18nEnabled}
+      infoView={infoViewEnabled}
       catalogueHref={localizedPath(locale, '/catalogue')}
       homeHref={localizedPath(locale, '/')}
     />

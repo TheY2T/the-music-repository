@@ -56,7 +56,7 @@ export function buildPrimaryNav(ctx: NavContext): NavItem[] {
   const items: NavItem[] = [];
   if (flags.learnerDashboard && user)
     items.push(makeItem(ctx, 'dashboard', '/dashboard', 'nav.dashboard', 'layout-grid'));
-  items.push(makeItem(ctx, 'catalogue', '/catalogue', 'nav.catalogue', 'library'));
+  items.push(makeItem(ctx, 'catalogue', '/catalogue', 'nav.catalogueShort', 'library'));
   if (flags.collections)
     items.push(makeItem(ctx, 'collections', '/collections', 'nav.collections', 'list-music'));
   if (anyToolEnabled(flags)) items.push(makeItem(ctx, 'tools', '/tools', 'nav.tools', 'wrench'));

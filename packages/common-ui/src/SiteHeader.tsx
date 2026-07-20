@@ -35,6 +35,8 @@ export interface SiteHeaderProps {
   accountNav: NavItem[];
   user: User;
   i18nEnabled: boolean;
+  /** Show the Info View toggle (contextual-help panel is enabled). */
+  infoView?: boolean;
   catalogueHref: string;
   homeHref: string;
 }
@@ -56,6 +58,7 @@ export default function SiteHeader({
   accountNav,
   user,
   i18nEnabled,
+  infoView,
   catalogueHref,
   homeHref,
 }: SiteHeaderProps) {
@@ -109,6 +112,18 @@ export default function SiteHeader({
           >
             <Icon name="search" className="size-4" />
           </a>
+
+          {infoView && (
+            <button
+              type="button"
+              aria-label={t(locale, 'nav.infoView')}
+              title={t(locale, 'nav.infoView')}
+              onClick={() => window.dispatchEvent(new CustomEvent('tmr:toggle-infoview'))}
+              className="inline-flex size-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Icon name="info" className="size-4" />
+            </button>
+          )}
 
           {i18nEnabled && (
             <div className="hidden sm:block">

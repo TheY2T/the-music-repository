@@ -17,6 +17,7 @@
   "seo.support.description": "支持音乐资料库——帮助它的公共领域课程、乐曲与互动工具保持免费、无广告。",
 
   "nav.catalogue": "浏览曲库",
+  "nav.catalogueShort": "曲库",
   "nav.collections": "合辑",
   "nav.tools": "工具",
   "nav.myProgress": "我的进度",
@@ -29,6 +30,7 @@
   "nav.menu": "菜单",
   "nav.closeMenu": "关闭菜单",
   "nav.account": "账户",
+  "nav.infoView": "信息视图 — 上下文帮助",
   "nav.browse": "浏览",
   "nav.about": "关于",
   "nav.privacy": "隐私政策",

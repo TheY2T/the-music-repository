@@ -54,23 +54,24 @@ export default function InfoView({ locale }: { locale?: string } = {}) {
     setDismissed(true);
     localStorage.setItem(DISMISS_KEY, '1');
   }
-  function reopen() {
-    setDismissed(false);
-    localStorage.removeItem(DISMISS_KEY);
-  }
 
+  // Toggled from the site header's Info View control (cross-island via a window event).
+  useEffect(() => {
+    function onToggle() {
+      setDismissed((prev) => {
+        const next = !prev;
+        if (next) localStorage.setItem(DISMISS_KEY, '1');
+        else localStorage.removeItem(DISMISS_KEY);
+        return next;
+      });
+    }
+    window.addEventListener('tmr:toggle-infoview', onToggle);
+    return () => window.removeEventListener('tmr:toggle-infoview', onToggle);
+  }, []);
+
+  // When dismissed the panel is hidden entirely; the header control brings it back.
   if (dismissed) {
-    return (
-      <button
-        type="button"
-        onClick={reopen}
-        aria-label="Show Info View"
-        title="Show Info View"
-        className="fixed bottom-4 right-4 z-40 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-lg shadow-md"
-      >
-        ?
-      </button>
-    );
+    return null;
   }
 
   return (

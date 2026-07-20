@@ -366,7 +366,7 @@ export default function PianoKeyboard({
         ) : undefined
       }
     >
-      {({ isFullscreen, isCinema }) => (
+      {({ isFullscreen, isCinema, modeButtons }) => (
         <div className={cn('space-y-4', isFullscreen && 'flex h-full min-h-0 flex-col space-y-3')}>
           <div className="flex flex-wrap items-end gap-4">
             <label className="space-y-1 text-sm">
@@ -507,39 +507,52 @@ export default function PianoKeyboard({
             )}
           </div>
 
+          {/* Player frame: the canvas + its control bar (cinema/fullscreen) grouped as one unit. */}
           <div
-            ref={scrollRef}
-            className={cn('overflow-x-auto pb-1', isFullscreen && 'min-h-0 flex-1')}
+            className={cn(
+              'overflow-hidden rounded-lg border border-border bg-muted',
+              isFullscreen && 'flex min-h-0 flex-1 flex-col',
+            )}
           >
             <div
-              className={cn('relative w-full', isFullscreen && 'h-full')}
-              style={{ minWidth: `${minWidth}px` }}
+              ref={scrollRef}
+              className={cn('overflow-x-auto', isFullscreen && 'min-h-0 flex-1')}
             >
-              <PixiCanvas
-                ariaLabel={`${ariaLabel} — ${keys} keys`}
-                loader={() => import('@TheY2T/tmr-music-core/pixi/piano-scene')}
-                sceneProps={{
-                  whiteMidis,
-                  blackMidis,
-                  highlighted,
-                  active,
-                  showLabels,
-                  flats,
-                  skin: skin.palette ?? null,
-                  gloss: skin.effects?.gloss,
-                  stage: isFullscreen || isCinema,
-                  onPlay: pointerPlay,
-                  onGlide: pointerGlide,
-                  onRelease: pointerEnd,
-                }}
-                className={cn(isFullscreen && 'h-full')}
-                containerClassName={cn(
-                  'w-full rounded-lg border border-border bg-muted',
-                  isFullscreen ? 'h-full' : isCinema ? 'h-[65vh]' : 'h-44',
-                )}
-                fallback={fallbackKeyboard}
-              />
+              <div
+                className={cn('relative w-full', isFullscreen && 'h-full')}
+                style={{ minWidth: `${minWidth}px` }}
+              >
+                <PixiCanvas
+                  ariaLabel={`${ariaLabel} — ${keys} keys`}
+                  loader={() => import('@TheY2T/tmr-music-core/pixi/piano-scene')}
+                  sceneProps={{
+                    whiteMidis,
+                    blackMidis,
+                    highlighted,
+                    active,
+                    showLabels,
+                    flats,
+                    skin: skin.palette ?? null,
+                    gloss: skin.effects?.gloss,
+                    stage: isFullscreen || isCinema,
+                    onPlay: pointerPlay,
+                    onGlide: pointerGlide,
+                    onRelease: pointerEnd,
+                  }}
+                  className={cn(isFullscreen && 'h-full')}
+                  containerClassName={cn(
+                    'w-full',
+                    isFullscreen ? 'h-full' : isCinema ? 'h-[65vh]' : 'h-44',
+                  )}
+                  fallback={fallbackKeyboard}
+                />
+              </div>
             </div>
+            {modeButtons && (
+              <div className="flex justify-end border-t border-border bg-card px-1.5 py-1">
+                {modeButtons}
+              </div>
+            )}
           </div>
 
           {!isFullscreen && (

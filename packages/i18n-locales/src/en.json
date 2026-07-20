@@ -17,6 +17,7 @@
   "seo.support.description": "Support The Music Repository — help keep its public-domain lessons, songs, and interactive tools free and ad-free.",
 
   "nav.catalogue": "Browse the catalogue",
+  "nav.catalogueShort": "Catalogue",
   "nav.collections": "Collections",
   "nav.tools": "Tools",
   "nav.myProgress": "My progress",
@@ -29,6 +30,7 @@
   "nav.menu": "Menu",
   "nav.closeMenu": "Close menu",
   "nav.account": "Account",
+  "nav.infoView": "Info View — contextual help",
   "nav.browse": "Browse",
   "nav.about": "About",
   "nav.privacy": "Privacy Policy",

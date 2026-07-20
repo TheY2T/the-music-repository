@@ -224,7 +224,7 @@ export default function GuitarFretboard({
         ) : undefined
       }
     >
-      {({ isFullscreen, isCinema }) => (
+      {({ isFullscreen, isCinema, modeButtons }) => (
         <div className="space-y-4">
           <div className="flex flex-wrap items-end gap-4">
             <InstrumentPicker value={instrument} onChange={setInstrument} />
@@ -280,34 +280,42 @@ export default function GuitarFretboard({
             </div>
           </div>
 
-          <PixiCanvas
-            ariaLabel="Guitar fretboard — standard tuning, 15 frets"
-            loader={() => import('@TheY2T/tmr-music-core/pixi/fretboard-scene')}
-            sceneProps={{
-              tuning: STANDARD_TUNING,
-              tuningNames: STANDARD_TUNING_NAMES,
-              fretCount: FRET_COUNT,
-              fretMarkers: FRET_MARKERS,
-              highlighted,
-              root,
-              active,
-              showLabels,
-              flats,
-              handedness,
-              skin: skin.palette ?? null,
-              gloss: skin.effects?.gloss,
-              woodGrain: skin.effects?.woodGrain,
-              colorNotes,
-              onPlay: strumStart,
-              onGlide: strumOver,
-              onRelease: strumEnd,
-            }}
-            containerClassName={cn(
-              'rounded-lg border border-border bg-muted',
-              isFullscreen ? 'h-[70vh]' : isCinema ? 'h-[60vh]' : 'h-40',
+          {/* Player frame: the fretboard canvas + its control bar (cinema/fullscreen) as one unit. */}
+          <div className="overflow-hidden rounded-lg border border-border bg-muted">
+            <PixiCanvas
+              ariaLabel="Guitar fretboard — standard tuning, 15 frets"
+              loader={() => import('@TheY2T/tmr-music-core/pixi/fretboard-scene')}
+              sceneProps={{
+                tuning: STANDARD_TUNING,
+                tuningNames: STANDARD_TUNING_NAMES,
+                fretCount: FRET_COUNT,
+                fretMarkers: FRET_MARKERS,
+                highlighted,
+                root,
+                active,
+                showLabels,
+                flats,
+                handedness,
+                skin: skin.palette ?? null,
+                gloss: skin.effects?.gloss,
+                woodGrain: skin.effects?.woodGrain,
+                colorNotes,
+                onPlay: strumStart,
+                onGlide: strumOver,
+                onRelease: strumEnd,
+              }}
+              containerClassName={cn(
+                'w-full',
+                isFullscreen ? 'h-[70vh]' : isCinema ? 'h-[60vh]' : 'h-40',
+              )}
+              fallback={fallbackGrid}
+            />
+            {modeButtons && (
+              <div className="flex justify-end border-t border-border bg-card px-1.5 py-1">
+                {modeButtons}
+              </div>
             )}
-            fallback={fallbackGrid}
-          />
+          </div>
 
           {colorNotes && (
             <div className="flex flex-wrap gap-x-3 gap-y-1">
