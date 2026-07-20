@@ -2,6 +2,7 @@
   "name": "the-music-repository",
   "version": "0.0.0",
   "private": true,
+  "license": "LicenseRef-Proprietary",
   "packageManager": "pnpm@10.34.3",
   "engines": {
     "node": ">=22"
@@ -27,7 +28,9 @@
     "app:seed": "docker compose -f infra/podman/compose.yaml run --rm init",
     "obs:up": "docker compose -f infra/podman/observability/compose.observability.yaml up -d",
     "obs:down": "docker compose -f infra/podman/observability/compose.observability.yaml down",
-    "spec:generate": "turbo run build:openapi generate"
+    "spec:generate": "turbo run build:openapi generate",
+    "licenses:generate": "node scripts/generate-third-party-licenses.mjs",
+    "licenses:check": "pnpm licenses list --prod"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",

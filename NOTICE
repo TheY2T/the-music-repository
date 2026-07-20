@@ -1,0 +1,73 @@
+The Music Repository
+Copyright (c) 2026 The Music Repository. All rights reserved.
+
+This product includes open-source software and openly-licensed content.
+The complete list of software packages and their verbatim license texts is in
+THIRD-PARTY-LICENSES.md at the root of this distribution.
+
+The items below are called out because their licenses ask for specific
+attribution or carry conditions beyond a standard permissive notice.
+
+--------------------------------------------------------------------------------
+Fonts — SIL Open Font License 1.1 (OFL-1.1)
+--------------------------------------------------------------------------------
+The web application self-hosts and serves the following font families,
+distributed via the @fontsource project and used unmodified:
+
+  Fraunces            (c) The Fraunces Project Authors — Reserved Font Name "Fraunces"
+  Playfair Display    (c) The Playfair Display Project Authors — Reserved Font Name "Playfair"
+  Newsreader          (c) The Newsreader Project Authors
+  Source Sans 3       (c) The Source Sans Project Authors
+  Inter               (c) The Inter Project Authors
+  Libre Baskerville   (c) The Libre Baskerville Project Authors
+  IBM Plex Mono       (c) 2017 IBM Corp. — Reserved Font Name "Plex"
+
+Each family is used under the SIL Open Font License, Version 1.1. The fonts are
+served as-is; Reserved Font Names are not applied to any modified font. The full
+OFL text ships with each package and is reproduced in THIRD-PARTY-LICENSES.md.
+
+--------------------------------------------------------------------------------
+Icons — Lucide (ISC)
+--------------------------------------------------------------------------------
+Icons are from Lucide (https://lucide.dev), used under the ISC license.
+Lucide is a fork of the Feather icon set.
+
+--------------------------------------------------------------------------------
+Notation engine — alphaTab (MPL-2.0)
+--------------------------------------------------------------------------------
+Music notation rendering and playback use alphaTab (@coderline/alphatab),
+(c) Daniel Kuschny and contributors, under the Mozilla Public License 2.0.
+alphaTab is used as an unmodified dependency. Its source is available at
+https://github.com/CoderLine/alphaTab. If alphaTab's own source files are
+modified, those file-level changes must be made available under the MPL-2.0.
+
+--------------------------------------------------------------------------------
+Instrument sounds — SONiVOX EAS soundfont (Apache-2.0)
+--------------------------------------------------------------------------------
+Sampled instrument playback uses the SONiVOX EAS soundfont,
+Copyright (c) 2004-2006 Sonic Network Inc., distributed as part of the Android
+Open Source Project under the Apache License 2.0. See apps/web/public/soundfont/
+LICENSE and README.md for provenance.
+
+--------------------------------------------------------------------------------
+Chord voicing data — @tombatossals/chords-db (MIT)
+--------------------------------------------------------------------------------
+Guitar and ukulele chord shapes are derived from @tombatossals/chords-db,
+used under the MIT license. See packages/music-core/THIRD_PARTY_NOTICES.md.
+
+--------------------------------------------------------------------------------
+Native image processing — libvips via sharp (LGPL-3.0-or-later)
+--------------------------------------------------------------------------------
+Build-time and server-side image optimization use sharp (Apache-2.0), which
+dynamically links the prebuilt libvips native library (@img/sharp-libvips-*),
+licensed under LGPL-3.0-or-later. libvips is used unmodified as a dynamically
+linked, prebuilt binary.
+
+--------------------------------------------------------------------------------
+Music scores and catalogue content
+--------------------------------------------------------------------------------
+Sheet music engravings, catalogue articles, and collections are original works
+of The Music Repository or openly-licensed / public-domain material. Per-item
+license, source, and attribution are recorded with each score
+(apps/api/src/infrastructure/database/content/scores/*.meta.json) and each
+content/media asset. Content sourcing policy: docs/content/licensing.md.

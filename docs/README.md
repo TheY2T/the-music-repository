@@ -7,5 +7,6 @@ Docs are a **first-class deliverable of every phase** (see root `CLAUDE.md`).
 - [`features/`](./features) — one doc per feature (`_template.md` to copy).
 - [`conventions.md`](./conventions.md) — casing, naming, folder rules.
 - [`content/`](./content) — content sourcing, licensing & attribution rules.
+- [`licensing-compliance.md`](./licensing-compliance.md) — third-party software/font/asset licenses and what ships at deploy time.
 
 Full build plan (phased feature menus + roadmap): `~/.claude/plans/mutable-inventing-acorn.md`.
