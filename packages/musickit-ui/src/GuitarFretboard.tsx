@@ -207,7 +207,10 @@ export default function GuitarFretboard({
     <ToolStage
       enterLabel={t(locale, 'tool.fullscreen.enter')}
       exitLabel={t(locale, 'tool.fullscreen.exit')}
+      cinemaEnterLabel={t(locale, 'tool.cinema.enter')}
+      cinemaExitLabel={t(locale, 'tool.cinema.exit')}
       showFullscreen={customization}
+      showCinema={customization}
       toolbar={
         customization ? (
           <InstrumentControls
@@ -221,7 +224,7 @@ export default function GuitarFretboard({
         ) : undefined
       }
     >
-      {({ isFullscreen }) => (
+      {({ isFullscreen, isCinema }) => (
         <div className="space-y-4">
           <div className="flex flex-wrap items-end gap-4">
             <InstrumentPicker value={instrument} onChange={setInstrument} />
@@ -301,7 +304,7 @@ export default function GuitarFretboard({
             }}
             containerClassName={cn(
               'rounded-lg border border-border bg-muted',
-              isFullscreen ? 'h-[70vh]' : 'h-40',
+              isFullscreen ? 'h-[70vh]' : isCinema ? 'h-[60vh]' : 'h-40',
             )}
             fallback={fallbackGrid}
           />

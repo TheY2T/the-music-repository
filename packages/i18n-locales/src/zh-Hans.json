@@ -485,6 +485,8 @@
   "tool.fretboard.summary": "标准调弦指板；聆听音符并查看音阶指型。",
   "tool.fullscreen.enter": "全屏",
   "tool.fullscreen.exit": "退出全屏",
+  "tool.cinema.enter": "影院模式",
+  "tool.cinema.exit": "退出影院模式",
   "tool.skin.label": "皮肤",
   "tool.handedness.label": "惯用手",
   "tool.handedness.left": "左手",

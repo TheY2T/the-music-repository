@@ -17,6 +17,9 @@ sessions and pages.
 When `instrumentCustomization` is on, the piano (`/tools/keyboard`) and guitar (`/tools/fretboard`)
 tools gain a toolbar above the instrument:
 
+- **Cinema mode** — a theater-mode toggle (like a video player's) that full-bleeds the tool to the
+  browser width in-page and enlarges its canvas, without leaving the page (the header/nav stay visible).
+  The piano uses its aspect-correct stage layout + effects at this size.
 - **Fullscreen** — a maximize/minimize button using the browser's native Fullscreen API. The stage
   fills the viewport with an opaque background and the canvas grows to fill it; the button is hidden
   where the API is unavailable. Entering fullscreen requires a user gesture, so the saved `fullscreen`

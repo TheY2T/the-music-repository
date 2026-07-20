@@ -351,7 +351,10 @@ export default function PianoKeyboard({
     <ToolStage
       enterLabel={t(locale, 'tool.fullscreen.enter')}
       exitLabel={t(locale, 'tool.fullscreen.exit')}
+      cinemaEnterLabel={t(locale, 'tool.cinema.enter')}
+      cinemaExitLabel={t(locale, 'tool.cinema.exit')}
       showFullscreen={customization}
+      showCinema={customization}
       toolbar={
         customization ? (
           <InstrumentControls
@@ -363,7 +366,7 @@ export default function PianoKeyboard({
         ) : undefined
       }
     >
-      {({ isFullscreen }) => (
+      {({ isFullscreen, isCinema }) => (
         <div className={cn('space-y-4', isFullscreen && 'flex h-full min-h-0 flex-col space-y-3')}>
           <div className="flex flex-wrap items-end gap-4">
             <label className="space-y-1 text-sm">
@@ -524,7 +527,7 @@ export default function PianoKeyboard({
                   flats,
                   skin: skin.palette ?? null,
                   gloss: skin.effects?.gloss,
-                  stage: isFullscreen,
+                  stage: isFullscreen || isCinema,
                   onPlay: pointerPlay,
                   onGlide: pointerGlide,
                   onRelease: pointerEnd,
@@ -532,7 +535,7 @@ export default function PianoKeyboard({
                 className={cn(isFullscreen && 'h-full')}
                 containerClassName={cn(
                   'w-full rounded-lg border border-border bg-muted',
-                  isFullscreen ? 'h-full' : 'h-44',
+                  isFullscreen ? 'h-full' : isCinema ? 'h-[65vh]' : 'h-44',
                 )}
                 fallback={fallbackKeyboard}
               />

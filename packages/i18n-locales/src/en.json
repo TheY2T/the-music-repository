@@ -485,6 +485,8 @@
   "tool.fretboard.summary": "Standard-tuning fretboard; hear notes and see scale shapes.",
   "tool.fullscreen.enter": "Fullscreen",
   "tool.fullscreen.exit": "Exit fullscreen",
+  "tool.cinema.enter": "Cinema mode",
+  "tool.cinema.exit": "Exit cinema mode",
   "tool.skin.label": "Skin",
   "tool.handedness.label": "Handedness",
   "tool.handedness.left": "Left-handed",

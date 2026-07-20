@@ -97,14 +97,29 @@ function Board({
   const particleGraphics = useRef<Graphics | null>(null);
   const prevActive = useRef<Set<number>>(new Set());
 
+  // Follow the container's size. `resizeTo` only reacts to window resizes, so observe the container and
+  // resize the renderer — the canvas then fills its box even when it grows via CSS alone (fullscreen or
+  // cinema mode, which don't fire a window-resize event).
   useEffect(() => {
     if (!isInitialised || !app?.canvas) {
       return;
     }
-    const read = () => setSize({ w: app.screen.width, h: app.screen.height });
+    const parent = app.canvas.parentElement;
+    const read = () => {
+      const w = Math.round(parent?.clientWidth ?? app.screen.width);
+      const h = Math.round(parent?.clientHeight ?? app.screen.height);
+      if (
+        w > 0 &&
+        h > 0 &&
+        (Math.abs(w - app.screen.width) > 1 || Math.abs(h - app.screen.height) > 1)
+      ) {
+        app.renderer.resize(w, h);
+      }
+      setSize({ w: app.screen.width, h: app.screen.height });
+    };
     read();
     const observer = new ResizeObserver(read);
-    observer.observe(app.canvas);
+    observer.observe(parent ?? app.canvas);
     return () => observer.disconnect();
   }, [isInitialised, app]);
 
