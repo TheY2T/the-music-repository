@@ -20,7 +20,11 @@ tools gain a toolbar above the instrument:
 - **Fullscreen** — a maximize/minimize button using the browser's native Fullscreen API. The stage
   fills the viewport with an opaque background and the canvas grows to fill it; the button is hidden
   where the API is unavailable. Entering fullscreen requires a user gesture, so the saved `fullscreen`
-  preference reflects the learner's choice rather than auto-entering on load.
+  preference reflects the learner's choice rather than auto-entering on load. In fullscreen the **piano**
+  becomes a performance stage: an aspect-correct keyboard pinned to the bottom, with the space above
+  turned into a reactive effects region — a colour-per-note light beam and a rising particle fountain for
+  every held key (skipped under `prefers-reduced-motion`). The Pixi scene resizes to its container, so the
+  keys keep their proportions instead of stretching.
 - **Skin** — a picker of instrument skins. Piano: `theme`, `classic` (ebony & ivory), `vintage-wood`,
   `neon` (Pixi gloss). Guitar: `theme`, `natural`, `sunburst`, `ebony`, `metallic` (Pixi gloss). The
   `theme` skin follows the site's vintage aesthetics × light/dark; material/pixi skins apply a fixed

@@ -38,8 +38,8 @@ export function ToolStage({
       ref={ref}
       data-fullscreen={isFullscreen ? '' : undefined}
       className={cn(
-        'relative flex flex-col gap-4',
-        isFullscreen && 'h-screen w-screen overflow-auto bg-background p-6',
+        'relative flex flex-col gap-3',
+        isFullscreen && 'h-screen w-screen overflow-auto bg-background p-4',
         className,
       )}
     >
@@ -60,7 +60,10 @@ export function ToolStage({
           )}
         </div>
       )}
-      {children({ isFullscreen })}
+      {/* In fullscreen the body grows to fill the remaining height; windowed layout is untouched. */}
+      <div className={isFullscreen ? 'flex min-h-0 flex-1 flex-col' : 'contents'}>
+        {children({ isFullscreen })}
+      </div>
     </div>
   );
 }

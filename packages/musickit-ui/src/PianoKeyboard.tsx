@@ -364,7 +364,7 @@ export default function PianoKeyboard({
       }
     >
       {({ isFullscreen }) => (
-        <div className="space-y-4">
+        <div className={cn('space-y-4', isFullscreen && 'flex h-full min-h-0 flex-col space-y-3')}>
           <div className="flex flex-wrap items-end gap-4">
             <label className="space-y-1 text-sm">
               <span className="block font-medium">Keyboard size</span>
@@ -504,8 +504,14 @@ export default function PianoKeyboard({
             )}
           </div>
 
-          <div ref={scrollRef} className="overflow-x-auto pb-1">
-            <div className="relative w-full" style={{ minWidth: `${minWidth}px` }}>
+          <div
+            ref={scrollRef}
+            className={cn('overflow-x-auto pb-1', isFullscreen && 'min-h-0 flex-1')}
+          >
+            <div
+              className={cn('relative w-full', isFullscreen && 'h-full')}
+              style={{ minWidth: `${minWidth}px` }}
+            >
               <PixiCanvas
                 ariaLabel={`${ariaLabel} — ${keys} keys`}
                 loader={() => import('@TheY2T/tmr-music-core/pixi/piano-scene')}
@@ -518,24 +524,28 @@ export default function PianoKeyboard({
                   flats,
                   skin: skin.palette ?? null,
                   gloss: skin.effects?.gloss,
+                  stage: isFullscreen,
                   onPlay: pointerPlay,
                   onGlide: pointerGlide,
                   onRelease: pointerEnd,
                 }}
+                className={cn(isFullscreen && 'h-full')}
                 containerClassName={cn(
                   'w-full rounded-lg border border-border bg-muted',
-                  isFullscreen ? 'h-[60vh]' : 'h-44',
+                  isFullscreen ? 'h-full' : 'h-44',
                 )}
                 fallback={fallbackKeyboard}
               />
             </div>
           </div>
 
-          <p className="text-xs text-muted-foreground">
-            Click or hold a key, play the <span className="font-mono">z</span>/
-            <span className="font-mono">q</span> rows on your keyboard, or connect a MIDI device.
-            Use the octave buttons to move the computer-keyboard range.
-          </p>
+          {!isFullscreen && (
+            <p className="text-xs text-muted-foreground">
+              Click or hold a key, play the <span className="font-mono">z</span>/
+              <span className="font-mono">q</span> rows on your keyboard, or connect a MIDI device.
+              Use the octave buttons to move the computer-keyboard range.
+            </p>
+          )}
         </div>
       )}
     </ToolStage>
