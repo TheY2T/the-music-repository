@@ -42,12 +42,17 @@ https://github.com/CoderLine/alphaTab. If alphaTab's own source files are
 modified, those file-level changes must be made available under the MPL-2.0.
 
 --------------------------------------------------------------------------------
-Instrument sounds — SONiVOX EAS soundfont (Apache-2.0)
+Instrument sounds
 --------------------------------------------------------------------------------
-Sampled instrument playback uses the SONiVOX EAS soundfont,
+Score-player playback uses the SONiVOX EAS soundfont,
 Copyright (c) 2004-2006 Sonic Network Inc., distributed as part of the Android
 Open Source Project under the Apache License 2.0. See apps/web/public/soundfont/
 LICENSE and README.md for provenance.
+
+Interactive-tool note playback uses self-hosted instrument samples from the
+FluidR3_GM soundfont (c) Frank Wen, under the Creative Commons Attribution 3.0
+license (CC BY 3.0), via the midi-js-soundfonts project. See
+apps/web/public/soundfont/instruments/LICENSE.
 
 --------------------------------------------------------------------------------
 Chord voicing data — @tombatossals/chords-db (MIT)

@@ -73,25 +73,19 @@ component. LGPL is satisfied by dynamic linking of an unmodified prebuilt binary
 statically embed or modify libvips. It is not shipped to browsers. Platform-specific variants
 (`-linux-*`) are pulled on the deploy image.
 
-### 4. Instrument samples fetched from a third-party host at runtime
+### 4. Instrument samples — self-hosted (FluidR3_GM, CC BY 3.0)
 
-The interactive tools' note service (`packages/music-core/src/soundfont.ts`) constructs `smplr`'s
-`Soundfont` without a custom `instrumentUrl`, so at runtime the browser fetches instrument samples from
-**`https://smpldsnds.github.io`** (the MusyngKite / FluidR3 soundfonts). This is distinct from the
-score player, which uses the self-hosted, Apache-2.0 **SONiVOX** soundfont in
-`apps/web/public/soundfont/`.
+The interactive tools' note service (`packages/music-core/src/soundfont.ts`) plays samples through
+`smplr`'s `Soundfont` with an explicit `instrumentUrl` pointing at
+`/soundfont/instruments/<instrument>-mp3.js`, served from the app's own origin. The samples are the
+FluidR3_GM soundfont ((c) Frank Wen, CC BY 3.0), committed under
+`apps/web/public/soundfont/instruments/` with a `LICENSE`; populate/refresh them with
+`pnpm soundfont:fetch`. This is distinct from the score player, which uses the self-hosted, Apache-2.0
+**SONiVOX** soundfont in `apps/web/public/soundfont/`.
 
-This is both a provenance gap and an operational one:
-
-- **Provenance:** the MusyngKite/FluidR3 sample sets carry their own licenses, which are not currently
-  catalogued in-repo.
-- **Operational:** the tools depend on an external GitHub Pages host being available, browsers reach a
-  third-party origin (privacy), and a strict Content-Security-Policy would block the fetch.
-
-Recommended: self-host the sample set used by `smplr` (as already done for the score-player soundfont) and
-pass its URL via `instrumentUrl`, then record that set's license alongside the SONiVOX `LICENSE`.
-Alternatively, document and permit the external origin explicitly (CSP `connect-src`) and record the
-sample licenses. Until then, the runtime sample source is a known external dependency.
+Serving both sample sets from our own origin removes the earlier runtime dependency on a third-party
+host — no external `connect-src` is needed and playback works under a strict Content-Security-Policy.
+CC BY 3.0 requires attribution, satisfied by the `LICENSE` file and the `NOTICE` entry.
 
 ## Music scores & catalogue content
 

@@ -5,6 +5,8 @@
  *
  * Design notes:
  * - **Per-instrument registry** (not a global singleton) so tools pick instruments independently.
+ * - Samples are self-hosted at `/soundfont/instruments/<instrument>-mp3.js` (FluidR3_GM), served from
+ *   the app's own origin. Populate the set with `pnpm soundfont:fetch`.
  * - Sampled audio routes through the `audio.ts` master bus (`getDestination`), so visualizers tap it.
  * - `noteOn`/`noteOff` sustain a note for its real held duration and carry velocity; `playNote` is the
  *   back-compatible one-shot used by the many tools that just trigger a note.
@@ -19,6 +21,12 @@ import {
   scheduleTone,
 } from './audio';
 import { midiToFrequency } from './music-theory';
+
+/**
+ * Base path for the self-hosted instrument sample files (FluidR3_GM, one `<name>-mp3.js` per
+ * instrument), served from the app's public directory. Matches the score engine's `/soundfont` root.
+ */
+const SAMPLE_BASE = '/soundfont/instruments';
 
 /** A curated menu of General-MIDI instruments across families (smplr accepts the full GM set). */
 export const SOUNDFONT_INSTRUMENTS = [
@@ -126,7 +134,7 @@ export function loadInstrument(name: string): Promise<SoundfontStatus> {
       const { Soundfont } = await import('smplr');
       const destination = getDestination() ?? undefined;
       const next = new Soundfont(ctx, {
-        instrument: name,
+        instrumentUrl: `${SAMPLE_BASE}/${name}-mp3.js`,
         ...(destination ? { destination } : {}),
       }) as unknown as SmplrInstrument;
       await next.load;

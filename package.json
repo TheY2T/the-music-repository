@@ -30,7 +30,8 @@
     "obs:down": "docker compose -f infra/podman/observability/compose.observability.yaml down",
     "spec:generate": "turbo run build:openapi generate",
     "licenses:generate": "node scripts/generate-third-party-licenses.mjs",
-    "licenses:check": "pnpm licenses list --prod"
+    "licenses:check": "pnpm licenses list --prod",
+    "soundfont:fetch": "node scripts/fetch-soundfont-samples.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",

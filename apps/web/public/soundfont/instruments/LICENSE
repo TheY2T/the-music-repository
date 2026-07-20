@@ -1,0 +1,13 @@
+FluidR3_GM soundfont — instrument samples
+
+The `<instrument>-mp3.js` files in this directory are General-MIDI instrument
+samples from the FluidR3_GM soundfont, distributed in the midi-js-soundfonts
+format.
+
+Source soundfont: FluidR3_GM.sf2 by Frank Wen ("Fluid").
+Pre-rendered distribution: midi-js-soundfonts (https://github.com/gleitz/midi-js-soundfonts).
+License: Creative Commons Attribution 3.0 (CC BY 3.0)
+         https://creativecommons.org/licenses/by/3.0/
+
+Attribution: FluidR3_GM soundfont (c) Frank Wen, used under CC BY 3.0, via the
+midi-js-soundfonts project.
