@@ -952,6 +952,44 @@ op deleteProgression(@path name: string): {
   @statusCode statusCode: 204;
 };
 
+// ===================== Instrument preferences (ADR 0044) =====================
+// A signed-in user's immersive-instrument choices: guitar handedness, the chosen piano/guitar skin,
+// and whether the tools default to fullscreen. The client mirrors these to localStorage so anonymous
+// visitors keep a device-local copy; when signed in they sync to the account.
+
+/** The user's instrument preferences (input body). */
+model InstrumentPreferencesInput {
+  /** Guitar orientation: `right` (default) or `left` mirrors the fretboard + chord diagrams. */
+  handedness: "left" | "right";
+  /** Chosen piano skin id (see the keyboard skin registry). */
+  keyboardSkin: string;
+  /** Chosen guitar/fretboard skin id (see the fretboard skin registry). */
+  fretboardSkin: string;
+  /** Whether the tools open in fullscreen by default. */
+  fullscreen: boolean;
+}
+
+/** The user's instrument preferences as returned to the client. */
+model InstrumentPreferencesView {
+  handedness: "left" | "right";
+  keyboardSkin: string;
+  fretboardSkin: string;
+  fullscreen: boolean;
+  updatedAt: string;
+}
+
+/** The current user's instrument preferences (falls back to defaults when none saved). */
+@route("/me/preferences")
+@tag("preferences")
+@get
+op getPreferences(): InstrumentPreferencesView;
+
+/** Create or replace the current user's instrument preferences (idempotent upsert). */
+@route("/me/preferences")
+@tag("preferences")
+@put
+op updatePreferences(@body body: InstrumentPreferencesInput): InstrumentPreferencesView;
+
 // ===================== Progress (Phase 2) =====================
 // Per-user learning progress: completion, streaks, and practice time. Auth-gated in NestJS.
 

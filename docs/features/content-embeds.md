@@ -79,3 +79,5 @@ lookup, tuning) live in `apps/web/src/lib/embeds.ts`.
   prose (not run through `t()`); write them in the article's language.
 - Generic tools (ear trainers, metronome, fretboard, scale-explorer, …) take no props and aren't
   embeddable yet — link to `/tools/x` in prose, or parameterise them first.
+- Chord-diagram and fingering embeds honour the reader's saved guitar handedness (right/left) from the
+  instrument-customization preference — see `docs/features/instrument-customization.md` (ADR 0044).

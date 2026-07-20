@@ -11,6 +11,7 @@
 import { Application, extend, useApplication, useTick } from '@pixi/react';
 import { Container, Graphics, Text } from 'pixi.js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { FretboardSkinPalette } from '../instrument-skins';
 import { pitchName } from '../music-theory';
 import type { PixiSceneBaseProps } from './PixiCanvas';
 import { useThemeColors } from './use-theme-colors';
@@ -27,6 +28,14 @@ export interface FretboardSceneProps {
   active: Set<number>; // sounding MIDI notes → glow
   showLabels: boolean;
   flats: boolean;
+  /** `left` mirrors the board horizontally (nut on the right) for left-handed players. */
+  handedness?: 'left' | 'right';
+  /** Fixed skin palette; when absent the board follows the live theme tokens. */
+  skin?: FretboardSkinPalette | null;
+  /** Draw a gloss highlight (pixi-kind skins). */
+  gloss?: boolean;
+  /** Draw faint wood-grain streaks (material/pixi wood skins). */
+  woodGrain?: boolean;
   onPlay: (midi: number) => void;
 }
 
@@ -54,6 +63,10 @@ function Board({
   active,
   showLabels,
   flats,
+  handedness = 'right',
+  skin,
+  gloss,
+  woodGrain,
   onPlay,
   reducedMotion,
 }: FretboardSceneProps & { reducedMotion: boolean }) {
@@ -76,16 +89,23 @@ function Board({
   }, [isInitialised, app]);
 
   const geo = useMemo(() => {
+    const left = handedness === 'left' ? 0 : GUTTER_LEFT; // board's left edge (gutter flips sides)
     const boardW = Math.max(size.w - GUTTER_LEFT, 0);
     const boardH = Math.max(size.h - GUTTER_TOP, 0);
     const fretW = boardW / (fretCount + 1);
     const stringH = boardH / tuning.length;
+    // The string-name gutter sits opposite the board — right for left-handed, left otherwise.
+    const nameX = handedness === 'left' ? left + boardW + GUTTER_LEFT / 2 : GUTTER_LEFT / 2;
+    // Left edge of a fret column; left-handed mirrors columns across the board.
+    const colLeft = (fret: number) =>
+      handedness === 'left' ? left + boardW - (fret + 1) * fretW : left + fret * fretW;
     const cellCenter = (stringIndex: number, fret: number) => ({
-      x: GUTTER_LEFT + fret * fretW + fretW / 2,
+      x: colLeft(fret) + fretW / 2,
       y: GUTTER_TOP + stringIndex * stringH + stringH / 2,
     });
-    return { boardW, boardH, fretW, stringH, cellCenter };
-  }, [size, fretCount, tuning.length]);
+    const nutX = handedness === 'left' ? left + boardW - fretW : left + fretW;
+    return { left, boardW, boardH, fretW, stringH, nameX, colLeft, cellCenter, nutX };
+  }, [size, fretCount, tuning.length, handedness]);
 
   // Particle burst from each newly-sounding note (at every fret position of that pitch).
   useEffect(() => {
@@ -148,43 +168,64 @@ function Board({
     ),
   );
 
-  // Static board: string lines, fret lines, nut, position markers.
+  // Static board: surface, string lines, fret lines, nut, position markers.
   const drawBoard = useCallback(
     (g: Graphics) => {
       g.clear();
-      const { boardH, fretW, stringH } = geo;
+      const { left, boardW, boardH, fretW, stringH } = geo;
+      // Board surface — material/pixi skins paint a solid board; the token skin stays transparent.
+      if (skin) {
+        g.roundRect(left, GUTTER_TOP, boardW, boardH, 4).fill({ color: skin.board });
+        if (woodGrain) {
+          for (const t of [0.22, 0.5, 0.78]) {
+            const y = GUTTER_TOP + boardH * t;
+            g.moveTo(left, y).lineTo(left + boardW, y);
+          }
+          g.stroke({ color: 0x000000, alpha: 0.06, width: 1 });
+        }
+        if (gloss) {
+          g.roundRect(left, GUTTER_TOP, boardW, boardH * 0.35, 4).fill({
+            color: 0xffffff,
+            alpha: 0.06,
+          });
+        }
+        g.roundRect(left, GUTTER_TOP, boardW, boardH, 4).stroke({
+          color: skin.boardEdge,
+          width: 1,
+        });
+      }
       // Position markers (behind strings).
+      const markerColor = skin?.marker ?? colors.muted;
       for (const f of fretMarkers) {
         if (f > fretCount) {
           continue;
         }
-        const cx = GUTTER_LEFT + f * fretW + fretW / 2;
+        const cx = geo.colLeft(f) + fretW / 2;
         const ys =
           f === 12
             ? [GUTTER_TOP + boardH * 0.3, GUTTER_TOP + boardH * 0.7]
             : [GUTTER_TOP + boardH / 2];
         for (const cy of ys) {
-          g.circle(cx, cy, Math.min(fretW, stringH) * 0.18).fill({ color: colors.muted });
+          g.circle(cx, cy, Math.min(fretW, stringH) * 0.18).fill({ color: markerColor });
         }
       }
       // Strings (horizontal).
       for (let s = 0; s < tuning.length; s += 1) {
         const y = GUTTER_TOP + s * stringH + stringH / 2;
-        g.moveTo(GUTTER_LEFT, y).lineTo(GUTTER_LEFT + geo.boardW, y);
+        g.moveTo(left, y).lineTo(left + boardW, y);
       }
-      g.stroke({ color: colors.border, width: 1 });
-      // Fret lines (vertical); the nut (after fret 0) is heavier.
+      g.stroke({ color: skin?.string ?? colors.border, width: 1 });
+      // Fret lines (vertical); the nut is heavier.
       for (let f = 0; f <= fretCount + 1; f += 1) {
-        const x = GUTTER_LEFT + f * fretW;
+        const x = left + f * fretW;
         g.moveTo(x, GUTTER_TOP).lineTo(x, GUTTER_TOP + boardH);
       }
-      g.stroke({ color: colors.border, width: 1 });
-      const nutX = GUTTER_LEFT + fretW;
-      g.moveTo(nutX, GUTTER_TOP)
-        .lineTo(nutX, GUTTER_TOP + boardH)
-        .stroke({ color: colors.mutedForeground, width: 3 });
+      g.stroke({ color: skin?.fret ?? colors.border, width: 1 });
+      g.moveTo(geo.nutX, GUTTER_TOP)
+        .lineTo(geo.nutX, GUTTER_TOP + boardH)
+        .stroke({ color: skin?.nut ?? colors.mutedForeground, width: 3 });
     },
-    [geo, tuning.length, fretCount, fretMarkers, colors],
+    [geo, tuning.length, fretCount, fretMarkers, colors, skin, gloss, woodGrain],
   );
 
   const drawCell = useCallback(
@@ -198,7 +239,7 @@ function Board({
       g.clear();
       // Transparent hit area covering the whole cell.
       g.rect(
-        GUTTER_LEFT + fret * geo.fretW,
+        geo.colLeft(fret),
         GUTTER_TOP + stringIndex * geo.stringH,
         geo.fretW,
         geo.stringH,
@@ -207,14 +248,14 @@ function Board({
         alpha: 0.001,
       });
       if (inScale || isActive) {
-        const fill = isRoot ? colors.primary : colors.accent;
+        const fill = isRoot ? (skin?.root ?? colors.primary) : (skin?.dot ?? colors.accent);
         g.circle(x, y, radius).fill({ color: fill });
         if (isActive) {
-          g.circle(x, y, radius + 3).stroke({ color: colors.ring, width: 2 });
+          g.circle(x, y, radius + 3).stroke({ color: skin?.dotActive ?? colors.ring, width: 2 });
         }
       }
     },
-    [geo, highlighted, root, active, colors],
+    [geo, highlighted, root, active, colors, skin],
   );
 
   if (!isInitialised || geo.fretW === 0) {
@@ -236,9 +277,9 @@ function Board({
           key={`fn-${f}`}
           text={String(f)}
           anchor={0.5}
-          x={GUTTER_LEFT + f * geo.fretW + geo.fretW / 2}
+          x={geo.colLeft(f) + geo.fretW / 2}
           y={GUTTER_TOP / 2}
-          style={labelStyle(colors.mutedForeground)}
+          style={labelStyle(skin?.label ?? colors.mutedForeground)}
         />
       ))}
       {/* String names. */}
@@ -247,9 +288,9 @@ function Board({
           key={`sn-${name}-${s}`}
           text={name}
           anchor={0.5}
-          x={GUTTER_LEFT / 2}
+          x={geo.nameX}
           y={GUTTER_TOP + s * geo.stringH + geo.stringH / 2}
-          style={labelStyle(colors.mutedForeground)}
+          style={labelStyle(skin?.label ?? colors.mutedForeground)}
         />
       ))}
       {/* Interactive cells + note labels. */}
@@ -273,7 +314,13 @@ function Board({
                   anchor={0.5}
                   x={x}
                   y={y}
-                  style={labelStyle(inScale ? colors.background : colors.mutedForeground)}
+                  style={labelStyle(
+                    inScale
+                      ? skin
+                        ? 0x1a1712
+                        : colors.background
+                      : (skin?.label ?? colors.mutedForeground),
+                  )}
                 />
               )}
             </pixiContainer>

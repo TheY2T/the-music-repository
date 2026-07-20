@@ -80,3 +80,9 @@ No backend — everything is computed in the browser (no API, no DB):
   identifier: C·E·G → C Major; C·E·G·A → A Minor 7th (inversion-aware). Mode explorer: C root → 7 modes
   Lydian→Locrian with correct notes (e.g. C Dorian = C D E♭ F G A B♭, ♮6). Progression builder: C key,
   clicking I·V·vi·IV → "I(C) – V(G) – vi(Am) – IV(F)". All music-theory outcomes correct.
+
+## Immersive customization
+
+The piano (`/tools/keyboard`) and guitar (`/tools/fretboard`) tools support fullscreen, instrument
+skins, and guitar left/right handedness behind `learning.instrument-customization`. Preferences persist
+per user. See `docs/features/instrument-customization.md` (ADR 0044).

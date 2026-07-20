@@ -8,15 +8,23 @@ const TOP = 20;
 const COL = 14;
 const ROW = 16;
 const FRETS = 5;
-const stringX = (i: number) => LEFT + i * COL;
 const fretY = (f: number) => TOP + f * ROW;
 const HEIGHT = TOP + FRETS * ROW + 16;
 
-/** A single fretted-chord shape rendered as an SVG fret grid (low string on the left). String count
- * is taken from `chord.frets.length`, so it renders 6-string guitar and 4-string ukulele alike. */
-export function ChordDiagram({ chord }: { chord: ChordShape }) {
+/** A single fretted-chord shape rendered as an SVG fret grid. String count is taken from
+ * `chord.frets.length`, so it renders 6-string guitar and 4-string ukulele alike. Right-handed shows the
+ * low string on the left; left-handed mirrors the grid horizontally (low string on the right). */
+export function ChordDiagram({
+  chord,
+  handedness = 'right',
+}: {
+  chord: ChordShape;
+  handedness?: 'left' | 'right';
+}) {
   const strings = chord.frets.length;
   const width = LEFT * 2 + (strings - 1) * COL;
+  // Map a string index to its visual column, mirroring for left-handed players.
+  const stringX = (i: number) => LEFT + (handedness === 'left' ? strings - 1 - i : i) * COL;
   // Window the neck: baseFret 1 shows the nut (frets 1–5); >1 shows a movable shape higher up and
   // labels its starting fret. `displayFret` maps an absolute fret into the current 1–5 window.
   const baseFret = chord.baseFret && chord.baseFret > 1 ? chord.baseFret : 1;
@@ -33,24 +41,34 @@ export function ChordDiagram({ chord }: { chord: ChordShape }) {
       {Array.from({ length: FRETS + 1 }, (_, f) => (
         <line
           key={f}
-          x1={stringX(0)}
-          x2={stringX(strings - 1)}
+          x1={LEFT}
+          x2={LEFT + (strings - 1) * COL}
           y1={fretY(f)}
           y2={fretY(f)}
           className="stroke-foreground"
           strokeWidth={atNut && f === 0 ? 3 : 1}
         />
       ))}
-      {!atNut && (
-        <text
-          x={stringX(0) - 5}
-          y={fretY(1) - ROW / 2 + 3}
-          textAnchor="end"
-          className="fill-muted-foreground text-[8px]"
-        >
-          {baseFret}fr
-        </text>
-      )}
+      {!atNut &&
+        (handedness === 'left' ? (
+          <text
+            x={LEFT + (strings - 1) * COL + 5}
+            y={fretY(1) - ROW / 2 + 3}
+            textAnchor="start"
+            className="fill-muted-foreground text-[8px]"
+          >
+            {baseFret}fr
+          </text>
+        ) : (
+          <text
+            x={LEFT - 5}
+            y={fretY(1) - ROW / 2 + 3}
+            textAnchor="end"
+            className="fill-muted-foreground text-[8px]"
+          >
+            {baseFret}fr
+          </text>
+        ))}
       {/* Strings. */}
       {chord.frets.map((_, i) => (
         <line

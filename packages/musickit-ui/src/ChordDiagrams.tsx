@@ -10,6 +10,7 @@ import { playNote } from '@TheY2T/tmr-music-core/soundfont';
 import { useLevel } from '@TheY2T/tmr-music-core/use-level';
 import { Icon } from '@TheY2T/tmr-ui';
 import { Select } from '@TheY2T/tmr-ui/components/ui/select';
+import { useInstrumentPreferences } from '@TheY2T/tmr-web-acl/instrument-preferences';
 import { useEffect, useState } from 'react';
 import InstrumentLoading from './InstrumentLoading';
 import InstrumentPicker from './InstrumentPicker';
@@ -78,6 +79,7 @@ function strumShape(frets: number[], tuning: number[]): void {
 
 export default function ChordDiagrams() {
   const { level, setLevel } = useLevel();
+  const { preferences } = useInstrumentPreferences();
   const [instrument, setInstrument] = useState<Instrument>('guitar');
   const [root, setRoot] = useState(0);
   const [quality, setQuality] = useState('major');
@@ -167,7 +169,7 @@ export default function ChordDiagrams() {
               <span className="font-semibold">
                 {shape.name} · {shape.family}
               </span>
-              <ChordDiagram chord={shape} />
+              <ChordDiagram chord={shape} handedness={preferences.handedness} />
               <span className="text-xs text-muted-foreground">
                 <Icon name="play" className="size-4" />
                 Strum

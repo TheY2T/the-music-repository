@@ -30,6 +30,7 @@ export const FLAG_FIELD_BY_KEY = {
   [FlagKeys.ToolPractice]: 'toolPractice',
   [FlagKeys.InfoView]: 'infoView',
   [FlagKeys.InteractiveScores]: 'interactiveScores',
+  [FlagKeys.InstrumentCustomization]: 'instrumentCustomization',
   [FlagKeys.ToolKeyboard]: 'toolKeyboard',
   [FlagKeys.ToolCircleOfFifths]: 'toolCircleOfFifths',
   [FlagKeys.ToolFretboard]: 'toolFretboard',

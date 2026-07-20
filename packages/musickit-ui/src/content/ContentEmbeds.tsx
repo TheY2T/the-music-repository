@@ -12,6 +12,7 @@ import { midiToFrequency } from '@TheY2T/tmr-music-core/music-theory';
 import { buildPianoVoicings } from '@TheY2T/tmr-music-core/piano-voicings';
 import { Icon, YouTubeEmbed } from '@TheY2T/tmr-ui';
 import type { ContentDetail as ContentDetailDto } from '@TheY2T/tmr-web-acl/dto';
+import { useInstrumentPreferences } from '@TheY2T/tmr-web-acl/instrument-preferences';
 import { lazy, Suspense } from 'react';
 import { ChordDiagram, KeyboardChordDiagram } from '../organisms/index';
 
@@ -106,6 +107,7 @@ function PianoChordRow({ embed, locale }: { embed: Embed; locale: Locale }) {
 
 /** A row of tappable chord diagrams for the embed's chord symbols (guitar, ukulele, bass or piano). */
 function ChordDiagramRow({ embed, locale }: { embed: Embed; locale: Locale }) {
+  const { preferences } = useInstrumentPreferences();
   if (embed.instrument === 'piano') return <PianoChordRow embed={embed} locale={locale} />;
   const tuning = tuningFor(embed.instrument);
   const symbols = embed.chords ?? [];
@@ -131,7 +133,7 @@ function ChordDiagramRow({ embed, locale }: { embed: Embed; locale: Locale }) {
             className="flex flex-col items-center gap-1 rounded-lg border border-border p-2 transition-colors hover:bg-accent/15"
             aria-label={t(locale, 'embed.playChord').replace('{chord}', symbol)}
           >
-            <ChordDiagram chord={shape} />
+            <ChordDiagram chord={shape} handedness={preferences.handedness} />
             <span className="text-sm font-semibold">{symbol}</span>
           </button>
         );

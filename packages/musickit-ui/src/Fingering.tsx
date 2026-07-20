@@ -10,6 +10,7 @@ import {
 } from '@TheY2T/tmr-music-core/music-theory';
 import { PixiCanvas } from '@TheY2T/tmr-music-core/pixi/PixiCanvas';
 import { cn } from '@TheY2T/tmr-ui';
+import { useInstrumentPreferences } from '@TheY2T/tmr-web-acl/instrument-preferences';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { TUNING_LOW_FIRST, UKULELE_TUNING_LOW_FIRST } from './organisms/index';
 
@@ -48,6 +49,8 @@ export default function Fingering({
 }) {
   const [active, setActive] = useState<Set<number>>(new Set());
   const releaseTimers = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
+  const { preferences } = useInstrumentPreferences();
+  const handedness = preferences.handedness;
 
   const lowFirst = tuning ?? INSTRUMENT_TUNING[instrument] ?? TUNING_LOW_FIRST;
   const displayTuning = useMemo(() => [...lowFirst].reverse(), [lowFirst]); // high string on top
@@ -93,13 +96,17 @@ export default function Fingering({
         active,
         showLabels: true,
         flats,
+        handedness,
         onPlay: play,
       }}
       containerClassName="h-40 w-full rounded-lg border border-border bg-muted"
       fallback={
         <div className="space-y-1">
           {displayTuning.map((open, s) => (
-            <div key={`s${s}`} className="flex items-center gap-1">
+            <div
+              key={`s${s}`}
+              className={cn('flex items-center gap-1', handedness === 'left' && 'flex-row-reverse')}
+            >
               <span className="w-5 text-xs text-muted-foreground">{tuningNames[s]}</span>
               {Array.from({ length: FRET_COUNT + 1 }, (_, fret) => {
                 const midi = open + fret;

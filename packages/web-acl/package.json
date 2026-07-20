@@ -8,6 +8,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./api-data": "./src/api-data.tsx",
+    "./instrument-preferences": "./src/instrument-preferences.tsx",
     "./*": "./src/*.ts"
   },
   "files": [

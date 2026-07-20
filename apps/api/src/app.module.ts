@@ -19,6 +19,7 @@ import { HealthModule } from './health/health.module';
 import { HelpModule } from './help/help.module';
 import { I18nModule } from './i18n/i18n.module';
 import { DatabaseModule } from './infrastructure/database/database.module';
+import { PreferencesModule } from './preferences/preferences.module';
 import { ProgressModule } from './progress/progress.module';
 import { ProgressionsModule } from './progressions/progressions.module';
 import { RedemptionModule } from './redemption/redemption.module';
@@ -52,6 +53,7 @@ import { TranslationsModule } from './translations/translations.module';
     ClassroomsModule,
     ProgressModule,
     ProgressionsModule,
+    PreferencesModule,
     HelpModule,
     FaqModule,
     ReviewsModule,

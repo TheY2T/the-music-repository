@@ -10,6 +10,7 @@
 import { Application, extend, useApplication, useTick } from '@pixi/react';
 import { Container, Graphics, Text } from 'pixi.js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { KeyboardSkinPalette } from '../instrument-skins';
 import { pitchName } from '../music-theory';
 import type { PixiSceneBaseProps } from './PixiCanvas';
 import { useThemeColors } from './use-theme-colors';
@@ -25,6 +26,10 @@ export interface PianoSceneProps {
   active: Set<number>;
   showLabels: boolean;
   flats: boolean;
+  /** Fixed skin palette; when absent the keys follow the live theme tokens. */
+  skin?: KeyboardSkinPalette | null;
+  /** Draw a gloss highlight on keys (pixi-kind skins). */
+  gloss?: boolean;
   /** Note-on: pointer pressed a key (starts a drag glissando). */
   onPlay: (midi: number) => void;
   /** Glissando step: the pointer slid onto a key while a drag is in progress. */
@@ -56,6 +61,8 @@ function Keybed({
   active,
   showLabels,
   flats,
+  skin,
+  gloss,
   onPlay,
   onGlide,
   onRelease,
@@ -148,6 +155,15 @@ function Keybed({
     ),
   );
 
+  // Effective key colours: the skin palette when set, otherwise the live theme tokens.
+  const whiteKey = skin?.whiteKey ?? colors.card;
+  const whiteKeyActive = skin?.whiteKeyActive ?? colors.ring;
+  const blackKey = skin?.blackKey ?? colors.foreground;
+  const blackKeyActive = skin?.blackKeyActive ?? colors.ring;
+  const blackKeyScale = skin?.scale ?? colors.primary;
+  const scaleFill = skin?.scale ?? colors.accent;
+  const keyBorder = skin?.border ?? colors.border;
+
   const drawWhite = useCallback(
     (g: Graphics, midi: number) => {
       const x = geo.whiteX.get(midi) ?? 0;
@@ -155,20 +171,26 @@ function Keybed({
       const isActive = active.has(midi);
       g.clear();
       g.roundRect(x + 1, 0, geo.whiteWidth - 2, geo.whiteHeight, 4).fill({
-        color: isActive ? colors.ring : colors.card,
+        color: isActive ? whiteKeyActive : whiteKey,
       });
       if (inScale && !isActive) {
         g.roundRect(x + 1, 0, geo.whiteWidth - 2, geo.whiteHeight, 4).fill({
-          color: colors.accent,
+          color: scaleFill,
           alpha: 0.28,
         });
       }
+      if (gloss) {
+        g.roundRect(x + 2, 1, geo.whiteWidth - 4, geo.whiteHeight * 0.4, 4).fill({
+          color: 0xffffff,
+          alpha: 0.1,
+        });
+      }
       g.roundRect(x + 1, 0, geo.whiteWidth - 2, geo.whiteHeight, 4).stroke({
-        color: colors.border,
+        color: keyBorder,
         width: 1,
       });
     },
-    [geo, highlighted, active, colors],
+    [geo, highlighted, active, whiteKey, whiteKeyActive, scaleFill, keyBorder, gloss],
   );
 
   const drawBlack = useCallback(
@@ -177,15 +199,21 @@ function Keybed({
       const x = cx - geo.blackWidth / 2;
       const inScale = highlighted.has(midi % 12);
       const isActive = active.has(midi);
-      const fill = isActive ? colors.ring : inScale ? colors.primary : colors.foreground;
+      const fill = isActive ? blackKeyActive : inScale ? blackKeyScale : blackKey;
       g.clear();
       g.roundRect(x, 0, geo.blackWidth, geo.blackHeight, 3).fill({ color: fill });
+      if (gloss) {
+        g.roundRect(x + 1, 1, geo.blackWidth - 2, geo.blackHeight * 0.4, 3).fill({
+          color: 0xffffff,
+          alpha: 0.12,
+        });
+      }
       g.roundRect(x, 0, geo.blackWidth, geo.blackHeight, 3).stroke({
-        color: colors.border,
+        color: keyBorder,
         width: 1,
       });
     },
-    [geo, highlighted, active, colors],
+    [geo, highlighted, active, blackKey, blackKeyActive, blackKeyScale, keyBorder, gloss],
   );
 
   if (!isInitialised || geo.whiteWidth === 0) {
@@ -221,7 +249,7 @@ function Keybed({
             anchor={0.5}
             x={(geo.whiteX.get(midi) ?? 0) + geo.whiteWidth / 2}
             y={geo.whiteHeight - 12}
-            style={labelStyle(colors.mutedForeground, false)}
+            style={labelStyle(skin?.label ?? colors.mutedForeground, false)}
           />
         ))}
       {/* Black keys + labels on top. */}
@@ -245,7 +273,7 @@ function Keybed({
             anchor={0.5}
             x={(afterWhiteIndex + 1) * geo.whiteWidth}
             y={geo.blackHeight - 9}
-            style={labelStyle(colors.background, true)}
+            style={labelStyle(skin ? 0xf2ede1 : colors.background, true)}
           />
         ))}
       <pixiGraphics ref={particleGraphics} draw={noDraw} />

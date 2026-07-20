@@ -190,6 +190,21 @@ export const savedProgressions = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.name] })],
 );
 
+// --- Instrument preferences: a signed-in user's immersive-instrument choices
+//     (guitar handedness, chosen piano/guitar skin, default-fullscreen). One row per user. ---
+export const userPreferences = pgTable('user_preferences', {
+  userId: text('user_id')
+    .primaryKey()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  prefs: jsonb('prefs').notNull().$type<{
+    handedness: 'left' | 'right';
+    keyboardSkin: string;
+    fretboardSkin: string;
+    fullscreen: boolean;
+  }>(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 // --- Collections: rich, chaptered groupings — courses / learning
 //     paths / syllabi / song lists. Editorial (curated) or user-created. ---
 export const collections = pgTable('collections', {

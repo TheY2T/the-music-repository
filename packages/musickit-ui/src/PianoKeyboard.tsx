@@ -1,3 +1,5 @@
+import { type Locale, t } from '@TheY2T/tmr-i18n';
+import { keyboardSkin } from '@TheY2T/tmr-music-core/instrument-skins';
 import {
   DEFAULT_KEYBOARD_KEYS,
   KEYBOARD_SIZES,
@@ -22,7 +24,8 @@ import {
   type SoundfontStatus,
 } from '@TheY2T/tmr-music-core/soundfont';
 import { useMidiInput } from '@TheY2T/tmr-music-core/use-midi-input';
-import { Button, cn, Icon, Select } from '@TheY2T/tmr-ui';
+import { Button, cn, Icon, Select, ToolStage } from '@TheY2T/tmr-ui';
+import { useInstrumentPreferences } from '@TheY2T/tmr-web-acl/instrument-preferences';
 import {
   type PointerEvent as ReactPointerEvent,
   useCallback,
@@ -31,6 +34,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { InstrumentControls } from './InstrumentControls';
 
 /**
  * The shared interactive keyboard. One island for /tools/keyboard and /tools/soundfont: selectable
@@ -59,6 +63,9 @@ interface PianoKeyboardProps {
   /** Preselect the highlighted scale id (e.g. `major`, `minor-pentatonic`). */
   defaultScale?: string;
   ariaLabel?: string;
+  locale?: Locale;
+  /** When true, shows the skin/fullscreen controls and honours saved preferences. */
+  customization?: boolean;
 }
 
 export default function PianoKeyboard({
@@ -69,7 +76,12 @@ export default function PianoKeyboard({
   defaultRoot = null,
   defaultScale = 'major',
   ariaLabel = 'Piano keyboard',
+  locale = 'en',
+  customization = false,
 }: PianoKeyboardProps) {
+  const { preferences, update } = useInstrumentPreferences();
+  // When customization is off the tool renders exactly as its base view: the default skin.
+  const skin = keyboardSkin(customization ? preferences.keyboardSkin : 'theme');
   const [keys, setKeys] = useState(defaultSize);
   const [instrument, setInstrument] = useState(defaultInstrument);
   const [status, setStatus] = useState<SoundfontStatus>('idle');
@@ -336,173 +348,196 @@ export default function PianoKeyboard({
   );
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-end gap-4">
-        <label className="space-y-1 text-sm">
-          <span className="block font-medium">Keyboard size</span>
-          <Select
-            value={keys}
-            onChange={(e) => setKeys(Number(e.target.value))}
-            className="h-auto w-auto px-2 py-1"
-          >
-            {KEYBOARD_SIZES.map((s) => (
-              <option key={s.keys} value={s.keys}>
-                {s.label}
-              </option>
-            ))}
-          </Select>
-        </label>
-
-        {instruments ? (
-          <label className="space-y-1 text-sm">
-            <span className="block font-medium">Instrument</span>
-            <Select
-              value={instrument}
-              onChange={(e) => setInstrument(e.target.value)}
-              className="h-auto w-auto px-2 py-1"
-            >
-              {SOUNDFONT_INSTRUMENTS.map((inst) => (
-                <option key={inst.name} value={inst.name}>
-                  {inst.label}
-                </option>
-              ))}
-            </Select>
-          </label>
-        ) : null}
-
-        <div className="space-y-1 text-sm">
-          <span className="block font-medium">Octave</span>
-          <div className="flex items-center gap-1">
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              aria-label="Octave down"
-              onClick={() => shiftOctave(-1)}
-              disabled={qwertyBase <= firstMidi}
-            >
-              <Icon name="chevron-left" className="size-4" />
-            </Button>
-            <span className="w-10 text-center font-mono text-xs text-muted-foreground">
-              {noteLabel(qwertyBase)}
-            </span>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              aria-label="Octave up"
-              onClick={() => shiftOctave(1)}
-              disabled={qwertyBase >= lastMidi - 12}
-            >
-              <Icon name="chevron-right" className="size-4" />
-            </Button>
-          </div>
-        </div>
-
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={showLabels}
-            onChange={(e) => setShowLabels(e.target.checked)}
+    <ToolStage
+      enterLabel={t(locale, 'tool.fullscreen.enter')}
+      exitLabel={t(locale, 'tool.fullscreen.exit')}
+      showFullscreen={customization}
+      toolbar={
+        customization ? (
+          <InstrumentControls
+            locale={locale}
+            instrument="keyboard"
+            skin={skin.id}
+            onSkinChange={(id) => update({ keyboardSkin: id })}
           />
-          Show note names
-        </label>
+        ) : undefined
+      }
+    >
+      {({ isFullscreen }) => (
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-end gap-4">
+            <label className="space-y-1 text-sm">
+              <span className="block font-medium">Keyboard size</span>
+              <Select
+                value={keys}
+                onChange={(e) => setKeys(Number(e.target.value))}
+                className="h-auto w-auto px-2 py-1"
+              >
+                {KEYBOARD_SIZES.map((s) => (
+                  <option key={s.keys} value={s.keys}>
+                    {s.label}
+                  </option>
+                ))}
+              </Select>
+            </label>
 
-        {scaleHighlight ? (
-          <label className="space-y-1 text-sm">
-            <span className="block font-medium" data-help="scales">
-              Highlight scale
-            </span>
-            <div className="flex gap-2">
-              <Select
-                value={root ?? ''}
-                onChange={(e) => setRoot(e.target.value === '' ? null : Number(e.target.value))}
-                className="h-auto w-auto px-2 py-1"
-              >
-                <option value="">— root —</option>
-                {ROOT_CHOICES.map((pc) => (
-                  <option key={pc} value={pc}>
-                    {pitchName(pc)}
-                  </option>
-                ))}
-              </Select>
-              <Select
-                value={scaleKey}
-                onChange={(e) => setScaleKey(e.target.value)}
-                className="h-auto w-auto px-2 py-1"
-              >
-                {SCALES.map((s) => (
-                  <option key={s.key} value={s.key}>
-                    {s.name}
-                  </option>
-                ))}
-              </Select>
+            {instruments ? (
+              <label className="space-y-1 text-sm">
+                <span className="block font-medium">Instrument</span>
+                <Select
+                  value={instrument}
+                  onChange={(e) => setInstrument(e.target.value)}
+                  className="h-auto w-auto px-2 py-1"
+                >
+                  {SOUNDFONT_INSTRUMENTS.map((inst) => (
+                    <option key={inst.name} value={inst.name}>
+                      {inst.label}
+                    </option>
+                  ))}
+                </Select>
+              </label>
+            ) : null}
+
+            <div className="space-y-1 text-sm">
+              <span className="block font-medium">Octave</span>
+              <div className="flex items-center gap-1">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  aria-label="Octave down"
+                  onClick={() => shiftOctave(-1)}
+                  disabled={qwertyBase <= firstMidi}
+                >
+                  <Icon name="chevron-left" className="size-4" />
+                </Button>
+                <span className="w-10 text-center font-mono text-xs text-muted-foreground">
+                  {noteLabel(qwertyBase)}
+                </span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  aria-label="Octave up"
+                  onClick={() => shiftOctave(1)}
+                  disabled={qwertyBase >= lastMidi - 12}
+                >
+                  <Icon name="chevron-right" className="size-4" />
+                </Button>
+              </div>
             </div>
-          </label>
-        ) : null}
 
-        <div className="ml-auto text-sm text-muted-foreground">
-          Last note: <span className="font-mono text-foreground">{lastNote ?? '—'}</span>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={showLabels}
+                onChange={(e) => setShowLabels(e.target.checked)}
+              />
+              Show note names
+            </label>
+
+            {scaleHighlight ? (
+              <label className="space-y-1 text-sm">
+                <span className="block font-medium" data-help="scales">
+                  Highlight scale
+                </span>
+                <div className="flex gap-2">
+                  <Select
+                    value={root ?? ''}
+                    onChange={(e) => setRoot(e.target.value === '' ? null : Number(e.target.value))}
+                    className="h-auto w-auto px-2 py-1"
+                  >
+                    <option value="">— root —</option>
+                    {ROOT_CHOICES.map((pc) => (
+                      <option key={pc} value={pc}>
+                        {pitchName(pc)}
+                      </option>
+                    ))}
+                  </Select>
+                  <Select
+                    value={scaleKey}
+                    onChange={(e) => setScaleKey(e.target.value)}
+                    className="h-auto w-auto px-2 py-1"
+                  >
+                    {SCALES.map((s) => (
+                      <option key={s.key} value={s.key}>
+                        {s.name}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+              </label>
+            ) : null}
+
+            <div className="ml-auto text-sm text-muted-foreground">
+              Last note: <span className="font-mono text-foreground">{lastNote ?? '—'}</span>
+            </div>
+          </div>
+
+          {instrumentMessage ? (
+            <p
+              className={cn(
+                'text-sm',
+                status === 'fallback' ? 'text-amber-600' : 'text-muted-foreground',
+              )}
+            >
+              {instrumentMessage}
+            </p>
+          ) : null}
+
+          <div className="text-xs" data-help="keyboard">
+            {!midi.supported ? (
+              <span className="inline-flex items-center gap-1 text-muted-foreground">
+                <Icon name="piano" className="size-4" /> Play with your mouse or computer keyboard
+                (Web MIDI not supported here).
+              </span>
+            ) : midi.connected ? (
+              <span className="inline-flex items-center gap-1 text-success">
+                <Icon name="piano" className="size-4" /> MIDI connected:{' '}
+                {midi.deviceName ?? 'device'} — play your keyboard.
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 text-muted-foreground">
+                <Icon name="piano" className="size-4" /> MIDI ready — or play with your mouse /
+                computer keyboard.
+              </span>
+            )}
+          </div>
+
+          <div ref={scrollRef} className="overflow-x-auto pb-1">
+            <div className="relative w-full" style={{ minWidth: `${minWidth}px` }}>
+              <PixiCanvas
+                ariaLabel={`${ariaLabel} — ${keys} keys`}
+                loader={() => import('@TheY2T/tmr-music-core/pixi/piano-scene')}
+                sceneProps={{
+                  whiteMidis,
+                  blackMidis,
+                  highlighted,
+                  active,
+                  showLabels,
+                  flats,
+                  skin: skin.palette ?? null,
+                  gloss: skin.effects?.gloss,
+                  onPlay: pointerPlay,
+                  onGlide: pointerGlide,
+                  onRelease: pointerEnd,
+                }}
+                containerClassName={cn(
+                  'w-full rounded-lg border border-border bg-muted',
+                  isFullscreen ? 'h-[60vh]' : 'h-44',
+                )}
+                fallback={fallbackKeyboard}
+              />
+            </div>
+          </div>
+
+          <p className="text-xs text-muted-foreground">
+            Click or hold a key, play the <span className="font-mono">z</span>/
+            <span className="font-mono">q</span> rows on your keyboard, or connect a MIDI device.
+            Use the octave buttons to move the computer-keyboard range.
+          </p>
         </div>
-      </div>
-
-      {instrumentMessage ? (
-        <p
-          className={cn(
-            'text-sm',
-            status === 'fallback' ? 'text-amber-600' : 'text-muted-foreground',
-          )}
-        >
-          {instrumentMessage}
-        </p>
-      ) : null}
-
-      <div className="text-xs" data-help="keyboard">
-        {!midi.supported ? (
-          <span className="inline-flex items-center gap-1 text-muted-foreground">
-            <Icon name="piano" className="size-4" /> Play with your mouse or computer keyboard (Web
-            MIDI not supported here).
-          </span>
-        ) : midi.connected ? (
-          <span className="inline-flex items-center gap-1 text-success">
-            <Icon name="piano" className="size-4" /> MIDI connected: {midi.deviceName ?? 'device'} —
-            play your keyboard.
-          </span>
-        ) : (
-          <span className="inline-flex items-center gap-1 text-muted-foreground">
-            <Icon name="piano" className="size-4" /> MIDI ready — or play with your mouse / computer
-            keyboard.
-          </span>
-        )}
-      </div>
-
-      <div ref={scrollRef} className="overflow-x-auto pb-1">
-        <div className="relative w-full" style={{ minWidth: `${minWidth}px` }}>
-          <PixiCanvas
-            ariaLabel={`${ariaLabel} — ${keys} keys`}
-            loader={() => import('@TheY2T/tmr-music-core/pixi/piano-scene')}
-            sceneProps={{
-              whiteMidis,
-              blackMidis,
-              highlighted,
-              active,
-              showLabels,
-              flats,
-              onPlay: pointerPlay,
-              onGlide: pointerGlide,
-              onRelease: pointerEnd,
-            }}
-            containerClassName="h-44 w-full rounded-lg border border-border bg-muted"
-            fallback={fallbackKeyboard}
-          />
-        </div>
-      </div>
-
-      <p className="text-xs text-muted-foreground">
-        Click or hold a key, play the <span className="font-mono">z</span>/
-        <span className="font-mono">q</span> rows on your keyboard, or connect a MIDI device. Use
-        the octave buttons to move the computer-keyboard range.
-      </p>
-    </div>
+      )}
+    </ToolStage>
   );
 }

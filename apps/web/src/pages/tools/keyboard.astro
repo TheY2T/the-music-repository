@@ -1,7 +1,7 @@
 ---
 import InfoView from '@TheY2T/tmr-common-ui/InfoView';
 import ToolPracticeLogger from '@TheY2T/tmr-common-ui/ToolPracticeLogger';
-import PianoKeyboard from '@TheY2T/tmr-musickit-ui/PianoKeyboard';
+import PianoKeyboardTool from '@/components/islands/PianoKeyboardTool';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
@@ -13,6 +13,8 @@ const showInfoView = Astro.locals.flags.infoView;
 const logPracticeEnabled =
   Astro.locals.flags.toolPractice && Astro.locals.flags.progress && !!Astro.locals.user;
 const locale = Astro.locals.locale;
+const customization = Astro.locals.flags.instrumentCustomization;
+const authenticated = !!Astro.locals.user;
 ---
 
 <BaseLayout
@@ -23,7 +25,14 @@ const locale = Astro.locals.locale;
       title={t(locale, 'tool.keyboard.title')}
       back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}
     >
-      <PianoKeyboard client:load scaleHighlight={true} instruments={true} />
+      <PianoKeyboardTool
+        client:load
+        locale={locale}
+        customization={customization}
+        authenticated={authenticated}
+        scaleHighlight={true}
+        instruments={true}
+      />
     </PageShell>
     {showInfoView && <InfoView client:idle />}
     {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}

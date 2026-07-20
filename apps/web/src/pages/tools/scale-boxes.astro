@@ -1,7 +1,7 @@
 ---
 import InfoView from '@TheY2T/tmr-common-ui/InfoView';
 import ToolPracticeLogger from '@TheY2T/tmr-common-ui/ToolPracticeLogger';
-import ScaleBoxes from '@TheY2T/tmr-musickit-ui/ScaleBoxes';
+import ScaleBoxesTool from '@/components/islands/ScaleBoxesTool';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
@@ -13,6 +13,8 @@ const showInfoView = Astro.locals.flags.infoView;
 const logPracticeEnabled =
   Astro.locals.flags.toolPractice && Astro.locals.flags.progress && !!Astro.locals.user;
 const locale = Astro.locals.locale;
+const authenticated = !!Astro.locals.user;
+const customization = Astro.locals.flags.instrumentCustomization;
 ---
 
 <BaseLayout
@@ -25,7 +27,7 @@ const locale = Astro.locals.locale;
       back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}
       maxWidth="max-w-5xl"
     >
-      <ScaleBoxes client:load />
+      <ScaleBoxesTool client:load authenticated={authenticated} customization={customization} />
     </PageShell>
     {showInfoView && <InfoView client:idle />}
     {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}

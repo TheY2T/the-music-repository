@@ -4446,6 +4446,37 @@ export const LogPracticeResponse = zod.object({
 
 
 /**
+ * The current user's instrument preferences (falls back to defaults when none saved).
+ */
+export const GetPreferencesResponse = zod.object({
+  "handedness": zod.enum(['left', 'right']),
+  "keyboardSkin": zod.string(),
+  "fretboardSkin": zod.string(),
+  "fullscreen": zod.boolean(),
+  "updatedAt": zod.string()
+}).describe('The user\'s instrument preferences as returned to the client.')
+
+
+/**
+ * Create or replace the current user's instrument preferences (idempotent upsert).
+ */
+export const UpdatePreferencesBody = zod.object({
+  "handedness": zod.enum(['left', 'right']).describe('Guitar orientation: `right` (default) or `left` mirrors the fretboard + chord diagrams.'),
+  "keyboardSkin": zod.string().describe('Chosen piano skin id (see the keyboard skin registry).'),
+  "fretboardSkin": zod.string().describe('Chosen guitar\/fretboard skin id (see the fretboard skin registry).'),
+  "fullscreen": zod.boolean().describe('Whether the tools open in fullscreen by default.')
+}).describe('The user\'s instrument preferences (input body).')
+
+export const UpdatePreferencesResponse = zod.object({
+  "handedness": zod.enum(['left', 'right']),
+  "keyboardSkin": zod.string(),
+  "fretboardSkin": zod.string(),
+  "fullscreen": zod.boolean(),
+  "updatedAt": zod.string()
+}).describe('The user\'s instrument preferences as returned to the client.')
+
+
+/**
  * The current user's progress dashboard.
  */
 export const GetProgressResponse = zod.object({

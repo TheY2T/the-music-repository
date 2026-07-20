@@ -1,4 +1,6 @@
+import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { useToolInstrument } from '@TheY2T/tmr-music-core/instrument-choice';
+import { fretboardSkin } from '@TheY2T/tmr-music-core/instrument-skins';
 import {
   FRET_MARKERS,
   pitchName,
@@ -12,8 +14,10 @@ import {
 import { PixiCanvas } from '@TheY2T/tmr-music-core/pixi/PixiCanvas';
 import { playNote } from '@TheY2T/tmr-music-core/soundfont';
 import { useLevel } from '@TheY2T/tmr-music-core/use-level';
-import { cn, Select } from '@TheY2T/tmr-ui';
+import { cn, Select, ToolStage } from '@TheY2T/tmr-ui';
+import { useInstrumentPreferences } from '@TheY2T/tmr-web-acl/instrument-preferences';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { InstrumentControls } from './InstrumentControls';
 import InstrumentLoading from './InstrumentLoading';
 import InstrumentPicker from './InstrumentPicker';
 import LevelToggle from './LevelToggle';
@@ -24,8 +28,21 @@ const frets = Array.from({ length: FRET_COUNT + 1 }, (_, f) => f);
 const noteLabel = (midi: number, flats: boolean) =>
   `${pitchName(midi % 12, flats)}${Math.floor(midi / 12) - 1}`;
 
-export default function GuitarFretboard() {
+interface GuitarFretboardProps {
+  locale?: Locale;
+  /** When true, shows the skin/handedness/fullscreen controls and honours saved preferences. */
+  customization?: boolean;
+}
+
+export default function GuitarFretboard({
+  locale = 'en',
+  customization = false,
+}: GuitarFretboardProps = {}) {
   const { level, setLevel } = useLevel();
+  const { preferences, update } = useInstrumentPreferences();
+  // When customization is off the tool renders exactly as its base view: right-handed, default skin.
+  const handedness = customization ? preferences.handedness : 'right';
+  const skin = fretboardSkin(customization ? preferences.fretboardSkin : 'theme');
   const { instrument, setInstrument, ready } = useToolInstrument('guitar');
   const [showLabels, setShowLabels] = useState(true);
   const [root, setRoot] = useState<number | null>(null);
@@ -71,14 +88,16 @@ export default function GuitarFretboard() {
   );
 
   // Accessible, token-themed fret grid — the real control surface (visible when WebGL is
-  // unavailable; operable but visually hidden behind the Pixi canvas otherwise).
+  // unavailable; operable but visually hidden behind the Pixi canvas otherwise). Left-handed reverses
+  // the fret columns and moves the nut border to the opposite side.
+  const displayFrets = handedness === 'left' ? [...frets].reverse() : frets;
   const fallbackGrid = (
     <div className="overflow-x-auto">
       <table className="border-collapse text-center text-[11px]">
         <thead>
           <tr>
             <th className="w-6" />
-            {frets.map((f) => (
+            {displayFrets.map((f) => (
               <th key={f} className="w-10 pb-1 font-normal text-muted-foreground">
                 {f}
                 {FRET_MARKERS.has(f) ? <span className="block leading-none">•</span> : null}
@@ -92,7 +111,7 @@ export default function GuitarFretboard() {
               <th className="pr-1 text-right font-mono text-muted-foreground">
                 {STANDARD_TUNING_NAMES[stringIndex]}
               </th>
-              {frets.map((f) => {
+              {displayFrets.map((f) => {
                 const midi = open + f;
                 const pc = midi % 12;
                 const inScale = highlighted.has(pc);
@@ -102,7 +121,10 @@ export default function GuitarFretboard() {
                     key={f}
                     className={cn(
                       'h-8 border border-border',
-                      f === 0 && 'border-r-2 border-r-muted-foreground',
+                      f === 0 &&
+                        (handedness === 'left'
+                          ? 'border-l-2 border-l-muted-foreground'
+                          : 'border-r-2 border-r-muted-foreground'),
                     )}
                   >
                     <button
@@ -135,76 +157,103 @@ export default function GuitarFretboard() {
   if (!ready) return <InstrumentLoading />;
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-end gap-4">
-        <InstrumentPicker value={instrument} onChange={setInstrument} />
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={showLabels}
-            onChange={(e) => setShowLabels(e.target.checked)}
+    <ToolStage
+      enterLabel={t(locale, 'tool.fullscreen.enter')}
+      exitLabel={t(locale, 'tool.fullscreen.exit')}
+      showFullscreen={customization}
+      toolbar={
+        customization ? (
+          <InstrumentControls
+            locale={locale}
+            instrument="fretboard"
+            skin={skin.id}
+            onSkinChange={(id) => update({ fretboardSkin: id })}
+            handedness={handedness}
+            onHandednessChange={(h) => update({ handedness: h })}
           />
-          Show note names
-        </label>
-        <label className="space-y-1 text-sm">
-          <span className="block font-medium" data-help="scales">
-            Highlight scale
-          </span>
-          <div className="flex gap-2">
-            <Select
-              value={root ?? ''}
-              onChange={(e) => setRoot(e.target.value === '' ? null : Number(e.target.value))}
-              className="h-auto w-auto px-2 py-1"
-            >
-              <option value="">— root —</option>
-              {ROOT_CHOICES.map((pc) => (
-                <option key={pc} value={pc}>
-                  {pitchName(pc)}
-                </option>
-              ))}
-            </Select>
-            <Select
-              value={scaleKey}
-              onChange={(e) => setScaleKey(e.target.value)}
-              className="h-auto w-auto px-2 py-1"
-            >
-              {scaleChoices.map((s) => (
-                <option key={s.key} value={s.key}>
-                  {s.name}
-                </option>
-              ))}
-            </Select>
+        ) : undefined
+      }
+    >
+      {({ isFullscreen }) => (
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-end gap-4">
+            <InstrumentPicker value={instrument} onChange={setInstrument} />
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={showLabels}
+                onChange={(e) => setShowLabels(e.target.checked)}
+              />
+              Show note names
+            </label>
+            <label className="space-y-1 text-sm">
+              <span className="block font-medium" data-help="scales">
+                Highlight scale
+              </span>
+              <div className="flex gap-2">
+                <Select
+                  value={root ?? ''}
+                  onChange={(e) => setRoot(e.target.value === '' ? null : Number(e.target.value))}
+                  className="h-auto w-auto px-2 py-1"
+                >
+                  <option value="">— root —</option>
+                  {ROOT_CHOICES.map((pc) => (
+                    <option key={pc} value={pc}>
+                      {pitchName(pc)}
+                    </option>
+                  ))}
+                </Select>
+                <Select
+                  value={scaleKey}
+                  onChange={(e) => setScaleKey(e.target.value)}
+                  className="h-auto w-auto px-2 py-1"
+                >
+                  {scaleChoices.map((s) => (
+                    <option key={s.key} value={s.key}>
+                      {s.name}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+            </label>
+            <LevelToggle level={level} onChange={setLevel} />
+            <div className="ml-auto text-sm text-muted-foreground">
+              Last note: <span className="font-mono text-foreground">{lastNote ?? '—'}</span>
+            </div>
           </div>
-        </label>
-        <LevelToggle level={level} onChange={setLevel} />
-        <div className="ml-auto text-sm text-muted-foreground">
-          Last note: <span className="font-mono text-foreground">{lastNote ?? '—'}</span>
+
+          <PixiCanvas
+            ariaLabel="Guitar fretboard — standard tuning, 15 frets"
+            loader={() => import('@TheY2T/tmr-music-core/pixi/fretboard-scene')}
+            sceneProps={{
+              tuning: STANDARD_TUNING,
+              tuningNames: STANDARD_TUNING_NAMES,
+              fretCount: FRET_COUNT,
+              fretMarkers: FRET_MARKERS,
+              highlighted,
+              root,
+              active,
+              showLabels,
+              flats,
+              handedness,
+              skin: skin.palette ?? null,
+              gloss: skin.effects?.gloss,
+              woodGrain: skin.effects?.woodGrain,
+              onPlay: play,
+            }}
+            containerClassName={cn(
+              'rounded-lg border border-border bg-muted',
+              isFullscreen ? 'h-[70vh]' : 'h-40',
+            )}
+            fallback={fallbackGrid}
+          />
+
+          <p className="text-xs text-muted-foreground">
+            Standard tuning (EADGBE). Click a fret to hear it; pick a root + scale to see its shapes
+            (root notes highlighted).
+          </p>
         </div>
-      </div>
-
-      <PixiCanvas
-        ariaLabel="Guitar fretboard — standard tuning, 15 frets"
-        loader={() => import('@TheY2T/tmr-music-core/pixi/fretboard-scene')}
-        sceneProps={{
-          tuning: STANDARD_TUNING,
-          tuningNames: STANDARD_TUNING_NAMES,
-          fretCount: FRET_COUNT,
-          fretMarkers: FRET_MARKERS,
-          highlighted,
-          root,
-          active,
-          showLabels,
-          flats,
-          onPlay: play,
-        }}
-        containerClassName="h-40 rounded-lg border border-border bg-muted"
-        fallback={fallbackGrid}
-      />
-
-      <p className="text-xs text-muted-foreground">
-        Standard tuning (EADGBE). Click a fret to hear it; pick a root + scale to see its shapes
-        (root notes highlighted).
-      </p>
-    </div>
+      )}
+    </ToolStage>
   );
 }

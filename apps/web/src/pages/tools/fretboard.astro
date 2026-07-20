@@ -1,5 +1,5 @@
 ---
-import GuitarFretboard from '@TheY2T/tmr-musickit-ui/GuitarFretboard';
+import GuitarFretboardTool from '@/components/islands/GuitarFretboardTool';
 import InfoView from '@TheY2T/tmr-common-ui/InfoView';
 import ToolPracticeLogger from '@TheY2T/tmr-common-ui/ToolPracticeLogger';
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -13,6 +13,8 @@ const showInfoView = Astro.locals.flags.infoView;
 const logPracticeEnabled =
   Astro.locals.flags.toolPractice && Astro.locals.flags.progress && !!Astro.locals.user;
 const locale = Astro.locals.locale;
+const customization = Astro.locals.flags.instrumentCustomization;
+const authenticated = !!Astro.locals.user;
 ---
 
 <BaseLayout
@@ -24,7 +26,12 @@ const locale = Astro.locals.locale;
       back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}
       maxWidth="max-w-5xl"
     >
-      <GuitarFretboard client:load />
+      <GuitarFretboardTool
+        client:load
+        locale={locale}
+        customization={customization}
+        authenticated={authenticated}
+      />
     </PageShell>
     {showInfoView && <InfoView client:idle />}
     {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}

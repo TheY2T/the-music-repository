@@ -8,7 +8,8 @@ import {
   scalePitchClasses,
 } from '@TheY2T/tmr-music-core/music-theory';
 import { playNote } from '@TheY2T/tmr-music-core/soundfont';
-import { Select } from '@TheY2T/tmr-ui';
+import { cn, Select } from '@TheY2T/tmr-ui';
+import { useInstrumentPreferences } from '@TheY2T/tmr-web-acl/instrument-preferences';
 import { useState } from 'react';
 import InstrumentLoading from './InstrumentLoading';
 import InstrumentPicker from './InstrumentPicker';
@@ -37,6 +38,11 @@ export default function ScaleBoxes({
   const flats = [1, 3, 5, 8, 10].includes(root);
 
   const inWindow = (fret: number) => showAll || (fret >= position && fret <= position + BOX_WIDTH);
+
+  const { preferences } = useInstrumentPreferences();
+  const leftHanded = preferences.handedness === 'left';
+  const fretOrder = Array.from({ length: FRET_COUNT + 1 }, (_, fret) => fret);
+  const displayFrets = leftHanded ? [...fretOrder].reverse() : fretOrder;
 
   const { instrument, setInstrument, ready } = useToolInstrument('guitar');
   if (!ready) return <InstrumentLoading />;
@@ -99,7 +105,7 @@ export default function ScaleBoxes({
           {/* Fret number row */}
           <div className="flex">
             <div className="w-6" />
-            {Array.from({ length: FRET_COUNT + 1 }, (_, fret) => (
+            {displayFrets.map((fret) => (
               <div
                 key={fret}
                 className="w-8 text-center text-[10px] text-muted-foreground tabular-nums"
@@ -113,7 +119,7 @@ export default function ScaleBoxes({
               <div className="w-6 text-center text-xs text-muted-foreground">
                 {pitchName(open % 12, flats)}
               </div>
-              {Array.from({ length: FRET_COUNT + 1 }, (_, fret) => {
+              {displayFrets.map((fret) => {
                 const midi = open + fret;
                 const pc = midi % 12;
                 const on = pitches.has(pc) && inWindow(fret);
@@ -123,15 +129,19 @@ export default function ScaleBoxes({
                     type="button"
                     key={`f${fret}`}
                     onClick={() => playNote(midi)}
-                    className={`m-[1px] flex h-6 w-8 items-center justify-center rounded-sm border text-[10px] ${
-                      fret === 0 ? 'border-r-2 border-r-muted-foreground' : 'border-transparent'
-                    } ${
+                    className={cn(
+                      'm-[1px] flex h-6 w-8 items-center justify-center rounded-sm border text-[10px]',
+                      fret === 0
+                        ? leftHanded
+                          ? 'border-l-2 border-l-muted-foreground'
+                          : 'border-r-2 border-r-muted-foreground'
+                        : 'border-transparent',
                       on
                         ? isRoot
                           ? 'bg-primary text-primary-foreground'
                           : 'bg-accent/40 text-foreground'
-                        : 'text-muted-foreground/40'
-                    }`}
+                        : 'text-muted-foreground/40',
+                    )}
                   >
                     {on ? pitchName(pc, flats) : '·'}
                   </button>

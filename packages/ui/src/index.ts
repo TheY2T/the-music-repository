@@ -37,6 +37,7 @@ export {
 export { StarRating, type StarRatingProps } from './components/molecules/star-rating';
 export { StatCard, type StatCardProps } from './components/molecules/stat-card';
 export { StatTile, type StatTileProps } from './components/molecules/stat-tile';
+export { ToolStage, type ToolStageProps } from './components/molecules/tool-stage';
 export { YouTubeEmbed, type YouTubeEmbedProps } from './components/molecules/youtube-embed';
 // Atoms
 export {
@@ -136,6 +137,7 @@ export {
 export { Textarea, type TextareaProps } from './components/ui/textarea';
 export { Toaster, toast } from './components/ui/toast';
 export { Tooltip, type TooltipProps } from './components/ui/tooltip';
+export { type UseFullscreenResult, useFullscreen } from './hooks/use-fullscreen';
 export {
   DEFAULT_PAGE_SIZES,
   type UsePaginationResult,

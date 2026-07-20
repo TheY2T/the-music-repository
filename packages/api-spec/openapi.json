@@ -28,6 +28,9 @@
       "name": "progressions"
     },
     {
+      "name": "preferences"
+    },
+    {
       "name": "progress"
     },
     {
@@ -4543,6 +4546,58 @@
         }
       }
     },
+    "/me/preferences": {
+      "get": {
+        "operationId": "getPreferences",
+        "description": "The current user's instrument preferences (falls back to defaults when none saved).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstrumentPreferencesView"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "preferences"
+        ]
+      },
+      "put": {
+        "operationId": "updatePreferences",
+        "description": "Create or replace the current user's instrument preferences (idempotent upsert).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstrumentPreferencesView"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "preferences"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstrumentPreferencesInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/me/progress": {
       "get": {
         "operationId": "getProgress",
@@ -7900,6 +7955,70 @@
           }
         },
         "description": "Bulk import a locale's strings from a flat key→value map (upserted as drafts)."
+      },
+      "InstrumentPreferencesInput": {
+        "type": "object",
+        "required": [
+          "handedness",
+          "keyboardSkin",
+          "fretboardSkin",
+          "fullscreen"
+        ],
+        "properties": {
+          "handedness": {
+            "type": "string",
+            "enum": [
+              "left",
+              "right"
+            ],
+            "description": "Guitar orientation: `right` (default) or `left` mirrors the fretboard + chord diagrams."
+          },
+          "keyboardSkin": {
+            "type": "string",
+            "description": "Chosen piano skin id (see the keyboard skin registry)."
+          },
+          "fretboardSkin": {
+            "type": "string",
+            "description": "Chosen guitar/fretboard skin id (see the fretboard skin registry)."
+          },
+          "fullscreen": {
+            "type": "boolean",
+            "description": "Whether the tools open in fullscreen by default."
+          }
+        },
+        "description": "The user's instrument preferences (input body)."
+      },
+      "InstrumentPreferencesView": {
+        "type": "object",
+        "required": [
+          "handedness",
+          "keyboardSkin",
+          "fretboardSkin",
+          "fullscreen",
+          "updatedAt"
+        ],
+        "properties": {
+          "handedness": {
+            "type": "string",
+            "enum": [
+              "left",
+              "right"
+            ]
+          },
+          "keyboardSkin": {
+            "type": "string"
+          },
+          "fretboardSkin": {
+            "type": "string"
+          },
+          "fullscreen": {
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "description": "The user's instrument preferences as returned to the client."
       },
       "Invitation": {
         "type": "object",
