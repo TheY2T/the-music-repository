@@ -16,3 +16,4 @@ export {
   type PMMark,
   type PMNode,
 } from './types';
+export { parseYouTubeId, youTubeThumbnailUrl } from './youtube';

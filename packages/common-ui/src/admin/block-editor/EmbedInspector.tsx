@@ -1,4 +1,4 @@
-import type { EmbedConfig, EmbedTool } from '@TheY2T/tmr-content-serde';
+import { type EmbedConfig, type EmbedTool, parseYouTubeId } from '@TheY2T/tmr-content-serde';
 import { type Locale, t } from '@TheY2T/tmr-i18n';
 import {
   Button,
@@ -13,7 +13,8 @@ import {
   SheetTitle,
   Textarea,
 } from '@TheY2T/tmr-ui';
-import { useEffect, useState } from 'react';
+import { adminApi } from '@TheY2T/tmr-web-acl/admin-api';
+import { useEffect, useRef, useState } from 'react';
 import type { EmbedInspectorTarget } from './editor-ui';
 import { type EmbedFieldDef, fieldsForTool, TOOL_LABEL_KEY } from './embed-fields';
 
@@ -55,10 +56,44 @@ export function EmbedInspector({
   locale: Locale;
 }) {
   const [draft, setDraft] = useState<EmbedConfig | null>(target?.config ?? null);
+  const lastPreviewUrl = useRef<string | null>(null);
 
   useEffect(() => {
     setDraft(target?.config ?? null);
   }, [target]);
+
+  // For a YouTube embed, resolve the title/thumbnail from the pasted URL so the author sees a live
+  // preview and the saved embed carries cached metadata. Debounced; best-effort (failure leaves the
+  // draft untouched — the read side still renders from the video id).
+  const videoUrl =
+    draft?.tool === 'youtube' && typeof draft.videoUrl === 'string' ? draft.videoUrl.trim() : '';
+  useEffect(() => {
+    const id = parseYouTubeId(videoUrl);
+    if (!id || videoUrl === lastPreviewUrl.current) return;
+    lastPreviewUrl.current = videoUrl;
+    const handle = window.setTimeout(() => {
+      adminApi
+        .videoPreview(videoUrl)
+        .then((preview) => {
+          setDraft((prev) => {
+            if (prev?.tool !== 'youtube') return prev;
+            const current = typeof prev.videoUrl === 'string' ? prev.videoUrl.trim() : '';
+            if (current !== videoUrl) return prev;
+            return {
+              ...prev,
+              videoId: preview.videoId,
+              thumbnailUrl: preview.thumbnailUrl,
+              ...(preview.author ? { videoAuthor: preview.author } : {}),
+              ...(prev.title || !preview.title ? {} : { title: preview.title }),
+            };
+          });
+        })
+        .catch(() => {
+          // preview is best-effort
+        });
+    }, 500);
+    return () => window.clearTimeout(handle);
+  }, [videoUrl]);
 
   if (!target || !draft) {
     return null;
@@ -66,6 +101,10 @@ export function EmbedInspector({
 
   const tool = draft.tool as EmbedTool;
   const fields = fieldsForTool(tool);
+  const previewThumb =
+    tool === 'youtube' && typeof draft.thumbnailUrl === 'string' ? draft.thumbnailUrl : null;
+  const previewTitle =
+    tool === 'youtube' && typeof draft.title === 'string' && draft.title ? draft.title : null;
 
   const setField = (field: EmbedFieldDef, raw: string) => {
     setDraft((prev) => {
@@ -136,6 +175,17 @@ export function EmbedInspector({
               </Field>
             );
           })}
+
+          {previewThumb ? (
+            <div className="space-y-2">
+              <img
+                src={previewThumb}
+                alt=""
+                className="aspect-video w-full rounded-md border border-border object-cover"
+              />
+              {previewTitle ? <p className="text-sm font-medium">{previewTitle}</p> : null}
+            </div>
+          ) : null}
         </div>
 
         <SheetFooter>

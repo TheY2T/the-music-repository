@@ -43,7 +43,7 @@ export function EmbedNodeView(props: NodeViewProps) {
       </div>
       {/* The tool is a live preview only — shield it so clicks/drags stay with the editor. */}
       <div className="pointer-events-none select-none">
-        <EmbedCard embed={config as Embed} locale={locale} interactive={interactive} />
+        <EmbedCard embed={config as Embed} locale={locale} interactive={interactive} editing />
       </div>
     </NodeViewWrapper>
   );

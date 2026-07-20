@@ -37,6 +37,7 @@ export {
 export { StarRating, type StarRatingProps } from './components/molecules/star-rating';
 export { StatCard, type StatCardProps } from './components/molecules/stat-card';
 export { StatTile, type StatTileProps } from './components/molecules/stat-tile';
+export { YouTubeEmbed, type YouTubeEmbedProps } from './components/molecules/youtube-embed';
 // Atoms
 export {
   Accordion,

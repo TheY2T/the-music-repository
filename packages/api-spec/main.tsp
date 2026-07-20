@@ -145,7 +145,9 @@ model ContentEmbed {
     | "rhythm"
     | "chord-board"
     | "intervals"
-    | "fingering";
+    | "fingering"
+    // External video demonstrating the piece, rendered as a lazy privacy-friendly facade:
+    | "youtube";
   /** Optional heading shown above the embed. */
   title?: string;
   /** Optional explanatory caption shown under the heading. */
@@ -177,6 +179,18 @@ model ContentEmbed {
   labels?: string[];
   /** `strum`/`progression`: beats per minute for playback. */
   tempo?: int32;
+  /** `youtube`: the authored video URL. */
+  videoUrl?: string;
+  /** `youtube`: the parsed 11-char video id, cached at author time. */
+  videoId?: string;
+  /** `youtube`: cached preview thumbnail URL. */
+  thumbnailUrl?: string;
+  /** `youtube`: cached channel/author name from oEmbed. */
+  videoAuthor?: string;
+  /** `youtube`: playback start offset in seconds. */
+  start?: int32;
+  /** `youtube`: optional ISO upload date; enables full VideoObject rich results. */
+  uploadDate?: string;
 }
 
 /** Full detail view of a catalogue item. */
@@ -433,6 +447,23 @@ model ContentScoreInput {
 @tag("authoring")
 @put
 op setContentScore(@path slug: string, @body body: ContentScoreInput): ContentDetail;
+
+/** Resolved preview for an external video URL (keyless oEmbed lookup). */
+model VideoPreview {
+  videoId: string;
+  title?: string;
+  author?: string;
+  thumbnailUrl: string;
+}
+
+/** Look up a video's title + thumbnail from its URL, for the block editor's live embed preview. */
+@route("/videos/preview")
+@tag("authoring")
+@get
+op getVideoPreview(@query url: string): VideoPreview | {
+  @statusCode statusCode: 422;
+  @body body: ProblemDetails;
+};
 
 /** One saved content snapshot (written on publish). */
 model ContentRevisionSummary {

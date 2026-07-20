@@ -233,3 +233,28 @@ export function musicCompositionJsonLd(input: MusicCompositionInput): object {
     inLanguage: htmlLang(input.locale),
   };
 }
+
+export interface VideoObjectInput {
+  /** Video title. */
+  name: string;
+  description?: string;
+  thumbnailUrl: string;
+  /** 11-char YouTube id → embed URL. */
+  videoId: string;
+  /** ISO 8601 upload date; when present the video is eligible for full rich results. */
+  uploadDate?: string;
+}
+
+/** Markup for a video demonstrating a catalogue piece. `uploadDate` is a Google-required field oEmbed
+ * can't supply, so it's emitted only when an author provides it; the rest is always present. */
+export function videoObjectJsonLd(input: VideoObjectInput): object {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: input.name,
+    ...(input.description ? { description: input.description } : {}),
+    thumbnailUrl: input.thumbnailUrl,
+    embedUrl: `https://www.youtube.com/embed/${input.videoId}`,
+    ...(input.uploadDate ? { uploadDate: input.uploadDate } : {}),
+  };
+}

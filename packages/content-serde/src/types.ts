@@ -21,6 +21,7 @@ export const EMBED_TOOLS = [
   'chord-board',
   'intervals',
   'fingering',
+  'youtube',
 ] as const;
 
 export type EmbedTool = (typeof EMBED_TOOLS)[number];

@@ -6,6 +6,7 @@ import {
   jsonLdScript,
   musicCompositionJsonLd,
   pageTitle,
+  videoObjectJsonLd,
 } from './seo';
 
 const SITE = new URL('https://music.example.com');
@@ -119,6 +120,28 @@ describe('JSON-LD builders', () => {
     expect(ld.composer.name).toBe('Beethoven');
     expect(ld.musicalKey).toBe('A minor');
     expect(ld.inLanguage).toBe('en');
+  });
+
+  it('video object builds embedUrl + thumbnail and omits uploadDate when absent', () => {
+    const ld = videoObjectJsonLd({
+      name: 'A performance',
+      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
+      videoId: 'dQw4w9WgXcQ',
+    }) as Record<string, unknown>;
+    expect(ld['@type']).toBe('VideoObject');
+    expect(ld.embedUrl).toBe('https://www.youtube.com/embed/dQw4w9WgXcQ');
+    expect(ld.thumbnailUrl).toBe('https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg');
+    expect(ld).not.toHaveProperty('uploadDate');
+  });
+
+  it('video object includes uploadDate when supplied', () => {
+    const ld = videoObjectJsonLd({
+      name: 'A performance',
+      thumbnailUrl: 't',
+      videoId: 'dQw4w9WgXcQ',
+      uploadDate: '2024-01-02',
+    }) as Record<string, unknown>;
+    expect(ld.uploadDate).toBe('2024-01-02');
   });
 
   it('jsonLdScript escapes < so a value cannot break out of the script block', () => {

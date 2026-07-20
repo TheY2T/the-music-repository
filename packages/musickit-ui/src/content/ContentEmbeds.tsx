@@ -1,7 +1,9 @@
+import { parseYouTubeId } from '@TheY2T/tmr-content-serde';
 import { type Locale, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import { playTone } from '@TheY2T/tmr-music-core/audio';
 import { findChordShape, noteNameToPitchClass, tuningFor } from '@TheY2T/tmr-music-core/embeds';
 import { midiToFrequency } from '@TheY2T/tmr-music-core/music-theory';
+import { Icon, YouTubeEmbed } from '@TheY2T/tmr-ui';
 import type { ContentDetail as ContentDetailDto } from '@TheY2T/tmr-web-acl/dto';
 import { lazy, Suspense } from 'react';
 import { ChordDiagram } from '../organisms/index';
@@ -38,6 +40,7 @@ const DEFAULT_TITLE: Record<Embed['tool'], MessageKey> = {
   'chord-board': 'embed.chordBoard',
   intervals: 'embed.intervals',
   fingering: 'embed.fingering',
+  youtube: 'embed.youtube',
 };
 
 /** Sound a chord shape low→high (a light "strum"), given open-string MIDI for the instrument. */
@@ -87,14 +90,29 @@ function ChordDiagramRow({ embed, locale }: { embed: Embed; locale: Locale }) {
   );
 }
 
+/** Hollow placeholder shown in the editor for a YouTube embed before a URL is entered, so a freshly
+ * inserted video reads as a card being composed rather than an empty line. */
+function YouTubePlaceholder({ locale }: { locale: Locale }) {
+  return (
+    <div className="flex w-full max-w-md items-center gap-3 rounded-lg border border-dashed border-border p-2 text-muted-foreground">
+      <span className="flex aspect-video w-28 shrink-0 items-center justify-center rounded-md bg-muted sm:w-36">
+        <Icon name="play" className="size-5 opacity-40" />
+      </span>
+      <span className="text-sm">{t(locale, 'embed.youtubePlaceholder')}</span>
+    </div>
+  );
+}
+
 function EmbedBody({
   embed,
   locale,
   interactive,
+  editing,
 }: {
   embed: Embed;
   locale: Locale;
   interactive: boolean;
+  editing?: boolean;
 }) {
   switch (embed.tool) {
     case 'score':
@@ -142,6 +160,22 @@ function EmbedBody({
       return <Rhythm values={embed.pattern ?? []} tempo={embed.tempo} locale={locale} />;
     case 'intervals':
       return <Intervals root={embed.root} locale={locale} />;
+    case 'youtube': {
+      const videoId = embed.videoId ?? parseYouTubeId(embed.videoUrl);
+      if (videoId) {
+        return (
+          <YouTubeEmbed
+            videoId={videoId}
+            title={embed.title}
+            caption={embed.caption}
+            thumbnailUrl={embed.thumbnailUrl}
+            start={embed.start}
+            playLabel={t(locale, 'youTubeEmbed.play')}
+          />
+        );
+      }
+      return editing ? <YouTubePlaceholder locale={locale} /> : null;
+    }
     case 'fingering':
       return (
         <Fingering
@@ -163,21 +197,36 @@ export function EmbedCard({
   embed,
   locale,
   interactive,
+  editing,
 }: {
   embed: Embed;
   locale: Locale;
   interactive: boolean;
+  /** True when rendered inside the admin block editor (enables the compose-time video placeholder). */
+  editing?: boolean;
 }) {
+  const fallback = <p className="text-sm text-muted-foreground">{t(locale, 'score.loading')}</p>;
+
+  // A video reads as a self-explanatory inline preview (its own title + thumbnail), so it skips the
+  // titled-card chrome the interactive tools use.
+  if (embed.tool === 'youtube') {
+    return (
+      <section>
+        <Suspense fallback={fallback}>
+          <EmbedBody embed={embed} locale={locale} interactive={interactive} editing={editing} />
+        </Suspense>
+      </section>
+    );
+  }
+
   return (
     <section className="space-y-2">
       <h3 className="font-display text-lg font-semibold">
         {embed.title ?? t(locale, DEFAULT_TITLE[embed.tool])}
       </h3>
       {embed.caption ? <p className="text-sm text-muted-foreground">{embed.caption}</p> : null}
-      <Suspense
-        fallback={<p className="text-sm text-muted-foreground">{t(locale, 'score.loading')}</p>}
-      >
-        <EmbedBody embed={embed} locale={locale} interactive={interactive} />
+      <Suspense fallback={fallback}>
+        <EmbedBody embed={embed} locale={locale} interactive={interactive} editing={editing} />
       </Suspense>
     </section>
   );

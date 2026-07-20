@@ -290,7 +290,11 @@
   "embed.chordBoard": "Chords to hear",
   "embed.intervals": "Intervals",
   "embed.fingering": "Fingering",
+  "embed.youtube": "Watch",
+  "embed.youtubePlaceholder": "Add a YouTube URL in the inspector to preview the video.",
   "embed.playChord": "Play the {chord} chord",
+  "youTubeEmbed.play": "Play video",
+  "youTubeEmbed.watchOn": "Watch on YouTube",
 
   "content.related": "Related",
   "content.notFound": "This content could not be found.",
@@ -968,6 +972,7 @@
   "blockEditor.tool.chordBoard": "Chord board",
   "blockEditor.tool.intervals": "Intervals",
   "blockEditor.tool.fingering": "Fingering",
+  "blockEditor.tool.youtube": "YouTube video",
   "blockEditor.field.title": "Title",
   "blockEditor.field.caption": "Caption",
   "blockEditor.field.tex": "alphaTex source",
@@ -983,6 +988,8 @@
   "blockEditor.field.labels": "Labels (comma-separated)",
   "blockEditor.field.pattern": "Pattern (comma-separated)",
   "blockEditor.field.tuning": "Tuning (comma-separated MIDI)",
+  "blockEditor.field.videoUrl": "YouTube URL",
+  "blockEditor.field.start": "Start at (seconds)",
 
   "nav.settings": "Settings",
   "settings.title": "Settings",

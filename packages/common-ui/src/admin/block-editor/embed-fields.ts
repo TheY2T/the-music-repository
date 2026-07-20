@@ -36,6 +36,8 @@ const FIELD: Record<string, EmbedFieldDef> = {
   labels: { key: 'labels', type: 'list', labelKey: 'blockEditor.field.labels' },
   pattern: { key: 'pattern', type: 'list', labelKey: 'blockEditor.field.pattern' },
   tuning: { key: 'tuning', type: 'list', labelKey: 'blockEditor.field.tuning' },
+  videoUrl: { key: 'videoUrl', type: 'text', labelKey: 'blockEditor.field.videoUrl' },
+  start: { key: 'start', type: 'number', labelKey: 'blockEditor.field.start' },
 };
 
 /** Which config fields each tool exposes (title/caption are appended to all). */
@@ -51,6 +53,7 @@ const TOOL_FIELDS: Record<EmbedTool, string[]> = {
   'chord-board': ['chords', 'labels'],
   intervals: ['root'],
   fingering: ['instrument', 'tuning', 'root', 'scale'],
+  youtube: ['videoUrl', 'start'],
 };
 
 /** Fields shown for a tool, in order (tool-specific first, then the shared title + caption). */
@@ -84,12 +87,14 @@ export function defaultConfig(tool: EmbedTool): EmbedConfig {
       return { tool, root: 'C' };
     case 'fingering':
       return { tool, instrument: 'guitar', root: 'A', scale: 'minor-pentatonic' };
+    case 'youtube':
+      return { tool, videoUrl: '' };
     default:
       return { tool };
   }
 }
 
-/** The 11 tools, for the insert menu. Label + a short description live under `blockEditor.tool.*`. */
+/** The tools, for the insert menu. Label + a short description live under `blockEditor.tool.*`. */
 export const TOOL_ORDER: EmbedTool[] = [
   'score',
   'keyboard',
@@ -102,6 +107,7 @@ export const TOOL_ORDER: EmbedTool[] = [
   'chord-board',
   'intervals',
   'fingering',
+  'youtube',
 ];
 
 export const TOOL_LABEL_KEY: Record<EmbedTool, MessageKey> = {
@@ -116,4 +122,5 @@ export const TOOL_LABEL_KEY: Record<EmbedTool, MessageKey> = {
   'chord-board': 'blockEditor.tool.chordBoard',
   intervals: 'blockEditor.tool.intervals',
   fingering: 'blockEditor.tool.fingering',
+  youtube: 'blockEditor.tool.youtube',
 };

@@ -1897,7 +1897,7 @@ export const GetContentBySlugResponse = zod.object({
   "composedYear": zod.string().optional()
 }).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
   "embeds": zod.array(zod.object({
-  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering', 'youtube']).describe('Which tool to render.'),
   "title": zod.string().optional().describe('Optional heading shown above the embed.'),
   "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
   "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
@@ -1912,7 +1912,13 @@ export const GetContentBySlugResponse = zod.object({
   "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
   "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
   "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
-  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.'),
+  "videoUrl": zod.string().optional().describe('`youtube`: the authored video URL.'),
+  "videoId": zod.string().optional().describe('`youtube`: the parsed 11-char video id, cached at author time.'),
+  "thumbnailUrl": zod.string().optional().describe('`youtube`: cached preview thumbnail URL.'),
+  "videoAuthor": zod.string().optional().describe('`youtube`: cached channel\/author name from oEmbed.'),
+  "start": zod.number().optional().describe('`youtube`: playback start offset in seconds.'),
+  "uploadDate": zod.string().optional().describe('`youtube`: optional ISO upload date; enables full VideoObject rich results.')
 }).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive tools to render below the prose (authored, from `details` JSONB).'),
   "tags": zod.array(zod.object({
   "slug": zod.string(),
@@ -2637,7 +2643,7 @@ export const CreateContentBody = zod.object({
 }).describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.').optional().describe('Structured facts (key\/era\/form\/composer\/…) stored in the `details` JSONB.'),
   "related": zod.array(zod.string()).optional().describe('Curated \"if you like this\" slugs, merged into `details.related`.'),
   "embeds": zod.array(zod.object({
-  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering', 'youtube']).describe('Which tool to render.'),
   "title": zod.string().optional().describe('Optional heading shown above the embed.'),
   "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
   "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
@@ -2652,7 +2658,13 @@ export const CreateContentBody = zod.object({
   "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
   "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
   "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
-  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.'),
+  "videoUrl": zod.string().optional().describe('`youtube`: the authored video URL.'),
+  "videoId": zod.string().optional().describe('`youtube`: the parsed 11-char video id, cached at author time.'),
+  "thumbnailUrl": zod.string().optional().describe('`youtube`: cached preview thumbnail URL.'),
+  "videoAuthor": zod.string().optional().describe('`youtube`: cached channel\/author name from oEmbed.'),
+  "start": zod.number().optional().describe('`youtube`: playback start offset in seconds.'),
+  "uploadDate": zod.string().optional().describe('`youtube`: optional ISO upload date; enables full VideoObject rich results.')
 }).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive-tool embeds, merged into `details.embeds`.'),
   "bodyDoc": zod.looseObject({
 
@@ -2695,7 +2707,7 @@ export const CreateContentResponse = zod.object({
   "composedYear": zod.string().optional()
 }).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
   "embeds": zod.array(zod.object({
-  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering', 'youtube']).describe('Which tool to render.'),
   "title": zod.string().optional().describe('Optional heading shown above the embed.'),
   "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
   "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
@@ -2710,7 +2722,13 @@ export const CreateContentResponse = zod.object({
   "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
   "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
   "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
-  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.'),
+  "videoUrl": zod.string().optional().describe('`youtube`: the authored video URL.'),
+  "videoId": zod.string().optional().describe('`youtube`: the parsed 11-char video id, cached at author time.'),
+  "thumbnailUrl": zod.string().optional().describe('`youtube`: cached preview thumbnail URL.'),
+  "videoAuthor": zod.string().optional().describe('`youtube`: cached channel\/author name from oEmbed.'),
+  "start": zod.number().optional().describe('`youtube`: playback start offset in seconds.'),
+  "uploadDate": zod.string().optional().describe('`youtube`: optional ISO upload date; enables full VideoObject rich results.')
 }).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive tools to render below the prose (authored, from `details` JSONB).'),
   "tags": zod.array(zod.object({
   "slug": zod.string(),
@@ -2774,7 +2792,7 @@ export const GetContentForEditResponse = zod.object({
   "composedYear": zod.string().optional()
 }).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
   "embeds": zod.array(zod.object({
-  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering', 'youtube']).describe('Which tool to render.'),
   "title": zod.string().optional().describe('Optional heading shown above the embed.'),
   "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
   "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
@@ -2789,7 +2807,13 @@ export const GetContentForEditResponse = zod.object({
   "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
   "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
   "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
-  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.'),
+  "videoUrl": zod.string().optional().describe('`youtube`: the authored video URL.'),
+  "videoId": zod.string().optional().describe('`youtube`: the parsed 11-char video id, cached at author time.'),
+  "thumbnailUrl": zod.string().optional().describe('`youtube`: cached preview thumbnail URL.'),
+  "videoAuthor": zod.string().optional().describe('`youtube`: cached channel\/author name from oEmbed.'),
+  "start": zod.number().optional().describe('`youtube`: playback start offset in seconds.'),
+  "uploadDate": zod.string().optional().describe('`youtube`: optional ISO upload date; enables full VideoObject rich results.')
 }).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive tools to render below the prose (authored, from `details` JSONB).'),
   "tags": zod.array(zod.object({
   "slug": zod.string(),
@@ -2844,7 +2868,7 @@ export const UpdateContentBody = zod.object({
 }).describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.').optional().describe('Structured facts (key\/era\/form\/composer\/…) stored in the `details` JSONB.'),
   "related": zod.array(zod.string()).optional().describe('Curated \"if you like this\" slugs, merged into `details.related`.'),
   "embeds": zod.array(zod.object({
-  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering', 'youtube']).describe('Which tool to render.'),
   "title": zod.string().optional().describe('Optional heading shown above the embed.'),
   "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
   "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
@@ -2859,7 +2883,13 @@ export const UpdateContentBody = zod.object({
   "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
   "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
   "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
-  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.'),
+  "videoUrl": zod.string().optional().describe('`youtube`: the authored video URL.'),
+  "videoId": zod.string().optional().describe('`youtube`: the parsed 11-char video id, cached at author time.'),
+  "thumbnailUrl": zod.string().optional().describe('`youtube`: cached preview thumbnail URL.'),
+  "videoAuthor": zod.string().optional().describe('`youtube`: cached channel\/author name from oEmbed.'),
+  "start": zod.number().optional().describe('`youtube`: playback start offset in seconds.'),
+  "uploadDate": zod.string().optional().describe('`youtube`: optional ISO upload date; enables full VideoObject rich results.')
 }).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive-tool embeds, merged into `details.embeds`.'),
   "bodyDoc": zod.looseObject({
 
@@ -2902,7 +2932,7 @@ export const UpdateContentResponse = zod.object({
   "composedYear": zod.string().optional()
 }).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
   "embeds": zod.array(zod.object({
-  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering', 'youtube']).describe('Which tool to render.'),
   "title": zod.string().optional().describe('Optional heading shown above the embed.'),
   "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
   "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
@@ -2917,7 +2947,13 @@ export const UpdateContentResponse = zod.object({
   "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
   "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
   "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
-  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.'),
+  "videoUrl": zod.string().optional().describe('`youtube`: the authored video URL.'),
+  "videoId": zod.string().optional().describe('`youtube`: the parsed 11-char video id, cached at author time.'),
+  "thumbnailUrl": zod.string().optional().describe('`youtube`: cached preview thumbnail URL.'),
+  "videoAuthor": zod.string().optional().describe('`youtube`: cached channel\/author name from oEmbed.'),
+  "start": zod.number().optional().describe('`youtube`: playback start offset in seconds.'),
+  "uploadDate": zod.string().optional().describe('`youtube`: optional ISO upload date; enables full VideoObject rich results.')
 }).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive tools to render below the prose (authored, from `details` JSONB).'),
   "tags": zod.array(zod.object({
   "slug": zod.string(),
@@ -3007,7 +3043,7 @@ export const PublishContentResponse = zod.object({
   "composedYear": zod.string().optional()
 }).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
   "embeds": zod.array(zod.object({
-  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering', 'youtube']).describe('Which tool to render.'),
   "title": zod.string().optional().describe('Optional heading shown above the embed.'),
   "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
   "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
@@ -3022,7 +3058,13 @@ export const PublishContentResponse = zod.object({
   "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
   "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
   "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
-  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.'),
+  "videoUrl": zod.string().optional().describe('`youtube`: the authored video URL.'),
+  "videoId": zod.string().optional().describe('`youtube`: the parsed 11-char video id, cached at author time.'),
+  "thumbnailUrl": zod.string().optional().describe('`youtube`: cached preview thumbnail URL.'),
+  "videoAuthor": zod.string().optional().describe('`youtube`: cached channel\/author name from oEmbed.'),
+  "start": zod.number().optional().describe('`youtube`: playback start offset in seconds.'),
+  "uploadDate": zod.string().optional().describe('`youtube`: optional ISO upload date; enables full VideoObject rich results.')
 }).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive tools to render below the prose (authored, from `details` JSONB).'),
   "tags": zod.array(zod.object({
   "slug": zod.string(),
@@ -3104,7 +3146,7 @@ export const RestoreContentRevisionResponse = zod.object({
   "composedYear": zod.string().optional()
 }).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
   "embeds": zod.array(zod.object({
-  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering', 'youtube']).describe('Which tool to render.'),
   "title": zod.string().optional().describe('Optional heading shown above the embed.'),
   "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
   "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
@@ -3119,7 +3161,13 @@ export const RestoreContentRevisionResponse = zod.object({
   "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
   "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
   "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
-  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.'),
+  "videoUrl": zod.string().optional().describe('`youtube`: the authored video URL.'),
+  "videoId": zod.string().optional().describe('`youtube`: the parsed 11-char video id, cached at author time.'),
+  "thumbnailUrl": zod.string().optional().describe('`youtube`: cached preview thumbnail URL.'),
+  "videoAuthor": zod.string().optional().describe('`youtube`: cached channel\/author name from oEmbed.'),
+  "start": zod.number().optional().describe('`youtube`: playback start offset in seconds.'),
+  "uploadDate": zod.string().optional().describe('`youtube`: optional ISO upload date; enables full VideoObject rich results.')
 }).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive tools to render below the prose (authored, from `details` JSONB).'),
   "tags": zod.array(zod.object({
   "slug": zod.string(),
@@ -3187,7 +3235,7 @@ export const SetContentScoreResponse = zod.object({
   "composedYear": zod.string().optional()
 }).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
   "embeds": zod.array(zod.object({
-  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering', 'youtube']).describe('Which tool to render.'),
   "title": zod.string().optional().describe('Optional heading shown above the embed.'),
   "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
   "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
@@ -3202,7 +3250,13 @@ export const SetContentScoreResponse = zod.object({
   "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
   "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
   "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
-  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.'),
+  "videoUrl": zod.string().optional().describe('`youtube`: the authored video URL.'),
+  "videoId": zod.string().optional().describe('`youtube`: the parsed 11-char video id, cached at author time.'),
+  "thumbnailUrl": zod.string().optional().describe('`youtube`: cached preview thumbnail URL.'),
+  "videoAuthor": zod.string().optional().describe('`youtube`: cached channel\/author name from oEmbed.'),
+  "start": zod.number().optional().describe('`youtube`: playback start offset in seconds.'),
+  "uploadDate": zod.string().optional().describe('`youtube`: optional ISO upload date; enables full VideoObject rich results.')
 }).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive tools to render below the prose (authored, from `details` JSONB).'),
   "tags": zod.array(zod.object({
   "slug": zod.string(),
@@ -3267,7 +3321,7 @@ export const SetContentStatusResponse = zod.object({
   "composedYear": zod.string().optional()
 }).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
   "embeds": zod.array(zod.object({
-  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering', 'youtube']).describe('Which tool to render.'),
   "title": zod.string().optional().describe('Optional heading shown above the embed.'),
   "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
   "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
@@ -3282,7 +3336,13 @@ export const SetContentStatusResponse = zod.object({
   "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
   "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
   "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
-  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.'),
+  "videoUrl": zod.string().optional().describe('`youtube`: the authored video URL.'),
+  "videoId": zod.string().optional().describe('`youtube`: the parsed 11-char video id, cached at author time.'),
+  "thumbnailUrl": zod.string().optional().describe('`youtube`: cached preview thumbnail URL.'),
+  "videoAuthor": zod.string().optional().describe('`youtube`: cached channel\/author name from oEmbed.'),
+  "start": zod.number().optional().describe('`youtube`: playback start offset in seconds.'),
+  "uploadDate": zod.string().optional().describe('`youtube`: optional ISO upload date; enables full VideoObject rich results.')
 }).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive tools to render below the prose (authored, from `details` JSONB).'),
   "tags": zod.array(zod.object({
   "slug": zod.string(),
@@ -3343,7 +3403,7 @@ export const UnpublishContentResponse = zod.object({
   "composedYear": zod.string().optional()
 }).optional().describe('Structured \"facts\" for the detail-page Details panel + the Era facet. All optional.'),
   "embeds": zod.array(zod.object({
-  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering']).describe('Which tool to render.'),
+  "tool": zod.enum(['score', 'keyboard', 'scale-boxes', 'chord-diagrams', 'progression', 'circle-of-fifths', 'strum', 'rhythm', 'chord-board', 'intervals', 'fingering', 'youtube']).describe('Which tool to render.'),
   "title": zod.string().optional().describe('Optional heading shown above the embed.'),
   "caption": zod.string().optional().describe('Optional explanatory caption shown under the heading.'),
   "tex": zod.string().optional().describe('`score`: inline alphaTex source to render + play.'),
@@ -3358,7 +3418,13 @@ export const UnpublishContentResponse = zod.object({
   "size": zod.number().optional().describe('`keyboard`: number of keys (e.g. 25, 49, 61, 88).'),
   "pattern": zod.array(zod.string()).optional().describe('`strum`\/`rhythm`: per-cell tokens over one bar, e.g. `[\"D\",\"-\",\"D\",\"U\",\"-\",\"U\",\"D\",\"U\"]`\n(strum: `D`=down `U`=up `-`=rest) or note values (`rhythm`: `whole|half|quarter|eighth`).'),
   "labels": zod.array(zod.string()).optional().describe('`chord-board`: parallel labels for `chords` (e.g. Roman numerals `[\"I\",\"ii\",\"iii\",…]`).'),
-  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.')
+  "tempo": zod.number().optional().describe('`strum`\/`progression`: beats per minute for playback.'),
+  "videoUrl": zod.string().optional().describe('`youtube`: the authored video URL.'),
+  "videoId": zod.string().optional().describe('`youtube`: the parsed 11-char video id, cached at author time.'),
+  "thumbnailUrl": zod.string().optional().describe('`youtube`: cached preview thumbnail URL.'),
+  "videoAuthor": zod.string().optional().describe('`youtube`: cached channel\/author name from oEmbed.'),
+  "start": zod.number().optional().describe('`youtube`: playback start offset in seconds.'),
+  "uploadDate": zod.string().optional().describe('`youtube`: optional ISO upload date; enables full VideoObject rich results.')
 }).describe('A preconfigured interactive tool embedded in a catalogue article, rendered (in order) below the\nprose. The `tool` field selects which learning tool; the remaining optional fields configure it for\nthe specific lesson (a flat shape rather than a per-tool union to keep the generated DTO simple — the\nweb narrows on `tool`). Authored in the content Markdown\'s `embeds` block; stored in `details` JSONB.')).optional().describe('Preconfigured interactive tools to render below the prose (authored, from `details` JSONB).'),
   "tags": zod.array(zod.object({
   "slug": zod.string(),
@@ -4619,3 +4685,18 @@ export const CreateTaxonomyResponse = zod.object({
   "slug": zod.string(),
   "name": zod.string()
 }).describe('A taxonomy reference (genre \/ instrument \/ topic \/ tag).')
+
+
+/**
+ * Look up a video's title + thumbnail from its URL, for the block editor's live embed preview.
+ */
+export const GetVideoPreviewQueryParams = zod.object({
+  "url": zod.string()
+})
+
+export const GetVideoPreviewResponse = zod.object({
+  "videoId": zod.string(),
+  "title": zod.string().optional(),
+  "author": zod.string().optional(),
+  "thumbnailUrl": zod.string()
+}).describe('Resolved preview for an external video URL (keyless oEmbed lookup).')

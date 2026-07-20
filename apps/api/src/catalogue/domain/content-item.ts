@@ -39,7 +39,8 @@ export interface ContentEmbed {
     | 'rhythm'
     | 'chord-board'
     | 'intervals'
-    | 'fingering';
+    | 'fingering'
+    | 'youtube';
   title?: string;
   caption?: string;
   tex?: string;
@@ -55,6 +56,18 @@ export interface ContentEmbed {
   pattern?: string[];
   labels?: string[];
   tempo?: number;
+  /** `youtube`: the authored video URL. */
+  videoUrl?: string;
+  /** `youtube`: the parsed 11-char video id (cached at author time). */
+  videoId?: string;
+  /** `youtube`: cached preview thumbnail URL. */
+  thumbnailUrl?: string;
+  /** `youtube`: cached channel/author name from oEmbed. */
+  videoAuthor?: string;
+  /** `youtube`: playback start offset in seconds. */
+  start?: number;
+  /** `youtube`: optional ISO upload date, enables full VideoObject rich results. */
+  uploadDate?: string;
 }
 
 /**

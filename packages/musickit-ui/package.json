@@ -23,6 +23,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@TheY2T/tmr-content-serde": "workspace:*",
     "@TheY2T/tmr-flags": "workspace:*",
     "@TheY2T/tmr-i18n": "workspace:*",
     "@TheY2T/tmr-music-core": "workspace:*",

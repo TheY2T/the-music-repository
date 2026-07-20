@@ -49,6 +49,14 @@ export const MOCK_CONTENT_DETAIL = {
   media: [],
   id: 'c-mock',
   details: { composer: 'Test Composer', key: 'C major' },
+  embeds: [
+    {
+      tool: 'youtube',
+      videoId: 'dQw4w9WgXcQ',
+      title: 'Demonstration performance',
+      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
+    },
+  ],
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-07-19T00:00:00.000Z',
 };

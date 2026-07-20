@@ -11,6 +11,7 @@ import {
   breadcrumbJsonLd,
   musicCompositionJsonLd,
   pageTitle,
+  videoObjectJsonLd,
 } from '@/lib/seo';
 import { fetchContentMeta } from '@TheY2T/tmr-web-acl/server-content';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
@@ -67,6 +68,15 @@ const jsonLd = meta
             }),
           ]
         : []),
+      ...(meta.videos ?? []).map((video) =>
+        videoObjectJsonLd({
+          name: video.title,
+          description: meta.summary,
+          thumbnailUrl: video.thumbnailUrl,
+          videoId: video.videoId,
+          uploadDate: video.uploadDate,
+        }),
+      ),
     ]
   : undefined;
 ---

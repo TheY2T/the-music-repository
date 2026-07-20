@@ -22,6 +22,32 @@ and stores it in `details.embeds`; embeds render below the body in array order, 
 `key`/`chords` (progression). Full field docs + the six tools + worked examples are in the `embed-tool`
 skill.
 
+## YouTube video embeds
+
+A `youtube` embed places a video demonstrating the piece inline with the prose. Author it with just the
+URL:
+
+```embeds
+[
+  { "tool": "youtube", "videoUrl": "https://youtu.be/dQw4w9WgXcQ", "caption": "Watch it performed" }
+]
+```
+
+Config: `videoUrl` (required), optional `start` (seconds), `title`/`caption`. At author time the video
+`title`, `thumbnailUrl`, `videoAuthor`, and 11-char `videoId` are resolved from **YouTube's keyless oEmbed
+endpoint** and cached into the embed — so the stored embed carries a crawler-visible preview and the read
+side needs no runtime network call. The lookup is a domain capability (`VideoPreviewLookup` port →
+`YouTubeOembedVideoPreviewLookup` adapter, ADR 0012); if it fails the deterministic `i.ytimg.com`
+thumbnail is used. In the CMS, the block-editor inspector calls `GET /videos/preview` as the author pastes
+a URL, showing the resolved title + thumbnail live.
+
+The read side renders a compact **facade** (`YouTubeEmbed` in `@TheY2T/tmr-ui`): a small inline
+thumbnail + title that reads as a video link and expands to the `youtube-nocookie` player on click, so the
+page ships none of YouTube's iframe weight and sets no cookies until the viewer opts in. It carries its own
+title/caption, so it skips the titled-card chrome the interactive tools use. Catalogue detail pages emit `VideoObject` JSON-LD from the
+cached metadata (`videoObjectJsonLd` in `apps/web/src/lib/seo.ts`); `uploadDate` — a Google-required rich-
+result field oEmbed can't supply — is an optional author field.
+
 ## Pipeline
 
 `content/*.md` → `pnpm --filter @TheY2T/tmr-api content:build` (`build-seed-content.mjs` parses the

@@ -10,7 +10,12 @@
 
 // Canonical embed-tool list + the doc serializer live in @TheY2T/tmr-content-serde (single source of
 // truth; ADR 0030). Requires the package to be built (`pnpm build` / turbo `^build`).
-import { EMBED_TOOLS as EMBED_TOOL_LIST, mdxToDoc } from '@TheY2T/tmr-content-serde';
+import {
+  EMBED_TOOLS as EMBED_TOOL_LIST,
+  mdxToDoc,
+  parseYouTubeId,
+  youTubeThumbnailUrl,
+} from '@TheY2T/tmr-content-serde';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -80,6 +85,48 @@ function extractEmbeds(body, file) {
   return { embeds, body: cleaned };
 }
 
+/** Query YouTube's keyless oEmbed endpoint for a video's title/author/thumbnail; null on any failure. */
+async function fetchOembed(videoId) {
+  const canonical = `https://www.youtube.com/watch?v=${videoId}`;
+  const endpoint = `https://www.youtube.com/oembed?url=${encodeURIComponent(canonical)}&format=json`;
+  try {
+    const res = await fetch(endpoint, { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Bake cached preview metadata into `youtube` embeds so the seeded content carries a crawler-visible
+ * title + thumbnail with no runtime lookup. The video id + deterministic thumbnail always resolve from
+ * the URL; the title/author come from oEmbed (best-effort — a failed lookup keeps the deterministic
+ * thumbnail). Throws on an unparseable URL so an authoring typo fails the build.
+ */
+async function enrichVideoEmbeds(embeds, file) {
+  for (const e of embeds) {
+    if (e.tool !== 'youtube') continue;
+    const videoId = parseYouTubeId(e.videoUrl ?? e.videoId);
+    if (!videoId) {
+      throw new Error(
+        `${file}: youtube embed has no valid videoUrl/videoId (${JSON.stringify(e.videoUrl)})`,
+      );
+    }
+    e.videoId = videoId;
+    if (!e.thumbnailUrl) e.thumbnailUrl = youTubeThumbnailUrl(videoId);
+    if (e.title) continue;
+    const data = await fetchOembed(videoId);
+    if (data) {
+      if (data.title) e.title = data.title;
+      if (data.author_name) e.videoAuthor = data.author_name;
+      if (data.thumbnail_url) e.thumbnailUrl = data.thumbnail_url;
+    } else {
+      console.warn(`${file}: oEmbed lookup failed for ${videoId}; using deterministic thumbnail`);
+    }
+  }
+}
+
 /** Split a `<slug>.md` into { frontmatter: Record<string,string>, body: string }. */
 function parse(md) {
   const m = md.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
@@ -101,6 +148,7 @@ const entries = [];
 for (const file of files) {
   const { fm, body: rawBody } = parse(readFileSync(join(contentDir, file), 'utf8'));
   const { embeds, body } = extractEmbeds(rawBody, file);
+  await enrichVideoEmbeds(embeds, file);
   const slug = unquote(fm.slug ?? file.replace(/\.md$/, ''));
 
   // details: only keep non-empty scalar facts; `related` from relatedSlugs.

@@ -40,7 +40,9 @@ The build **fails** on malformed JSON or an unknown `tool`, so a typo is caught 
   "scale": "minor-pentatonic",  // scale-boxes / keyboard: scale id (see SCALES in music-theory.ts)
   "key": "A",                   // progression: key
   "chords": ["C","G","Am","F"], // chord-diagrams / progression: chord symbols
-  "size": 49                    // keyboard: key count
+  "size": 49,                   // keyboard: key count
+  "videoUrl": "https://youtu.be/…", // youtube: video URL (id/title/thumbnail cached from oEmbed on save)
+  "start": 30                   // youtube: playback start offset in seconds
 }
 ```
 
@@ -59,6 +61,7 @@ The build **fails** on malformed JSON or an unknown `tool`, so a typo is caught 
 | `rhythm` | `Rhythm` (Pixi): note-value blocks sized by duration, clicked out at tempo | `pattern` (note values `["whole","half","quarter","eighth","sixteenth"]`, dotted-* ok), `tempo` | note-value / beat grids |
 | `intervals` | `Intervals` (Pixi): the 12 intervals above a root as tappable cards (hear each) | `root` (default `C`) | interval ↔ semitone tables |
 | `fingering` | `Fingering` (Pixi, reuses `fretboard-scene`): scale on the neck, roots highlighted, tap to hear | `instrument` (`guitar`/`bass`/`ukulele`), `root`, `scale`, `tuning` (override) | fretboard fingering charts |
+| `youtube` | `YouTubeEmbed` (`@TheY2T/tmr-ui`): lazy `youtube-nocookie` facade — thumbnail + play, iframe on click | `videoUrl` (required), `start` (seconds) | a video demonstrating the piece; title/thumbnail resolve from oEmbed on save (ADR 0042) |
 
 **Pixi tools (ADR 0029):** the ASCII-replacement visualisations render with PixiJS (WebGL). Each is a
 fit-for-purpose `lib/pixi/<name>-scene.tsx` (presentational, `useThemeColors`) behind `PixiCanvas`

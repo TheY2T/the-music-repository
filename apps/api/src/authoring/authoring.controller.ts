@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CurrentUser } from '../auth/application/current-user';
 import { RequirePermissions } from '../auth/require-permissions.decorator';
@@ -15,6 +16,7 @@ import { CreateContentUseCase } from './application/use-cases/create-content.use
 import { CreateTaxonomyUseCase } from './application/use-cases/create-taxonomy.use-case';
 import { DeleteContentUseCase } from './application/use-cases/delete-content.use-case';
 import { GetContentForEditUseCase } from './application/use-cases/get-content-for-edit.use-case';
+import { GetVideoPreviewUseCase } from './application/use-cases/get-video-preview.use-case';
 import { ListContentUseCase } from './application/use-cases/list-content.use-case';
 import { ListContentRevisionsUseCase } from './application/use-cases/list-content-revisions.use-case';
 import { ListTaxonomyUseCase } from './application/use-cases/list-taxonomy.use-case';
@@ -51,8 +53,15 @@ export class AuthoringController {
     private readonly listRevisions: ListContentRevisionsUseCase,
     private readonly restoreRevision: RestoreContentRevisionUseCase,
     private readonly setScore: SetContentScoreUseCase,
+    private readonly getVideoPreview: GetVideoPreviewUseCase,
     private readonly currentUser: CurrentUser,
   ) {}
+
+  @Get('videos/preview')
+  @RequirePermissions({ content: ['update'] })
+  videoPreview(@Query('url') url: string) {
+    return this.getVideoPreview.execute(url ?? '');
+  }
 
   @Get('content')
   @RequirePermissions({ content: ['update'] })

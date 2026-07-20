@@ -22,6 +22,14 @@ export interface ServerFetchContext {
   cookie?: string;
 }
 
+/** A YouTube video embedded in the item, distilled for crawler-visible VideoObject JSON-LD. */
+export interface ContentVideoMeta {
+  videoId: string;
+  title: string;
+  thumbnailUrl: string;
+  uploadDate?: string;
+}
+
 /** The catalogue-item facts a page head needs: enough for `<title>`, description, OG image, and JSON-LD. */
 export interface ContentMeta {
   slug: string;
@@ -34,6 +42,8 @@ export interface ContentMeta {
   updatedAt?: string;
   /** True when premium content the viewer can't access — body/media withheld upstream. */
   locked?: boolean;
+  /** YouTube embeds on the item, for VideoObject structured data. */
+  videos?: ContentVideoMeta[];
 }
 
 /** The collection facts a page head needs. */
@@ -71,6 +81,21 @@ function firstImageUrl(detail: ContentDetail): string | undefined {
   return detail.media?.find((asset) => asset.kind === 'image')?.url;
 }
 
+/** Distill the item's YouTube embeds into VideoObject inputs (id/title/thumbnail cached at author time). */
+function videoMeta(detail: ContentDetail): ContentVideoMeta[] {
+  const videos: ContentVideoMeta[] = [];
+  for (const embed of detail.embeds ?? []) {
+    if (embed.tool !== 'youtube' || !embed.videoId) continue;
+    videos.push({
+      videoId: embed.videoId,
+      title: embed.title ?? detail.title,
+      thumbnailUrl: embed.thumbnailUrl ?? `https://i.ytimg.com/vi/${embed.videoId}/hqdefault.jpg`,
+      uploadDate: embed.uploadDate,
+    });
+  }
+  return videos;
+}
+
 /** Fetch a single catalogue item's head metadata by slug. Returns null when missing/unreachable. */
 export async function fetchContentMeta(
   slug: string,
@@ -88,6 +113,7 @@ export async function fetchContentMeta(
     details: detail.details,
     updatedAt: detail.updatedAt,
     locked: detail.locked,
+    videos: videoMeta(detail),
   };
 }
 

@@ -11,6 +11,7 @@ import type {
   MediaUploadRequest,
   MediaUploadTicket,
   TaxonomyRef,
+  VideoPreview,
 } from '@TheY2T/tmr-api-client';
 
 const API_BASE = import.meta.env.PUBLIC_API_BASE_URL ?? 'http://localhost:3000';
@@ -67,6 +68,8 @@ export const adminApi = {
       method: 'PUT',
       body: JSON.stringify({ tex }),
     }),
+  videoPreview: (url: string) =>
+    request<VideoPreview>(`/videos/preview?url=${encodeURIComponent(url)}`),
   listRevisions: (slug: string) =>
     request<ContentRevisionList>(`/content/${encodeURIComponent(slug)}/revisions`),
   restoreRevision: (slug: string, revisionId: string) =>

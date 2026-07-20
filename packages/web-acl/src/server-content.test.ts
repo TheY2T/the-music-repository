@@ -50,10 +50,43 @@ describe('server-content', () => {
       details: { composer: 'Beethoven', key: 'A minor' },
       updatedAt: '2026-07-19T00:00:00.000Z',
       locked: undefined,
+      videos: [],
     });
     const [url, init] = fetchMock.mock.calls[0];
     expect(url).toBe('http://api:3000/catalogue/items/fur-elise?locale=zh-Hans');
     expect(init).toEqual({ headers: { cookie: 'better-auth=1' } });
+  });
+
+  it('fetchContentMeta distills youtube embeds into video metadata for structured data', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        slug: 'fur-elise',
+        title: 'Für Elise',
+        type: 'piece',
+        media: [],
+        embeds: [
+          { tool: 'keyboard', root: 'C' },
+          {
+            tool: 'youtube',
+            videoId: 'dQw4w9WgXcQ',
+            title: 'A performance',
+            thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
+          },
+          { tool: 'youtube', videoUrl: 'https://youtu.be/x' }, // no cached id → skipped
+        ],
+      }),
+    });
+
+    const meta = await fetchContentMeta('fur-elise', { apiBaseUrl: 'http://api:3000' });
+    expect(meta?.videos).toEqual([
+      {
+        videoId: 'dQw4w9WgXcQ',
+        title: 'A performance',
+        thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
+        uploadDate: undefined,
+      },
+    ]);
   });
 
   it('fetchContentMeta returns null on a 404 / non-ok response', async () => {

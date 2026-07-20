@@ -290,7 +290,11 @@
   "embed.chordBoard": "试听和弦",
   "embed.intervals": "音程",
   "embed.fingering": "指法",
+  "embed.youtube": "观看",
+  "embed.youtubePlaceholder": "在检查器中添加 YouTube 链接以预览视频。",
   "embed.playChord": "播放 {chord} 和弦",
+  "youTubeEmbed.play": "播放视频",
+  "youTubeEmbed.watchOn": "在 YouTube 上观看",
 
   "content.related": "相关内容",
   "content.notFound": "找不到该内容。",
@@ -968,6 +972,7 @@
   "blockEditor.tool.chordBoard": "和弦板",
   "blockEditor.tool.intervals": "音程",
   "blockEditor.tool.fingering": "指法",
+  "blockEditor.tool.youtube": "YouTube 视频",
   "blockEditor.field.title": "标题",
   "blockEditor.field.caption": "说明",
   "blockEditor.field.tex": "alphaTex 源码",
@@ -983,6 +988,8 @@
   "blockEditor.field.labels": "标签（逗号分隔）",
   "blockEditor.field.pattern": "型态（逗号分隔）",
   "blockEditor.field.tuning": "定弦（逗号分隔的 MIDI）",
+  "blockEditor.field.videoUrl": "YouTube 链接",
+  "blockEditor.field.start": "开始时间（秒）",
 
   "nav.settings": "设置",
   "settings.title": "设置",
