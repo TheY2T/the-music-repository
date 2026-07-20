@@ -37,6 +37,8 @@ describe('drill deck registry', () => {
     expect(findGenerator('chord-quality')?.cards).toEqual(
       chordsByLevel('intermediate').map((c) => c.key),
     );
+    // New qualities added to the theory table flow into the ear deck automatically.
+    expect(findGenerator('chord-quality')?.cards).toContain('power');
     expect(findGenerator('scale-degrees')?.cards).toEqual(['0', '2', '4', '5', '7', '9', '11']);
     expect(findGenerator('staff-notes')?.cards).toEqual(trebleStaffNotes().map((n) => n.name));
   });

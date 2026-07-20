@@ -247,6 +247,18 @@ export const FRET_MARKERS = new Set([3, 5, 7, 9, 12, 15]);
 
 // --- Chords ---
 
+/** Harmonic family tags used to group + filter chords in the dictionary and related-chord discovery. */
+export type ChordTag =
+  | 'triad'
+  | 'seventh'
+  | 'sixth'
+  | 'extended'
+  | 'altered'
+  | 'suspended'
+  | 'added'
+  | 'power'
+  | 'dominant-function';
+
 export interface ChordDefinition {
   key: string;
   name: string;
@@ -261,6 +273,10 @@ export interface ChordDefinition {
   aliases?: string[];
   /** Difficulty tier for level-based disclosure. */
   level: Level;
+  /** Coarse grouping for the chord dictionary / reference (its primary family). */
+  category: ChordTag;
+  /** Finer harmonic tags for filtering + related-chord discovery. */
+  tags?: ChordTag[];
 }
 
 export const CHORDS: ChordDefinition[] = [
@@ -271,6 +287,8 @@ export const CHORDS: ChordDefinition[] = [
     symbol: '',
     aliases: ['maj'],
     level: 'beginner',
+    category: 'triad',
+    tags: ['triad'],
   },
   {
     key: 'minor',
@@ -279,6 +297,18 @@ export const CHORDS: ChordDefinition[] = [
     symbol: 'm',
     aliases: ['min'],
     level: 'beginner',
+    category: 'triad',
+    tags: ['triad'],
+  },
+  {
+    key: 'power',
+    name: 'Power chord (no 3rd)',
+    intervals: [0, 7],
+    symbol: '5',
+    aliases: ['no3'],
+    level: 'beginner',
+    category: 'power',
+    tags: ['power'],
   },
   {
     key: 'diminished',
@@ -287,6 +317,8 @@ export const CHORDS: ChordDefinition[] = [
     symbol: 'dim',
     aliases: ['°'],
     level: 'intermediate',
+    category: 'triad',
+    tags: ['triad'],
   },
   {
     key: 'augmented',
@@ -295,6 +327,8 @@ export const CHORDS: ChordDefinition[] = [
     symbol: 'aug',
     aliases: ['+'],
     level: 'intermediate',
+    category: 'triad',
+    tags: ['triad', 'altered'],
   },
   {
     key: 'sus2',
@@ -302,6 +336,8 @@ export const CHORDS: ChordDefinition[] = [
     intervals: [0, 2, 7],
     symbol: 'sus2',
     level: 'intermediate',
+    category: 'suspended',
+    tags: ['suspended'],
   },
   {
     key: 'sus4',
@@ -309,14 +345,36 @@ export const CHORDS: ChordDefinition[] = [
     intervals: [0, 5, 7],
     symbol: 'sus4',
     level: 'intermediate',
+    category: 'suspended',
+    tags: ['suspended'],
   },
-  { key: 'sixth', name: 'Major 6th', intervals: [0, 4, 7, 9], symbol: '6', level: 'intermediate' },
+  {
+    key: 'sixth',
+    name: 'Major 6th',
+    intervals: [0, 4, 7, 9],
+    symbol: '6',
+    level: 'intermediate',
+    category: 'sixth',
+    tags: ['sixth'],
+  },
   {
     key: 'minor-6',
     name: 'Minor 6th',
     intervals: [0, 3, 7, 9],
     symbol: 'm6',
     level: 'intermediate',
+    category: 'sixth',
+    tags: ['sixth'],
+  },
+  {
+    key: 'six-nine',
+    name: 'Six-nine',
+    intervals: [0, 4, 7, 9, 14],
+    symbol: '6/9',
+    aliases: ['69'],
+    level: 'advanced',
+    category: 'sixth',
+    tags: ['sixth', 'extended', 'added'],
   },
   {
     key: 'major-7',
@@ -325,6 +383,8 @@ export const CHORDS: ChordDefinition[] = [
     symbol: 'maj7',
     aliases: ['M7', 'Δ7', 'Δ'],
     level: 'intermediate',
+    category: 'seventh',
+    tags: ['seventh'],
   },
   {
     key: 'minor-7',
@@ -333,6 +393,8 @@ export const CHORDS: ChordDefinition[] = [
     symbol: 'm7',
     aliases: ['min7'],
     level: 'intermediate',
+    category: 'seventh',
+    tags: ['seventh'],
   },
   {
     key: 'dominant-7',
@@ -340,6 +402,8 @@ export const CHORDS: ChordDefinition[] = [
     intervals: [0, 4, 7, 10],
     symbol: '7',
     level: 'intermediate',
+    category: 'seventh',
+    tags: ['seventh', 'dominant-function'],
   },
   {
     key: 'dominant-7-sus4',
@@ -347,6 +411,8 @@ export const CHORDS: ChordDefinition[] = [
     intervals: [0, 5, 7, 10],
     symbol: '7sus4',
     level: 'intermediate',
+    category: 'seventh',
+    tags: ['seventh', 'suspended', 'dominant-function'],
   },
   {
     key: 'diminished-7',
@@ -355,8 +421,18 @@ export const CHORDS: ChordDefinition[] = [
     symbol: 'dim7',
     aliases: ['°7'],
     level: 'intermediate',
+    category: 'seventh',
+    tags: ['seventh'],
   },
-  { key: 'add9', name: 'Add 9', intervals: [0, 4, 7, 14], symbol: 'add9', level: 'intermediate' },
+  {
+    key: 'add9',
+    name: 'Add 9',
+    intervals: [0, 4, 7, 14],
+    symbol: 'add9',
+    level: 'intermediate',
+    category: 'added',
+    tags: ['added'],
+  },
   {
     key: 'half-diminished',
     name: 'Half-diminished (m7♭5)',
@@ -364,6 +440,8 @@ export const CHORDS: ChordDefinition[] = [
     symbol: 'm7b5',
     aliases: ['ø7', 'ø'],
     level: 'advanced',
+    category: 'seventh',
+    tags: ['seventh', 'altered'],
   },
   {
     key: 'minor-major-7',
@@ -372,6 +450,8 @@ export const CHORDS: ChordDefinition[] = [
     symbol: 'mMaj7',
     aliases: ['mM7'],
     level: 'advanced',
+    category: 'seventh',
+    tags: ['seventh'],
   },
   {
     key: 'augmented-7',
@@ -380,6 +460,8 @@ export const CHORDS: ChordDefinition[] = [
     symbol: '7#5',
     aliases: ['+7', 'aug7'],
     level: 'advanced',
+    category: 'seventh',
+    tags: ['seventh', 'altered', 'dominant-function'],
   },
   {
     key: 'dominant-9',
@@ -387,6 +469,8 @@ export const CHORDS: ChordDefinition[] = [
     intervals: [0, 4, 7, 10, 14],
     symbol: '9',
     level: 'advanced',
+    category: 'extended',
+    tags: ['extended', 'dominant-function'],
   },
   {
     key: 'major-9',
@@ -395,6 +479,8 @@ export const CHORDS: ChordDefinition[] = [
     symbol: 'maj9',
     aliases: ['M9'],
     level: 'advanced',
+    category: 'extended',
+    tags: ['extended'],
   },
   {
     key: 'minor-9',
@@ -403,6 +489,48 @@ export const CHORDS: ChordDefinition[] = [
     symbol: 'm9',
     aliases: ['min9'],
     level: 'advanced',
+    category: 'extended',
+    tags: ['extended'],
+  },
+  {
+    key: 'major-11',
+    name: 'Major 11th',
+    intervals: [0, 4, 7, 11, 14, 17],
+    symbol: 'maj11',
+    aliases: ['M11'],
+    level: 'expert',
+    category: 'extended',
+    tags: ['extended'],
+  },
+  {
+    key: 'minor-11',
+    name: 'Minor 11th',
+    intervals: [0, 3, 7, 10, 14, 17],
+    symbol: 'm11',
+    aliases: ['min11'],
+    level: 'expert',
+    category: 'extended',
+    tags: ['extended'],
+  },
+  {
+    key: 'major-13',
+    name: 'Major 13th',
+    intervals: [0, 4, 7, 11, 14, 21],
+    symbol: 'maj13',
+    aliases: ['M13'],
+    level: 'expert',
+    category: 'extended',
+    tags: ['extended'],
+  },
+  {
+    key: 'minor-13',
+    name: 'Minor 13th',
+    intervals: [0, 3, 7, 10, 14, 21],
+    symbol: 'm13',
+    aliases: ['min13'],
+    level: 'expert',
+    category: 'extended',
+    tags: ['extended'],
   },
   {
     key: 'dominant-11',
@@ -410,6 +538,8 @@ export const CHORDS: ChordDefinition[] = [
     intervals: [0, 7, 10, 14, 17],
     symbol: '11',
     level: 'expert',
+    category: 'extended',
+    tags: ['extended', 'dominant-function'],
   },
   {
     key: 'dominant-13',
@@ -417,6 +547,8 @@ export const CHORDS: ChordDefinition[] = [
     intervals: [0, 4, 10, 14, 21],
     symbol: '13',
     level: 'expert',
+    category: 'extended',
+    tags: ['extended', 'dominant-function'],
   },
   {
     key: 'dominant-7-b9',
@@ -424,6 +556,8 @@ export const CHORDS: ChordDefinition[] = [
     intervals: [0, 4, 7, 10, 13],
     symbol: '7b9',
     level: 'expert',
+    category: 'altered',
+    tags: ['altered', 'dominant-function'],
   },
   {
     key: 'dominant-7-sharp9',
@@ -431,6 +565,8 @@ export const CHORDS: ChordDefinition[] = [
     intervals: [0, 4, 7, 10, 15],
     symbol: '7#9',
     level: 'expert',
+    category: 'altered',
+    tags: ['altered', 'dominant-function'],
   },
   {
     key: 'dominant-7-sharp11',
@@ -438,6 +574,8 @@ export const CHORDS: ChordDefinition[] = [
     intervals: [0, 4, 7, 10, 18],
     symbol: '7#11',
     level: 'expert',
+    category: 'altered',
+    tags: ['altered', 'dominant-function'],
   },
   {
     key: 'dominant-7-b13',
@@ -445,8 +583,15 @@ export const CHORDS: ChordDefinition[] = [
     intervals: [0, 4, 7, 10, 20],
     symbol: '7b13',
     level: 'expert',
+    category: 'altered',
+    tags: ['altered', 'dominant-function'],
   },
 ];
+
+/** Chord-quality key → canonical display suffix, from the single `CHORDS` source of truth. */
+export const SYMBOL_BY_QUALITY: Record<string, string> = Object.fromEntries(
+  CHORDS.map((c) => [c.key, c.symbol]),
+);
 
 /** Chords available at or below `maxLevel` (see `Level`). */
 export function chordsByLevel(maxLevel: Level): ChordDefinition[] {
@@ -503,12 +648,14 @@ const FUNCTION_BY_DEGREE = [
 const ROMAN_SUFFIX: Record<string, string> = {
   major: '',
   minor: '',
+  power: '5',
   diminished: '°',
   augmented: '+',
   sus2: 'sus2',
   sus4: 'sus4',
   sixth: '6',
   'minor-6': '6',
+  'six-nine': '6/9',
   'major-7': 'maj7',
   'minor-7': '7',
   'dominant-7': '7',
@@ -521,6 +668,10 @@ const ROMAN_SUFFIX: Record<string, string> = {
   'dominant-9': '9',
   'major-9': 'maj9',
   'minor-9': '9',
+  'major-11': 'maj11',
+  'minor-11': '11',
+  'major-13': 'maj13',
+  'minor-13': '13',
   'dominant-11': '11',
   'dominant-13': '13',
   'dominant-7-b9': '7♭9',
@@ -528,16 +679,17 @@ const ROMAN_SUFFIX: Record<string, string> = {
   'dominant-7-sharp11': '7♯11',
   'dominant-7-b13': '7♭13',
 };
-const LOWERCASE_QUALITIES = new Set([
-  'minor',
-  'diminished',
-  'minor-7',
-  'diminished-7',
-  'minor-6',
-  'half-diminished',
-  'minor-major-7',
-  'minor-9',
-]);
+// A chord whose Roman numeral is lowercased (its minor/diminished third makes the numeral minor).
+// Derived from the quality key so a newly-added minor/diminished quality is covered automatically.
+function isLowercaseQuality(chordKey: string): boolean {
+  return (
+    chordKey === 'minor' ||
+    chordKey.startsWith('minor') ||
+    chordKey === 'diminished' ||
+    chordKey.startsWith('diminished') ||
+    chordKey === 'half-diminished'
+  );
+}
 
 export interface ChordAnalysis {
   roman: string;
@@ -555,7 +707,7 @@ export function analyzeChordInKey(
   const semis = (((chordRoot - keyRoot) % 12) + 12) % 12;
   const { num, accidental } = DEGREE_BY_SEMITONE[semis];
   const base = ROMAN_NUMERALS[num - 1];
-  const numeral = LOWERCASE_QUALITIES.has(chordKey) ? base.toLowerCase() : base;
+  const numeral = isLowercaseQuality(chordKey) ? base.toLowerCase() : base;
   const roman = `${accidental}${numeral}${ROMAN_SUFFIX[chordKey] ?? ''}`;
 
   const baseQuality = chordKey.startsWith('minor')

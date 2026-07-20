@@ -99,28 +99,67 @@ for (const chord of CHORDS) {
   }
 }
 
-/** Parse a chord symbol → root pitch class + quality key (a `CHORDS` key) + intervals, or null. */
+/**
+ * Parse a chord symbol → root pitch class + quality key (a `CHORDS` key) + intervals, or null. A
+ * slash-chord bass note (`C/G`, `Dm7/F#`) is returned as `bass`; the six-nine suffix (`6/9`) is not
+ * mistaken for a slash because its part after the slash is not a note name.
+ */
 export function parseChordFull(
   symbol: string,
-): { root: number; key: string; intervals: number[] } | null {
-  const m = symbol.trim().match(/^([A-Ga-g][#b]?)(.*)$/);
+): { root: number; key: string; intervals: number[]; bass?: number } | null {
+  const trimmed = symbol.trim();
+  let body = trimmed;
+  let bass: number | null = null;
+  const slash = trimmed.lastIndexOf('/');
+  if (slash > 0) {
+    const bassPc = noteNameToPitchClass(trimmed.slice(slash + 1));
+    if (bassPc != null) {
+      bass = bassPc;
+      body = trimmed.slice(0, slash);
+    }
+  }
+  const m = body.match(/^([A-Ga-g][#b]?)(.*)$/);
   if (!m) return null;
   const root = noteNameToPitchClass(m[1]);
   if (root == null) return null;
   const chord = QUALITY_BY_SUFFIX.get(m[2].trim());
-  return chord ? { root, key: chord.key, intervals: chord.intervals } : null;
+  if (!chord) return null;
+  return {
+    root,
+    key: chord.key,
+    intervals: chord.intervals,
+    ...(bass != null ? { bass } : {}),
+  };
 }
 
-/** Parse a chord symbol (`C`, `Dm`, `G7`, `Cmaj7`, `Bdim`, `Am7b5`) → root pitch class + intervals. */
-export function parseChordSymbol(symbol: string): { root: number; intervals: number[] } | null {
+/**
+ * Parse a chord symbol (`C`, `Dm`, `G7`, `Cmaj7`, `Bdim`, `Am7b5`, `C/G`) → root pitch class +
+ * intervals, plus a slash-bass pitch class when present.
+ */
+export function parseChordSymbol(
+  symbol: string,
+): { root: number; intervals: number[]; bass?: number } | null {
   const parsed = parseChordFull(symbol);
-  return parsed ? { root: parsed.root, intervals: parsed.intervals } : null;
+  if (!parsed) return null;
+  return {
+    root: parsed.root,
+    intervals: parsed.intervals,
+    ...(parsed.bass != null ? { bass: parsed.bass } : {}),
+  };
 }
 
-/** MIDI notes for a chord symbol, voiced from the given octave (default 4 → C4=60). Null if unknown. */
+/**
+ * MIDI notes for a chord symbol, voiced from the given octave (default 4 → C4=60). A slash bass is
+ * added as the lowest note (the bass pitch class placed just below the root). Null if unknown.
+ */
 export function chordToMidi(symbol: string, octave = 4): number[] | null {
   const parsed = parseChordSymbol(symbol);
   if (!parsed) return null;
   const rootMidi = 12 * (octave + 1) + parsed.root;
-  return parsed.intervals.map((i) => rootMidi + i);
+  const tones = parsed.intervals.map((i) => rootMidi + i);
+  if (parsed.bass != null && parsed.bass !== parsed.root) {
+    const bassMidi = rootMidi - ((parsed.root - parsed.bass + 12) % 12 || 12);
+    return [bassMidi, ...tones];
+  }
+  return tones;
 }

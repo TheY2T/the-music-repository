@@ -53,7 +53,7 @@ The build **fails** on malformed JSON or an unknown `tool`, so a typo is caught 
 | `score` | `ScorePlayer` (alphaTab): full transport, play/loop/tempo, click-to-hear, standard **or** tab | `tex` (alphaTex), `mode`, `tuning` | any playable notation: a scale as notation/tab, a lick, an exercise, a worked example, a short piece |
 | `scale-boxes` | `ScaleBoxes`: movable fretboard scale-box grid | `root`, `scale` | guitar scale shapes / positions |
 | `keyboard` | `PianoKeyboard` with scale highlight | `root`, `scale`, `size` | piano scales, note layout, theory on the keys |
-| `chord-diagrams` | tappable chord-shape grid (guitar **or** ukulele) | `instrument`, `chords` | chord vocabularies; hear each shape |
+| `chord-diagrams` | tappable chord-shape grid — fretboard diagrams for `guitar`/`ukulele`/`bass`, keyboard diagrams for `piano` | `instrument`, `chords` | chord vocabularies; hear each shape |
 | `progression` | `ProgressionPlayer`: loops a progression, strum patterns | `chords` (`key` for labelling) | diatonic/blues progressions, cadences, turnarounds |
 | `circle-of-fifths` | `CircleOfFifths` (interactive) | — | key signatures, key relationships |
 | `strum` | `StrumPattern` (Pixi): beat cells (↓ down, ↑ up, - rest), highlights the sounding beat | `pattern` (`["D","-","D","U",…]`), `chords`, `instrument`, `tempo` | strum & picking patterns |
@@ -84,7 +84,7 @@ the rest are generic playgrounds (no props / no query-param preload) — link to
 props + an embed mapping to make one embeddable.
 
 - **Keyboard/fretboard:** keyboard, soundfont (`PianoKeyboard`); fretboard (`GuitarFretboard`);
-  chord-diagrams; caged (`CagedExplorer`); scale-boxes; voicings (`VoicingLibrary`).
+  chord-diagrams; chord-dictionary (`ChordDictionary`); caged (`CagedExplorer`); scale-boxes; voicings (`VoicingLibrary`).
 - **Theory/harmony:** circle-of-fifths; scale-explorer; chords (`ChordBuilder`); chord-identifier; modes;
   progression; intervals; analyzer (`ChordAnalyzer`); transposer.
 - **Ear/quizzes:** ear-trainer; progression-ear; chord-quality-ear; fret-quiz; melodic-dictation;

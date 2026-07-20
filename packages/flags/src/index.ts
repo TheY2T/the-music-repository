@@ -113,6 +113,8 @@ export const FlagKeys = {
   ToolLicks: 'tools.licks',
   /** Guitar chord-diagram library. */
   ToolChordDiagrams: 'tools.chord-diagrams',
+  /** Browsable chord dictionary — every root × quality × voicing for guitar/ukulele/bass/piano. */
+  ToolChordDictionary: 'tools.chord-dictionary',
   /** Strumming pattern trainer. */
   ToolStrumming: 'tools.strumming',
   /** Fingerpicking pattern trainer. */
@@ -276,6 +278,7 @@ export const FlagDefaults = {
   [FlagKeys.ToolNotationPlayer]: true,
   [FlagKeys.ToolLicks]: true,
   [FlagKeys.ToolChordDiagrams]: true,
+  [FlagKeys.ToolChordDictionary]: true,
   [FlagKeys.ToolStrumming]: true,
   [FlagKeys.ToolFingerpicking]: true,
   [FlagKeys.ToolArpeggio]: true,

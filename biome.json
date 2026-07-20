@@ -16,6 +16,7 @@
       "!**/drizzle",
       "!**/.turbo",
       "!**/generated",
+      "!**/*.generated.ts",
       "!**/seed-content.ts",
       "!**/seed-collections.ts",
       "!**/seed-scores.ts",

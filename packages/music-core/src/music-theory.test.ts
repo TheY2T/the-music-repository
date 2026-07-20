@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  analyzeChordInKey,
   bassStaffNotes,
   CHORDS,
   chordsByLevel,
@@ -9,6 +10,7 @@ import {
   midiToFrequency,
   pitchName,
   SCALES,
+  SYMBOL_BY_QUALITY,
   scalePitchClasses,
   scalesByLevel,
   scalesForChord,
@@ -82,6 +84,38 @@ describe('SCALES / CHORDS tables', () => {
   it('tags every scale and chord with a level', () => {
     expect(SCALES.every((s) => s.level)).toBe(true);
     expect(CHORDS.every((c) => c.level)).toBe(true);
+  });
+
+  it('gives every chord a category', () => {
+    expect(CHORDS.every((c) => c.category)).toBe(true);
+  });
+
+  it('includes power, six-nine and extended major/minor qualities', () => {
+    const byKey = Object.fromEntries(CHORDS.map((c) => [c.key, c]));
+    expect(byKey.power?.intervals).toEqual([0, 7]);
+    expect(byKey['six-nine']?.intervals).toEqual([0, 4, 7, 9, 14]);
+    expect(byKey['major-11']?.intervals).toEqual([0, 4, 7, 11, 14, 17]);
+    expect(byKey['minor-13']?.intervals).toEqual([0, 3, 7, 10, 14, 21]);
+  });
+
+  it('derives SYMBOL_BY_QUALITY from the CHORDS source (one entry per quality)', () => {
+    expect(Object.keys(SYMBOL_BY_QUALITY)).toHaveLength(CHORDS.length);
+    expect(SYMBOL_BY_QUALITY['minor-7']).toBe('m7');
+    expect(SYMBOL_BY_QUALITY.power).toBe('5');
+  });
+});
+
+describe('analyzeChordInKey covers every quality (no silent under-cover)', () => {
+  it('produces a Roman numeral for each chord quality at the tonic', () => {
+    for (const chord of CHORDS) {
+      const { roman } = analyzeChordInKey(0, 0, chord.key);
+      expect(roman.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('lowercases minor/diminished-family numerals, including new extended minors', () => {
+    expect(analyzeChordInKey(0, 2, 'minor-11').roman).toBe('ii11'); // Dm11 in C
+    expect(analyzeChordInKey(0, 0, 'power').roman).toBe('I5');
   });
 });
 

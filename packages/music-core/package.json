@@ -19,6 +19,7 @@
   ],
   "scripts": {
     "check-types": "tsc --noEmit",
+    "chords:import": "node scripts/import-chords.mjs",
     "lint": "biome check .",
     "test": "vitest run --passWithNoTests"
   },
@@ -38,14 +39,15 @@
     "@TheY2T/tmr-config-vitest": "workspace:*",
     "@coderline/alphatab": "catalog:",
     "@pixi/react": "catalog:",
+    "@tombatossals/chords-db": "0.5.1",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "pixi.js": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "smplr": "^1.0.0",
     "typescript": "catalog:",
-    "@vitest/coverage-v8": "catalog:",
     "vitest": "catalog:"
   }
 }

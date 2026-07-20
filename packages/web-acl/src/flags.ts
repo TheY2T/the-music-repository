@@ -57,6 +57,7 @@ export const FLAG_FIELD_BY_KEY = {
   [FlagKeys.ToolNotationPlayer]: 'toolNotationPlayer',
   [FlagKeys.ToolLicks]: 'toolLicks',
   [FlagKeys.ToolChordDiagrams]: 'toolChordDiagrams',
+  [FlagKeys.ToolChordDictionary]: 'toolChordDictionary',
   [FlagKeys.ToolStrumming]: 'toolStrumming',
   [FlagKeys.ToolFingerpicking]: 'toolFingerpicking',
   [FlagKeys.ToolArpeggio]: 'toolArpeggio',

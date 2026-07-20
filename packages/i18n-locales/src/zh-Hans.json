@@ -519,6 +519,8 @@
   "tool.licks.summary": "以吉他谱呈现的吉他乐句与转接句——聆听并逐步提速练习。",
   "tool.chord-diagrams.title": "和弦图",
   "tool.chord-diagrams.summary": "常见的开放式与横按吉他和弦指型——点击即可扫弦。",
+  "tool.chord-dictionary.title": "和弦字典",
+  "tool.chord-dictionary.summary": "浏览吉他、尤克里里、贝斯和钢琴上的每个和弦及其声位——点击即可试听。",
   "tool.strumming.title": "扫弦训练器",
   "tool.strumming.summary": "在一个和弦上循环扫弦节奏型并跟弹。",
   "tool.fingerpicking.title": "指弹训练器",

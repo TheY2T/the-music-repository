@@ -1,12 +1,19 @@
 import { parseYouTubeId } from '@TheY2T/tmr-content-serde';
 import { type Locale, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import { playTone } from '@TheY2T/tmr-music-core/audio';
-import { findChordShape, noteNameToPitchClass, tuningFor } from '@TheY2T/tmr-music-core/embeds';
+import {
+  chordToMidi,
+  findChordShape,
+  noteNameToPitchClass,
+  parseChordSymbol,
+  tuningFor,
+} from '@TheY2T/tmr-music-core/embeds';
 import { midiToFrequency } from '@TheY2T/tmr-music-core/music-theory';
+import { buildPianoVoicings } from '@TheY2T/tmr-music-core/piano-voicings';
 import { Icon, YouTubeEmbed } from '@TheY2T/tmr-ui';
 import type { ContentDetail as ContentDetailDto } from '@TheY2T/tmr-web-acl/dto';
 import { lazy, Suspense } from 'react';
-import { ChordDiagram } from '../organisms/index';
+import { ChordDiagram, KeyboardChordDiagram } from '../organisms/index';
 
 /**
  * Renders the preconfigured interactive tools authored on a catalogue article (`item.embeds`), in
@@ -55,8 +62,51 @@ function strum(frets: number[], tuning: number[]): void {
   }
 }
 
-/** A row of tappable chord diagrams for the embed's chord symbols (guitar or ukulele). */
+/** A row of tappable keyboard chord diagrams for the embed's chord symbols. */
+function PianoChordRow({ embed, locale }: { embed: Embed; locale: Locale }) {
+  const symbols = embed.chords ?? [];
+  return (
+    <div className="flex flex-wrap gap-4">
+      {symbols.map((symbol, i) => {
+        const parsed = parseChordSymbol(symbol);
+        const midis = parsed
+          ? (buildPianoVoicings(60 + parsed.root, parsed.intervals)[0]?.midis ?? [])
+          : [];
+        if (midis.length === 0) {
+          return (
+            <span
+              key={`${symbol}-${i}`}
+              className="rounded-lg border border-border p-2 text-sm text-muted-foreground"
+            >
+              {symbol}
+            </span>
+          );
+        }
+        return (
+          <button
+            type="button"
+            key={`${symbol}-${i}`}
+            onClick={() => {
+              const notes = chordToMidi(symbol) ?? midis;
+              notes.forEach((m, j) =>
+                window.setTimeout(() => playTone(midiToFrequency(m), 1.1), j * 24),
+              );
+            }}
+            className="flex flex-col items-center gap-1 rounded-lg border border-border p-2 transition-colors hover:bg-accent/15"
+            aria-label={t(locale, 'embed.playChord').replace('{chord}', symbol)}
+          >
+            <KeyboardChordDiagram midis={midis} />
+            <span className="text-sm font-semibold">{symbol}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** A row of tappable chord diagrams for the embed's chord symbols (guitar, ukulele, bass or piano). */
 function ChordDiagramRow({ embed, locale }: { embed: Embed; locale: Locale }) {
+  if (embed.instrument === 'piano') return <PianoChordRow embed={embed} locale={locale} />;
   const tuning = tuningFor(embed.instrument);
   const symbols = embed.chords ?? [];
   return (

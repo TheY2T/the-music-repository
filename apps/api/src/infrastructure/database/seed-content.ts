@@ -3,7 +3,7 @@
  * Source: src/infrastructure/database/content/*.md
  * Regenerate: pnpm --filter @TheY2T/tmr-api content:build
  *
- * Enriched catalogue content authored via research (92 items): the Markdown body
+ * Enriched catalogue content authored via research (94 items): the Markdown body
  * (rendered on the detail page), structured facts (`details`), and suggested tags. Applied by the
  * seed on top of the base metadata in seed-data.ts.
  */
@@ -15374,6 +15374,389 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     },
     "extraTags": [
       "public-domain"
+    ]
+  },
+  "guitar-chord-library": {
+    "bodyMdx": "## The chords that cover most songs\n\nA handful of shapes get you through a huge share of the guitar repertoire. Start with the **open major and minor chords** — C, A, G, E, D and their minors — then add the **dominant sevenths** used in blues and turnarounds, and finally the **barre shapes** that let you play any chord anywhere on the neck. Every diagram below shows finger numbers (1 = index, 4 = pinky) and marks a barre as a bar across the strings; tap a shape to hear it.\n\n## Open chords first\n\nOpen chords ring out with unfretted strings and are the foundation of rhythm guitar. The diagrams show the low E string on the left: × means don't play that string, ○ means play it open, and a numbered dot is a fretted finger.\n\n<div data-tmr-embed=\"0\"></div>\n\n## Dominant sevenths\n\nAdd a flat 7th to a major chord and you get a dominant 7th — the restless, bluesy sound that wants to resolve. These open shapes are the backbone of the 12-bar blues.\n\n<div data-tmr-embed=\"1\"></div>\n\n## Barre chords move everywhere\n\nOnce open chords feel comfortable, barre shapes unlock the rest of the neck. An **E-shape** barre played at the first fret is an F; slide the same shape up and it becomes F♯, G, and so on. The **A-shape** barre gives you a second movable grip a string set higher. The diagrams below show the barre as a bar across the strings and the starting fret with a \"fr\" label.\n\n<div data-tmr-embed=\"2\"></div>\n\n## Every chord, every voicing\n\nThe [chord dictionary](/tools/chord-dictionary) has every root and quality — majors, sevenths, extended and altered chords — with all their voicings up the neck, for guitar, ukulele, bass and piano. Use it to look up a chord you meet in a song, hear it, and copy the grip. To understand *why* these chords belong together, work through the [circle-of-fifths reference](/catalogue/circle-of-fifths-reference).\n\n## Practise the changes\n\nHolding a shape is easy; switching cleanly is the skill. Set a [metronome](/tools/metronome) to a slow 60 BPM and loop `| C | G | Am | F |`, changing chord exactly on beat 1 of each bar. Keep your fingers close to the strings between changes, and slow down until every change lands on time before speeding up.",
+    "details": {
+      "form": "lesson",
+      "related": [
+        "ukulele-first-four-chords",
+        "omt-diatonic-chords",
+        "omt-seventh-chords",
+        "circle-of-fifths-reference"
+      ],
+      "embeds": [
+        {
+          "tool": "chord-diagrams",
+          "title": "Open major & minor chords",
+          "caption": "Tap a shape to hear it. Finger numbers: 1 index, 2 middle, 3 ring, 4 pinky.",
+          "instrument": "guitar",
+          "chords": [
+            "C",
+            "A",
+            "G",
+            "E",
+            "D",
+            "Am",
+            "Em",
+            "Dm"
+          ]
+        },
+        {
+          "tool": "chord-diagrams",
+          "title": "Open dominant sevenths",
+          "caption": "The blues turnaround chords — A7, D7, E7, C7, G7, B7.",
+          "instrument": "guitar",
+          "chords": [
+            "A7",
+            "D7",
+            "E7",
+            "C7",
+            "G7",
+            "B7"
+          ]
+        },
+        {
+          "tool": "chord-diagrams",
+          "title": "Movable barre shapes",
+          "caption": "F (E-shape) and B♭ (A-shape) — slide them up the neck for any root.",
+          "instrument": "guitar",
+          "chords": [
+            "F",
+            "Bm"
+          ]
+        }
+      ]
+    },
+    "bodyDoc": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The chords that cover most songs"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A handful of shapes get you through a huge share of the guitar repertoire. Start with the "
+            },
+            {
+              "type": "text",
+              "text": "open major and minor chords",
+              "marks": [
+                {
+                  "type": "bold"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " — C, A, G, E, D and their minors — then add the "
+            },
+            {
+              "type": "text",
+              "text": "dominant sevenths",
+              "marks": [
+                {
+                  "type": "bold"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " used in blues and turnarounds, and finally the "
+            },
+            {
+              "type": "text",
+              "text": "barre shapes",
+              "marks": [
+                {
+                  "type": "bold"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " that let you play any chord anywhere on the neck. Every diagram below shows finger numbers (1 = index, 4 = pinky) and marks a barre as a bar across the strings; tap a shape to hear it."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Open chords first"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Open chords ring out with unfretted strings and are the foundation of rhythm guitar. The diagrams show the low E string on the left: × means don't play that string, ○ means play it open, and a numbered dot is a fretted finger."
+            }
+          ]
+        },
+        {
+          "type": "tmrEmbed",
+          "attrs": {
+            "config": {
+              "tool": "chord-diagrams",
+              "title": "Open major & minor chords",
+              "caption": "Tap a shape to hear it. Finger numbers: 1 index, 2 middle, 3 ring, 4 pinky.",
+              "instrument": "guitar",
+              "chords": [
+                "C",
+                "A",
+                "G",
+                "E",
+                "D",
+                "Am",
+                "Em",
+                "Dm"
+              ]
+            }
+          }
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Dominant sevenths"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Add a flat 7th to a major chord and you get a dominant 7th — the restless, bluesy sound that wants to resolve. These open shapes are the backbone of the 12-bar blues."
+            }
+          ]
+        },
+        {
+          "type": "tmrEmbed",
+          "attrs": {
+            "config": {
+              "tool": "chord-diagrams",
+              "title": "Open dominant sevenths",
+              "caption": "The blues turnaround chords — A7, D7, E7, C7, G7, B7.",
+              "instrument": "guitar",
+              "chords": [
+                "A7",
+                "D7",
+                "E7",
+                "C7",
+                "G7",
+                "B7"
+              ]
+            }
+          }
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Barre chords move everywhere"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Once open chords feel comfortable, barre shapes unlock the rest of the neck. An "
+            },
+            {
+              "type": "text",
+              "text": "E-shape",
+              "marks": [
+                {
+                  "type": "bold"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " barre played at the first fret is an F; slide the same shape up and it becomes F♯, G, and so on. The "
+            },
+            {
+              "type": "text",
+              "text": "A-shape",
+              "marks": [
+                {
+                  "type": "bold"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " barre gives you a second movable grip a string set higher. The diagrams below show the barre as a bar across the strings and the starting fret with a \"fr\" label."
+            }
+          ]
+        },
+        {
+          "type": "tmrEmbed",
+          "attrs": {
+            "config": {
+              "tool": "chord-diagrams",
+              "title": "Movable barre shapes",
+              "caption": "F (E-shape) and B♭ (A-shape) — slide them up the neck for any root.",
+              "instrument": "guitar",
+              "chords": [
+                "F",
+                "Bm"
+              ]
+            }
+          }
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Every chord, every voicing"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The "
+            },
+            {
+              "type": "text",
+              "text": "chord dictionary",
+              "marks": [
+                {
+                  "type": "link",
+                  "attrs": {
+                    "href": "/tools/chord-dictionary"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " has every root and quality — majors, sevenths, extended and altered chords — with all their voicings up the neck, for guitar, ukulele, bass and piano. Use it to look up a chord you meet in a song, hear it, and copy the grip. To understand "
+            },
+            {
+              "type": "text",
+              "text": "why",
+              "marks": [
+                {
+                  "type": "italic"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " these chords belong together, work through the "
+            },
+            {
+              "type": "text",
+              "text": "circle-of-fifths reference",
+              "marks": [
+                {
+                  "type": "link",
+                  "attrs": {
+                    "href": "/catalogue/circle-of-fifths-reference"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Practise the changes"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Holding a shape is easy; switching cleanly is the skill. Set a "
+            },
+            {
+              "type": "text",
+              "text": "metronome",
+              "marks": [
+                {
+                  "type": "link",
+                  "attrs": {
+                    "href": "/tools/metronome"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " to a slow 60 BPM and loop "
+            },
+            {
+              "type": "text",
+              "text": "| C | G | Am | F |",
+              "marks": [
+                {
+                  "type": "code"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": ", changing chord exactly on beat 1 of each bar. Keep your fingers close to the strings between changes, and slow down until every change lands on time before speeding up."
+            }
+          ]
+        }
+      ]
+    },
+    "extraTags": [
+      "beginner",
+      "chords"
     ]
   },
   "handy-st-louis-blues": {
@@ -32994,6 +33377,339 @@ export const SEED_CONTENT: Record<string, SeedContentExtra> = {
     },
     "extraTags": [
       "cc-by-sa"
+    ]
+  },
+  "piano-chord-voicings": {
+    "bodyMdx": "## One chord, many shapes\n\nAt the keyboard a chord is a set of notes, and those notes can be stacked in different orders. Each ordering is a **voicing** — the same harmony with a different note in the bass or a wider spread. Learning to move between voicings is what lets you comp smoothly and voice-lead between chords. The diagrams below highlight the sounded keys and name the notes; tap one to hear it.\n\n## Root position and inversions\n\nStack a chord in thirds from its root and it is in **root position** (C–E–G). Move the bottom note up an octave and the 3rd is now in the bass — **first inversion** (E–G–C). Move the next note up and the 5th is in the bass — **second inversion** (G–C–E). A seventh chord has one more note, so it also has a **third inversion** (the 7th in the bass).\n\n<div data-tmr-embed=\"0\"></div>\n\n## Seventh-chord voicings\n\nSeventh chords are the staple of jazz and pop harmony. Beyond the inversions, two re-voicings do most of the work: **drop 2** (drop the second voice from the top an octave) spreads the chord for a rich sound, and the **shell** (root, 3rd and 7th — no 5th) is the lean comping voicing that leaves room for a bass player.\n\n<div data-tmr-embed=\"1\"></div>\n\n## Every voicing, side by side\n\nThe [chord dictionary](/tools/chord-dictionary) shows every chord's voicings in one place. Switch the instrument to **Piano** and pick a root and type to see root position, each inversion, and the drop/shell voicings on the keyboard — tap any one to hear how the spread changes the colour. Compare it with the [guitar chord library](/catalogue/guitar-chord-library) to see how the same harmony sits differently on each instrument.\n\n## Try it\n\nPick a chord and play its root position, then its inversions in turn, listening to how the bass note changes the character. Then take a `Cmaj7 – Dm7 – G7 – Cmaj7` loop and play each chord as a shell voicing, keeping your hand in roughly the same place — that's voice leading, and it's the fastest route to sounding musical.",
+    "details": {
+      "key": "C",
+      "form": "lesson",
+      "related": [
+        "omt-seventh-chords",
+        "omt-diatonic-chords",
+        "guitar-chord-library",
+        "circle-of-fifths-reference"
+      ],
+      "embeds": [
+        {
+          "tool": "chord-diagrams",
+          "title": "C major — root position & inversions",
+          "caption": "The same three notes with a different note in the bass. Tap to hear each.",
+          "instrument": "piano",
+          "chords": [
+            "C",
+            "C/E",
+            "C/G"
+          ]
+        },
+        {
+          "tool": "chord-diagrams",
+          "title": "Seventh chords at the keyboard",
+          "caption": "Major 7, dominant 7 and minor 7 — the core colours.",
+          "instrument": "piano",
+          "chords": [
+            "Cmaj7",
+            "G7",
+            "Dm7"
+          ]
+        }
+      ]
+    },
+    "bodyDoc": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "One chord, many shapes"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "At the keyboard a chord is a set of notes, and those notes can be stacked in different orders. Each ordering is a "
+            },
+            {
+              "type": "text",
+              "text": "voicing",
+              "marks": [
+                {
+                  "type": "bold"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " — the same harmony with a different note in the bass or a wider spread. Learning to move between voicings is what lets you comp smoothly and voice-lead between chords. The diagrams below highlight the sounded keys and name the notes; tap one to hear it."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Root position and inversions"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Stack a chord in thirds from its root and it is in "
+            },
+            {
+              "type": "text",
+              "text": "root position",
+              "marks": [
+                {
+                  "type": "bold"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " (C–E–G). Move the bottom note up an octave and the 3rd is now in the bass — "
+            },
+            {
+              "type": "text",
+              "text": "first inversion",
+              "marks": [
+                {
+                  "type": "bold"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " (E–G–C). Move the next note up and the 5th is in the bass — "
+            },
+            {
+              "type": "text",
+              "text": "second inversion",
+              "marks": [
+                {
+                  "type": "bold"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " (G–C–E). A seventh chord has one more note, so it also has a "
+            },
+            {
+              "type": "text",
+              "text": "third inversion",
+              "marks": [
+                {
+                  "type": "bold"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " (the 7th in the bass)."
+            }
+          ]
+        },
+        {
+          "type": "tmrEmbed",
+          "attrs": {
+            "config": {
+              "tool": "chord-diagrams",
+              "title": "C major — root position & inversions",
+              "caption": "The same three notes with a different note in the bass. Tap to hear each.",
+              "instrument": "piano",
+              "chords": [
+                "C",
+                "C/E",
+                "C/G"
+              ]
+            }
+          }
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Seventh-chord voicings"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Seventh chords are the staple of jazz and pop harmony. Beyond the inversions, two re-voicings do most of the work: "
+            },
+            {
+              "type": "text",
+              "text": "drop 2",
+              "marks": [
+                {
+                  "type": "bold"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " (drop the second voice from the top an octave) spreads the chord for a rich sound, and the "
+            },
+            {
+              "type": "text",
+              "text": "shell",
+              "marks": [
+                {
+                  "type": "bold"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " (root, 3rd and 7th — no 5th) is the lean comping voicing that leaves room for a bass player."
+            }
+          ]
+        },
+        {
+          "type": "tmrEmbed",
+          "attrs": {
+            "config": {
+              "tool": "chord-diagrams",
+              "title": "Seventh chords at the keyboard",
+              "caption": "Major 7, dominant 7 and minor 7 — the core colours.",
+              "instrument": "piano",
+              "chords": [
+                "Cmaj7",
+                "G7",
+                "Dm7"
+              ]
+            }
+          }
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Every voicing, side by side"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The "
+            },
+            {
+              "type": "text",
+              "text": "chord dictionary",
+              "marks": [
+                {
+                  "type": "link",
+                  "attrs": {
+                    "href": "/tools/chord-dictionary"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " shows every chord's voicings in one place. Switch the instrument to "
+            },
+            {
+              "type": "text",
+              "text": "Piano",
+              "marks": [
+                {
+                  "type": "bold"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " and pick a root and type to see root position, each inversion, and the drop/shell voicings on the keyboard — tap any one to hear how the spread changes the colour. Compare it with the "
+            },
+            {
+              "type": "text",
+              "text": "guitar chord library",
+              "marks": [
+                {
+                  "type": "link",
+                  "attrs": {
+                    "href": "/catalogue/guitar-chord-library"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " to see how the same harmony sits differently on each instrument."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Try it"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Pick a chord and play its root position, then its inversions in turn, listening to how the bass note changes the character. Then take a "
+            },
+            {
+              "type": "text",
+              "text": "Cmaj7 – Dm7 – G7 – Cmaj7",
+              "marks": [
+                {
+                  "type": "code"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " loop and play each chord as a shell voicing, keeping your hand in roughly the same place — that's voice leading, and it's the fastest route to sounding musical."
+            }
+          ]
+        }
+      ]
+    },
+    "extraTags": [
+      "intermediate",
+      "chords",
+      "harmony"
     ]
   },
   "renaissance-pavane": {

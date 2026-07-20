@@ -8,6 +8,7 @@
 // (tuning[i] + frets[i]); `baseFret` only affects how the diagram windows the neck.
 
 import type { ChordShape } from './chord-shapes';
+import { SYMBOL_BY_QUALITY } from './music-theory';
 
 export type Instrument = 'guitar' | 'bass' | 'ukulele';
 
@@ -37,24 +38,6 @@ interface MovableTemplate {
   /** Relative fret per string, low-string-first. */
   offsets: (number | null)[];
 }
-
-// Suffix appended to the root for the generated shape's display name, keyed by chord-quality.
-const QUALITY_SUFFIX: Record<string, string> = {
-  major: '',
-  minor: 'm',
-  diminished: 'dim',
-  augmented: 'aug',
-  sus2: 'sus2',
-  sus4: 'sus4',
-  sixth: '6',
-  'minor-6': 'm6',
-  'major-7': 'maj7',
-  'minor-7': 'm7',
-  'dominant-7': '7',
-  'half-diminished': 'm7♭5',
-  add9: 'add9',
-  'dominant-9': '9',
-};
 
 // Which ChordShape `quality` tag (used only for the tool's colour/filter chips) a chord-quality maps to.
 function shapeQuality(quality: string): ChordShape['quality'] {
@@ -115,6 +98,10 @@ const GUITAR_TEMPLATES: Record<string, MovableTemplate[]> = {
   sus4: [
     { family: 'E-shape', refRootPc: 4, offsets: [0, 2, 2, 2, 0, 0] },
     { family: 'A-shape', refRootPc: 9, offsets: [null, 0, 2, 2, 3, 0] },
+  ],
+  power: [
+    { family: 'E-shape', refRootPc: 4, offsets: [0, 2, 2, null, null, null] },
+    { family: 'A-shape', refRootPc: 9, offsets: [null, 0, 2, 2, null, null] },
   ],
   sus2: [{ family: 'A-shape', refRootPc: 9, offsets: [null, 0, 2, 2, 0, 0] }],
   add9: [{ family: 'A-shape', refRootPc: 9, offsets: [null, 0, 2, 4, 2, 0] }],
@@ -185,16 +172,20 @@ export function generateChordShapes(
   opts: GenerateOptions = {},
 ): (ChordShape & { baseFret: number; family: string })[] {
   const maxFret = opts.maxFret ?? 15;
-  const name = opts.name ?? `${rootName(rootPc)}${QUALITY_SUFFIX[quality] ?? ''}`;
+  const name = opts.name ?? `${rootName(rootPc)}${SYMBOL_BY_QUALITY[quality] ?? ''}`;
   const shapes = templatesFor(instrument, quality)
     .map((tpl) => realize(rootPc, quality, tpl, name, maxFret))
     .filter((s): s is ChordShape & { baseFret: number; family: string } => s != null);
   return shapes.sort((a, b) => a.baseFret - b.baseFret);
 }
 
+// Bass shapes are quality-neutral root grips, so the picker offers the qualities bass lines are
+// commonly built over rather than every template key.
+const BASS_QUALITIES = ['major', 'minor', 'dominant-7', 'minor-7', 'major-7'];
+
 /** The chord qualities this library can render for an instrument (for building level-aware pickers). */
 export function supportedQualities(instrument: Instrument = 'guitar'): string[] {
-  if (instrument === 'bass') return Object.keys(QUALITY_SUFFIX);
+  if (instrument === 'bass') return BASS_QUALITIES;
   if (instrument === 'ukulele') return Object.keys(UKULELE_TEMPLATES);
   return Object.keys(GUITAR_TEMPLATES);
 }

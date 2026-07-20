@@ -16,6 +16,12 @@ export interface ChordShape {
   /** Fret shown at the top of the 5-fret diagram window (default 1 = nut). Set >1 for movable shapes
    * further up the neck; the diagram then draws a "{baseFret}fr" position label instead of the nut. */
   baseFret?: number;
+  /** Fretting-hand finger per string, low string first: 0 = open/none, 1–4 = index→pinky. When present,
+   * the diagram prints the digit inside each fretted dot. Same length as `frets`. */
+  fingers?: number[];
+  /** Absolute fret(s) carrying a full barre. When present, the diagram draws a bar across the fretted
+   * strings at that fret. */
+  barres?: number[];
 }
 
 export const GUITAR_CHORDS: ChordShape[] = [

@@ -63,7 +63,26 @@ export function ChordDiagram({ chord }: { chord: ChordShape }) {
           strokeWidth={1}
         />
       ))}
-      {/* Muted (×) / open (○) markers + fretted dots. */}
+      {/* Barre bars (drawn behind the dots): a rounded bar across the strings held down at that fret. */}
+      {(chord.barres ?? []).map((barreFret) => {
+        const held = chord.frets.flatMap((f, i) => (f === barreFret ? [i] : []));
+        if (held.length < 2) return null;
+        const x1 = stringX(Math.min(...held));
+        const x2 = stringX(Math.max(...held));
+        const y = fretY(displayFret(barreFret)) - ROW / 2;
+        return (
+          <rect
+            key={`barre${barreFret}`}
+            x={x1 - 4.5}
+            y={y - 4.5}
+            width={x2 - x1 + 9}
+            height={9}
+            rx={4.5}
+            className="fill-foreground"
+          />
+        );
+      })}
+      {/* Muted (×) / open (○) markers + fretted dots (with a finger number when known). */}
       {chord.frets.map((fret, i) => {
         const key = `s${i}`;
         if (fret === -1) {
@@ -91,14 +110,24 @@ export function ChordDiagram({ chord }: { chord: ChordShape }) {
             />
           );
         }
+        const cx = stringX(i);
+        const cy = fretY(displayFret(fret)) - ROW / 2;
+        const finger = chord.fingers?.[i] ?? 0;
         return (
-          <circle
-            key={key}
-            cx={stringX(i)}
-            cy={fretY(displayFret(fret)) - ROW / 2}
-            r={4.5}
-            className="fill-foreground"
-          />
+          <g key={key}>
+            <circle cx={cx} cy={cy} r={4.5} className="fill-foreground" />
+            {finger > 0 && (
+              <text
+                x={cx}
+                y={cy}
+                textAnchor="middle"
+                dominantBaseline="central"
+                className="fill-background text-[6px] font-medium"
+              >
+                {finger}
+              </text>
+            )}
+          </g>
         );
       })}
     </svg>

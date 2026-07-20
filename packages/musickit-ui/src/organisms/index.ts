@@ -19,6 +19,11 @@ export {
   UKULELE_CHORDS,
   UKULELE_TUNING_LOW_FIRST,
 } from '@TheY2T/tmr-music-core/chord-shapes';
+export { buildPianoVoicings, type PianoVoicing } from '@TheY2T/tmr-music-core/piano-voicings';
 export { ledgerSteps } from '@TheY2T/tmr-music-core/staff-geometry';
 export { ChordDiagram } from './chord-diagram';
+export {
+  KeyboardChordDiagram,
+  type KeyboardChordDiagramProps,
+} from './keyboard-chord-diagram';
 export { type StaffNoteDatum, StaffSequence, type StaffSequenceProps } from './StaffSequence';

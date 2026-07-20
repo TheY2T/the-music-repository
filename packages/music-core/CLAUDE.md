@@ -24,8 +24,13 @@ compiles it. See root `CLAUDE.md` for repo-wide rules.
   fallback mandatory, `useThemeColors()` not `var(--token)`, NOT in optimizeDeps.
 - **Drills:** engine + generators (`drills/`). A deck is a pure `DrillItemGenerator` — author via the
   **`author-content`** skill (drills reference). Server stores only SM-2 scheduling.
-- **Chord-shape data:** `chord-shapes`/`chord-library`/`staff-geometry` (data/geometry; the SVG components
-  live up in `musickit-ui/organisms`).
+- **Chord data:** `music-theory.ts` `CHORDS` is the quality source of truth. `chord-shapes` (curated grips
+  + `ChordShape` with optional `fingers`/`barres`), `chord-library` (generative CAGED shapes),
+  `chord-voicings.generated.ts` (imported from MIT `@tombatossals/chords-db` via `scripts/import-chords.mjs`
+  — `pnpm chords:import`), and the `chord-voicings.ts` `voicingsFor()` resolver (imported→generator; kept
+  separate so the big dataset only loads for the dictionary). `piano-voicings.ts` builds keyboard
+  voicings/inversions. SVG renderers live in `musickit-ui/organisms` (`ChordDiagram`,
+  `KeyboardChordDiagram`). See `docs/features/chord-library.md` + ADR 0043.
 
 ## Tests
 

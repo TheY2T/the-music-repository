@@ -7,6 +7,7 @@ import {
   pitchName,
   ROOT_CHOICES,
 } from '@TheY2T/tmr-music-core/music-theory';
+import { buildPianoVoicings } from '@TheY2T/tmr-music-core/piano-voicings';
 import { useLevel } from '@TheY2T/tmr-music-core/use-level';
 import { Button, Card, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useState } from 'react';
@@ -19,92 +20,6 @@ const {
   blackMidis: BLACK_MIDIS,
   whiteWidthPct: WHITE_WIDTH_PCT,
 } = keyLayout(48, 36);
-
-interface Voicing {
-  key: string;
-  name: string;
-  description: string;
-  /** MIDI notes, low to high. */
-  midis: number[];
-}
-
-/** Rotate the lowest `n` notes up an octave (root position → nth inversion). */
-function invert(voicing: number[], n: number): number[] {
-  const out = [...voicing].sort((a, b) => a - b);
-  for (let k = 0; k < n; k += 1) {
-    const low = out.shift();
-    if (low !== undefined) {
-      out.push(low + 12);
-    }
-  }
-  return out.sort((a, b) => a - b);
-}
-
-/** Drop the `fromTop`-th voice (counting from the top) down an octave. */
-function drop(voicing: number[], fromTop: number): number[] {
-  const asc = [...voicing].sort((a, b) => a - b);
-  const index = asc.length - fromTop;
-  asc[index] -= 12;
-  return asc.sort((a, b) => a - b);
-}
-
-function buildVoicings(rootMidi: number, intervals: number[]): Voicing[] {
-  const close = intervals.map((i) => rootMidi + i);
-  const list: Voicing[] = [
-    {
-      key: 'close',
-      name: 'Close (root position)',
-      description: 'Chord tones stacked within an octave — the plain shape.',
-      midis: close,
-    },
-    {
-      key: 'inv1',
-      name: '1st inversion',
-      description: 'The 3rd is in the bass.',
-      midis: invert(close, 1),
-    },
-    {
-      key: 'inv2',
-      name: '2nd inversion',
-      description: 'The 5th is in the bass.',
-      midis: invert(close, 2),
-    },
-  ];
-  if (intervals.length === 4) {
-    list.push({
-      key: 'inv3',
-      name: '3rd inversion',
-      description: 'The 7th is in the bass.',
-      midis: invert(close, 3),
-    });
-    list.push({
-      key: 'drop2',
-      name: 'Drop 2',
-      description: 'Second voice from the top dropped an octave — a rich, spread jazz voicing.',
-      midis: drop(close, 2),
-    });
-    list.push({
-      key: 'drop3',
-      name: 'Drop 3',
-      description: 'Third voice from the top dropped an octave — even wider.',
-      midis: drop(close, 3),
-    });
-    list.push({
-      key: 'shell',
-      name: 'Shell (1–3–7)',
-      description: 'Root, 3rd and 7th — the essential colour, no 5th. The comping staple.',
-      midis: [rootMidi + intervals[0], rootMidi + intervals[1], rootMidi + intervals[3]],
-    });
-  } else {
-    list.push({
-      key: 'open',
-      name: 'Open (spread triad)',
-      description: 'Middle voice up an octave for an open, ringing sound.',
-      midis: [rootMidi + intervals[0], rootMidi + intervals[2], rootMidi + intervals[1] + 12],
-    });
-  }
-  return list;
-}
 
 function VoicingKeyboard({ midis, flats }: { midis: Set<number>; flats: boolean }) {
   return (
@@ -167,7 +82,7 @@ export default function VoicingLibrary() {
   const chord = CHORDS.find((c) => c.key === chordKey) ?? CHORDS[0];
   const flats = [1, 3, 5, 8, 10].includes(root);
   const rootMidi = 60 + root; // root in the C4 octave
-  const voicings = buildVoicings(rootMidi, chord.intervals);
+  const voicings = buildPianoVoicings(rootMidi, chord.intervals);
   const chordLabel = `${pitchName(root, flats)} ${chord.name}`;
 
   function playBlock(midis: number[]) {

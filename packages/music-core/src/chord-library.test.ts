@@ -14,6 +14,7 @@ import { TUNING_LOW_FIRST, UKULELE_TUNING_LOW_FIRST } from './chord-shapes';
 const QUALITY_INTERVALS: Record<string, number[]> = {
   major: [0, 4, 7],
   minor: [0, 3, 7],
+  power: [0, 7],
   diminished: [0, 3, 6],
   augmented: [0, 4, 8],
   sus2: [0, 2, 7],

@@ -121,6 +121,33 @@ describe('single source of truth: every CHORDS symbol round-trips through parseC
   });
 });
 
+describe('slash chords', () => {
+  it('parses a slash bass note alongside the chord', () => {
+    expect(parseChordFull('C/G')).toEqual({ root: 0, key: 'major', intervals: [0, 4, 7], bass: 7 });
+    expect(parseChordSymbol('Dm7/F#')).toEqual({
+      root: 2,
+      intervals: [0, 3, 7, 10],
+      bass: 6,
+    });
+  });
+  it('does not treat the six-nine suffix (6/9) as a slash bass', () => {
+    expect(parseChordSymbol('C6/9')).toEqual({ root: 0, intervals: [0, 4, 7, 9, 14] });
+  });
+  it('adds the slash bass as the lowest note in chordToMidi', () => {
+    expect(chordToMidi('C/G')).toEqual([55, 60, 64, 67]); // G3 below C4 triad
+    expect(chordToMidi('C/E')).toEqual([52, 60, 64, 67]); // E3 below C4 triad
+  });
+});
+
+describe('expanded chord vocabulary parses', () => {
+  it('parses power chords and extended majors/minors', () => {
+    expect(parseChordSymbol('E5')).toEqual({ root: 4, intervals: [0, 7] });
+    expect(parseChordSymbol('Cmaj11')).toEqual({ root: 0, intervals: [0, 4, 7, 11, 14, 17] });
+    expect(parseChordSymbol('Am11')).toEqual({ root: 9, intervals: [0, 3, 7, 10, 14, 17] });
+    expect(parseChordSymbol('Cmaj13')).toEqual({ root: 0, intervals: [0, 4, 7, 11, 14, 21] });
+  });
+});
+
 describe('chordToMidi', () => {
   it('voices a C major triad from octave 4', () => {
     expect(chordToMidi('C')).toEqual([60, 64, 67]);
