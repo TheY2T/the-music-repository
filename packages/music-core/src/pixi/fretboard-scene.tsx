@@ -283,9 +283,12 @@ function Board({
         alpha: 0.001,
       });
       if (colorNotes) {
-        // Colour every note by its pitch class; the opaque dot also hides the string behind it.
+        // Colour every note by its pitch class; the opaque dot also hides the string behind it. When a
+        // scale is selected, dim out-of-scale notes so the scale shape still stands out through the colours.
         const fill = noteColor(pc);
-        g.circle(x, y, radius).fill({ color: fill });
+        const scaleSelected = highlighted.size > 0;
+        const dim = scaleSelected && !inScale && !isActive;
+        g.circle(x, y, radius).fill({ color: fill, alpha: dim ? 0.2 : 1 });
         if (isRoot) {
           g.circle(x, y, radius + 2.5).stroke({ color: contrastText(fill), width: 2 });
         }
@@ -362,6 +365,8 @@ function Board({
             : inScale || isActive
               ? contrastText(isRoot ? (skin?.root ?? colors.primary) : (skin?.dot ?? colors.accent))
               : (skin?.label ?? colors.mutedForeground);
+          // Fade out-of-scale labels along with their dimmed dots when colour-noting a selected scale.
+          const dimLabel = colorNotes && highlighted.size > 0 && !inScale && !isActive;
           const { x, y } = geo.cellCenter(stringIndex, fret);
           return (
             <pixiContainer key={`${stringIndex}-${fret}`}>
@@ -380,6 +385,7 @@ function Board({
                   anchor={0.5}
                   x={x}
                   y={y}
+                  alpha={dimLabel ? 0.35 : 1}
                   style={labelStyle(labelColor)}
                 />
               )}

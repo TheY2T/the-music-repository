@@ -264,7 +264,9 @@ export default function GuitarFretboard({
                 <Select
                   value={scaleKey}
                   onChange={(e) => setScaleKey(e.target.value)}
-                  className="h-auto w-auto px-2 py-1"
+                  // Fixed width so the scale name (longest fits) doesn't resize the row — and shove the
+                  // Level toggle around — when switching levels changes the available scales.
+                  className="h-auto w-60 px-2 py-1"
                 >
                   {scaleChoices.map((s) => (
                     <option key={s.key} value={s.key}>
