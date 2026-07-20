@@ -1,7 +1,9 @@
 import { expect, test } from './fixtures';
 
 /** Parse every JSON-LD block on the current page into `@type → object`. */
-async function jsonLdByType(page: import('@playwright/test').Page): Promise<Record<string, unknown>> {
+async function jsonLdByType(
+  page: import('@playwright/test').Page,
+): Promise<Record<string, unknown>> {
   const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
   const byType: Record<string, unknown> = {};
   for (const raw of blocks) {
@@ -28,7 +30,11 @@ test.describe('SEO — crawlability', () => {
     expect(res.headers()['content-type']).toContain('xml');
     const xml = await res.text();
     expect(xml).toContain('<sitemapindex');
-    for (const child of ['sitemap-static.xml', 'sitemap-catalogue.xml', 'sitemap-collections.xml']) {
+    for (const child of [
+      'sitemap-static.xml',
+      'sitemap-catalogue.xml',
+      'sitemap-collections.xml',
+    ]) {
       expect(xml).toContain(child);
     }
   });
@@ -44,6 +50,54 @@ test.describe('SEO — crawlability', () => {
     const xml = await (await page.request.get('/sitemap-catalogue.xml')).text();
     expect(xml).toContain('/catalogue/mock-song');
   });
+
+  test('robots.txt references the llms.txt index', async ({ page }) => {
+    const body = await (await page.request.get('/robots.txt')).text();
+    expect(body).toMatch(/# LLM index[^\n]*https?:\/\/\S+\/llms\.txt/);
+  });
+});
+
+test.describe('SEO — LLM ingestion', () => {
+  test('llms.txt is a valid llmstxt.org index with absolute links', async ({ page }) => {
+    const res = await page.request.get('/llms.txt');
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toContain('text/plain');
+    const body = await res.text();
+    expect(body).toContain('# The Music Repository');
+    expect(body).toMatch(/^>/m); // blockquote summary
+    expect(body).toContain('## Catalogue');
+    expect(body).toMatch(/- \[[^\]]+\]\(https?:\/\/\S+\/catalogue\/mock-song\)/);
+  });
+
+  test('llms-full.txt inlines catalogue prose', async ({ page }) => {
+    const res = await page.request.get('/llms-full.txt');
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toContain('text/plain');
+    const body = await res.text();
+    expect(body).toContain('# The Music Repository');
+    expect(body).toContain('Mock Song');
+  });
+
+  test('Accept: text/markdown returns markdown for a content page with Vary: Accept', async ({
+    page,
+  }) => {
+    const res = await page.request.get('/catalogue/mock-song', {
+      headers: { Accept: 'text/markdown' },
+    });
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toContain('text/markdown');
+    expect(res.headers().vary).toContain('Accept');
+    const body = await res.text();
+    expect(body).toContain('# Mock Song');
+  });
+
+  test('Accept: text/html still returns HTML for the same content page', async ({ page }) => {
+    const res = await page.request.get('/catalogue/mock-song', {
+      headers: { Accept: 'text/html' },
+    });
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toContain('text/html');
+  });
 });
 
 test.describe('SEO — page metadata', () => {
@@ -55,7 +109,9 @@ test.describe('SEO — page metadata', () => {
     const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
     expect(canonical).toMatch(/^https?:\/\/[^/]+\/$/);
 
-    expect((await page.locator('meta[name="description"]').getAttribute('content'))?.length).toBeGreaterThan(0);
+    expect(
+      (await page.locator('meta[name="description"]').getAttribute('content'))?.length,
+    ).toBeGreaterThan(0);
     expect(await page.locator('meta[property="og:type"]').getAttribute('content')).toBe('website');
     expect(await page.locator('meta[property="og:title"]').getAttribute('content')).toBeTruthy();
     expect(await page.locator('meta[name="twitter:card"]').getAttribute('content')).toBe(

@@ -153,9 +153,9 @@ const i18nCatalogueJson = JSON.stringify(Astro.locals.i18nCatalogue).replace(/</
       catalogueHref={localizedPath(locale, '/catalogue')}
       homeHref={localizedPath(locale, '/')}
     />
-    <div class="flex-1">
+    <main class="flex-1">
       <slot />
-    </div>
+    </main>
     <SiteFooter
       locale={locale}
       siteName={siteName}

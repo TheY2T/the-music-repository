@@ -58,12 +58,29 @@ harmful:
 8. **Localized SEO copy** for static pages uses `seo.*` i18n keys (`@TheY2T/tmr-i18n-locales`); content
    pages reuse the already-translatable `summary`.
 
+9. **LLM ingestion — `llms.txt` + `Accept: text/markdown` (adopted 2026-07).** The site exposes itself to
+   AI answer engines two ways, both generated from live content so they never drift:
+   - **`/llms.txt`** (llmstxt.org index) and **`/llms-full.txt`** (the same structure with each item's
+     prose inlined) as SSR endpoint routes — an H1 title, a `>` summary blockquote, then `##` sections
+     (Catalogue, Collections, Tools, Pages) of `- [title](absolute-url): description`, with secondary/legal
+     pages under a trailing `## Optional`. Pure builders live in `src/lib/llms.ts`; the live enumeration
+     (reusing the sitemap tool/flag helpers + `@TheY2T/tmr-web-acl/server-content` fetchers) in
+     `src/lib/llms-sources.ts`. Base-locale (English), matching the catalogue-list/sitemap convention;
+     `llms-full.txt` fetches item prose with bounded concurrency behind a short in-process cache.
+   - **`Accept: text/markdown` content negotiation on every route** (in `middleware.ts`): when a client
+     ranks markdown at or above HTML, content detail pages return clean source `bodyMdx` and any other
+     route returns its `<main>` converted to markdown (`src/lib/markdown.ts`, `node-html-markdown`), falling
+     back to the HTML on any failure. Every negotiated response sets **`Vary: Accept`** so a CDN
+     (Cloudflare) caches the HTML and markdown variants separately. `robots.txt` carries a `# LLM index`
+     pointer to `/llms.txt`. Rationale: cheap to generate from content that already exists, and it makes the
+     catalogue directly citable by AI answer engines at its canonical URLs.
+
 ### Explicitly rejected (retired or ignored in 2025–2026)
 
 `WebSite` + `SearchAction` **sitelinks searchbox** (removed Nov 2024), `FAQPage` (retiring May 2026) and
 `HowTo` (dead) rich results, Course-**info** rich fields (deprecated Jul 2025), `rel="next"/"prev"` for
-Google (paginated pages self-canonicalize instead), and `<priority>`/`<changefreq>` in sitemaps
-(ignored). `llms.txt` is not adopted (no confirmed benefit).
+Google (paginated pages self-canonicalize instead), and `<priority>`/`<changefreq>` in sitemaps (ignored).
+(This ADR originally rejected `llms.txt`; that decision was reversed on 2026-07 — see decision 9.)
 
 ## Consequences
 
@@ -71,6 +88,8 @@ Google (paginated pages self-canonicalize instead), and `<priority>`/`<changefre
   content) rich structured data in the **server** HTML; the full catalogue is discoverable via sitemaps;
   private pages stay out of the index; share previews render with a branded default image or item cover
   art. Future pages inherit correctness by passing `title` + `description` to `BaseLayout`.
+- **LLM-discoverable:** AI answer engines can ingest the whole catalogue via `/llms.txt` + `/llms-full.txt`
+  and fetch any page as markdown at its canonical URL; `Vary: Accept` keeps the edge cache correct.
 - **Operational:** `PUBLIC_SITE_URL` **must** be set per environment — every absolute URL (canonical, OG,
   hreflang, sitemap, JSON-LD) derives from Astro's `site`.
 - **Deferred (backlog):** `astro:assets` image-optimization pipeline; dynamically-generated per-page OG

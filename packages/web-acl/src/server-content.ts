@@ -53,6 +53,32 @@ export interface CollectionMeta {
   summary?: string;
 }
 
+/** A list-view card (slug + title + summary), cheap to enumerate for the LLM index. */
+export interface ContentCard {
+  slug: string;
+  title: string;
+  summary?: string;
+}
+
+/** A catalogue item with its prose, for the LLM full-content dump / markdown negotiation. */
+export interface ContentFull {
+  slug: string;
+  title: string;
+  summary?: string;
+  details?: ContentDetails;
+  /** The item's rendered-markdown prose. */
+  body?: string;
+}
+
+/** A collection with its prose + outcomes, for the LLM full-content dump / markdown negotiation. */
+export interface CollectionFull {
+  slug: string;
+  title: string;
+  summary?: string;
+  outcomes?: string[];
+  body?: string;
+}
+
 function trimBase(apiBaseUrl: string): string {
   return apiBaseUrl.replace(/\/$/, '');
 }
@@ -117,6 +143,40 @@ export async function fetchContentMeta(
   };
 }
 
+/** Fetch a catalogue item's full prose (title/summary/details/bodyMdx) for LLM ingestion. */
+export async function fetchContentFull(
+  slug: string,
+  ctx: ServerFetchContext,
+): Promise<ContentFull | null> {
+  const url = `${trimBase(ctx.apiBaseUrl)}${withLocale(`/catalogue/items/${encodeURIComponent(slug)}`, ctx.locale)}`;
+  const detail = await getJson<ContentDetail>(url, ctx.cookie);
+  if (!detail?.slug) return null;
+  return {
+    slug: detail.slug,
+    title: detail.title,
+    summary: detail.summary,
+    details: detail.details,
+    body: detail.bodyMdx,
+  };
+}
+
+/** Fetch a collection's full prose (title/summary/outcomes/bodyMdx) for LLM ingestion. */
+export async function fetchCollectionFull(
+  slug: string,
+  ctx: ServerFetchContext,
+): Promise<CollectionFull | null> {
+  const url = `${trimBase(ctx.apiBaseUrl)}${withLocale(`/collections/${encodeURIComponent(slug)}`, ctx.locale)}`;
+  const detail = await getJson<CollectionDetail>(url, ctx.cookie);
+  if (!detail?.slug) return null;
+  return {
+    slug: detail.slug,
+    title: detail.title,
+    summary: detail.summary,
+    outcomes: detail.outcomes,
+    body: detail.bodyMdx,
+  };
+}
+
 /** Fetch a single collection's head metadata by slug. Returns null when missing/unreachable. */
 export async function fetchCollectionMeta(
   slug: string,
@@ -145,6 +205,40 @@ export async function listContentSlugs(
     if (items.length === 0 || slugs.length >= total) break;
   }
   return slugs;
+}
+
+/** Every published catalogue card (slug + title + summary), paged — for the LLM index. */
+export async function listContentCards(
+  ctx: Pick<ServerFetchContext, 'apiBaseUrl' | 'locale'>,
+): Promise<ContentCard[]> {
+  const base = trimBase(ctx.apiBaseUrl);
+  const pageSize = 200;
+  const cards: ContentCard[] = [];
+  for (let page = 1; page <= 100; page += 1) {
+    const list = await getJson<CatalogueList>(
+      `${base}${withLocale(`/catalogue/items?page=${page}&pageSize=${pageSize}`, ctx.locale)}`,
+    );
+    const items = list?.items ?? [];
+    for (const item of items)
+      cards.push({ slug: item.slug, title: item.title, summary: item.summary });
+    const total = list?.total ?? cards.length;
+    if (items.length === 0 || cards.length >= total) break;
+  }
+  return cards;
+}
+
+/** Every published collection card (slug + title + summary) — for the LLM index. */
+export async function listCollectionCards(
+  ctx: Pick<ServerFetchContext, 'apiBaseUrl' | 'locale'>,
+): Promise<ContentCard[]> {
+  const list = await getJson<CollectionList>(
+    `${trimBase(ctx.apiBaseUrl)}${withLocale('/collections', ctx.locale)}`,
+  );
+  return (list?.items ?? []).map((item) => ({
+    slug: item.slug,
+    title: item.title,
+    summary: item.summary,
+  }));
 }
 
 /** All FAQ entries (ordered by category then sort order) for SSR-rendering the /faq page so the

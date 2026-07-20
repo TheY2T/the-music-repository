@@ -7,6 +7,9 @@ export const GET: APIRoute = (context) => {
   const sitemap = context.site
     ? new URL('/sitemap-index.xml', context.site).href
     : '/sitemap-index.xml';
-  const body = `User-agent: *\nAllow: /\n\nSitemap: ${sitemap}\n`;
+  const llms = context.site ? new URL('/llms.txt', context.site).href : '/llms.txt';
+  // A `# LLM index` comment points AI answer engines at the llmstxt.org file (no standard robots
+  // directive for it). Every route also answers `Accept: text/markdown` with a markdown rendering.
+  const body = `User-agent: *\nAllow: /\n\nSitemap: ${sitemap}\n\n# LLM index (llmstxt.org): ${llms}\n`;
   return new Response(body, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 };

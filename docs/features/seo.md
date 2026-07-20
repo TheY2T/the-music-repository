@@ -64,6 +64,26 @@ SSR endpoint routes (the `@astrojs/sitemap` integration can't enumerate API-driv
 `priority`/`changefreq` — Google ignores them). hreflang is on the pages themselves, so the sitemap's job
 is URL discovery.
 
+### LLM ingestion — llms.txt + markdown negotiation
+
+AI answer engines get two complementary surfaces, both generated from live content (ADR 0039):
+
+- **`llms.txt.ts` / `llms-full.txt.ts`** — SSR routes following [llmstxt.org](https://llmstxt.org/):
+  `# The Music Repository`, a `>` summary blockquote, then `##` sections (Catalogue, Collections, Tools,
+  Pages) of `- [title](absolute-url): description`, with secondary/legal pages under a trailing
+  `## Optional`. `llms-full.txt` repeats the structure with each item's `bodyMdx` (+ details/outcomes)
+  inlined. Pure builders live in `src/lib/llms.ts`; live enumeration (reusing `enabledToolPaths` + the
+  `@TheY2T/tmr-web-acl/server-content` fetchers) in `src/lib/llms-sources.ts`. Base-locale English;
+  `llms-full.txt` fetches prose with bounded concurrency behind a short in-process cache.
+- **`Accept: text/markdown` on every route** — `middleware.ts` calls `prefersMarkdown(accept)`; when true,
+  content detail pages (`/catalogue/<slug>`, `/collections/<slug>`) return clean source `bodyMdx`
+  (`contentPageMarkdown`), and any other route has its rendered `<main>` converted to markdown
+  (`htmlToMarkdown`, `node-html-markdown`), falling back to the HTML on failure. Every negotiated response
+  sets **`Vary: Accept`** so Cloudflare caches the HTML and markdown variants separately. `BaseLayout`
+  wraps the page slot in the single `<main>` landmark that extraction targets.
+
+`robots.txt.ts` carries a `# LLM index` comment pointing at `/llms.txt` alongside the `Sitemap:` line.
+
 ### noindex
 
 Private surfaces pass `noindex` to `BaseLayout`: `admin/**` (incl. `admin/preview/**`), `me/**`,
@@ -88,8 +108,13 @@ only at runtime. Defaults to `http://localhost:4321` for dev.
 
 - **Unit:** `apps/web/src/lib/seo.test.ts` (canonical self/per-locale, OG locale mapping, robots, JSON-LD
   shape + escaping); `packages/web-acl/src/server-content.test.ts` (DTO→meta mapping, null on 404).
-- **E2E:** `apps/web/e2e/seo.spec.ts` (mock mode) — robots.txt, sitemap index + children, home + catalogue
-  detail head metadata + JSON-LD, and `noindex` on private pages. Uses the `mock-song` SSR fixture.
+- **Unit (LLM):** `apps/web/src/lib/llms.test.ts` (index/full/item markdown shape — H1, blockquote,
+  `## Optional`, absolute URLs); `apps/web/src/lib/markdown.test.ts` (`prefersMarkdown` q-value ranking,
+  `htmlToMarkdown` `<main>` extraction).
+- **E2E:** `apps/web/e2e/seo.spec.ts` (mock mode) — robots.txt (incl. the llms.txt pointer), sitemap index +
+  children, home + catalogue detail head metadata + JSON-LD, `noindex` on private pages, `/llms.txt` +
+  `/llms-full.txt` structure, and `Accept: text/markdown` returning markdown + `Vary: Accept` (while
+  `Accept: text/html` still returns HTML). Uses the `mock-song` SSR fixture.
 - **Verify live:** View Source on a catalogue item — confirm `<title>` = item title, a description, a
   self-canonical, OG tags, and Article/Breadcrumb JSON-LD are in the **server** HTML; hit
   `/sitemap-index.xml` and `/robots.txt`; switch to `/zh/...` and confirm the canonical points at the

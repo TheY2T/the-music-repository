@@ -1,8 +1,8 @@
 ---
 /**
- * PageShell — the shared page container that replaces the repeated
- * `<main class="mx-auto max-w-* space-y-6 p-8">` + `<header>` + back-link + `<h1>` markup across
- * ~70 pages. Renders INSIDE `BaseLayout`'s slot (BaseLayout stays in apps/web — it owns
+ * PageShell — the shared page container: a centered `<div class="mx-auto max-w-* space-y-6 p-8">` +
+ * `<header>` + back-link + `<h1>` markup used across ~70 pages. Renders INSIDE `BaseLayout`'s slot,
+ * which is the page's single `<main>` landmark (BaseLayout stays in apps/web — it owns
  * <html>/head/dark-mode/hreflang/i18n).
  *
  * Cross-package `.astro`: the consuming app must add `@TheY2T/tmr-ui` to
@@ -25,7 +25,7 @@ const { title, subtitle, back, maxWidth = 'max-w-4xl', class: className } = Astr
 const hasHeader = Boolean(title || back || Astro.slots.has('actions'));
 ---
 
-<main class:list={['mx-auto space-y-6 p-8', maxWidth, className]}>
+<div class:list={['mx-auto space-y-6 p-8', maxWidth, className]}>
   {
     hasHeader && (
       <header class="flex flex-col gap-1">
@@ -53,4 +53,4 @@ const hasHeader = Boolean(title || back || Astro.slots.has('actions'));
     )
   }
   <slot />
-</main>
+</div>

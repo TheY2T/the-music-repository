@@ -31,7 +31,13 @@ metadata plumbing is in `apps/web/src/lib/seo.ts`. Follow the **`add-seo`** skil
   MusicComposition). A new content type gets a JSON-LD builder + a sitemap child. Serialize with
   `jsonLdScript()` (escapes `<`).
 - **Do NOT build** (retired/ignored 2025–2026): `WebSite`+`SearchAction` sitelinks searchbox, `FAQPage`,
-  `HowTo`, Course-**info** rich fields, `rel=next/prev` for Google, `<priority>`/`<changefreq>`, `llms.txt`.
+  `HowTo`, Course-**info** rich fields, `rel=next/prev` for Google, `<priority>`/`<changefreq>`.
+- **LLM ingestion** (llmstxt.org): `/llms.txt` (index) + `/llms-full.txt` (inlined prose) are SSR routes
+  generated from live content (`src/lib/llms.ts` builders + `llms-sources.ts` fetchers). Every route also
+  answers `Accept: text/markdown` with a markdown rendering — content detail pages serve clean source
+  `bodyMdx`, other routes convert their `<main>` (`src/lib/markdown.ts`); responses set `Vary: Accept` so
+  edge caches (Cloudflare) keep the HTML and markdown variants separate. robots.txt carries a
+  `# LLM index` pointer.
 - **Sitemaps are SSR routes** (`sitemap-*.xml.ts` via `src/lib/sitemap.ts`), not `@astrojs/sitemap`.
   Exclude private/auth-gated routes. **robots.txt** allows all crawlers + the `Sitemap:` line.
 - **`PUBLIC_SITE_URL` must be set per environment at BUILD time** — `astro.config.mjs` reads it into

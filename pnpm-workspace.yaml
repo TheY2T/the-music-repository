@@ -35,6 +35,8 @@ catalog:
 
   # --- Admin CMS (Slice 2b): markdown preview ---
   marked: ^15.0.7
+  # --- LLM ingestion (llms.txt + Accept: text/markdown): HTML → markdown conversion ---
+  node-html-markdown: ^1.3.0
 
   # --- Block editor (ADR 0030): TipTap / ProseMirror. Pinned as a group so the pm bundle stays single. ---
   "@tiptap/core": ^2.11.5

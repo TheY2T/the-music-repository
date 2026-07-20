@@ -10,6 +10,8 @@ import {
 import { FLAG_FIELD_BY_KEY, type Flags } from '@TheY2T/tmr-web-acl';
 import { defineMiddleware } from 'astro:middleware';
 import { ensureCatalogue } from './lib/i18n-catalogue';
+import { contentPageMarkdown } from './lib/llms-sources';
+import { htmlToMarkdown, MARKDOWN_HEADERS, prefersMarkdown } from './lib/markdown';
 
 // SSR runs on the server, so it needs a server-reachable API origin. In a container that's the compose
 // service name (`http://api:3000`), NOT the browser's host-published `PUBLIC_API_BASE_URL`
@@ -139,9 +141,47 @@ export const onRequest = defineMiddleware(async (context, next) => {
   // client. Degrades to the engine's bundled fallback if the API is unreachable.
   context.locals.i18nCatalogue = await ensureCatalogue(context.locals.locale);
 
-  // Strip the locale prefix so the single page-file set renders (the browser URL stays `/zh/…`).
-  if (i18nEnabled && localePrefix(urlLocale)) {
-    return next(`${canonicalPath}${url.search}`);
+  // Render the single page-file set, stripping the locale prefix so `/zh/…` reuses the canonical page
+  // (the browser URL stays `/zh/…`).
+  const render = () =>
+    i18nEnabled && localePrefix(urlLocale) ? next(`${canonicalPath}${url.search}`) : next();
+
+  // Content negotiation: when a client (LLM crawler / Cloudflare) prefers markdown, serve markdown and
+  // mark the response `Vary: Accept` so caches keep the HTML and markdown variants separate.
+  if (context.request.method === 'GET' && prefersMarkdown(context.request.headers.get('accept'))) {
+    // Content detail pages → clean source markdown (bodyMdx), skipping embeds/chrome.
+    const source = await contentPageMarkdown({
+      canonicalPath,
+      locale: context.locals.locale,
+      cookie: context.request.headers.get('cookie') ?? undefined,
+      site: context.site,
+      collectionsEnabled: flags.collections,
+    });
+    if (source) return new Response(source, { headers: MARKDOWN_HEADERS });
+
+    // Any other route → render, then convert its <main> to markdown; fall back to the HTML on failure.
+    const res = await render();
+    const contentType = res.headers.get('content-type') ?? '';
+    if (res.status === 200 && contentType.includes('text/html')) {
+      const html = await res.text();
+      const markdown = htmlToMarkdown(html);
+      if (markdown) return new Response(markdown, { headers: MARKDOWN_HEADERS });
+      const headers = new Headers(res.headers);
+      addVaryAccept(headers);
+      return new Response(html, { status: res.status, headers });
+    }
+    addVaryAccept(res.headers);
+    return res;
   }
-  return next();
+
+  const res = await render();
+  addVaryAccept(res.headers);
+  return res;
 });
+
+/** Add `Accept` to the response's `Vary` header without dropping an existing value. */
+function addVaryAccept(headers: Headers): void {
+  const existing = headers.get('Vary');
+  if (!existing) headers.set('Vary', 'Accept');
+  else if (!/\baccept\b/i.test(existing)) headers.set('Vary', `${existing}, Accept`);
+}
