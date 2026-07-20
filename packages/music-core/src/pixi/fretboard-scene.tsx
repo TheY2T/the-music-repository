@@ -13,6 +13,7 @@ import { Container, Graphics, Text } from 'pixi.js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { FretboardSkinPalette } from '../instrument-skins';
 import { pitchName } from '../music-theory';
+import { noteColor } from '../note-colors';
 import type { PixiSceneBaseProps } from './PixiCanvas';
 import { useThemeColors } from './use-theme-colors';
 
@@ -36,7 +37,14 @@ export interface FretboardSceneProps {
   gloss?: boolean;
   /** Draw faint wood-grain streaks (material/pixi wood skins). */
   woodGrain?: boolean;
+  /** Colour every note by pitch class (A red, B blue, …) so notes are identifiable at a glance. */
+  colorNotes?: boolean;
+  /** Note-on: pointer pressed a fret cell (starts a strum/slide drag). */
   onPlay: (midi: number) => void;
+  /** Strum/slide step: the pointer slid onto a cell while a drag is in progress. */
+  onGlide?: (midi: number) => void;
+  /** Drag ended (pointer up / left the canvas). */
+  onRelease?: () => void;
 }
 
 interface Particle {
@@ -53,6 +61,15 @@ const GUTTER_LEFT = 26;
 const GUTTER_TOP = 16;
 const noDraw = () => {};
 
+/** Pick a readable text colour (near-black or near-white) for a label sitting on `color`. */
+function contrastText(color: number): number {
+  const r = (color >> 16) & 0xff;
+  const g = (color >> 8) & 0xff;
+  const b = color & 0xff;
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.55 ? 0x1a1712 : 0xf7f2e8;
+}
+
 function Board({
   tuning,
   tuningNames,
@@ -67,7 +84,10 @@ function Board({
   skin,
   gloss,
   woodGrain,
+  colorNotes,
   onPlay,
+  onGlide,
+  onRelease,
   reducedMotion,
 }: FretboardSceneProps & { reducedMotion: boolean }) {
   const { app, isInitialised } = useApplication();
@@ -247,15 +267,34 @@ function Board({
         color: colors.card,
         alpha: 0.001,
       });
-      if (inScale || isActive) {
+      if (colorNotes) {
+        // Colour every note by its pitch class; the opaque dot also hides the string behind it.
+        const fill = noteColor(pc);
+        g.circle(x, y, radius).fill({ color: fill });
+        if (isRoot) {
+          g.circle(x, y, radius + 2.5).stroke({ color: contrastText(fill), width: 2 });
+        }
+        if (isActive) {
+          g.circle(x, y, radius + 3).stroke({ color: skin?.dotActive ?? colors.ring, width: 2 });
+        }
+      } else if (inScale || isActive) {
+        // A scale/played note: an opaque dot that also hides the string running behind it.
         const fill = isRoot ? (skin?.root ?? colors.primary) : (skin?.dot ?? colors.accent);
         g.circle(x, y, radius).fill({ color: fill });
         if (isActive) {
           g.circle(x, y, radius + 3).stroke({ color: skin?.dotActive ?? colors.ring, width: 2 });
         }
+      } else if (showLabels) {
+        // Plain note name: mask the string with a board-coloured pill so the label reads on a clean
+        // patch instead of having the string cut through it (esp. on dark/coloured skins).
+        const chipW = Math.min(geo.fretW * 0.8, 20);
+        const chipH = Math.min(geo.stringH * 0.62, 13);
+        g.roundRect(x - chipW / 2, y - chipH / 2, chipW, chipH, chipH / 2).fill({
+          color: skin?.board ?? colors.muted,
+        });
       }
     },
-    [geo, highlighted, root, active, colors, skin],
+    [geo, highlighted, root, active, colors, skin, showLabels, colorNotes],
   );
 
   if (!isInitialised || geo.fretW === 0) {
@@ -299,6 +338,15 @@ function Board({
           const midi = open + fret;
           const pc = midi % 12;
           const inScale = highlighted.has(pc);
+          const isActive = active.has(midi);
+          const isRoot = root !== null && pc === root;
+          // On a dot, contrast the label against the dot's own fill (note colour, or the skin's scale
+          // dot which varies — dark dots on amber, light dots on ebony); otherwise it's a plain name.
+          const labelColor = colorNotes
+            ? contrastText(noteColor(pc))
+            : inScale || isActive
+              ? contrastText(isRoot ? (skin?.root ?? colors.primary) : (skin?.dot ?? colors.accent))
+              : (skin?.label ?? colors.mutedForeground);
           const { x, y } = geo.cellCenter(stringIndex, fret);
           return (
             <pixiContainer key={`${stringIndex}-${fret}`}>
@@ -306,6 +354,9 @@ function Board({
                 eventMode="static"
                 cursor="pointer"
                 onPointerDown={() => onPlay(midi)}
+                onPointerEnter={() => onGlide?.(midi)}
+                onPointerUp={() => onRelease?.()}
+                onPointerUpOutside={() => onRelease?.()}
                 draw={(g: Graphics) => drawCell(g, stringIndex, fret, midi)}
               />
               {(showLabels || inScale) && (
@@ -314,13 +365,7 @@ function Board({
                   anchor={0.5}
                   x={x}
                   y={y}
-                  style={labelStyle(
-                    inScale
-                      ? skin
-                        ? 0x1a1712
-                        : colors.background
-                      : (skin?.label ?? colors.mutedForeground),
-                  )}
+                  style={labelStyle(labelColor)}
                 />
               )}
             </pixiContainer>

@@ -11,6 +11,7 @@ import {
   scalePitchClasses,
   scalesByLevel,
 } from '@TheY2T/tmr-music-core/music-theory';
+import { noteColorHex, noteTextColorHex } from '@TheY2T/tmr-music-core/note-colors';
 import { PixiCanvas } from '@TheY2T/tmr-music-core/pixi/PixiCanvas';
 import { playNote } from '@TheY2T/tmr-music-core/soundfont';
 import { useLevel } from '@TheY2T/tmr-music-core/use-level';
@@ -45,6 +46,7 @@ export default function GuitarFretboard({
   const skin = fretboardSkin(customization ? preferences.fretboardSkin : 'theme');
   const { instrument, setInstrument, ready } = useToolInstrument('guitar');
   const [showLabels, setShowLabels] = useState(true);
+  const [colorNotes, setColorNotes] = useState(false);
   const [root, setRoot] = useState<number | null>(null);
   const [scaleKey, setScaleKey] = useState('minor-pentatonic');
   const [lastNote, setLastNote] = useState<string | null>(null);
@@ -86,6 +88,44 @@ export default function GuitarFretboard({
     },
     [flats],
   );
+
+  // Strum / slide: pressing a fret starts a drag, and sliding the pointer across cells sounds each new
+  // one — dragging vertically across the strings strums them, horizontally slides along a string.
+  const dragging = useRef(false);
+  const lastStrummed = useRef<number | null>(null);
+
+  const strumStart = useCallback(
+    (midi: number) => {
+      dragging.current = true;
+      lastStrummed.current = midi;
+      play(midi);
+    },
+    [play],
+  );
+
+  const strumOver = useCallback(
+    (midi: number) => {
+      if (!dragging.current || lastStrummed.current === midi) return;
+      lastStrummed.current = midi;
+      play(midi);
+    },
+    [play],
+  );
+
+  const strumEnd = useCallback(() => {
+    dragging.current = false;
+    lastStrummed.current = null;
+  }, []);
+
+  // End the strum wherever the pointer is released (outside the canvas, or off-window).
+  useEffect(() => {
+    window.addEventListener('pointerup', strumEnd);
+    window.addEventListener('pointercancel', strumEnd);
+    return () => {
+      window.removeEventListener('pointerup', strumEnd);
+      window.removeEventListener('pointercancel', strumEnd);
+    };
+  }, [strumEnd]);
 
   // Accessible, token-themed fret grid — the real control surface (visible when WebGL is
   // unavailable; operable but visually hidden behind the Pixi canvas otherwise). Left-handed reverses
@@ -132,13 +172,20 @@ export default function GuitarFretboard({
                       aria-label={noteLabel(midi, flats)}
                       aria-pressed={active.has(midi)}
                       onClick={() => play(midi)}
+                      style={
+                        colorNotes
+                          ? { backgroundColor: noteColorHex(pc), color: noteTextColorHex(pc) }
+                          : undefined
+                      }
                       className={cn(
                         'flex h-full w-full items-center justify-center',
-                        isRoot
-                          ? 'bg-primary font-semibold text-primary-foreground'
-                          : inScale
-                            ? 'bg-accent/30 text-foreground'
-                            : 'hover:bg-muted',
+                        colorNotes
+                          ? isRoot && 'font-semibold ring-1 ring-inset ring-foreground'
+                          : isRoot
+                            ? 'bg-primary font-semibold text-primary-foreground'
+                            : inScale
+                              ? 'bg-accent/30 text-foreground'
+                              : 'hover:bg-muted',
                         active.has(midi) && 'ring-2 ring-inset ring-ring',
                       )}
                     >
@@ -185,6 +232,14 @@ export default function GuitarFretboard({
                 onChange={(e) => setShowLabels(e.target.checked)}
               />
               Show note names
+            </label>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={colorNotes}
+                onChange={(e) => setColorNotes(e.target.checked)}
+              />
+              Colour notes
             </label>
             <label className="space-y-1 text-sm">
               <span className="block font-medium" data-help="scales">
@@ -239,7 +294,10 @@ export default function GuitarFretboard({
               skin: skin.palette ?? null,
               gloss: skin.effects?.gloss,
               woodGrain: skin.effects?.woodGrain,
-              onPlay: play,
+              colorNotes,
+              onPlay: strumStart,
+              onGlide: strumOver,
+              onRelease: strumEnd,
             }}
             containerClassName={cn(
               'rounded-lg border border-border bg-muted',
@@ -248,9 +306,24 @@ export default function GuitarFretboard({
             fallback={fallbackGrid}
           />
 
+          {colorNotes && (
+            <div className="flex flex-wrap gap-x-3 gap-y-1">
+              {ROOT_CHOICES.map((pc) => (
+                <span key={pc} className="inline-flex items-center gap-1.5 text-xs">
+                  <span
+                    className="inline-block size-3 rounded-full border border-border"
+                    style={{ backgroundColor: noteColorHex(pc) }}
+                  />
+                  {pitchName(pc)}
+                </span>
+              ))}
+            </div>
+          )}
+
           <p className="text-xs text-muted-foreground">
-            Standard tuning (EADGBE). Click a fret to hear it; pick a root + scale to see its shapes
-            (root notes highlighted).
+            Standard tuning (EADGBE). Click a fret to hear it, or drag across the strings to strum
+            (drag along a string to slide). Pick a root + scale to see its shapes, or turn on Colour
+            notes to see every note by colour (A red, B blue, …).
           </p>
         </div>
       )}
