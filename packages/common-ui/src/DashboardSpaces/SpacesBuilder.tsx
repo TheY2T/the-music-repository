@@ -19,7 +19,7 @@ import SpaceBackgroundControl from './SpaceBackgroundControl';
 import SpaceGrid from './SpaceGrid';
 import { SPACE_TEMPLATES } from './templates';
 import { useSpaces } from './use-spaces';
-import WidgetPalette from './WidgetPalette';
+import WidgetPickerDialog from './WidgetPickerDialog';
 
 /**
  * The practice-space builder island — the signed-in dashboard. Owns the spaces state (via
@@ -164,15 +164,12 @@ export default function SpacesBuilder({
           />
         )}
 
-        {editMode && paletteOpen && (
-          <WidgetPalette
-            locale={locale}
-            onAdd={(type) => {
-              spaces.addWidget(type);
-              setPaletteOpen(false);
-            }}
-          />
-        )}
+        <WidgetPickerDialog
+          locale={locale}
+          open={editMode && paletteOpen}
+          onOpenChange={setPaletteOpen}
+          onAdd={spaces.addWidget}
+        />
 
         {active && (
           <SpaceGrid

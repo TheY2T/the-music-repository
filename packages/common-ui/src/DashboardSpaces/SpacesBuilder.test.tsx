@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -47,7 +47,7 @@ describe('SpacesBuilder island', () => {
     expect(lastCall.spaces[0]?.widgets[0]?.config.text).toContain('there');
   });
 
-  it('adds a widget from the palette', async () => {
+  it('adds a widget from the picker modal', async () => {
     save.mockClear();
     const user = userEvent.setup();
     render(<SpacesBuilder locale="en" />);
@@ -55,16 +55,44 @@ describe('SpacesBuilder island', () => {
 
     await user.click(screen.getByRole('button', { name: 'Edit' }));
     await user.click(screen.getByRole('button', { name: 'Add widget' }));
-    // The palette lists widget types as buttons, including the coursework + gamification widgets.
-    expect(screen.getByRole('button', { name: 'Courses' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Progress' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Achievements' })).toBeInTheDocument();
-    // The "Note" button appends a second note widget.
-    await user.click(screen.getByRole('button', { name: 'Note' }));
+
+    // The picker is a modal dialog listing widgets across categories (incl. the new tool widgets).
+    const dialog = await screen.findByRole('dialog');
+    expect(within(dialog).getByRole('button', { name: /Courses/ })).toBeInTheDocument();
+    expect(within(dialog).getByRole('button', { name: /Piano keyboard/ })).toBeInTheDocument();
+    expect(within(dialog).getByRole('button', { name: /Practice drills/ })).toBeInTheDocument();
+
+    // Picking the note widget appends a second note widget and closes the modal.
+    await user.click(within(dialog).getByRole('button', { name: /^Note/ }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
 
     await waitFor(() => expect(save).toHaveBeenCalled(), { timeout: 2000 });
     const lastCall = save.mock.calls.at(-1)?.[0] as { spaces: { widgets: unknown[] }[] };
     expect(lastCall.spaces[0]?.widgets.length).toBe(2);
+  });
+
+  it('filters the picker by search and by category tab', async () => {
+    const user = userEvent.setup();
+    render(<SpacesBuilder locale="en" />);
+    await waitFor(() => expect(screen.getByText('hi')).toBeInTheDocument());
+
+    await user.click(screen.getByRole('button', { name: 'Edit' }));
+    await user.click(screen.getByRole('button', { name: 'Add widget' }));
+    const dialog = await screen.findByRole('dialog');
+
+    // Search narrows to matching widgets.
+    const searchbox = within(dialog).getByRole('searchbox');
+    await user.type(searchbox, 'keyboard');
+    expect(within(dialog).getByRole('button', { name: /Piano keyboard/ })).toBeInTheDocument();
+    expect(within(dialog).queryByRole('button', { name: /Metronome/ })).not.toBeInTheDocument();
+
+    // Clearing search and switching to the Drills tab shows only drill widgets.
+    await user.clear(searchbox);
+    await user.click(within(dialog).getByRole('tab', { name: 'Drills' }));
+    expect(within(dialog).getByRole('button', { name: /Practice drills/ })).toBeInTheDocument();
+    expect(
+      within(dialog).queryByRole('button', { name: /Piano keyboard/ }),
+    ).not.toBeInTheDocument();
   });
 
   it('creates a new space from a template via the picker', async () => {

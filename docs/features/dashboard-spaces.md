@@ -28,12 +28,20 @@ and improve their playing, with light gamification and Pixi accents. Full plan +
   (PixiJS, gated by `dashboardBackground`; a still frame under `prefers-reduced-motion`).
 - The read-only grid is `SpaceView` (`@TheY2T/tmr-common-ui/DashboardSpaces/SpaceView`), rendered on a
   12-column `react-grid-layout` (ADR 0046). Widget types live in a registry (`widget-registry.tsx`:
-  type → lazy component + default size + icon/title); tool widgets lazy-load their islands. P1 ships
-  `metronome`, `circle-of-fifths`, `ear-trainer`, and a net-new `note` widget.
+  type → `category` + lazy component + default/min size + icon + title/description key); tool widgets
+  lazy-load their islands. The catalogue spans three categories — **Tools** (`metronome`,
+  `circle-of-fifths`, `keyboard`, `chord-dictionary`, `chord-diagrams`, `fretboard`, `scale-boxes`,
+  `intervals`, `tuner`, `sequencer`), **Drills** (`ear-trainer`, `drills`), and **Progress**
+  (`progress`, `collections`, `achievements`, `note`). Tool/drill widgets render their existing tool
+  islands from `@TheY2T/tmr-musickit-ui` with sensible defaults.
 - **Edit mode** (`SpacesBuilder` island) toggles the grid interactive: drag (by the whole card header)
-  and resize widgets (bottom-right corner), remove them (card ✕), add from the **widget palette**, edit
+  and resize widgets (bottom-right corner), remove them (card ✕), add from the **widget picker**, edit
   the Note inline, rename the space, and switch/create/delete spaces. Every change **autosaves**
   (debounced `PUT`, with a Saving…/Saved indicator).
+- **Widget picker** — the "Add widget" button opens a modal (`WidgetPickerDialog`) that lists the whole
+  catalogue as cards (icon + title + one-line description), grouped by category tabs (All / Tools /
+  Drills / Progress) with a search box that filters across titles and descriptions. Selecting a widget
+  appends it to the active space and closes the modal, keeping the grid area clear.
 - Each widget header carries a **horizontal-scroll toggle** (ruler icon, available in view and edit
   modes) that flips the widget body between clipped (`overflow-x-hidden`) and scrollable
   (`overflow-x-auto`); the choice is stored per widget in its `config.hScroll` and persists like any
@@ -42,7 +50,8 @@ and improve their playing, with light gamification and Pixi accents. Full plan +
   width grows the widget to the nearest vertically-overlapping widget on its right (or the grid edge);
   height grows it to the nearest horizontally-overlapping widget below (or the space's current bottom).
   Both are layout changes (`useSpaces.expandWidth`/`expandHeight`) and autosave. State lives in the `useSpaces` hook; `SpaceGrid` is the
-  presentational grid (view + edit); `WidgetPalette` lists the addable types.
+  presentational grid (view + edit); `WidgetPickerDialog` is the modal that groups the catalogue by
+  category with a search filter and appends the picked widget.
 - **New space from a template** — the New-space control is a picker (`SPACE_TEMPLATES` in `templates.ts`:
   Blank, Daily warm-up, Theory reference, Guided courses); selecting one creates a space pre-seeded with
   that template's widgets (`useSpaces.createSpace(template)`).
@@ -98,7 +107,7 @@ Both `@RequireAuth()` + method-level `@RequireFlagsEnabled(FlagKeys.Achievements
 
 ## Help topics
 
-Info View entries for the builder + widget palette land with the P2 editor.
+Info View entries for the builder + widget picker land with the P2 editor.
 
 ## Tests
 
@@ -121,10 +130,14 @@ Info View entries for the builder + widget palette land with the P2 editor.
 - **Component:** `SpaceGrid.test.tsx` (view-mode render, edit-mode note textarea + remove, empty state,
   the horizontal-scroll toggle, the expand-width/height buttons, and the drag-handle wiring: header
   carries `widget-drag-handle`, remove button carries `widget-no-drag`)
-  and `SpacesBuilder.test.tsx` (enter edit → edit a note → debounced autosave; add a widget from the
-  palette incl. the coursework "Courses" option → autosave; create a space from the template picker) — both use a note-only space so the audio/WebGL tool widgets (lazy) stay out of the
-  unit optimizer. Plus `react-grid-layout-compat.test.tsx` (ADR 0046 React-19 gate: an interactive grid
-  mounts without the removed `findDOMNode`).
+  and `SpacesBuilder.test.tsx` (enter edit → edit a note → debounced autosave; open the picker modal and
+  add a widget → autosave; filter the picker by search and by category tab; create a space from the
+  template picker) — both use a note-only space so the audio/WebGL tool widgets (lazy) stay out of the
+  unit optimizer. `WidgetPickerDialog.test.tsx` covers the modal itself (category listing, search filter,
+  empty state, category tab, and the `onAdd`/close contract); `widget-registry.test.ts` asserts every
+  widget has a known category, seeded title/description strings in both locales, and a default footprint
+  no smaller than its minimum. Plus `react-grid-layout-compat.test.tsx` (ADR 0046 React-19 gate: an
+  interactive grid mounts without the removed `findDOMNode`).
 - **E2E (P2):** `apps/web/e2e/dashboard-spaces.spec.ts` (create → arrange → save → reload) — the
   flag-on smoke lands with P2, when per-request SSR flag control is added (the snapshot is fetched
   server-side, so `page.route` can't toggle it and MSW handlers are global per run). Pixi/audio widget
