@@ -13,6 +13,26 @@ async function bootstrap(): Promise<void> {
   app.useLogger(app.get(PinoLogger));
   app.enableShutdownHooks();
 
+  // Only serve traffic that arrives through the front door (custom domain via Cloudflare). Render's
+  // default `*.onrender.com` URL bypasses Cloudflare (and its Access gate), so refuse it — except the
+  // health check, which Render calls directly, and internal service-to-service calls (non-onrender host).
+  app.use(
+    (
+      req: { headers: Record<string, string | undefined>; url?: string },
+      res: { statusCode: number; end: (body?: string) => void },
+      next: () => void,
+    ) => {
+      const host = (req.headers.host ?? '').split(':')[0] ?? '';
+      const path = (req.url ?? '').split('?')[0];
+      if (host.endsWith('.onrender.com') && path !== '/health') {
+        res.statusCode = 404;
+        res.end('Not found');
+        return;
+      }
+      next();
+    },
+  );
+
   const config = app.get(ConfigService);
   // Echo the exact allowed origins (not `*`) so credentialed requests can carry the auth cookie.
   const trustedOrigins = (config.get<string>('TRUSTED_ORIGINS') ?? 'http://localhost:4321')

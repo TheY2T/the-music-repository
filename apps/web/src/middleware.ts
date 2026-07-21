@@ -103,6 +103,12 @@ function buildFlags(
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  // Only serve traffic that arrives through the front door (custom domain via Cloudflare). Render's
+  // default `*.onrender.com` URL bypasses Cloudflare (and its Access gate), so refuse it.
+  if ((context.request.headers.get('host') ?? '').endsWith('.onrender.com')) {
+    return new Response('Not found', { status: 404 });
+  }
+
   // Resolve the user first so flag targeting (roles / percentage rollout) can use it.
   context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
 
