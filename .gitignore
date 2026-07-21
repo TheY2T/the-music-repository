@@ -7,6 +7,11 @@ dist/
 .astro/
 .turbo/
 generated/
+# …except the spec-generated API client + contracts, which are the source consumers build against.
+!packages/api-client/src/generated/
+!packages/api-client/src/generated/**
+!packages/contracts/src/generated/
+!packages/contracts/src/generated/**
 storybook-static/
 .playwright-mcp/
 *.tsbuildinfo

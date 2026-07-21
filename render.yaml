@@ -25,11 +25,9 @@ services:
     dockerContext: .
     healthCheckPath: /health
     autoDeployTrigger: commit
-    # Apply migrations + seed before each deploy goes live (all idempotent). Content seed is best-effort.
-    preDeployCommand: >-
-      pnpm --filter @TheY2T/tmr-api db:migrate &&
-      pnpm --filter @TheY2T/tmr-api db:seed:auth &&
-      { pnpm --filter @TheY2T/tmr-api db:seed || true; }
+    # Apply migrations + seed before each deploy goes live (all idempotent, chained in the db:deploy
+    # script so the shell operators run under a shell, not as arguments to the first command).
+    preDeployCommand: pnpm --filter @TheY2T/tmr-api db:deploy
     envVars:
       - key: PORT
         value: "3000"
