@@ -247,6 +247,8 @@
   "spaces.stat.minutes": "练习分钟",
   "spaces.level": "等级 {level}",
   "spaces.xp": "{xp} 经验",
+  "spaces.levelUp": "升级啦！你已达到等级 {level}。",
+  "spaces.badgeUnlocked": "解锁徽章：{badge}。",
   "spaces.badge.firstSteps": "初次尝试",
   "spaces.badge.tenDone": "完成 10 项",
   "spaces.badge.weekStreak": "连续 7 天",

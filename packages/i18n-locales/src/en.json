@@ -247,6 +247,8 @@
   "spaces.stat.minutes": "Minutes practiced",
   "spaces.level": "Level {level}",
   "spaces.xp": "{xp} XP",
+  "spaces.levelUp": "Level up! You reached level {level}.",
+  "spaces.badgeUnlocked": "Badge unlocked: {badge}.",
   "spaces.badge.firstSteps": "First steps",
   "spaces.badge.tenDone": "10 completed",
   "spaces.badge.weekStreak": "7-day streak",

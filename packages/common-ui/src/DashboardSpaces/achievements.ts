@@ -70,12 +70,17 @@ export function xpFor(i: AchievementInputs): number {
   return i.completedCount * 50 + i.practiceMinutes * 2 + i.streakDays * 20;
 }
 
+/** The level a given XP total sits at (1-based). */
+export function levelForXp(xp: number): number {
+  return Math.floor(xp / XP_PER_LEVEL) + 1;
+}
+
 /** Derive a learner's XP, level, and unlocked badge keys from their activity. Pure. */
 export function computeAchievements(i: AchievementInputs): AchievementState {
   const xp = xpFor(i);
   return {
     xp,
-    level: Math.floor(xp / XP_PER_LEVEL) + 1,
+    level: levelForXp(xp),
     badges: BADGES.filter((b) => b.test(i)).map((b) => b.key),
   };
 }
@@ -83,4 +88,26 @@ export function computeAchievements(i: AchievementInputs): AchievementState {
 /** XP progress within the current level, 0–1 (for a level-progress bar). */
 export function levelProgress(xp: number): number {
   return (xp % XP_PER_LEVEL) / XP_PER_LEVEL;
+}
+
+/** What (if anything) to celebrate given the previously-persisted standing and the new one. */
+export interface Celebration {
+  leveledUp: boolean;
+  newBadges: string[];
+  celebrate: boolean;
+}
+
+/**
+ * Compare the previously-persisted achievements to the freshly-derived ones. Returns whether the learner
+ * levelled up or unlocked new badges. `prev` is `null` on the first-ever sync (nothing persisted yet), so
+ * a learner with pre-existing activity isn't greeted by a false celebration on their first visit.
+ */
+export function detectCelebration(
+  prev: { xp: number; badges: string[] } | null,
+  next: AchievementState,
+): Celebration {
+  if (!prev) return { leveledUp: false, newBadges: [], celebrate: false };
+  const leveledUp = next.level > levelForXp(prev.xp);
+  const newBadges = next.badges.filter((b) => !prev.badges.includes(b));
+  return { leveledUp, newBadges, celebrate: leveledUp || newBadges.length > 0 };
 }

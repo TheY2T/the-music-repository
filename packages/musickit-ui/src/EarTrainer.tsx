@@ -1,6 +1,7 @@
+import { releaseAudioFocus, requestAudioFocus } from '@TheY2T/tmr-music-core/audio';
 import { useToolInstrument } from '@TheY2T/tmr-music-core/instrument-choice';
 import { INTERVAL_NAMES } from '@TheY2T/tmr-music-core/music-theory';
-import { playNote } from '@TheY2T/tmr-music-core/soundfont';
+import { playNote, releaseAll } from '@TheY2T/tmr-music-core/soundfont';
 import { useMidiInput } from '@TheY2T/tmr-music-core/use-midi-input';
 import { Button, Icon } from '@TheY2T/tmr-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -80,9 +81,18 @@ export default function EarTrainer() {
   );
   const midi = useMidiInput(onMidiNote);
 
+  // Single-active audio: taking focus stops any other sound source (e.g. a ticking metronome), and
+  // this widget's notes are silenced if something else then takes over.
+  const audioRelease = useRef(() => releaseAll());
+  useEffect(() => () => releaseAudioFocus(audioRelease.current), []);
+  const play = useCallback((q: Question) => {
+    requestAudioFocus(audioRelease.current);
+    playInterval(q);
+  }, []);
+
   function start() {
     setStarted(true);
-    playInterval(question);
+    play(question);
   }
 
   function next() {
@@ -92,7 +102,7 @@ export default function EarTrainer() {
     bufferRef.current = [];
     setQuestion(q);
     setAnswered(null);
-    playInterval(q);
+    play(q);
   }
 
   const isCorrect = answered !== null && answered === question.semitones;
@@ -111,7 +121,7 @@ export default function EarTrainer() {
             Start — play an interval
           </Button>
         ) : (
-          <Button type="button" variant="outline" onClick={() => playInterval(question)}>
+          <Button type="button" variant="outline" onClick={() => play(question)}>
             <Icon name="refresh" className="size-4" />
             Replay
           </Button>

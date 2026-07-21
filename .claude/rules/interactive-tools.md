@@ -19,6 +19,9 @@ a preconfigured one in a catalogue article).
 - **Audio:** `audio.ts` — dependency-free Web Audio. `playTone`/`playGlide` (one-shots),
   `scheduleTone`/`scheduleDrum`/`scheduleClick` (lookahead scheduler for metronome/sequencer/backing
   tracks), `getAnalyser()` (master-bus FFT for Pixi visualizers), `getDestination()` (master bus).
+  **Single-active audio:** a continuous/looping tool should call `requestAudioFocus(stopSelf)` when it
+  starts and `releaseAudioFocus(stopSelf)` when it stops, so co-mounted sound tools (e.g. dashboard
+  widgets) don't play over each other — taking focus stops the previous holder.
 - **Notes:** `soundfont.ts` — sampled-first note service (per-instrument registry, lazy `import('smplr')`,
   velocity, oscillator fallback so it always sounds offline). Play-a-note tools call `playNote`; always
   `releaseAll` on blur/unmount so nothing hangs.

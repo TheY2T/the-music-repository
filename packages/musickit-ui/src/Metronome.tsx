@@ -1,4 +1,10 @@
-import { getAudioContext, scheduleClick, scheduleTone } from '@TheY2T/tmr-music-core/audio';
+import {
+  getAudioContext,
+  releaseAudioFocus,
+  requestAudioFocus,
+  scheduleClick,
+  scheduleTone,
+} from '@TheY2T/tmr-music-core/audio';
 import { Button, Icon, Select } from '@TheY2T/tmr-ui';
 import { useEffect, useRef, useState } from 'react';
 
@@ -26,6 +32,13 @@ export default function Metronome() {
   const [poly, setPoly] = useState(0);
   const [running, setRunning] = useState(false);
   const [currentBeat, setCurrentBeat] = useState(-1);
+
+  // Single-active audio: hold focus while ticking, and stop if another sound source takes over.
+  const audioRelease = useRef(() => setRunning(false));
+  useEffect(() => {
+    if (running) requestAudioFocus(audioRelease.current);
+    return () => releaseAudioFocus(audioRelease.current);
+  }, [running]);
 
   const bpmRef = useRef(bpm);
   const beatsRef = useRef(beatsPerBar);

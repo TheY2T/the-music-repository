@@ -53,8 +53,15 @@ and improve their playing, with light gamification and Pixi accents. Full plan +
   (`achievements.ts` — `computeAchievements`) from the learner's activity and are persisted per user via a
   new hexagonal **`achievements`** API (`GET`/`PUT /me/achievements`, flag `learning.achievements`, table
   `achievements`), with a standalone **`/achievements`** page linked from the account menu.
-- **Follow-up (optional):** celebratory Pixi XP/level-up + streak-milestone burst effects (the per-space
-  ambient background shipped in P5); a single-active-audio policy across sound widgets.
+- **Celebration effects** — the achievements widget compares the freshly-derived standing to the
+  last-persisted one (`detectCelebration`): on a level-up or newly-unlocked badge it fires a confetti
+  burst (`PixiCanvas` → the shared `confetti-scene`, decorative + reduced-motion-safe) and a screen-reader
+  announcement. The first-ever sync never falsely celebrates (no prior persisted standing).
+- **Single-active audio** — a lightweight coordinator in `@TheY2T/tmr-music-core/audio`
+  (`requestAudioFocus`/`releaseAudioFocus`) so only one sound source plays at a time: a source claims
+  focus when it starts producing sound and the previous holder is asked to stop. The Metronome (holds
+  focus while ticking) and Ear Trainer (claims focus on each play) opt in, so starting one silences the
+  other — on the dashboard and anywhere else the tools are used.
 - Templates (P3) seed a new space from a starter routine. Gamification (P4) surfaces XP/streak/badge
   accents. The builder replaces the legacy `StudioDashboard` at the P5 flip; until then it is only
   reachable when the flag is on.
@@ -108,7 +115,8 @@ Info View entries for the builder + widget palette land with the P2 editor.
   add/remove widget, **`applyLayout` (move + resize)**, **`expandWidth`/`expandHeight`** (fill to
   neighbour or edge), update config, and create/rename/switch/delete spaces (incl. active reassignment) —
   with the debounced `PUT` asserted, plus **`createSpace(template)`** seeding a template's widgets.
-  `achievements.test.ts` covers the XP/level/badge derivation. The `achievements` API use-cases + Drizzle
+  `achievements.test.ts` covers the XP/level/badge derivation + `detectCelebration` (level-up, new badge,
+  first-sync no-celebrate, no-change no-celebrate). The `achievements` API use-cases + Drizzle
   adapter have unit + Testcontainers integration tests (mirroring dashboard-spaces).
 - **Component:** `SpaceGrid.test.tsx` (view-mode render, edit-mode note textarea + remove, empty state,
   the horizontal-scroll toggle, the expand-width/height buttons, and the drag-handle wiring: header

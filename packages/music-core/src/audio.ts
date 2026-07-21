@@ -297,3 +297,24 @@ export function playTone(frequency: number, duration = 0.7): void {
   oscillator.start(now);
   oscillator.stop(now + duration);
 }
+
+// --- Single-active audio focus -------------------------------------------------------------------
+// A lightweight coordinator so only one sound source plays at a time (e.g. two audio widgets on one
+// dashboard space). A source calls `requestAudioFocus(stopSelf)` when it starts producing sound;
+// whoever held focus is asked to stop. Sources release focus when they stop on their own.
+let currentAudioRelease: (() => void) | null = null;
+
+/** Acquire audio focus, stopping the previous holder. `release` must stop *this* source. */
+export function requestAudioFocus(release: () => void): void {
+  if (currentAudioRelease && currentAudioRelease !== release) {
+    currentAudioRelease();
+  }
+  currentAudioRelease = release;
+}
+
+/** Give up audio focus if this source currently holds it. */
+export function releaseAudioFocus(release: () => void): void {
+  if (currentAudioRelease === release) {
+    currentAudioRelease = null;
+  }
+}
