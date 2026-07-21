@@ -31,6 +31,9 @@
       "name": "preferences"
     },
     {
+      "name": "dashboard-spaces"
+    },
+    {
       "name": "progress"
     },
     {
@@ -4339,6 +4342,58 @@
         }
       }
     },
+    "/me/dashboard-spaces": {
+      "get": {
+        "operationId": "getDashboardSpaces",
+        "description": "The current user's dashboard spaces (empty collection when none saved).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardSpacesView"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "dashboard-spaces"
+        ]
+      },
+      "put": {
+        "operationId": "updateDashboardSpaces",
+        "description": "Create or replace the current user's dashboard spaces (idempotent upsert).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardSpacesView"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "dashboard-spaces"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DashboardSpacesInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/me/drills/attempts": {
       "post": {
         "operationId": "recordDrillAttempt",
@@ -6872,6 +6927,153 @@
           }
         },
         "description": "Body for minting a gift code (staff only)."
+      },
+      "DashboardBackgroundPref": {
+        "type": "object",
+        "required": [
+          "style",
+          "intensity"
+        ],
+        "properties": {
+          "style": {
+            "type": "string",
+            "description": "Background scene id (`waves` | `staff` | `roll` | `bokeh` | `none`)."
+          },
+          "intensity": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Motion/opacity intensity, 0–100."
+          }
+        },
+        "description": "A space's animated background choice."
+      },
+      "DashboardSpace": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "widgets"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable client-generated id, unique within the user's collection."
+          },
+          "name": {
+            "type": "string",
+            "description": "User-facing space name."
+          },
+          "icon": {
+            "type": "string",
+            "description": "Optional icon name (design-system Icon registry)."
+          },
+          "background": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DashboardBackgroundPref"
+              }
+            ],
+            "description": "Optional per-space animated background."
+          },
+          "widgets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DashboardWidget"
+            },
+            "description": "The widgets placed on this space."
+          }
+        },
+        "description": "A single named practice space."
+      },
+      "DashboardSpacesInput": {
+        "type": "object",
+        "required": [
+          "spaces"
+        ],
+        "properties": {
+          "spaces": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DashboardSpace"
+            }
+          },
+          "activeSpaceId": {
+            "type": "string",
+            "description": "Id of the space to open by default."
+          }
+        },
+        "description": "The user's dashboard spaces (input body)."
+      },
+      "DashboardSpacesView": {
+        "type": "object",
+        "required": [
+          "spaces",
+          "updatedAt"
+        ],
+        "properties": {
+          "spaces": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DashboardSpace"
+            }
+          },
+          "activeSpaceId": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Last-saved time (ISO-8601); empty when the user has never saved."
+          }
+        },
+        "description": "The user's dashboard spaces as returned to the client."
+      },
+      "DashboardWidget": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "x",
+          "y",
+          "w",
+          "h",
+          "config"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable client-generated id, unique within the space."
+          },
+          "type": {
+            "type": "string",
+            "description": "Widget type key (resolved by the widget registry)."
+          },
+          "x": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Grid column (0-based)."
+          },
+          "y": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Grid row (0-based)."
+          },
+          "w": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Width in grid columns."
+          },
+          "h": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Height in grid rows."
+          },
+          "config": {
+            "type": "object",
+            "unevaluatedProperties": {},
+            "description": "Widget-type-specific configuration."
+          }
+        },
+        "description": "One widget placed on a space's grid. `config` is a widget-type-specific bag (mirrors the embed field vocabulary)."
       },
       "DeckReviews": {
         "type": "object",

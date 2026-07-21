@@ -990,6 +990,78 @@ op getPreferences(): InstrumentPreferencesView;
 @put
 op updatePreferences(@body body: InstrumentPreferencesInput): InstrumentPreferencesView;
 
+// ===================== Dashboard spaces (ADR 0045) =====================
+// A signed-in user's customizable practice spaces: each space is a named, arrangeable grid of
+// widgets (interactive tools, drills, content shelves, routines, notes, progress). The whole
+// collection is stored as one per-user record and saved via an idempotent upsert.
+
+/** A space's animated background choice. */
+model DashboardBackgroundPref {
+  /** Background scene id (`waves` | `staff` | `roll` | `bokeh` | `none`). */
+  style: string;
+  /** Motion/opacity intensity, 0–100. */
+  intensity: int32;
+}
+
+/** One widget placed on a space's grid. `config` is a widget-type-specific bag (mirrors the embed field vocabulary). */
+model DashboardWidget {
+  /** Stable client-generated id, unique within the space. */
+  id: string;
+  /** Widget type key (resolved by the widget registry). */
+  type: string;
+  /** Grid column (0-based). */
+  x: int32;
+  /** Grid row (0-based). */
+  y: int32;
+  /** Width in grid columns. */
+  w: int32;
+  /** Height in grid rows. */
+  h: int32;
+  /** Widget-type-specific configuration. */
+  config: Record<unknown>;
+}
+
+/** A single named practice space. */
+model DashboardSpace {
+  /** Stable client-generated id, unique within the user's collection. */
+  id: string;
+  /** User-facing space name. */
+  name: string;
+  /** Optional icon name (design-system Icon registry). */
+  icon?: string;
+  /** Optional per-space animated background. */
+  background?: DashboardBackgroundPref;
+  /** The widgets placed on this space. */
+  widgets: DashboardWidget[];
+}
+
+/** The user's dashboard spaces (input body). */
+model DashboardSpacesInput {
+  spaces: DashboardSpace[];
+  /** Id of the space to open by default. */
+  activeSpaceId?: string;
+}
+
+/** The user's dashboard spaces as returned to the client. */
+model DashboardSpacesView {
+  spaces: DashboardSpace[];
+  activeSpaceId?: string;
+  /** Last-saved time (ISO-8601); empty when the user has never saved. */
+  updatedAt: string;
+}
+
+/** The current user's dashboard spaces (empty collection when none saved). */
+@route("/me/dashboard-spaces")
+@tag("dashboard-spaces")
+@get
+op getDashboardSpaces(): DashboardSpacesView;
+
+/** Create or replace the current user's dashboard spaces (idempotent upsert). */
+@route("/me/dashboard-spaces")
+@tag("dashboard-spaces")
+@put
+op updateDashboardSpaces(@body body: DashboardSpacesInput): DashboardSpacesView;
+
 // ===================== Progress (Phase 2) =====================
 // Per-user learning progress: completion, streaks, and practice time. Auth-gated in NestJS.
 

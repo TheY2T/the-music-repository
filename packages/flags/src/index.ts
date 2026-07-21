@@ -39,6 +39,8 @@ export const FlagKeys = {
   LearnerDashboard: 'learning.dashboard',
   /** Animated PixiJS dashboard background + its /settings controls (style picker + intensity). */
   DashboardBackground: 'personalization.dashboard-background',
+  /** Customizable practice-space dashboard builder (ADR 0045) — draggable widget grid, saved per user. */
+  DashboardSpaces: 'personalization.dashboard-spaces',
   /** Gates collections (courses / learning paths) browse + admin. */
   Collections: 'learning.collections',
   /** Collections Library — faceted discovery (search/facets/sort/shelves) on the collections index. */
@@ -244,6 +246,7 @@ export const FlagDefaults = {
   [FlagKeys.CatalogueHub]: true,
   [FlagKeys.LearnerDashboard]: true,
   [FlagKeys.DashboardBackground]: true,
+  [FlagKeys.DashboardSpaces]: false,
   [FlagKeys.Collections]: true,
   [FlagKeys.CollectionDiscovery]: true,
   [FlagKeys.CollectionsHub]: true,

@@ -205,6 +205,33 @@ export const userPreferences = pgTable('user_preferences', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+// --- Dashboard spaces: a signed-in user's customizable practice-space layouts (ADR 0045).
+//     One row per user; `spaces` is the ordered collection of arrangeable widget grids. ---
+export const dashboardSpaces = pgTable('dashboard_spaces', {
+  userId: text('user_id')
+    .primaryKey()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  spaces: jsonb('spaces').notNull().$type<
+    {
+      id: string;
+      name: string;
+      icon?: string;
+      background?: { style: string; intensity: number };
+      widgets: {
+        id: string;
+        type: string;
+        x: number;
+        y: number;
+        w: number;
+        h: number;
+        config: Record<string, unknown>;
+      }[];
+    }[]
+  >(),
+  activeSpaceId: text('active_space_id'),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 // --- Collections: rich, chaptered groupings — courses / learning
 //     paths / syllabi / song lists. Editorial (curated) or user-created. ---
 export const collections = pgTable('collections', {

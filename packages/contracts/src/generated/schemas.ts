@@ -4303,6 +4303,88 @@ export const RateCollectionResponse = zod.object({
 
 
 /**
+ * The current user's dashboard spaces (empty collection when none saved).
+ */
+export const GetDashboardSpacesResponse = zod.object({
+  "spaces": zod.array(zod.object({
+  "id": zod.string().describe('Stable client-generated id, unique within the user\'s collection.'),
+  "name": zod.string().describe('User-facing space name.'),
+  "icon": zod.string().optional().describe('Optional icon name (design-system Icon registry).'),
+  "background": zod.object({
+  "style": zod.string().describe('Background scene id (`waves` | `staff` | `roll` | `bokeh` | `none`).'),
+  "intensity": zod.number().describe('Motion\/opacity intensity, 0–100.')
+}).describe('A space\'s animated background choice.').optional().describe('Optional per-space animated background.'),
+  "widgets": zod.array(zod.object({
+  "id": zod.string().describe('Stable client-generated id, unique within the space.'),
+  "type": zod.string().describe('Widget type key (resolved by the widget registry).'),
+  "x": zod.number().describe('Grid column (0-based).'),
+  "y": zod.number().describe('Grid row (0-based).'),
+  "w": zod.number().describe('Width in grid columns.'),
+  "h": zod.number().describe('Height in grid rows.'),
+  "config": zod.looseObject({
+
+}).describe('Widget-type-specific configuration.')
+}).describe('One widget placed on a space\'s grid. `config` is a widget-type-specific bag (mirrors the embed field vocabulary).')).describe('The widgets placed on this space.')
+}).describe('A single named practice space.')),
+  "activeSpaceId": zod.string().optional(),
+  "updatedAt": zod.string().describe('Last-saved time (ISO-8601); empty when the user has never saved.')
+}).describe('The user\'s dashboard spaces as returned to the client.')
+
+
+/**
+ * Create or replace the current user's dashboard spaces (idempotent upsert).
+ */
+export const UpdateDashboardSpacesBody = zod.object({
+  "spaces": zod.array(zod.object({
+  "id": zod.string().describe('Stable client-generated id, unique within the user\'s collection.'),
+  "name": zod.string().describe('User-facing space name.'),
+  "icon": zod.string().optional().describe('Optional icon name (design-system Icon registry).'),
+  "background": zod.object({
+  "style": zod.string().describe('Background scene id (`waves` | `staff` | `roll` | `bokeh` | `none`).'),
+  "intensity": zod.number().describe('Motion\/opacity intensity, 0–100.')
+}).describe('A space\'s animated background choice.').optional().describe('Optional per-space animated background.'),
+  "widgets": zod.array(zod.object({
+  "id": zod.string().describe('Stable client-generated id, unique within the space.'),
+  "type": zod.string().describe('Widget type key (resolved by the widget registry).'),
+  "x": zod.number().describe('Grid column (0-based).'),
+  "y": zod.number().describe('Grid row (0-based).'),
+  "w": zod.number().describe('Width in grid columns.'),
+  "h": zod.number().describe('Height in grid rows.'),
+  "config": zod.looseObject({
+
+}).describe('Widget-type-specific configuration.')
+}).describe('One widget placed on a space\'s grid. `config` is a widget-type-specific bag (mirrors the embed field vocabulary).')).describe('The widgets placed on this space.')
+}).describe('A single named practice space.')),
+  "activeSpaceId": zod.string().optional().describe('Id of the space to open by default.')
+}).describe('The user\'s dashboard spaces (input body).')
+
+export const UpdateDashboardSpacesResponse = zod.object({
+  "spaces": zod.array(zod.object({
+  "id": zod.string().describe('Stable client-generated id, unique within the user\'s collection.'),
+  "name": zod.string().describe('User-facing space name.'),
+  "icon": zod.string().optional().describe('Optional icon name (design-system Icon registry).'),
+  "background": zod.object({
+  "style": zod.string().describe('Background scene id (`waves` | `staff` | `roll` | `bokeh` | `none`).'),
+  "intensity": zod.number().describe('Motion\/opacity intensity, 0–100.')
+}).describe('A space\'s animated background choice.').optional().describe('Optional per-space animated background.'),
+  "widgets": zod.array(zod.object({
+  "id": zod.string().describe('Stable client-generated id, unique within the space.'),
+  "type": zod.string().describe('Widget type key (resolved by the widget registry).'),
+  "x": zod.number().describe('Grid column (0-based).'),
+  "y": zod.number().describe('Grid row (0-based).'),
+  "w": zod.number().describe('Width in grid columns.'),
+  "h": zod.number().describe('Height in grid rows.'),
+  "config": zod.looseObject({
+
+}).describe('Widget-type-specific configuration.')
+}).describe('One widget placed on a space\'s grid. `config` is a widget-type-specific bag (mirrors the embed field vocabulary).')).describe('The widgets placed on this space.')
+}).describe('A single named practice space.')),
+  "activeSpaceId": zod.string().optional(),
+  "updatedAt": zod.string().describe('Last-saved time (ISO-8601); empty when the user has never saved.')
+}).describe('The user\'s dashboard spaces as returned to the client.')
+
+
+/**
  * Record an objective attempt; grades via SM-2 and returns the updated state.
  */
 export const RecordDrillAttemptBody = zod.object({

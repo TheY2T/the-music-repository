@@ -20,6 +20,7 @@ export const FLAG_FIELD_BY_KEY = {
   [FlagKeys.CatalogueHub]: 'catalogueHub',
   [FlagKeys.LearnerDashboard]: 'learnerDashboard',
   [FlagKeys.DashboardBackground]: 'dashboardBackground',
+  [FlagKeys.DashboardSpaces]: 'dashboardSpaces',
   [FlagKeys.Collections]: 'collections',
   [FlagKeys.CollectionDiscovery]: 'collectionDiscovery',
   [FlagKeys.CollectionsHub]: 'collectionsHub',

@@ -9,6 +9,7 @@ import { CatalogueModule } from './catalogue/catalogue.module';
 import { ClassroomsModule } from './classrooms/classrooms.module';
 import { CollectionsModule } from './collections/collections.module';
 import { validateEnv } from './config/env';
+import { DashboardSpacesModule } from './dashboard-spaces/dashboard-spaces.module';
 import { DemoModule } from './demo/demo.module';
 import { EntitlementsModule } from './entitlements/entitlements.module';
 import { FaqModule } from './faq/faq.module';
@@ -54,6 +55,7 @@ import { TranslationsModule } from './translations/translations.module';
     ProgressModule,
     ProgressionsModule,
     PreferencesModule,
+    DashboardSpacesModule,
     HelpModule,
     FaqModule,
     ReviewsModule,
