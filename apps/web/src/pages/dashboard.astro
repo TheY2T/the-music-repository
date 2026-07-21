@@ -1,12 +1,12 @@
 ---
-import DashboardBackground from '@TheY2T/tmr-common-ui/DashboardBackground';
 import DashboardSpaces from '@/components/islands/DashboardSpaces';
-import StudioDashboard from '@/components/islands/StudioDashboard';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { t } from '@TheY2T/tmr-i18n';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
-// Personalized surface: requires the flag on and an authenticated user.
+// The customizable practice-space builder IS the signed-in dashboard: requires the dashboard flag and
+// an authenticated user. Each space carries its own animated background (folded in from the old
+// standalone settings page), gated by `dashboardBackground`.
 if (!Astro.locals.flags.learnerDashboard) {
   return Astro.redirect('/');
 }
@@ -15,42 +15,20 @@ if (!Astro.locals.user) {
 }
 
 const locale = Astro.locals.locale;
-const showFavorites = Astro.locals.flags.favorites;
-const showBackground = Astro.locals.flags.dashboardBackground;
-const showMonetization = Astro.locals.flags.monetizationMessaging;
-// The customizable practice-space builder replaces the fixed shelves when enabled.
-const showSpaces = Astro.locals.flags.dashboardSpaces;
+const backgroundEnabled = Astro.locals.flags.dashboardBackground;
 ---
 
 <BaseLayout noindex title={`${t(locale, 'dashboard.title')} — ${t(locale, 'site.name')}`}>
-  <div class="relative">
-    {
-      showBackground && (
-        <DashboardBackground
-          client:only="react"
-          className="pointer-events-none absolute inset-0 z-0"
-        />
-      )
-    }
-    <div class="relative z-10">
-      <PageShell
-        title={t(locale, 'dashboard.title')}
-        subtitle={t(locale, 'dashboard.subtitle')}
-        maxWidth="max-w-6xl"
-      >
-        {
-          showSpaces ? (
-            <DashboardSpaces client:load authenticated locale={locale} />
-          ) : (
-            <StudioDashboard
-              client:load
-              locale={locale}
-              showFavorites={showFavorites}
-              showMonetization={showMonetization}
-            />
-          )
-        }
-      </PageShell>
-    </div>
-  </div>
+  <PageShell
+    title={t(locale, 'dashboard.title')}
+    subtitle={t(locale, 'dashboard.subtitle')}
+    maxWidth="max-w-6xl"
+  >
+    <DashboardSpaces
+      client:load
+      authenticated
+      locale={locale}
+      backgroundEnabled={backgroundEnabled}
+    />
+  </PageShell>
 </BaseLayout>

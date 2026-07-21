@@ -37,10 +37,8 @@ export const FlagKeys = {
   CatalogueHub: 'catalogue.hub',
   /** Signed-in learner dashboard (ADR 0031) — continue / recommended / saved (at /dashboard). */
   LearnerDashboard: 'learning.dashboard',
-  /** Animated PixiJS dashboard background + its /settings controls (style picker + intensity). */
+  /** Per-space animated PixiJS background in the dashboard builder (style picker + intensity). */
   DashboardBackground: 'personalization.dashboard-background',
-  /** Customizable practice-space dashboard builder (ADR 0045) — draggable widget grid, saved per user. */
-  DashboardSpaces: 'personalization.dashboard-spaces',
   /** Gamification (ADR 0045) — persisted XP + badges, shown in the dashboard achievements widget. */
   Achievements: 'learning.achievements',
   /** Gates collections (courses / learning paths) browse + admin. */
@@ -248,7 +246,6 @@ export const FlagDefaults = {
   [FlagKeys.CatalogueHub]: true,
   [FlagKeys.LearnerDashboard]: true,
   [FlagKeys.DashboardBackground]: true,
-  [FlagKeys.DashboardSpaces]: false,
   [FlagKeys.Achievements]: false,
   [FlagKeys.Collections]: true,
   [FlagKeys.CollectionDiscovery]: true,

@@ -6,19 +6,16 @@ import ThemeSwitcher from './ThemeSwitcher';
 
 /**
  * Settings menu (lives in SiteHeader) — a single gear-triggered popover gathering the personal display
- * preferences: language and appearance (aesthetic + light/dark mode), plus a link to the dashboard
- * background settings. One island root, since React context and the local popover state can't cross
- * island boundaries. i18n-by-prop: an app island, so it may call `t(locale, key)` itself.
+ * preferences: language and appearance (aesthetic + light/dark mode). One island root, since React
+ * context and the local popover state can't cross island boundaries. i18n-by-prop: an app island, so it
+ * may call `t(locale, key)` itself.
  */
 export default function SettingsMenu({
   locale,
   i18nEnabled,
-  backgroundHref,
 }: {
   locale: Locale;
   i18nEnabled: boolean;
-  /** Link to the dashboard-background settings page; omit to hide the entry. */
-  backgroundHref?: string;
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -75,18 +72,6 @@ export default function SettingsMenu({
             </div>
           )}
           <ThemeSwitcher locale={locale} />
-          {backgroundHref && (
-            <div className="mt-3 border-t border-border pt-3">
-              <a
-                href={backgroundHref}
-                className="flex w-full items-center gap-3 rounded-md px-2 py-2 text-left text-sm font-medium transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <Icon name="sliders" className="size-4 shrink-0 text-muted-foreground" />
-                <span className="min-w-0 flex-1 truncate">{t(locale, 'nav.background')}</span>
-                <Icon name="chevron-right" className="size-4 shrink-0 text-muted-foreground" />
-              </a>
-            </div>
-          )}
         </div>
       )}
     </div>

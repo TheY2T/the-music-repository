@@ -36,8 +36,6 @@ export interface SiteHeaderProps {
   i18nEnabled: boolean;
   /** Show the Info View toggle (contextual-help panel is enabled). */
   infoView?: boolean;
-  /** Link to the dashboard-background settings page, shown in the settings menu when set. */
-  backgroundHref?: string;
   homeHref: string;
 }
 
@@ -59,7 +57,6 @@ export default function SiteHeader({
   user,
   i18nEnabled,
   infoView,
-  backgroundHref,
   homeHref,
 }: SiteHeaderProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -116,7 +113,7 @@ export default function SiteHeader({
             </button>
           )}
 
-          <SettingsMenu locale={locale} i18nEnabled={i18nEnabled} backgroundHref={backgroundHref} />
+          <SettingsMenu locale={locale} i18nEnabled={i18nEnabled} />
 
           {/* Account menu (desktop) */}
           <div className="hidden md:block">

@@ -1,4 +1,5 @@
 import { type Locale, t } from '@TheY2T/tmr-i18n';
+import { getBackgroundPref } from '@TheY2T/tmr-web-acl/dashboard-background';
 import { getDashboardSpaces, saveDashboardSpaces } from '@TheY2T/tmr-web-acl/dashboard-spaces-api';
 import type { DashboardSpace, DashboardWidget } from '@TheY2T/tmr-web-acl/dto';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -64,7 +65,14 @@ export function useSpaces(locale: Locale) {
     getDashboardSpaces().then((view) => {
       if (cancelled) return;
       const loaded = view?.spaces ?? [];
-      const seeded = loaded.length > 0 ? loaded : [defaultSpace(t(locale, 'spaces.defaultName'))];
+      let seeded = loaded;
+      if (loaded.length === 0) {
+        // First run: seed a starter space and migrate the old (localStorage) background pref into it.
+        const starter = defaultSpace(t(locale, 'spaces.defaultName'));
+        const pref = getBackgroundPref();
+        starter.background = { style: pref.style, intensity: pref.intensity };
+        seeded = [starter];
+      }
       spacesRef.current = seeded;
       setSpaces(seeded);
       setActiveBoth(loaded.length > 0 ? (view?.activeSpaceId ?? loaded[0]?.id) : seeded[0]?.id);
@@ -191,6 +199,12 @@ export function useSpaces(locale: Locale) {
     [mutateActive],
   );
 
+  const setSpaceBackground = useCallback(
+    (background: { style: string; intensity: number }) =>
+      commit((prev) => prev.map((s) => (s.id === activeIdRef.current ? { ...s, background } : s))),
+    [commit],
+  );
+
   const createSpace = useCallback(
     (template?: SpaceTemplate) => {
       const widgets: DashboardWidget[] = (template?.widgets ?? []).map((w) => ({
@@ -243,6 +257,7 @@ export function useSpaces(locale: Locale) {
     applyLayout,
     expandWidth,
     expandHeight,
+    setSpaceBackground,
     createSpace,
     renameSpace,
     deleteSpace,

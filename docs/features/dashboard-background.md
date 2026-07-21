@@ -1,11 +1,15 @@
 # Animated dashboard background
 
-A personalizable, decorative PixiJS backdrop rendered behind the signed-in learner dashboard
-(`/dashboard`), configured from a dedicated **Settings** page (`/settings`); the header **Settings**
-gear (`SettingsMenu`) links to it for signed-in learners. Purely visual — it never
-carries information or interaction — and it degrades gracefully (no WebGL → nothing renders; reduced
-motion → a static frame). Built on the existing PixiJS layer (ADR 0022,
-`docs/features/pixi-visualization.md`).
+A personalizable, decorative PixiJS backdrop rendered behind the signed-in dashboard. Purely visual —
+it never carries information or interaction — and it degrades gracefully (no WebGL → nothing renders;
+reduced motion → a static frame). Built on the PixiJS layer (ADR 0022, `docs/features/pixi-visualization.md`).
+
+> **Now a per-space setting (ADR 0045).** The background is chosen **per practice space** in the
+> dashboard builder's edit mode (`SpaceBackgroundControl`), stored on the space's `background`
+> (`{style, intensity}`), and rendered behind that space's grid. The standalone `/settings` page and the
+> `SettingsMenu` "Background options" link are retired; a learner's old localStorage pref is migrated
+> onto their starter space on first load. See `docs/features/dashboard-spaces.md`. The scene catalogue +
+> `DashboardBackground` renderer below are unchanged; only the configuration surface moved.
 
 ## What the user gets
 

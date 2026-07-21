@@ -21,25 +21,6 @@ describe('SettingsMenu island', () => {
     expect(screen.getByText('Dark')).toBeInTheDocument();
   });
 
-  it('links to the dashboard-background page when a href is given', async () => {
-    const user = userEvent.setup();
-    render(<SettingsMenu locale="en" i18nEnabled backgroundHref="/settings" />);
-
-    await user.click(screen.getByRole('button', { name: 'Settings' }));
-
-    const link = screen.getByRole('link', { name: /Background options/ });
-    expect(link).toHaveAttribute('href', '/settings');
-  });
-
-  it('omits the dashboard-background link when no href is given', async () => {
-    const user = userEvent.setup();
-    render(<SettingsMenu locale="en" i18nEnabled />);
-
-    await user.click(screen.getByRole('button', { name: 'Settings' }));
-
-    expect(screen.queryByRole('link', { name: /Background options/ })).not.toBeInTheDocument();
-  });
-
   it('hides the language control when i18n is disabled', async () => {
     const user = userEvent.setup();
     render(<SettingsMenu locale="en" i18nEnabled={false} />);

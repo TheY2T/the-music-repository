@@ -119,6 +119,19 @@ describe('useSpaces', () => {
     expect(result.current.activeId).toBe('s1');
   });
 
+  it('seeds the starter space with a background (migrated from the local pref)', async () => {
+    const { result } = await mounted(null);
+    expect(result.current.active?.background).toBeDefined();
+    expect(typeof result.current.active?.background?.style).toBe('string');
+  });
+
+  it('sets the active space background', async () => {
+    const { result } = await mounted(oneSpace());
+    act(() => result.current.setSpaceBackground({ style: 'roll', intensity: 80 }));
+    expect(result.current.active?.background).toEqual({ style: 'roll', intensity: 80 });
+    await waitFor(() => expect(save).toHaveBeenCalled(), { timeout: 2000 });
+  });
+
   it('creates a space from a template, seeding its widgets with fresh ids', async () => {
     const { result } = await mounted(oneSpace());
     const warmup = SPACE_TEMPLATES.find((tpl) => tpl.key === 'warmup');

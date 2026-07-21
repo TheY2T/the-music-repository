@@ -1,6 +1,4 @@
-import { FlagKeys } from '@TheY2T/tmr-flags';
 import { Body, Controller, Get, Put } from '@nestjs/common';
-import { RequireFlagsEnabled } from '@openfeature/nestjs-sdk';
 import { CurrentUser } from '../auth/application/current-user';
 import { RequireAuth } from '../auth/require-permissions.decorator';
 import { GetDashboardSpacesUseCase } from './application/use-cases/get-dashboard-spaces.use-case';
@@ -9,10 +7,9 @@ import type { DashboardSpace, StoredDashboardSpaces } from './domain/dashboard-s
 import { UpdateDashboardSpacesDto } from './dto/dashboard-spaces.dto';
 
 /**
- * Personalization — the acting user's customizable practice-space dashboard. Every route requires
- * authentication (the user id comes from the `CurrentUser` port) and is gated on the
- * `personalization.dashboard-spaces` flag via **method-level** `@RequireFlagsEnabled` (class-level drops
- * route mapping — see api CLAUDE.md).
+ * Personalization — the acting user's customizable practice-space dashboard (the signed-in dashboard).
+ * Every route requires authentication (the user id comes from the `CurrentUser` port); the data is
+ * per-user and private, so no additional flag gate.
  */
 @Controller()
 export class DashboardSpacesController {
@@ -23,14 +20,12 @@ export class DashboardSpacesController {
   ) {}
 
   @Get('me/dashboard-spaces')
-  @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.DashboardSpaces }] })
   @RequireAuth()
   async get() {
     return toView(await this.getSpaces.execute(this.currentUser.require().id));
   }
 
   @Put('me/dashboard-spaces')
-  @RequireFlagsEnabled({ flags: [{ flagKey: FlagKeys.DashboardSpaces }] })
   @RequireAuth()
   async update(@Body() body: UpdateDashboardSpacesDto) {
     const stored = await this.updateSpaces.execute(this.currentUser.require().id, {

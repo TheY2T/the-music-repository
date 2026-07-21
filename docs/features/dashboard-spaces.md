@@ -1,7 +1,9 @@
 # Feature: Dashboard spaces (customizable practice-space builder)
 
-- **Phase:** P0–P5 (incremental) · **Status:** in-progress (P0 foundations + P1 read-only render + P2 editor + P3 templates & coursework + P4 gamification landed)
+- **Phase:** P0–P5 · **Status:** shipped (P5 flip complete) — the builder **is** the signed-in dashboard.
 - **Gamification flag:** `learning.achievements` (field `achievements`; off by default)
+- **Background flag:** `personalization.dashboard-background` (field `dashboardBackground`) gates the
+  per-space animated background.
 - **Flag key:** `personalization.dashboard-spaces` (field `dashboardSpaces`; off by default)
 
 ## Purpose
@@ -15,9 +17,15 @@ and improve their playing, with light gamification and Pixi accents. Full plan +
 
 ## UX behaviour
 
+- `/dashboard` renders the builder directly (no separate flag; gated by `learning.dashboard` + auth).
+  The old fixed `StudioDashboard` and the standalone `/settings` background page are retired; the
+  spaces API is auth-only (no feature-flag gate).
 - A learner opens their active space: a responsive grid of widget cards. When they have saved nothing
-  yet, a starter space (tempo + ear training + circle-of-fifths + a note) is shown. Widgets render live;
-  the grid itself is read-only until the editor lands (P2).
+  yet, a starter space (tempo + ear training + circle-of-fifths + a note) is shown, and the old
+  localStorage background pref is migrated onto it. Widgets render live.
+- **Per-space animated background** — each space carries its own `background` (`{style, intensity}`),
+  picked in edit mode (`SpaceBackgroundControl`) and rendered behind the grid via `DashboardBackground`
+  (PixiJS, gated by `dashboardBackground`; a still frame under `prefers-reduced-motion`).
 - The read-only grid is `SpaceView` (`@TheY2T/tmr-common-ui/DashboardSpaces/SpaceView`), rendered on a
   12-column `react-grid-layout` (ADR 0046). Widget types live in a registry (`widget-registry.tsx`:
   type → lazy component + default size + icon/title); tool widgets lazy-load their islands. P1 ships
@@ -44,8 +52,9 @@ and improve their playing, with light gamification and Pixi accents. Full plan +
   and an **`achievements`** widget (XP, level, and badges). XP/level/badges are a pure derivation
   (`achievements.ts` — `computeAchievements`) from the learner's activity and are persisted per user via a
   new hexagonal **`achievements`** API (`GET`/`PUT /me/achievements`, flag `learning.achievements`, table
-  `achievements`), with a standalone **`/achievements`** page linked from the account menu. Still to come:
-  Pixi XP/level-up + streak-milestone effects and the per-space animated background.
+  `achievements`), with a standalone **`/achievements`** page linked from the account menu.
+- **Follow-up (optional):** celebratory Pixi XP/level-up + streak-milestone burst effects (the per-space
+  ambient background shipped in P5); a single-active-audio policy across sound widgets.
 - Templates (P3) seed a new space from a starter routine. Gamification (P4) surfaces XP/streak/badge
   accents. The builder replaces the legacy `StudioDashboard` at the P5 flip; until then it is only
   reachable when the flag is on.

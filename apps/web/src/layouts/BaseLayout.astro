@@ -43,10 +43,6 @@ const { title, description, image, type, noindex, jsonLd, publishedTime, modifie
 const locale = Astro.locals.locale;
 const i18nEnabled = Astro.locals.flags.i18nEnabled;
 const infoViewEnabled = Astro.locals.flags.infoView;
-const backgroundHref =
-  Astro.locals.flags.dashboardBackground && Astro.locals.user
-    ? localizedPath(locale, '/settings')
-    : undefined;
 const rawPath = new URL(Astro.request.url).pathname;
 const { path } = splitLocalePath(rawPath);
 const site = Astro.site;
@@ -154,7 +150,6 @@ const i18nCatalogueJson = JSON.stringify(Astro.locals.i18nCatalogue).replace(/</
       user={Astro.locals.user}
       i18nEnabled={i18nEnabled}
       infoView={infoViewEnabled}
-      backgroundHref={backgroundHref}
       homeHref={localizedPath(locale, '/')}
     />
     <main class="flex-1">
