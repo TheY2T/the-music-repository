@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MailSender } from '../../mail/mail.port';
+import { CaptchaFailedError } from '../domain/errors/captcha-failed.error';
+import { CaptchaVerifier } from './ports/captcha-verifier.port';
 
 export interface ContactMessage {
   name: string;
@@ -9,6 +11,8 @@ export interface ContactMessage {
   message: string;
   /** Honeypot field — real users leave it empty. */
   company?: string;
+  /** Cloudflare Turnstile token, verified when Turnstile is configured. */
+  turnstileToken?: string;
 }
 
 /**
@@ -21,11 +25,15 @@ export class SubmitContactUseCase {
   constructor(
     private readonly mail: MailSender,
     private readonly config: ConfigService,
+    private readonly captcha: CaptchaVerifier,
   ) {}
 
-  async execute(input: ContactMessage): Promise<{ ok: true }> {
+  async execute(input: ContactMessage, remoteIp?: string): Promise<{ ok: true }> {
     if (input.company?.trim()) {
       return { ok: true };
+    }
+    if (!(await this.captcha.verify(input.turnstileToken, remoteIp))) {
+      throw new CaptchaFailedError();
     }
     const recipient = this.config.get<string>('CONTACT_RECIPIENT') ?? 'michael.hewett.87@gmail.com';
     await this.mail.send({

@@ -44,6 +44,10 @@ export const envSchema = z.object({
 
   // Where contact-form submissions are delivered.
   CONTACT_RECIPIENT: z.string().default('michael.hewett.87@gmail.com'),
+
+  // Cloudflare Turnstile secret for verifying the contact form's anti-bot token. Unset ⇒ verification
+  // is skipped (local/dev). Set it (with the matching PUBLIC_TURNSTILE_SITE_KEY on the web) to enforce.
+  TURNSTILE_SECRET_KEY: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

@@ -37,7 +37,9 @@ Three resources, deployed from GitHub `TheY2T/the-music-repository` into the **`
   `MAIL_FROM="The Music Repository <contact@themusicrepository.com>"` — set in the `dev` group. No new
   mail code (Better Auth account emails also flow through it).
 - Add the SPF/DKIM/DMARC + return-path records Resend generates into Cloudflare DNS and verify the domain.
-- Contact form: see `contact.md`.
+- Contact form: see `contact.md`. Protect it with **Cloudflare Turnstile** — create a widget in the
+  Cloudflare dashboard, then set `TURNSTILE_SECRET_KEY` (API) + `PUBLIC_TURNSTILE_SITE_KEY` (web build)
+  in the `dev` env group. Unset ⇒ the challenge is skipped.
 
 ## Cross-subdomain auth
 

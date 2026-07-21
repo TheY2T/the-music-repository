@@ -1334,6 +1334,7 @@
   "contact.success": "Thanks — your message has been sent.",
   "contact.error": "Something went wrong. Please try again.",
   "contact.required": "Please fill in your name, email, subject, and message.",
+  "contact.verifyPending": "Please wait for the verification to finish, then send.",
   "feedback.title": "Share your feedback",
   "feedback.subtitle": "Suggestions, bug reports, or a kind word.",
   "feedback.typeLabel": "What kind of feedback?",

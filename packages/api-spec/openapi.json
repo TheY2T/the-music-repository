@@ -6376,6 +6376,10 @@
           "company": {
             "type": "string",
             "description": "Anti-spam honeypot — real users leave this empty. A filled value is accepted but dropped."
+          },
+          "turnstileToken": {
+            "type": "string",
+            "description": "Cloudflare Turnstile token from the widget, verified server-side when Turnstile is configured."
           }
         },
         "description": "A public contact-form submission."

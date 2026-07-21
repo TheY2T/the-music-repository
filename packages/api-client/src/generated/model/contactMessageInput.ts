@@ -22,4 +22,6 @@ export interface ContactMessageInput {
   message: string;
   /** Anti-spam honeypot — real users leave this empty. A filled value is accepted but dropped. */
   company?: string;
+  /** Cloudflare Turnstile token from the widget, verified server-side when Turnstile is configured. */
+  turnstileToken?: string;
 }

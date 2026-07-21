@@ -1,30 +1,106 @@
 import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { Button, Field, Icon, Input, Textarea } from '@TheY2T/tmr-ui';
 import { submitContact } from '@TheY2T/tmr-web-acl/contact-api';
-import { type FormEvent, useState } from 'react';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
+
+interface TurnstileApi {
+  render: (
+    el: HTMLElement,
+    opts: {
+      sitekey: string;
+      callback?: (token: string) => void;
+      'error-callback'?: () => void;
+      'expired-callback'?: () => void;
+    },
+  ) => string;
+  reset: (widgetId?: string) => void;
+  remove: (widgetId: string) => void;
+}
+
+const getTurnstile = (): TurnstileApi | undefined =>
+  (window as unknown as { turnstile?: TurnstileApi }).turnstile;
 
 export interface ContactFormProps {
   locale: Locale;
+  /** Cloudflare Turnstile site key. When set, the form renders the challenge and requires its token;
+   * when absent (local/dev), the form works without it. */
+  turnstileSiteKey?: string;
   /** Called after a successful submit. */
   onSuccess?: () => void;
 }
 
 /** Public contact form: name, email, subject, message → emails the site operators. */
-export default function ContactForm({ locale, onSuccess }: ContactFormProps) {
+export default function ContactForm({ locale, turnstileSiteKey, onSuccess }: ContactFormProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   // Honeypot — hidden from real users; bots that fill it are dropped server-side.
   const [company, setCompany] = useState('');
+  const [token, setToken] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const widgetRef = useRef<HTMLDivElement>(null);
+
+  // Load + render the Turnstile challenge when a site key is configured.
+  useEffect(() => {
+    if (!turnstileSiteKey || !widgetRef.current) {
+      return;
+    }
+    let widgetId: string | undefined;
+    let cancelled = false;
+    let poll: ReturnType<typeof setInterval> | undefined;
+
+    const render = (): boolean => {
+      const api = getTurnstile();
+      if (cancelled || !api || !widgetRef.current) {
+        return false;
+      }
+      widgetId = api.render(widgetRef.current, {
+        sitekey: turnstileSiteKey,
+        callback: (tok) => setToken(tok),
+        'error-callback': () => setToken(''),
+        'expired-callback': () => setToken(''),
+      });
+      return true;
+    };
+
+    if (!render()) {
+      if (!document.querySelector('script[data-turnstile]')) {
+        const script = document.createElement('script');
+        script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+        script.async = true;
+        script.defer = true;
+        script.setAttribute('data-turnstile', '');
+        document.head.appendChild(script);
+      }
+      poll = setInterval(() => {
+        if (render() && poll) {
+          clearInterval(poll);
+        }
+      }, 200);
+    }
+
+    return () => {
+      cancelled = true;
+      if (poll) {
+        clearInterval(poll);
+      }
+      if (widgetId) {
+        getTurnstile()?.remove(widgetId);
+      }
+    };
+  }, [turnstileSiteKey]);
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
     if (!name.trim() || !email.trim() || !subject.trim() || !message.trim()) {
       setError(t(locale, 'contact.required'));
+      return;
+    }
+    if (turnstileSiteKey && !token) {
+      setError(t(locale, 'contact.verifyPending'));
       return;
     }
     setBusy(true);
@@ -36,11 +112,15 @@ export default function ContactForm({ locale, onSuccess }: ContactFormProps) {
         subject: subject.trim(),
         message: message.trim(),
         company: company.trim() || undefined,
+        turnstileToken: token || undefined,
       });
       setDone(true);
       onSuccess?.();
     } catch {
       setError(t(locale, 'contact.error'));
+      // Let the visitor retry with a fresh challenge token.
+      setToken('');
+      getTurnstile()?.reset();
     } finally {
       setBusy(false);
     }
@@ -102,6 +182,7 @@ export default function ContactForm({ locale, onSuccess }: ContactFormProps) {
           />
         </label>
       </div>
+      {turnstileSiteKey ? <div ref={widgetRef} /> : null}
       {error ? (
         <p className="text-sm text-destructive" role="alert">
           {error}

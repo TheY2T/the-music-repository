@@ -21,6 +21,8 @@ declare namespace App {
 interface ImportMetaEnv {
   readonly PUBLIC_API_BASE_URL?: string;
   readonly PUBLIC_OFREP_BASE_URL?: string;
+  /** Cloudflare Turnstile site key for the contact form (baked at build; unset ⇒ no challenge). */
+  readonly PUBLIC_TURNSTILE_SITE_KEY?: string;
   /** Feature-flag environment this deployment resolves against (dev | uat | prod | …). */
   readonly APP_ENV?: string;
 }

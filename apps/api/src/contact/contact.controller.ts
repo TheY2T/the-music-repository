@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Headers, HttpCode, Post } from '@nestjs/common';
 import { SubmitContactUseCase } from './application/submit-contact.use-case';
 import { SubmitContactDto } from './dto/contact.dto';
 
@@ -9,7 +9,10 @@ export class ContactController {
 
   @Post()
   @HttpCode(201)
-  async submit(@Body() body: SubmitContactDto): Promise<{ ok: boolean }> {
-    return this.submitContact.execute(body);
+  async submit(
+    @Body() body: SubmitContactDto,
+    @Headers('cf-connecting-ip') clientIp?: string,
+  ): Promise<{ ok: boolean }> {
+    return this.submitContact.execute(body, clientIp);
   }
 }

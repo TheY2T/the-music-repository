@@ -16,8 +16,12 @@ Resend/SMTP), with the sender's address as the **reply-to** so a reply reaches t
 `packages/api-spec/main.tsp`. Hexagonal `apps/api/src/contact/`: `ContactController` → `SubmitContactUseCase`
 → `MailSender` (from `MailModule`). Public (no auth).
 
-- **Anti-spam:** a hidden **honeypot** field (`company`). A filled value returns `{ ok: true }` without
-  sending — bots get the same response as humans.
+- **Anti-spam:** a hidden **honeypot** field (`company`, filled → `{ ok: true }` without sending) plus a
+  **Cloudflare Turnstile** challenge. `SubmitContactUseCase` verifies the token via the `CaptchaVerifier`
+  port (`TurnstileCaptchaVerifier` → siteverify); a failure throws `CaptchaFailedError` (400). When
+  `TURNSTILE_SECRET_KEY` is unset the check is skipped, so local/dev is unaffected. Config: API
+  `TURNSTILE_SECRET_KEY` (secret), web `PUBLIC_TURNSTILE_SITE_KEY` (public, baked into the build); the
+  `ContactForm` renders the widget only when the site key is present.
 
 ## Web
 

@@ -2601,7 +2601,8 @@ export const SubmitContactBody = zod.object({
   "email": zod.string().describe('Sender\'s email address, used as the reply-to.'),
   "subject": zod.string().describe('Message subject.'),
   "message": zod.string().describe('Message body.'),
-  "company": zod.string().optional().describe('Anti-spam honeypot — real users leave this empty. A filled value is accepted but dropped.')
+  "company": zod.string().optional().describe('Anti-spam honeypot — real users leave this empty. A filled value is accepted but dropped.'),
+  "turnstileToken": zod.string().optional().describe('Cloudflare Turnstile token from the widget, verified server-side when Turnstile is configured.')
 }).describe('A public contact-form submission.')
 
 export const SubmitContactResponse = zod.object({
