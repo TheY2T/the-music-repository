@@ -1,0 +1,40 @@
+---
+import SpecimenStage from '@/components/SpecimenStage';
+import SandboxLayout from '@/layouts/SandboxLayout.astro';
+import { DOMAIN_META, getSpecimen, PACKAGE_META } from '@/registry';
+
+// One page per specimen. The stage is `client:only` — the component + its providers + inspector all live
+// in a single React island (React context can't cross island boundaries), and nothing pixi/audio is
+// imported on the server.
+const { id } = Astro.params;
+const specimen = id ? getSpecimen(id) : undefined;
+if (!specimen) {
+  return Astro.redirect('/');
+}
+const locale = Astro.locals.locale;
+---
+
+<SandboxLayout title={specimen.name} activeId={specimen.id}>
+  <div class="mx-auto max-w-6xl space-y-8">
+    <header class="space-y-3">
+      <div class="flex flex-wrap items-center gap-2">
+        <h1 class="font-display text-3xl font-semibold tracking-tight">{specimen.name}</h1>
+        <span class="rounded-full bg-muted px-2.5 py-0.5 font-mono text-xs font-medium text-muted-foreground">
+          {PACKAGE_META[specimen.pkg].label}
+        </span>
+      </div>
+      <div class="flex flex-wrap items-center gap-1.5">
+        {
+          specimen.domains.map((d) => (
+            <span class="rounded-full border border-border px-2.5 py-0.5 text-xs text-muted-foreground">
+              {DOMAIN_META[d]}
+            </span>
+          ))
+        }
+      </div>
+      {specimen.notes && <p class="max-w-2xl text-sm text-muted-foreground">{specimen.notes}</p>}
+    </header>
+
+    <SpecimenStage client:only="react" specimenId={specimen.id} initialLocale={locale} />
+  </div>
+</SandboxLayout>

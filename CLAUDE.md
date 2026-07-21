@@ -17,8 +17,10 @@ loads only when it's needed:
   `flags`, `i18n`, `seo`.
 - **Per-package `CLAUDE.md`** (load when working in that package): `packages/{music-core,musickit-ui,ui,
   nest-platform}`. Other packages are covered by this file + the rules.
-- **App notes:** `apps/api/CLAUDE.md`, `apps/web/CLAUDE.md`. **Docs:** ADRs in `docs/adr/`, one feature
-  doc per feature in `docs/features/`.
+- **App notes:** `apps/api/CLAUDE.md`, `apps/web/CLAUDE.md`. **Dev-only:** `apps/sandbox` — a component
+  playground mirroring the web app that renders every shared component in isolation (ADR 0047,
+  `docs/features/sandbox.md`); not deployed. **Docs:** ADRs in `docs/adr/`, one feature doc per feature
+  in `docs/features/`.
 
 ## What this is
 

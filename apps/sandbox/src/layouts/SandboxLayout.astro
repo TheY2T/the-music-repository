@@ -1,0 +1,75 @@
+---
+import AppearanceMenu from '@/components/AppearanceMenu';
+import SandboxNav from '@/components/SandboxNav';
+import '@/styles/global.css';
+import Icon from '@TheY2T/tmr-ui/astro/Icon.astro';
+import { htmlLang } from '@TheY2T/tmr-i18n';
+import { ClientRouter } from 'astro:transitions';
+
+/**
+ * The sandbox shell. Owns `<head>` (global.css + the pre-paint theme script, copied from the web app so
+ * aesthetic + light/dark restore before first paint) and the chrome: a sticky full-width top bar over a
+ * sidebar + main row. Bespoke chrome rather than the site `SiteHeader`, since site nav destinations don't
+ * exist here.
+ */
+interface Props {
+  title: string;
+  activeId?: string;
+}
+const { title, activeId } = Astro.props;
+const locale = Astro.locals.locale;
+---
+
+<html lang={htmlLang(locale)} data-theme="hybrid" class:list={[locale === 'zh-Hans' && 'lang-zh']}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>🎛️</text></svg>"
+    />
+    <title>{title} · Sandbox</title>
+    <ClientRouter />
+    <script is:inline>
+      // Apply the aesthetic + mode to <html> before paint to avoid a flash (same hooks as the web app):
+      // aesthetic → `data-theme` (from `tmr.aesthetic`); mode → `.dark` class (from `theme` / OS pref).
+      // Re-applied after each view-transition swap, since Astro resets <html> attributes on navigation.
+      const applyTheme = () => {
+        const doc = document.documentElement;
+        const aesthetic = localStorage.getItem('tmr.aesthetic');
+        if (aesthetic === 'hybrid' || aesthetic === 'heritage' || aesthetic === 'warm-minimal') {
+          doc.setAttribute('data-theme', aesthetic);
+        }
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        doc.classList.toggle('dark', stored === 'dark' || (!stored && prefersDark));
+      };
+      applyTheme();
+      document.addEventListener('astro:after-swap', applyTheme);
+    </script>
+  </head>
+  <body class="min-h-svh bg-background text-foreground">
+    <header
+      class="sticky top-0 z-50 flex h-14 items-center justify-between gap-4 border-b border-border bg-background/90 px-4 backdrop-blur sm:px-6"
+    >
+      <a href="/" class="flex items-center gap-2 font-display text-sm font-semibold tracking-tight">
+        <Icon name="sliders-horizontal" class="size-4 text-primary" />
+        <span>Music Repository <span class="text-muted-foreground">Sandbox</span></span>
+      </a>
+      <AppearanceMenu client:load locale={locale} />
+    </header>
+
+    <div class="flex min-h-[calc(100svh-3.5rem)]">
+      <aside
+        transition:persist
+        class="sticky top-14 hidden h-[calc(100svh-3.5rem)] w-64 shrink-0 overflow-y-auto border-r border-border p-4 lg:block"
+      >
+        <SandboxNav client:load activeId={activeId} />
+      </aside>
+      <main class="min-w-0 flex-1 overflow-x-hidden p-5 sm:p-8">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,74 @@
+---
+import SandboxLayout from '@/layouts/SandboxLayout.astro';
+import { DOMAIN_META, groupByDomain, groupByPackage, PACKAGE_META, specimens } from '@/registry';
+
+// Landing overview: a card grid of every component grouped by package (browsable without JS), plus a
+// compact by-domain index. The sidebar island adds live search + a package/domain grouping toggle.
+const byPackage = groupByPackage();
+const byDomain = groupByDomain();
+---
+
+<SandboxLayout title="Component sandbox">
+  <div class="mx-auto max-w-6xl space-y-12">
+    <section class="space-y-3">
+      <p class="font-display text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        The Music Repository
+      </p>
+      <h1 class="font-display text-3xl font-semibold tracking-tight sm:text-4xl">Component sandbox</h1>
+      <p class="max-w-2xl text-muted-foreground">
+        A live playground for every shared UI component — {specimens.length} in total. Pick one to render
+        it in isolation with prop controls, theme + locale switching, and engine inspectors. Browse by
+        source package below, or switch the sidebar to <span class="font-medium text-foreground">Domain</span>
+        to browse by feature area.
+      </p>
+    </section>
+
+    {
+      byPackage.map((group) => (
+        <section class="space-y-3">
+          <div class="flex items-baseline gap-2 border-b border-border pb-2">
+            <h2 class="font-display text-lg font-medium">
+              {PACKAGE_META[group.key as keyof typeof PACKAGE_META]?.label}
+            </h2>
+            <span class="text-sm tabular-nums text-muted-foreground">{group.items.length}</span>
+            <span class="ml-auto hidden text-sm text-muted-foreground sm:block">
+              {PACKAGE_META[group.key as keyof typeof PACKAGE_META]?.blurb}
+            </span>
+          </div>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {group.items.map((s) => (
+              <a
+                href={`/c/${s.id}`}
+                class="group flex flex-col rounded-lg border border-border p-4 transition-colors hover:bg-accent"
+              >
+                <span class="flex items-center justify-between gap-2">
+                  <span class="font-medium text-sm">{s.name}</span>
+                  <span class="rounded-full bg-muted px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">
+                    {s.kind}
+                  </span>
+                </span>
+                {s.notes && <span class="mt-1 line-clamp-2 text-xs text-muted-foreground">{s.notes}</span>}
+              </a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <section class="space-y-3">
+      <div class="border-b border-border pb-2">
+        <h2 class="font-display text-lg font-medium">By domain</h2>
+      </div>
+      <ul class="flex flex-wrap gap-2">
+        {
+          byDomain.map((group) => (
+            <li class="rounded-full border border-border px-3 py-1 text-sm text-muted-foreground">
+              {DOMAIN_META[group.key as keyof typeof DOMAIN_META]}{' '}
+              <span class="tabular-nums text-foreground/70">{group.items.length}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</SandboxLayout>
