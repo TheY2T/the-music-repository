@@ -147,8 +147,8 @@ async function main(): Promise<void> {
     }
   }
 
-  const indexed = await reindex.reindex();
-  log.log(`Seeded ${CONTENT.length} content items; reindexed ${indexed} into Meilisearch.`);
+  await reindex.reindex();
+  log.log(`Seeded ${CONTENT.length} content items.`);
 
   for (const collection of SEED_COLLECTIONS) {
     const meta = {
@@ -239,10 +239,8 @@ async function main(): Promise<void> {
       ),
     );
 
-  const collectionsIndexed = await collectionReindex.reindex();
-  log.log(
-    `Seeded ${SEED_COLLECTIONS.length} collections; reindexed ${collectionsIndexed} into Meilisearch.`,
-  );
+  await collectionReindex.reindex();
+  log.log(`Seeded ${SEED_COLLECTIONS.length} collections.`);
 
   for (const topic of HELP_TOPICS) {
     await db

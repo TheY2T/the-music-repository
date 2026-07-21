@@ -3,12 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "./dist",
-    "types": ["node"],
-    "paths": {
-      // meilisearch ships exports-only (no `types`/`main`); classic node10 resolution can't find
-      // its .d.ts. Point TS at it directly — runtime still uses node's real package resolution.
-      "meilisearch": ["./node_modules/meilisearch/dist/index"]
-    }
+    "types": ["node"]
   },
   // Vitest config files are executed by Vitest (type-stripped), not type-checked by tsc — including
   // them pulls the vite/rollup type graph in and conflicts. Test files under `src` are still checked.

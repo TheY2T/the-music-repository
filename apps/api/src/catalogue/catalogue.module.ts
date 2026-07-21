@@ -10,8 +10,9 @@ import { SearchCatalogueUseCase } from './application/use-cases/search-catalogue
 import { CatalogueController } from './catalogue.controller';
 import { CatalogueReindexService } from './infrastructure/catalogue-reindex.service';
 import { DrizzleContentRepository } from './infrastructure/drizzle-content.repository';
-import { MeilisearchCatalogueSearch } from './infrastructure/meilisearch-catalogue-search.adapter';
-import { S3MediaLibrary } from './infrastructure/s3-media-library.adapter';
+import { PostgresCatalogueSearch } from './infrastructure/postgres-catalogue-search.adapter';
+import { PostgresMediaLibrary } from './infrastructure/postgres-media-library.adapter';
+import { MediaController } from './media.controller';
 
 /**
  * Catalogue feature (hexagonal). Ports are named for the capability the core needs
@@ -20,15 +21,15 @@ import { S3MediaLibrary } from './infrastructure/s3-media-library.adapter';
  */
 @Module({
   imports: [EntitlementsModule, TranslationsModule],
-  controllers: [CatalogueController],
+  controllers: [CatalogueController, MediaController],
   providers: [
     SearchCatalogueUseCase,
     GetContentBySlugUseCase,
     GetRelatedContentUseCase,
     CatalogueReindexService,
     { provide: ContentRepository, useClass: DrizzleContentRepository },
-    { provide: CatalogueSearch, useClass: MeilisearchCatalogueSearch },
-    { provide: MediaLibrary, useClass: S3MediaLibrary },
+    { provide: CatalogueSearch, useClass: PostgresCatalogueSearch },
+    { provide: MediaLibrary, useClass: PostgresMediaLibrary },
   ],
   // Exported so the seed can reindex + upload media.
   exports: [CatalogueReindexService, MediaLibrary, ContentRepository, CatalogueSearch],

@@ -22,7 +22,7 @@ Run builds with `pnpm --filter @TheY2T/tmr-api <script>`.
 
 - **Catalogue `.md`** = frontmatter + rich `body_mdx` + `details` JSONB (key/era/form/composer…) + curated
   `related` + a fenced ```embeds block (JSON array of `ContentEmbed` → preconfigured interactive tools
-  below the prose). Era is a Meilisearch facet derived from `details.era` — **no SQL taxonomy table**. The
+  below the prose). Era is a search facet derived from `details.era` — **no SQL taxonomy table**. The
   build fails on bad JSON / unknown tool. Embeds are spec-first (`ContentEmbed` in TypeSpec); follow the
   **`embed-tool`** skill (ADR 0028).
 - **Collections `.md`** = frontmatter + `## Outcomes` + `## Section:` blocks with

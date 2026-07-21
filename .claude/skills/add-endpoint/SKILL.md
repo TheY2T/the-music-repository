@@ -29,7 +29,7 @@ Add a key to `@TheY2T/tmr-flags` + `flags/flags.json`; gate the route with `@Req
 
 **Name ports for the domain capability, not the tech (ADR 0012):** port = `ContentRepository` /
 `CatalogueSearch` / `MediaLibrary` (no `Port` suffix); adapter = `<Tech><Capability>` e.g.
-`DrizzleContentRepository`, `MeilisearchCatalogueSearch`, `S3MediaLibrary`.
+`DrizzleContentRepository`, `PostgresCatalogueSearch`, `PostgresMediaLibrary`.
 
 No new wiring for errors/logging/tracing — `PlatformModule` (already in AppModule) handles it.
 

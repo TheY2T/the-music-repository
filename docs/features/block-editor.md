@@ -6,8 +6,9 @@ real interactive tools, with a full-fidelity preview. It replaces the file-pipel
 
 ## At a glance
 
-- **DB-first.** The editor writes to the DB via the authoring API; publish reindexes Meilisearch and the
-  page renders immediately (runtime, React-Query-backed). The file pipeline (`content/*.md` →
+- **DB-first.** The editor writes to the DB via the authoring API; a published item is searchable
+  immediately (search reads live from Postgres) and the page renders immediately (runtime,
+  React-Query-backed). The file pipeline (`content/*.md` →
   `content:build` → seed) is now the importer that derives `body_doc` at build time.
 - **Engine:** TipTap (ProseMirror), headless, styled from `@TheY2T/tmr-ui` + design tokens.
 - **Storage:** the canonical TipTap doc lives in `content_items.body_doc` (jsonb); `body_mdx` (with embed

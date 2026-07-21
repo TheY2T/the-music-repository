@@ -8,6 +8,13 @@
       "when": 1784636517585,
       "tag": "0000_amazing_nextwave",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784638510518,
+      "tag": "0001_dazzling_omega_sentinel",
+      "breakpoints": true
     }
   ]
 }

@@ -25,9 +25,6 @@ catalog:
   tsup: ^8.5.1
 
   # --- Catalogue (Phase 1): search + object storage ---
-  meilisearch: ^0.59.0
-  "@aws-sdk/client-s3": ^3.1085.0
-  "@aws-sdk/s3-request-presigner": ^3.1085.0
 
   # --- Auth (Phase 1 Slice 2): Better Auth ---
   "better-auth": ^1.6.23

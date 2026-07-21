@@ -113,10 +113,11 @@ export const collectionsAdminApi = {
     request<void>(`/admin/collections/${encodeURIComponent(slug)}`, { method: 'DELETE' }),
 };
 
-/** Upload bytes to a presigned PUT URL (direct browser → object storage). */
+/** Upload the file's bytes to the ticket's upload URL. */
 export async function uploadToTicket(ticket: MediaUploadTicket, file: File): Promise<void> {
   const response = await fetch(ticket.uploadUrl, {
     method: 'PUT',
+    credentials: 'include',
     headers: { 'Content-Type': file.type || 'application/octet-stream' },
     body: file,
   });

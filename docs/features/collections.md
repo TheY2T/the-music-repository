@@ -39,15 +39,16 @@ Editorial collections are authored as `apps/api/src/infrastructure/database/cont
 (frontmatter metadata + `## Outcomes` bullets + `## Section: <title>` blocks whose `- slug (note: …;
 skills: [a, b])` lines become items). `pnpm --filter @TheY2T/tmr-api collections:build` bundles them to
 the committed `seed-collections.ts`; the seed upserts metadata + replaces sections/items, prunes
-superseded editorial collections (never user-created), then reindexes Meilisearch. 16 collections ship.
+superseded editorial collections (never user-created). 16 collections ship.
 
-## Discovery (Meilisearch)
+## Discovery (Postgres)
 
-`collections` index (`MeilisearchCollectionSearch`, `CollectionSearchIndex` port). Searchable: title,
-summary, curatorName, tags. Filterable: kind, grades (difficulty range expanded), era/instrument/
-technique/mood, curatorName, featured. Sortable: featured, newest, popular, A–Z, difficulty.
-`CollectionReindexService` rebuilds from published, non-`private` collections; called by the seed + after
-every authoring/user write. Private user collections never enter the index or `findAllPublished`.
+`PostgresCollectionSearch` (`CollectionSearchIndex` port) filters and facets the published set in memory
+(ADR 0048). Searched: title, summary, curatorName, tags. Filterable: kind, grades (difficulty range
+expanded), era/instrument/technique/mood, curatorName, featured. Sortable: featured, newest, popular,
+A–Z, difficulty. Only published, non-`private` collections are discoverable; private user collections
+never enter discovery or `findAllPublished`. `CollectionReindexService.indexAll` is a no-op (data reads
+live), and its call sites are unchanged behind the port.
 
 ## API contract (tag `collections`; generated hooks/types in `@TheY2T/tmr-api-client`)
 

@@ -50,7 +50,7 @@ import { DrizzleCollectionRepository } from './infrastructure/drizzle-collection
 import { DrizzleCollectionBookmarks } from './infrastructure/drizzle-collection-bookmarks.repository';
 import { DrizzleCollectionRatings } from './infrastructure/drizzle-collection-ratings.repository';
 import { DrizzleLearnerProgress } from './infrastructure/drizzle-learner-progress';
-import { MeilisearchCollectionSearch } from './infrastructure/meilisearch-collection-search.adapter';
+import { PostgresCollectionSearch } from './infrastructure/postgres-collection-search.adapter';
 
 /**
  * Collections feature (hexagonal). Imports CatalogueModule to reuse `ContentRepository` for resolving
@@ -101,7 +101,7 @@ import { MeilisearchCollectionSearch } from './infrastructure/meilisearch-collec
     { provide: CollectionBookmarks, useClass: DrizzleCollectionBookmarks },
     { provide: CollectionRatings, useClass: DrizzleCollectionRatings },
     { provide: LearnerProgress, useClass: DrizzleLearnerProgress },
-    { provide: CollectionSearchIndex, useClass: MeilisearchCollectionSearch },
+    { provide: CollectionSearchIndex, useClass: PostgresCollectionSearch },
   ],
   exports: [CollectionRepository, CollectionReindexService],
 })

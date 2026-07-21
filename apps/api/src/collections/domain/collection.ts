@@ -1,6 +1,6 @@
 import type { ContentSummaryView } from '../../catalogue/domain/content-item';
 
-/** Discovery facets carried by a collection (mirrored into the Meili collections index). */
+/** Discovery facets carried by a collection, used by collections search. */
 export interface CollectionFacets {
   era?: string[];
   genre?: string[];

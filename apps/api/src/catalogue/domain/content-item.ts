@@ -212,7 +212,7 @@ export interface ContentDetailView extends ContentSummaryView {
   updatedAt: string;
 }
 
-/** Result ordering for a catalogue query. `relevance` = Meili's default text ranking (no sort). */
+/** Result ordering for a catalogue query. `relevance` = text-match ranking (the default). */
 export type CatalogueSort = 'relevance' | 'difficulty-asc' | 'difficulty-desc' | 'title-asc';
 
 export const CATALOGUE_SORTS: CatalogueSort[] = [

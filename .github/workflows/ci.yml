@@ -94,7 +94,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Start infrastructure (db + flagd + meilisearch + minio)
+      - name: Start infrastructure (db)
         run: pnpm infra:up
       - name: Build + migrate + start the API
         run: |

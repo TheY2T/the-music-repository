@@ -9,7 +9,7 @@ Two ways to run, which must **not** overlap on the same ports. Pick one; kill th
 
 ## Modes
 
-- **Host dev (fast iteration):** `pnpm infra:up` (db+flagd+meili+minio only) then run apps on the host —
+- **Host dev (fast iteration):** `pnpm infra:up` (Postgres only) then run apps on the host —
   `pnpm --filter @TheY2T/tmr-web dev` (web `:4321`, **IPv6-only** — use `http://[::1]:4321` or
   `localhost`) and `pnpm --filter @TheY2T/tmr-api dev` (api `:3000`). Add `pnpm obs:up` for traces.
 - **Containerized (production-like):** `pnpm app:up` — builds images + runs infra + api + web via the

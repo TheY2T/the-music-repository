@@ -49,7 +49,7 @@ adapters for the technology.
 | Module | Ports (capability) | Adapters (technology) |
 |---|---|---|
 | `health/` | `DatastoreHealthCheck` | `DrizzleDatastoreHealthCheck` |
-| `catalogue/` | `ContentRepository`, `CatalogueSearch`, `MediaLibrary` | `DrizzleContentRepository`, `MeilisearchCatalogueSearch`, `S3MediaLibrary` |
+| `catalogue/` | `ContentRepository`, `CatalogueSearch`, `MediaLibrary` | `DrizzleContentRepository`, `PostgresCatalogueSearch`, `PostgresMediaLibrary` |
 | `auth/` | `CurrentUser` | `BetterAuthCurrentUser` (+ Better Auth guard/RBAC) |
 | `authoring/` | `ContentAuthoring`, `TaxonomyCatalog` | `DrizzleContentAuthoring`, `DrizzleTaxonomyCatalog` |
 | `favorites/` | `FavoritesRepository` | `DrizzleFavoritesRepository` |

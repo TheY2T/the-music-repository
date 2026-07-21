@@ -24,7 +24,7 @@ Copy `src/catalogue/` (the full reference feature) when adding one; follow the *
 
 - **Port naming (ADR 0012):** name ports for the **domain capability**, never the tech, **no `Port`
   suffix** — `ContentRepository`, `CatalogueSearch`, `MediaLibrary`, `DatastoreHealthCheck`. Adapters are
-  `<Technology><Capability>` — `DrizzleContentRepository`, `MeilisearchCatalogueSearch`, `S3MediaLibrary`.
+  `<Technology><Capability>` — `DrizzleContentRepository`, `PostgresCatalogueSearch`, `PostgresMediaLibrary`.
 - **Use-cases depend on ports, never Drizzle.** Only `infrastructure/` adapters import Drizzle; map ORM
   rows ↔ domain in a mapper. Schema: `src/infrastructure/database/schema.ts`; client token `DATABASE`.
 - **Never import `better-auth` in domain/application** — read the acting user via the `CurrentUser` port

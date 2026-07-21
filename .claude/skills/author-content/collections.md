@@ -18,10 +18,10 @@ Source: `apps/api/content/collections/<slug>.md` →
   compute completion. The build derives it from section order; don't reorder items in a way that desyncs it.
 - A collection is stored as metadata + `collection_sections` + `collection_items` (own uuid PK, `section_id`,
   `curator_note`, `focus_skills`).
-- Private user-created collections are **never** indexed in Meilisearch; ownership is enforced in the
+- Private user-created collections are **never** surfaced in discovery; ownership is enforced in the
   use-cases (403), not the route path.
 
 ## After building
 
-`collections:build` regenerates `seed-collections.ts` (commit both files); seed reindexes the Meili
-`collections` index. Verify the collection browses, sections render, and per-item notes show (see SKILL.md).
+`collections:build` regenerates `seed-collections.ts` (commit both files); the seed loads them into
+Postgres. Verify the collection browses, sections render, and per-item notes show (see SKILL.md).

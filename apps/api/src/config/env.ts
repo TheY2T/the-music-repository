@@ -10,17 +10,9 @@ export const envSchema = z.object({
   // because environments are DB-managed/CRUD-able, not a fixed enum. Seeded envs: dev | uat | prod.
   APP_ENV: z.string().default('dev'),
 
-  // Catalogue search (Meilisearch). Defaults match `pnpm infra:up` on localhost.
-  MEILI_HOST: z.string().default('http://localhost:7700'),
-  MEILI_MASTER_KEY: z.string().default('tmr_dev_master_key'),
-
-  // Catalogue media (MinIO / S3). Defaults match the compose so the app boots for local dev.
-  S3_ENDPOINT: z.string().default('http://localhost:9000'),
-  S3_PUBLIC_ENDPOINT: z.string().optional(),
-  S3_REGION: z.string().default('us-east-1'),
-  S3_ACCESS_KEY_ID: z.string().default('tmr'),
-  S3_SECRET_ACCESS_KEY: z.string().default('tmrsecret'),
-  S3_BUCKET: z.string().default('tmr-media'),
+  // Base URL the browser uses to reach stored media (the API's public origin). Falls back to
+  // BETTER_AUTH_URL when unset, so local dev needs no extra config.
+  MEDIA_PUBLIC_URL: z.string().optional(),
 
   // Auth (Slice 2, Better Auth). Dev defaults are local-only — never reuse in production.
   BETTER_AUTH_SECRET: z.string().min(1).default('dev-insecure-secret-change-me-please-32chars'),

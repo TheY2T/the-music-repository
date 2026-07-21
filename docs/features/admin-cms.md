@@ -35,10 +35,10 @@ taxonomy — all RBAC-gated and spec-first, with writes reindexed into search im
   **Markdown body editor with live preview** (`marked`), taxonomy inputs (comma-separated slugs with
   datalist suggestions; unknown slugs are auto-created), and (edit mode) **Publish / Unpublish /
   Delete** + a **media uploader**.
-- **Media upload** is a two-step presigned PUT: the API reserves a row + returns an upload URL, the
-  browser PUTs the file **directly to MinIO** (whose default CORS is permissive; the app also tries a
-  best-effort `PutBucketCors` on boot, ignored where the storage doesn't implement it).
-- Published items appear immediately in `/catalogue` (reindex-on-write).
+- **Media upload** is two-step: the API reserves a row + returns an upload URL, then the browser PUTs
+  the file (credentialed, RBAC `content:update`) to the API's `/media` route, which stores the bytes in
+  `media_objects`.
+- Published items appear immediately in `/catalogue` (search reads live from Postgres).
 
 ## Data model
 
@@ -59,13 +59,13 @@ Paths from TypeSpec (`packages/api-spec/main.tsp`), tag `authoring`; generated h
 | `POST /content/{slug}/publish` \| `/unpublish` | `content:publish` | reindex; shortcuts for → published / → draft |
 | `POST /content/{slug}/status` | `content:publish` | body `{status}` (draft/review/published) — the manager's board + status menu; reindex |
 | `DELETE /content/{slug}` | `content:delete` | admin only; reindex (204) |
-| `POST /content/{slug}/media` | `media:create` | presigned PUT ticket (201) |
+| `POST /content/{slug}/media` | `media:create` | media upload ticket (201) |
 | `GET /taxonomy/{dimension}` | `content:update` | genres/instruments/topics/tags |
 | `POST /taxonomy/{dimension}` | `taxonomy:create` | upsert a term (201) |
 
 Hexagonal: use-cases depend on the `ContentAuthoring` + `TaxonomyCatalog` ports (writes) and reuse the
 catalogue `ContentRepository` / `MediaLibrary` / `CatalogueReindexService`. Adapters:
-`DrizzleContentAuthoring`, `DrizzleTaxonomyCatalog`, `S3MediaLibrary` (presigned PUT + bucket CORS).
+`DrizzleContentAuthoring`, `DrizzleTaxonomyCatalog`, `PostgresMediaLibrary` (bytes in `media_objects`).
 
 ## Help topics
 
@@ -74,10 +74,9 @@ None yet (Info View arrives in Phase 2).
 ## Tests
 
 - **Backend (curl):** learner write → 403; invalid body → 422 problem+json with `errors[]` pointers;
-  editor create → 201; publish → 200 then appears in `/catalogue` (typo-tolerant Meili search); editor
-  delete → 403, admin delete → 204; media presigned PUT + presigned GET both 200; invalid taxonomy
-  dimension → 400.
-- **Web (browser):** editor signs in → `/admin` list → create (live preview) → publish → upload PDF
-  (direct-to-MinIO) → item + score viewer visible in public `/catalogue`; learner is redirected from
-  `/admin` and sees no Admin link.
+  editor create → 201; publish → 200 then appears in `/catalogue`; editor delete → 403, admin delete →
+  204; media upload PUT + media GET both 200; invalid taxonomy dimension → 400.
+- **Web (browser):** editor signs in → `/admin` list → create (live preview) → publish → upload media
+  → item + score viewer visible in public `/catalogue`; learner is redirected from `/admin` and sees no
+  Admin link.
 - **Setup:** `pnpm infra:up`, migrate + `db:seed` + `db:seed:auth`, run both apps.

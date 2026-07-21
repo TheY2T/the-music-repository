@@ -32,7 +32,7 @@ filesystems otherwise pass locally but break Linux containers).
   `ContentRepository`, `CatalogueSearch`, `MediaLibrary`, `DatastoreHealthCheck`, `AppLogger`,
   `Tracer`, `RequestContext`. (`Repository` is DDD language and is kept.)
 - **Adapters** are named `<Technology><Capability>`: `DrizzleContentRepository`,
-  `MeilisearchCatalogueSearch`, `S3MediaLibrary`, `PinoAppLogger`, `OtelTracer`, `ClsRequestContext`.
+  `PostgresCatalogueSearch`, `PostgresMediaLibrary`, `PinoAppLogger`, `OtelTracer`, `ClsRequestContext`.
 - Use-cases inject the **port**; the module binds `{ provide: <PortClass>, useClass: <Adapter> }`.
 - Files keep the `application/ports/*.port.ts` / `infrastructure/*.adapter.ts` role markers (a discovery
   aid — the filename may mark the role; the identifier stays technology-free).

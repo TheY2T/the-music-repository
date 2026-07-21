@@ -1,6 +1,6 @@
 # ADR 0010 — Catalogue search: Meilisearch
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR 0048 (catalogue search is now served from Postgres)
 - **Context:** The catalogue needs typo-tolerant full-text search with faceted filtering (genre,
   instrument, topic, type, difficulty) and counts. Options: Postgres `tsvector`, Meilisearch, Typesense.
 - **Decision:** **Meilisearch** — simplest ops (single container, no schema migration), first-class

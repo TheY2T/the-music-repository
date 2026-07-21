@@ -43,7 +43,7 @@ export class CollectionAuthoringController {
     private readonly reindex: CollectionReindexService,
   ) {}
 
-  /** Rebuild the discovery index after a write; best-effort so writes never fail if Meili is down. */
+  /** Signal the search port after a write; best-effort so a write never fails on it. */
   private reindexQuietly(): void {
     void this.reindex.reindex().catch(() => undefined);
   }

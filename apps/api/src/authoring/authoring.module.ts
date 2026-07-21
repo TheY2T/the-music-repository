@@ -25,6 +25,7 @@ import { DrizzleContentAuthoring } from './infrastructure/drizzle-content-author
 import { DrizzleContentRevisions } from './infrastructure/drizzle-content-revisions.adapter';
 import { DrizzleTaxonomyCatalog } from './infrastructure/drizzle-taxonomy-catalog.adapter';
 import { YouTubeOembedVideoPreviewLookup } from './infrastructure/youtube-oembed-video-preview-lookup.adapter';
+import { MediaUploadController } from './media-upload.controller';
 
 /**
  * Admin CMS feature (hexagonal). Imports CatalogueModule to reuse the read `ContentRepository`,
@@ -32,7 +33,7 @@ import { YouTubeOembedVideoPreviewLookup } from './infrastructure/youtube-oembed
  */
 @Module({
   imports: [CatalogueModule, AuthModule],
-  controllers: [AuthoringController],
+  controllers: [AuthoringController, MediaUploadController],
   providers: [
     ContentDetailReader,
     ListContentUseCase,

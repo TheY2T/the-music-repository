@@ -22,7 +22,7 @@ Create `domain/` (POJO entities), `application/ports/*.port.ts` (abstract classe
 `src/catalogue/`. Add tables to `infrastructure/database/schema.ts` and run `db:generate`.
 
 **Name ports for the domain capability, not the tech (ADR 0012):** e.g. port `CatalogueSearch` /
-`MediaLibrary` (no `Port` suffix), adapter `MeilisearchCatalogueSearch` / `S3MediaLibrary`.
+`MediaLibrary` (no `Port` suffix), adapter `PostgresCatalogueSearch` / `PostgresMediaLibrary`.
 
 ## 4. Frontend (`apps/web/src/`)
 Add a route in `pages/`, islands in `components/` (one island root per interactive unit; keep

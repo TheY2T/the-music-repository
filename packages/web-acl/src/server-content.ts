@@ -35,7 +35,7 @@ export interface ContentMeta {
   slug: string;
   title: string;
   summary?: string;
-  /** Absolute (presigned) URL of the item's first image asset, for `og:image`. */
+  /** Absolute URL of the item's first image asset, for `og:image`. */
   imageUrl?: string;
   type: string;
   details?: ContentDetails;

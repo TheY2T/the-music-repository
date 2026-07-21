@@ -22,8 +22,8 @@ generated `seed-*.ts` bundle by hand — edit the source file and rebuild.
 1. Write the source file (see the per-type reference above for the exact frontmatter/section shape).
 2. Build the bundle: `pnpm --filter @TheY2T/tmr-api <content:build|collections:build>`. The build **fails
    on bad input** (invalid JSON in an `embeds` block, unknown tool, malformed section) — fix and rerun.
-3. Seed: `pnpm app:seed` (containerized) or `pnpm --filter @TheY2T/tmr-api db:seed` — this reindexes
-   Meilisearch too.
+3. Seed: `pnpm app:seed` (containerized) or `pnpm --filter @TheY2T/tmr-api db:seed` — this loads the
+   content into Postgres.
 4. Verify in the running app (**`run-local`**): the item appears in the catalogue/collection, facets are
    right, embeds render.
 

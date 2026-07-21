@@ -1,5 +1,6 @@
 import {
   boolean,
+  customType,
   doublePrecision,
   index,
   integer,
@@ -61,13 +62,32 @@ export const contentRevisions = pgTable('content_revisions', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+/** Raw binary column (Postgres `bytea`), carried as a Node `Buffer`. */
+const bytea = customType<{ data: Buffer; default: false }>({
+  dataType() {
+    return 'bytea';
+  },
+});
+
+/**
+ * Stored media bytes, keyed by the same `storage_key` the metadata rows reference. Holds score
+ * sources, images, and other uploads; served to the browser through the media route.
+ */
+export const mediaObjects = pgTable('media_objects', {
+  storageKey: text('storage_key').primaryKey(),
+  data: bytea('data').notNull(),
+  mime: text('mime').notNull(),
+  bytes: integer('bytes').notNull().default(0),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const mediaAssets = pgTable('media_assets', {
   id: uuid('id').primaryKey().defaultRandom(),
   contentId: uuid('content_id')
     .notNull()
     .references(() => contentItems.id, { onDelete: 'cascade' }),
   kind: text('kind').notNull(), // alphatex | audio | image (see ADR 0027; alphatex replaced musicxml)
-  storageKey: text('storage_key').notNull(), // object key in the S3/MinIO bucket
+  storageKey: text('storage_key').notNull(), // key into media_objects holding the bytes
   filename: text('filename').notNull(),
   mime: text('mime').notNull(),
   bytes: integer('bytes').notNull().default(0),
@@ -264,7 +284,7 @@ export const collections = pgTable('collections', {
   curatorName: text('curator_name'),
   curatorBio: text('curator_bio'),
   outcomes: jsonb('outcomes').$type<string[]>(), // "what you'll learn" bullets
-  /** Discovery facets (era/genre/technique/mood) — mirrored into the Meili collections index. */
+  /** Discovery facets (era/genre/technique/mood) used by collections search. */
   facets: jsonb('facets').$type<CollectionFacets>(),
   tags: jsonb('tags').$type<string[]>(), // denormalized tag slugs for search/facets
   popularity: integer('popularity').notNull().default(0), // open/play counter

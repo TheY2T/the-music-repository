@@ -43,8 +43,8 @@ export class CatalogueController {
   @Get('items')
   @ResolveOptionalAuth()
   async search(@Query() query: RawQuery) {
-    // Search text comes from Meilisearch, which is not yet per-locale (Phase 2B), so `locale` is accepted
-    // but not overlaid here — detail/related localize below.
+    // Search filters over base fields (not per-locale), so `locale` is accepted but not overlaid
+    // here — detail/related localize below.
     return this.searchCatalogue.execute(normalizeQuery(query), await this.resolveViewerRank());
   }
 

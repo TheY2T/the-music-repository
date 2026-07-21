@@ -22,7 +22,7 @@ they author the content; subscribers hold a grant; everyone else sees locked pre
 - `DELETE /me/subscription` → cancels (204).
 - All three require auth and are gated by `monetization.premium` (disabled → 404).
 - Catalogue: `GET /catalogue/items` sets `locked` on premium summaries for non-entitled viewers;
-  `GET /catalogue/items/{slug}` returns a **locked preview** (no `bodyMdx`, no presigned media) for
+  `GET /catalogue/items/{slug}` returns a **locked preview** (no `bodyMdx`, no media URLs) for
   premium content a viewer isn't entitled to.
 
 ## Architecture (hexagonal)
@@ -33,8 +33,7 @@ they author the content; subscribers hold a grant; everyone else sees locked pre
 - **Catalogue gating:** the controller resolves `entitled` (flag on? then `PremiumAccessService.isEntitled()`)
   and passes a plain boolean into the pure `SearchCatalogue` / `GetContentBySlug` use-cases. The public
   read routes use `ResolveOptionalAuth()` so `CurrentUser` sees a logged-in viewer without blocking anon.
-  The Meilisearch adapter indexes only published items; the use-case
-  computes `locked`.
+  Search covers only published items; the use-case computes `locked`.
 - **Web:** `src/lib/subscription-api.ts` (credentialed get/activate/cancel); `UpgradePanel.tsx` +
   `/upgrade` page (login + flag gated); a 🔒 Premium badge on catalogue cards (`CatalogueBrowser`) and a
   locked upgrade panel on the detail page (`ContentDetail`) driven by `item.locked`.
@@ -47,7 +46,7 @@ Two seed items are `visibility: 'premium'` — `czerny-op-599-no-1` (with a gate
 ## Tests (verified)
 
 - **curl:** anon/learner → premium detail `locked:true`, no body/media (PDF withheld, `media:0`); after
-  `POST /me/subscription/activate` → `locked` gone, `media:1` with a presigned MinIO URL; `DELETE` →
+  `POST /me/subscription/activate` → `locked` gone, `media:1` with a media URL; `DELETE` →
   locked again; admin → `{premium:true, source:'staff'}` and unlocked; anon `GET /me/subscription` → 401;
   search flags both premium items `locked:true`.
 - **Web (browser):** learner sees a 🔒 Premium badge on both premium cards and a locked upgrade panel on

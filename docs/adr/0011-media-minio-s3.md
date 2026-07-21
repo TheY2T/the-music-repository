@@ -1,6 +1,6 @@
 # ADR 0011 — Media storage: MinIO (S3-compatible) + presigned URLs
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR 0048 (media is now stored in Postgres and served via the API)
 - **Context:** The catalogue hosts scores (PDF), audio, and images. We want a production-like path that
   swaps to real S3 later, without proxying large files through the API.
 - **Decision:** **MinIO** (S3-compatible) in the core compose; the API accesses it via the **AWS SDK v3**

@@ -52,16 +52,16 @@ Theming: **semantic tokens only** (3 aesthetics × light/dark, ADR 0021). Icons 
 
 | Dimension | Source | Change |
 |---|---|---|
-| Skill level | `content_items.difficulty` (int 1..10) — Meili `filterableAttribute` | Aggregate into bands in the facet UI; `CatalogueQuery` gains `difficultyMin/Max` |
+| Skill level | `content_items.difficulty` (int 1..10) — search filter | Aggregate into bands in the facet UI; `CatalogueQuery` gains `difficultyMin/Max` |
 | Format | `content_items.type` — already faceted | Promote `type` to a browse axis |
-| Genre / Instrument / Topic | SQL taxonomies + Meili slug facets | Reuse as axes |
-| Era | `details.era` → Meili `era` facet | Reuse as axis |
-| Collections | separate `collections` Meili index (ADR 0023) | Federate onto the catalogue hub as "path" cards; the **collections page** has its own parallel hub (`CollectionsHub`, flag `learning.collections-hub`) — axis switcher (Kind/Era/Instrument) + Hub/Browse toggle over `CollectionsGrid`, mirroring the catalogue |
-| **Composer** (shipped) | `details.composer` JSONB | Indexed verbatim into Meili (`toIndexDoc` + `filterableAttributes`); Composer facet |
+| Genre / Instrument / Topic | SQL taxonomies + slug facets | Reuse as axes |
+| Era | `details.era` → `era` facet | Reuse as axis |
+| Collections | separate collections search (ADR 0023) | Federate onto the catalogue hub as "path" cards; the **collections page** has its own parallel hub (`CollectionsHub`, flag `learning.collections-hub`) — axis switcher (Kind/Era/Instrument) + Hub/Browse toggle over `CollectionsGrid`, mirroring the catalogue |
+| **Composer** (shipped) | `details.composer` JSONB | Filterable via search; Composer facet |
 | **Key** (shipped) | `details.key` JSONB | **Normalized** to a primary key (`normalizeKey`, strips qualifiers after `(`/`,`/`;`) then indexed; Key facet |
 
-Meili `content_items`: filterable `genreSlugs, instrumentSlugs, topicSlugs, era, composer, key, type,
-difficulty, visibility`; sortable `title, difficulty`. Composer/key facet values are display strings
+Search filters on `genreSlugs, instrumentSlugs, topicSlugs, era, composer, key, type, difficulty,
+visibility`; sorts on `title, difficulty` (ADR 0048). Composer/key facet values are display strings
 (value == label, like era). The Composer/Key facet groups show the top ~12 values; selected values
 beyond that stay removable via the applied-filter chips.
 
@@ -69,7 +69,7 @@ beyond that stay removable via the applied-filter chips.
 
 - **Shipped:** `GET /catalogue/items` (`useSearchCatalogue`) gained `difficultyMin/difficultyMax` + `sort`
   query params (spec-first in `packages/api-spec/main.tsp` → `pnpm spec:generate`; `normalizeQuery` +
-  `CatalogueSearch` port + Meili range/sort). Hub shelves compose client-side via parallel calls with
+  `CatalogueSearch` port + range/sort). Hub shelves compose client-side via parallel calls with
   distinct `CatalogueQuery`s; collections shelf reuses `useSearchCollections`.
 - **Phase 4:** recommendations reuse the related-content overlap logic (`get-related-content.use-case`)
   generalised to a viewer's recent taxonomy.
@@ -85,7 +85,7 @@ is seeded in `seed-data.ts`. The axis switcher is self-explanatory and has no he
 Per ADR 0020 (Definition of Done):
 - **Unit** — `difficultyMin/Max` + `sort` normalisation (`catalogue.controller.test.ts`); band
   aggregation, shelf/axis builders, level→difficulty mapping (`catalogue-shelves.test.ts`); flagship
-  tools filter (`tools-taxonomy.test.ts`). Mock the `CatalogueSearch` port, never Drizzle/Meili.
+  tools filter (`tools-taxonomy.test.ts`). Mock the `CatalogueSearch` port, never Drizzle.
 - **Hook-driven islands** (Hub, grid, shelves) are verified end-to-end in the running app (dup-React
   blocks their unit rendering, per ADR 0020).
 

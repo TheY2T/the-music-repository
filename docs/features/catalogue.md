@@ -1,7 +1,8 @@
 # Feature: Catalogue (read path)
 
 - **Phase:** 1 · **Slice:** 1 · **Status:** shipped (public read-only)
-- **ADRs:** [0010 search](../adr/0010-search-meilisearch.md), [0011 media](../adr/0011-media-minio-s3.md)
+- **ADRs:** [0048 Postgres search & media](../adr/0048-postgres-search-and-media.md) (supersedes
+  [0010](../adr/0010-search-meilisearch.md) / [0011](../adr/0011-media-minio-s3.md))
 
 ## Purpose
 
@@ -19,7 +20,7 @@ Every item carries a rich Markdown `body_mdx` (rendered on the detail page) and 
 column of structured facts (`ContentDetails` in `catalogue/domain/content-item.ts`: `key`, `era`,
 `form`, `timeSignature`, `composer`, `composerDates`, `composedYear`, `related[]`). The detail page
 shows `key/era/form/composer/…` as a **Details panel**; `era` drives a catalogue **Era facet**
-(Meilisearch-derived, no SQL taxonomy table — `Folk` is normalised to `Traditional`); `related[]` is
+(search-derived from `details.era`, no SQL taxonomy table — `Folk` is normalised to `Traditional`); `related[]` is
 served as curated **"if you like this"** links (`GetRelatedContentUseCase` prefers them, falls back to
 the algorithmic overlap query). The `details` DTO omits `related` (it's an internal link list).
 
@@ -32,7 +33,8 @@ top of the base `seed-data.ts` metadata (and attaches `extraTags` that exist in 
 
 - `GET /catalogue/items` — `q`, `genre[]`, `instrument[]`, `topic[]`, `era[]`, `type`, `difficulty`,
   `page`, `pageSize` → `{ items, facets (incl. `eras`), total, page, pageSize }`.
-- `GET /catalogue/items/{slug}` → full detail with **presigned media URLs**; unknown slug → 404 problem+json.
+- `GET /catalogue/items/{slug}` → full detail with **media URLs** (served from the API's media route);
+  unknown slug → 404 problem+json.
 - `GET /catalogue/items/{slug}/related` *(Slice 3)* → `{ items }` — published items sharing
   genre/instrument/topic, ranked by overlap (excludes self; empty for unknown slug).
 
@@ -41,11 +43,12 @@ top of the base `seed-data.ts` metadata (and attaches `extraTags` that exist in 
 `apps/api/src/catalogue/` — domain (`ContentItem`, `ContentNotFoundError`), ports named for the
 capability (`ContentRepository`, `CatalogueSearch`, `MediaLibrary` — see ADR 0012), use-cases
 (`SearchCatalogue`, `GetContentBySlug`, `GetRelatedContent`), adapters named for the tech
-(`DrizzleContentRepository`, `MeilisearchCatalogueSearch`, `S3MediaLibrary`), `CatalogueReindexService`.
-**Search** goes to Meilisearch (facets + typo-tolerance); **detail** reads Postgres and presigns media
-from MinIO. **Related** scores taxonomy overlap over the published set in `ContentRepository.findRelated`.
+(`DrizzleContentRepository`, `PostgresCatalogueSearch`, `PostgresMediaLibrary`), `CatalogueReindexService`.
+**Search** filters and facets the published set in memory (ADR 0048); **detail** reads Postgres and
+serves media from the `/media` route. **Related** scores taxonomy overlap over the published set in
+`ContentRepository.findRelated`.
 
-**Search ranking (Slice 3):** `searchableAttributes` are ordered `title` › `summary` › taxonomy names
+**Search ranking:** text matches are weighted `title` › `summary` › taxonomy names
 (`genreNames`/`instrumentNames`/`topicNames`) — a title hit outranks a summary hit outranks a tag hit,
 and queries like "blues" or "ukulele" match by tag, not just title.
 
@@ -61,13 +64,13 @@ generated `@TheY2T/tmr-api-client` hooks. (Logged-in users also see favorite hea
 
 `apps/api/src/infrastructure/database/{seed,seed-data}.ts` — **25** public-domain / CC BY-SA items
 (piano/guitar/ukulele/bass across classical, jazz, blues, folk, ragtime, pop, rock) with taxonomy +
-generated sample PDFs uploaded to MinIO. Run: build, then `pnpm --filter @TheY2T/tmr-api db:seed`.
+generated sample media stored in `media_objects`. Run: build, then `pnpm --filter @TheY2T/tmr-api db:seed`.
 
 ## Verify
 
-`pnpm infra:up` (db + flagd + minio + meilisearch) → `db:migrate` → `db:seed`. Then:
-- `GET /catalogue/items?type=score&genre=classical` → faceted results; `?q=beethovn` still matches (typo-tolerant).
-- `/catalogue` browses with working facets; `/catalogue/{slug}` renders the PDF via a presigned URL.
+`pnpm infra:up` (db) → `db:migrate` → `db:seed`. Then:
+- `GET /catalogue/items?type=score&genre=classical` → faceted results; `?q=beethoven` matches by title/tag.
+- `/catalogue` browses with working facets; `/catalogue/{slug}` renders the score, media served from `/media`.
 
 ## Scope / follow-ups
 

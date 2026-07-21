@@ -20,17 +20,18 @@ Each feature is a folder (e.g. `health/`, and in Phase 1 `catalogue/`, `identity
 
 **Port naming (ADR 0012):** ports are named for the **domain capability** the core needs — never the
 technology, **no `Port` suffix** (e.g. `CatalogueSearch`, `MediaLibrary`, `ContentRepository`,
-`DatastoreHealthCheck`). Adapters are `<Technology><Capability>` (e.g. `MeilisearchCatalogueSearch`,
-`S3MediaLibrary`, `DrizzleDatastoreHealthCheck`).
+`DatastoreHealthCheck`). Adapters are `<Technology><Capability>` (e.g. `PostgresCatalogueSearch`,
+`PostgresMediaLibrary`, `DrizzleDatastoreHealthCheck`).
 
 Reference implementations: `src/health/` (`DatastoreHealthCheck` ← `DrizzleDatastoreHealthCheck`) and
 **`src/catalogue/`** (the full Phase-1 feature — `ContentRepository`/`CatalogueSearch`/`MediaLibrary`
-behind ports; Drizzle + Meilisearch + S3/MinIO adapters; spec-first DTOs; a domain error → problem+json).
+behind ports; all Postgres-backed adapters (ADR 0048); spec-first DTOs; a domain error → problem+json).
 Copy `catalogue/` when adding a feature; follow the `add-endpoint` skill.
 
-**Gotchas learned in catalogue:** `meilisearch` 0.59 is exports-only with class `Meilisearch` — needs a
-`paths` mapping in `tsconfig.json`. The FE serializes unselected array facets as `genre=` (empty string);
-the controller drops empties. MinIO presigned URLs use `S3_PUBLIC_ENDPOINT` so the browser can reach them.
+**Gotchas learned in catalogue:** the FE serializes unselected array facets as `genre=` (empty string);
+the controller drops empties. Search (`PostgresCatalogueSearch`/`PostgresCollectionSearch`) filters and
+facets in memory over the published set (ADR 0048); the reindex services' `indexAll` is a no-op. Media
+bytes live in `media_objects` and are served from `GET /media?key=…` (`PostgresMediaLibrary`).
 
 ## Data (Drizzle)
 
@@ -44,8 +45,8 @@ All authored as **files → `*:build` → committed seed bundle → `db:seed`**.
 **`author-content`** skill (+ `.claude/rules/content-authoring.md`); scores have the **`add-score`** skill.
 - **Catalogue** — `src/infrastructure/database/content/<slug>.md` → `content:build` → `seed-content.ts`.
   Rich `body_mdx` + `details` JSONB + curated `related` + a fenced ```embeds block (preconfigured tools,
-  spec-first `ContentEmbed`; **`embed-tool`** skill, ADR 0028). Era = Meili facet from `details.era` (no SQL
-  taxonomy). `docs/features/{catalogue,content-embeds}.md`.
+  spec-first `ContentEmbed`; **`embed-tool`** skill, ADR 0028). Era = search facet from `details.era` (no
+  SQL taxonomy). `docs/features/{catalogue,content-embeds}.md`.
 - **Collections** (`src/collections/`, ADR 0023) — `content/collections/<slug>.md` → `collections:build`.
   `Collection.itemSlugs` MUST stay **flattened, section-ordered** (progress reads it). Ports:
   `CollectionRepository`/`CollectionBookmarks`/`CollectionRatings`/`CollectionSearchIndex` + thin
@@ -88,7 +89,7 @@ Better Auth lives in `src/auth/` and owns `/api/auth/*`. Key rules:
   `password123` (**local only**).
 - **ESM interop:** `better-auth` + `@thallesp/nestjs-better-auth` are ESM-only; Node 22 `require(esm)`
   loads them from the CJS build, and classic-`Node` tsc resolves their types (verified). No `paths`
-  mapping needed (unlike meilisearch).
+  mapping needed.
 
 ## Admin CMS (Slice 2b, `src/authoring/`)
 
@@ -103,9 +104,9 @@ write-side features:
   `ZodValidationPipe` yields **422 problem+json with `errors[]`** on invalid bodies.
 - **RBAC:** every route uses `@RequirePermissions({ resource: [actions] })` (editor can't delete —
   `content:delete` is admin-only).
-- **Media upload = presigned PUT:** `MediaLibrary.presignPutUrl`; browser PUTs directly to MinIO
-  (default CORS is permissive; `ensureBucket` also does a **best-effort** `PutBucketCors`, swallowed
-  when the storage returns `NotImplemented` so it never breaks bucket setup / seeding).
+- **Media upload:** `MediaLibrary.presignPutUrl` returns the API's `/media?key=…` route; the browser
+  PUTs the bytes there (credentialed, RBAC `content:update`) and `PostgresMediaLibrary.putObject` stores
+  them in `media_objects`. Public reads stream from `GET /media?key=…` (ADR 0048).
 - **List responses wrap in `{ items }`** to match the contract; `POST .../publish` sets `@HttpCode(200)`
   (Nest defaults POST to 201).
 
@@ -131,9 +132,9 @@ The API owns the DB-backed UI-string catalogue served to `apps/web`, plus an adm
   **collections** (via `CollectionDetailAssembler`), and **help** read paths to overlay text fields when a
   read carries `?locale=`, falling back to base) + `EntityTranslationAuthoring` write side
   (`/admin/translations`, draft→publish→revisions + soft delete). Overlays applied by pure
-  `apply*Overlay` domain helpers. Any read module that overlays imports `TranslationsModule`. No
-  Catalogue↔Translations cycle: translation publish does **not** reindex, so Meilisearch search stays
-  base-locale until the per-locale index slice lands.
+  `apply*Overlay` domain helpers. Any read module that overlays imports `TranslationsModule`. Search
+  filters over the base fields, so catalogue/collections **search results stay base-locale** even when a
+  read carries `?locale=` (detail/related still overlay); per-locale search is a later slice.
 
 ## Monetization & Phase-6 (DEFERRED — flags OFF, ships free/public-domain)
 
