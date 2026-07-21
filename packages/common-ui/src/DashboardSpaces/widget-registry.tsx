@@ -9,9 +9,10 @@ import NoteWidget from './NoteWidget';
 const Metronome = lazy(() => import('@TheY2T/tmr-musickit-ui/Metronome'));
 const CircleOfFifths = lazy(() => import('@TheY2T/tmr-musickit-ui/CircleOfFifths'));
 const EarTrainer = lazy(() => import('@TheY2T/tmr-musickit-ui/EarTrainer'));
+const CollectionsWidget = lazy(() => import('./CollectionsWidget'));
 
 /** The widget types a practice space can host. Extended per phase as more widgets are adapted. */
-export type WidgetType = 'metronome' | 'circle-of-fifths' | 'ear-trainer' | 'note';
+export type WidgetType = 'metronome' | 'circle-of-fifths' | 'ear-trainer' | 'collections' | 'note';
 
 /** Ambient context every widget render gets (locale now; user/flags join as widgets need them). */
 export interface WidgetContext {
@@ -56,6 +57,14 @@ export const WIDGET_REGISTRY: Record<WidgetType, WidgetDefinition> = {
     defaultSize: { w: 4, h: 5 },
     minSize: { w: 3, h: 4 },
     render: () => <EarTrainer />,
+  },
+  collections: {
+    type: 'collections',
+    titleKey: 'spaces.widget.collections',
+    icon: 'graduation-cap',
+    defaultSize: { w: 4, h: 5 },
+    minSize: { w: 3, h: 3 },
+    render: (_config, ctx) => <CollectionsWidget locale={ctx.locale} />,
   },
   note: {
     type: 'note',

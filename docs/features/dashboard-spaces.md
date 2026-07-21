@@ -1,6 +1,6 @@
 # Feature: Dashboard spaces (customizable practice-space builder)
 
-- **Phase:** P0–P5 (incremental) · **Status:** in-progress (P0 foundations + P1 read-only render + P2 editor landed)
+- **Phase:** P0–P5 (incremental) · **Status:** in-progress (P0 foundations + P1 read-only render + P2 editor + P3 templates & coursework landed)
 - **Flag key:** `personalization.dashboard-spaces` (field `dashboardSpaces`; off by default)
 
 ## Purpose
@@ -34,8 +34,13 @@ and improve their playing, with light gamification and Pixi accents. Full plan +
   height grows it to the nearest horizontally-overlapping widget below (or the space's current bottom).
   Both are layout changes (`useSpaces.expandWidth`/`expandHeight`) and autosave. State lives in the `useSpaces` hook; `SpaceGrid` is the
   presentational grid (view + edit); `WidgetPalette` lists the addable types.
+- **New space from a template** — the New-space control is a picker (`SPACE_TEMPLATES` in `templates.ts`:
+  Blank, Daily warm-up, Theory reference, Guided courses); selecting one creates a space pre-seeded with
+  that template's widgets (`useSpaces.createSpace(template)`).
+- **Coursework widget** (`collections`) — a compact list of featured collections/guided paths read
+  through the `useSearchCollections` data port (`CollectionsWidget`), linking into `/collections/<slug>`.
 - Still to come: per-tool widget config panels (embed-field style), per-space animated background, and
-  starter templates (P3) + gamification (P4).
+  gamification (P4).
 - Templates (P3) seed a new space from a starter routine. Gamification (P4) surfaces XP/streak/badge
   accents. The builder replaces the legacy `StudioDashboard` at the P5 flip; until then it is only
   reachable when the flag is on.
@@ -79,12 +84,12 @@ Info View entries for the builder + widget palette land with the P2 editor.
 - **Unit:** `use-spaces.test.ts` covers the state + autosave logic that the editor drives — seed starter,
   add/remove widget, **`applyLayout` (move + resize)**, **`expandWidth`/`expandHeight`** (fill to
   neighbour or edge), update config, and create/rename/switch/delete spaces (incl. active reassignment) —
-  with the debounced `PUT` asserted.
+  with the debounced `PUT` asserted, plus **`createSpace(template)`** seeding a template's widgets.
 - **Component:** `SpaceGrid.test.tsx` (view-mode render, edit-mode note textarea + remove, empty state,
   the horizontal-scroll toggle, the expand-width/height buttons, and the drag-handle wiring: header
   carries `widget-drag-handle`, remove button carries `widget-no-drag`)
   and `SpacesBuilder.test.tsx` (enter edit → edit a note → debounced autosave; add a widget from the
-  palette → autosave) — both use a note-only space so the audio/WebGL tool widgets (lazy) stay out of the
+  palette incl. the coursework "Courses" option → autosave; create a space from the template picker) — both use a note-only space so the audio/WebGL tool widgets (lazy) stay out of the
   unit optimizer. Plus `react-grid-layout-compat.test.tsx` (ADR 0046 React-19 gate: an interactive grid
   mounts without the removed `findDOMNode`).
 - **E2E (P2):** `apps/web/e2e/dashboard-spaces.spec.ts` (create → arrange → save → reload) — the

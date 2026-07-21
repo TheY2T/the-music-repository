@@ -55,11 +55,28 @@ describe('SpacesBuilder island', () => {
 
     await user.click(screen.getByRole('button', { name: 'Edit' }));
     await user.click(screen.getByRole('button', { name: 'Add widget' }));
-    // The palette lists widget types as buttons; the "Note" button appends a second note widget.
+    // The palette lists widget types as buttons, including the coursework "Courses" widget.
+    expect(screen.getByRole('button', { name: 'Courses' })).toBeInTheDocument();
+    // The "Note" button appends a second note widget.
     await user.click(screen.getByRole('button', { name: 'Note' }));
 
     await waitFor(() => expect(save).toHaveBeenCalled(), { timeout: 2000 });
     const lastCall = save.mock.calls.at(-1)?.[0] as { spaces: { widgets: unknown[] }[] };
     expect(lastCall.spaces[0]?.widgets.length).toBe(2);
+  });
+
+  it('creates a new space from a template via the picker', async () => {
+    save.mockClear();
+    const user = userEvent.setup();
+    render(<SpacesBuilder locale="en" />);
+    await waitFor(() => expect(screen.getByText('hi')).toBeInTheDocument());
+
+    await user.click(screen.getByRole('button', { name: 'New space' }));
+    // Pick the empty "Blank" template so no tool/coursework widgets mount in the unit optimizer.
+    await user.click(await screen.findByRole('menuitem', { name: 'Blank' }));
+
+    await waitFor(() => expect(save).toHaveBeenCalled(), { timeout: 2000 });
+    const lastCall = save.mock.calls.at(-1)?.[0] as { spaces: unknown[] };
+    expect(lastCall.spaces.length).toBe(2);
   });
 });

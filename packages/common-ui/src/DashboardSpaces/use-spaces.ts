@@ -2,7 +2,7 @@ import { type Locale, t } from '@TheY2T/tmr-i18n';
 import { getDashboardSpaces, saveDashboardSpaces } from '@TheY2T/tmr-web-acl/dashboard-spaces-api';
 import type { DashboardSpace, DashboardWidget } from '@TheY2T/tmr-web-acl/dto';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { defaultSpace } from './templates';
+import { defaultSpace, type SpaceTemplate } from './templates';
 import { WIDGET_REGISTRY, type WidgetType } from './widget-registry';
 
 export type SaveStatus = 'idle' | 'saving' | 'saved';
@@ -191,15 +191,27 @@ export function useSpaces(locale: Locale) {
     [mutateActive],
   );
 
-  const createSpace = useCallback(() => {
-    const space: DashboardSpace = {
-      id: newId(),
-      name: t(locale, 'spaces.defaultName'),
-      icon: 'music',
-      widgets: [],
-    };
-    commit((prev) => [...prev, space], space.id);
-  }, [commit, locale]);
+  const createSpace = useCallback(
+    (template?: SpaceTemplate) => {
+      const widgets: DashboardWidget[] = (template?.widgets ?? []).map((w) => ({
+        id: newId(),
+        type: w.type,
+        x: w.x,
+        y: w.y,
+        w: w.w,
+        h: w.h,
+        config: w.config ?? (w.type === 'note' ? { text: '' } : {}),
+      }));
+      const space: DashboardSpace = {
+        id: newId(),
+        name: template ? t(locale, template.nameKey) : t(locale, 'spaces.defaultName'),
+        icon: template?.icon ?? 'music',
+        widgets,
+      };
+      commit((prev) => [...prev, space], space.id);
+    },
+    [commit, locale],
+  );
 
   const renameSpace = useCallback(
     (id: string, name: string) =>

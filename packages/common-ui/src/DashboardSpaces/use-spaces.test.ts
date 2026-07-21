@@ -12,6 +12,7 @@ vi.mock('@TheY2T/tmr-web-acl/dashboard-spaces-api', () => ({
   saveDashboardSpaces: (input: unknown) => save(input),
 }));
 
+import { SPACE_TEMPLATES } from './templates';
 import { useSpaces } from './use-spaces';
 
 const oneSpace = (widgets: unknown[] = []) => ({
@@ -116,6 +117,20 @@ describe('useSpaces', () => {
     act(() => result.current.deleteSpace(newId));
     expect(result.current.spaces).toHaveLength(1);
     expect(result.current.activeId).toBe('s1');
+  });
+
+  it('creates a space from a template, seeding its widgets with fresh ids', async () => {
+    const { result } = await mounted(oneSpace());
+    const warmup = SPACE_TEMPLATES.find((tpl) => tpl.key === 'warmup');
+    if (!warmup) throw new Error('warmup template missing');
+
+    act(() => result.current.createSpace(warmup));
+
+    expect(result.current.spaces).toHaveLength(2);
+    const active = result.current.active;
+    expect(active?.name).toBe('Daily warm-up');
+    expect(active?.widgets.map((w) => w.type)).toEqual(['metronome', 'ear-trainer', 'note']);
+    expect(active?.widgets.every((w) => typeof w.id === 'string' && w.id.length > 0)).toBe(true);
   });
 
   it('reassigns the active space when the active one is deleted', async () => {

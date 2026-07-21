@@ -1,7 +1,20 @@
 import { type Locale, t } from '@TheY2T/tmr-i18n';
-import { Button, Icon, Input, Select } from '@TheY2T/tmr-ui';
+import {
+  Button,
+  buttonVariants,
+  cn,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+  Icon,
+  Input,
+  Select,
+} from '@TheY2T/tmr-ui';
 import { useState } from 'react';
 import SpaceGrid from './SpaceGrid';
+import { SPACE_TEMPLATES } from './templates';
 import { useSpaces } from './use-spaces';
 import WidgetPalette from './WidgetPalette';
 
@@ -58,10 +71,23 @@ export default function SpacesBuilder({ locale }: { locale: Locale }) {
               ))}
             </Select>
           )}
-          <Button variant="outline" size="sm" onClick={spaces.createSpace}>
-            <Icon name="plus" className="size-4" />
-            {t(locale, 'spaces.newSpace')}
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'gap-2')}
+            >
+              <Icon name="plus" className="size-4" />
+              {t(locale, 'spaces.newSpace')}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuLabel>{t(locale, 'spaces.newSpaceFrom')}</DropdownMenuLabel>
+              {SPACE_TEMPLATES.map((tpl) => (
+                <DropdownMenuItem key={tpl.key} onSelect={() => spaces.createSpace(tpl)}>
+                  <Icon name={tpl.icon} className="size-4" />
+                  {t(locale, tpl.nameKey)}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           {editMode && spaces.spaces.length > 1 && (
             <Button variant="ghost" size="sm" onClick={confirmDelete}>
               <Icon name="trash" className="size-4" />
