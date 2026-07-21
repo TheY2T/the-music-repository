@@ -12,7 +12,13 @@ import { SegmentedToggle } from '@TheY2T/tmr-ui';
  * choice persists, then navigates to the same page in the target locale. The current locale comes
  * from the server as a prop so first paint matches — no context (islands don't share it).
  */
-export default function LanguageSwitcher({ locale }: { locale: Locale }) {
+export default function LanguageSwitcher({
+  locale,
+  className,
+}: {
+  locale: Locale;
+  className?: string;
+}) {
   function switchTo(target: Locale) {
     if (target === locale) {
       return;
@@ -26,6 +32,7 @@ export default function LanguageSwitcher({ locale }: { locale: Locale }) {
   return (
     <SegmentedToggle
       aria-label="Language"
+      className={className}
       value={locale}
       onValueChange={switchTo}
       options={LOCALES.map((option) => ({

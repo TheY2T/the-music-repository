@@ -1012,6 +1012,7 @@
   "blockEditor.field.start": "Start at (seconds)",
 
   "nav.settings": "Settings",
+  "nav.background": "Background options",
   "settings.title": "Settings",
   "settings.subtitle": "Personalize how your studio looks and feels.",
   "settings.background.title": "Dashboard background",

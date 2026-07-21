@@ -12,7 +12,8 @@ pass `locale`/`flags`/`user` down as **props**. **`Astro.locals` never leaves `a
 - **Music/learning UI** (tool islands, score UI, catalogue/collections/drills, music organisms) →
   `@TheY2T/tmr-musickit-ui` (`/organisms` for `ChordDiagram`/`StaffSequence`).
 - **Shell chrome + account/admin/billing/auth UI** → `@TheY2T/tmr-common-ui` (`SiteHeader`,
-  `astro/SiteFooter.astro`, `ThemeSwitcher`, dashboards, forms, admin block editor).
+  `astro/SiteFooter.astro`, `SettingsMenu` — the header gear gathering language + `ThemeSwitcher`
+  appearance controls, with a link to the dashboard-background page, dashboards, forms, admin block editor).
 - **Music logic** (theory/audio/soundfont, alphaTab engine, PixiJS scenes + `PixiCanvas`, chord data) →
   `@TheY2T/tmr-music-core`.
 - **Anti-corruption layer** (api-client wrappers, `auth-client`, `nav`, the `useApiData()` data-access
@@ -86,7 +87,8 @@ Each feature has a `docs/features/*.md`; the shell-level gotchas are in `.claude
 Tailwind v4 in CSS (`@import "tailwindcss"`), not a JS config. Tokens + `@theme inline` + the `.dark`
 variant come from `@TheY2T/tmr-design-tokens` (imported in `global.css`); its `@source` globs make library
 utilities generate — **if styles vanish, check them**. Two `<html>` hooks set pre-paint in `BaseLayout`:
-aesthetic → `data-theme="hybrid|heritage|warm-minimal"` and mode → `.dark`; switched by `ThemeSwitcher`.
+aesthetic → `data-theme="hybrid|heritage|warm-minimal"` and mode → `.dark`; switched from the
+`SettingsMenu` gear (via its `ThemeSwitcher` appearance controls).
 Storybook host: `@TheY2T/tmr-storybook` (port 6006).
 
 **Global chrome:** `BaseLayout.astro` renders `SiteHeader` + `SiteFooter.astro`. Nav is derived per-request

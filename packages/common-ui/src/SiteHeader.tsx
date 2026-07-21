@@ -19,14 +19,13 @@ import type { User } from '@TheY2T/tmr-web-acl';
 import { authClient } from '@TheY2T/tmr-web-acl/auth-client';
 import type { NavItem } from '@TheY2T/tmr-web-acl/nav';
 import { useState } from 'react';
-import LanguageSwitcher from './LanguageSwitcher';
-import ThemeSwitcher from './ThemeSwitcher';
+import SettingsMenu from './SettingsMenu';
 
 /**
  * Global site header — a single island root (React context for the account dropdown + mobile Sheet
- * can't cross islands, so the ThemeSwitcher / LanguageSwitcher are composed here as children rather
- * than as separate islands). Presentational data (nav items, user) is computed per request in
- * BaseLayout from `Astro.locals` and passed in. This is an app island, so it may call `t()`.
+ * can't cross islands, so the SettingsMenu is composed here as a child rather than as a separate
+ * island). Presentational data (nav items, user) is computed per request in BaseLayout from
+ * `Astro.locals` and passed in. This is an app island, so it may call `t()`.
  */
 export interface SiteHeaderProps {
   locale: Locale;
@@ -37,7 +36,8 @@ export interface SiteHeaderProps {
   i18nEnabled: boolean;
   /** Show the Info View toggle (contextual-help panel is enabled). */
   infoView?: boolean;
-  catalogueHref: string;
+  /** Link to the dashboard-background settings page, shown in the settings menu when set. */
+  backgroundHref?: string;
   homeHref: string;
 }
 
@@ -59,7 +59,7 @@ export default function SiteHeader({
   user,
   i18nEnabled,
   infoView,
-  catalogueHref,
+  backgroundHref,
   homeHref,
 }: SiteHeaderProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -104,15 +104,6 @@ export default function SiteHeader({
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          <a
-            href={catalogueHref}
-            aria-label={t(locale, 'nav.catalogue')}
-            title={t(locale, 'nav.catalogue')}
-            className="inline-flex size-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <Icon name="search" className="size-4" />
-          </a>
-
           {infoView && (
             <button
               type="button"
@@ -125,12 +116,7 @@ export default function SiteHeader({
             </button>
           )}
 
-          {i18nEnabled && (
-            <div className="hidden sm:block">
-              <LanguageSwitcher locale={locale} />
-            </div>
-          )}
-          <ThemeSwitcher locale={locale} />
+          <SettingsMenu locale={locale} i18nEnabled={i18nEnabled} backgroundHref={backgroundHref} />
 
           {/* Account menu (desktop) */}
           <div className="hidden md:block">
@@ -216,11 +202,6 @@ export default function SiteHeader({
                 )}
               </nav>
             </>
-          )}
-          {i18nEnabled && (
-            <div className="mt-auto pt-4">
-              <LanguageSwitcher locale={locale} />
-            </div>
           )}
         </SheetContent>
       </Sheet>

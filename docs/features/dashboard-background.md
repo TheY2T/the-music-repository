@@ -1,7 +1,8 @@
 # Animated dashboard background
 
 A personalizable, decorative PixiJS backdrop rendered behind the signed-in learner dashboard
-(`/dashboard`), configured from a new **Settings** surface (`/settings`). Purely visual — it never
+(`/dashboard`), configured from a dedicated **Settings** page (`/settings`); the header **Settings**
+gear (`SettingsMenu`) links to it for signed-in learners. Purely visual — it never
 carries information or interaction — and it degrades gracefully (no WebGL → nothing renders; reduced
 motion → a static frame). Built on the existing PixiJS layer (ADR 0022,
 `docs/features/pixi-visualization.md`).
@@ -24,9 +25,9 @@ motion → a static frame). Built on the existing PixiJS layer (ADR 0022,
 ## Architecture
 
 ```
-/settings (settings.astro, flag + auth gated)
-  └─ <BackgroundSettings client:only="react"> (draft style + intensity, live preview, Apply/Reset)
-        └─ <DashboardBackground style=… intensity=…/>   ← controlled = preview
+SettingsMenu (header gear) ──link──▶ /settings (settings.astro, flag + auth gated)
+                                       └─ <BackgroundSettings client:only="react"> (draft style + intensity, live preview, Apply/Reset)
+                                             └─ <DashboardBackground style=… intensity=…/>   ← controlled = preview
 
 /dashboard (dashboard.astro, flag + auth gated)
   └─ <DashboardBackground client:only="react"/>          ← uncontrolled = reads saved pref
@@ -55,7 +56,8 @@ motion → a static frame). Built on the existing PixiJS layer (ADR 0022,
 - **Flag:** `personalization.dashboard-background` (`FlagKeys.DashboardBackground`, default on) gates
   both the `/settings` route and the dashboard rendering, and the nav entry.
 - **i18n:** all strings under `settings.*` in `@TheY2T/tmr-i18n-locales` (English + `zh-Hans`).
-- **Nav:** a **Settings** account-nav item (`src/lib/nav.ts`, `sliders` icon), gated on the flag.
+- **Nav:** the header **Settings** gear (`SettingsMenu`) shows a "Dashboard background" link for
+  signed-in learners — `BaseLayout` passes `backgroundHref` when the flag is on and a user is present.
 
 ## Design system
 

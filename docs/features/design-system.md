@@ -83,7 +83,8 @@ with a light and a dark ("after-hours") mode, selected by two independent hooks 
 **font tokens** (`--font-display/-body/-mono`) and **texture tokens** (`--paper-overlay`, `--frame-width`,
 `--shadow-offset`, `--texture-grain`). Faces are self-hosted via `@fontsource` in
 `design-tokens/src/fonts.css` (no external CDN). The grain wash is painted by a `body::before` overlay in
-`apps/web`'s `global.css`. Switch via `apps/web/src/components/ThemeSwitcher.tsx` (in `SiteHeader`).
+`apps/web`'s `global.css`. Switch from the header gear (`SettingsMenu` → `ThemeSwitcher` appearance controls, both in
+`@TheY2T/tmr-common-ui`).
 **Any new component MUST use semantic tokens only** (no hardcoded palette colors) or it won't re-theme;
 music-notation SVG colors are the sole exception. Storybook's `preview.tsx` has Aesthetic + Mode toolbars.
 
