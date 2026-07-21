@@ -19,6 +19,9 @@ export const envSchema = z.object({
   BETTER_AUTH_URL: z.string().default('http://localhost:3000'),
   // Comma-separated. Origins allowed to send credentialed requests + accept auth cookies.
   TRUSTED_ORIGINS: z.string().default('http://localhost:4321,http://localhost:3000'),
+  // Set to the shared parent domain (e.g. `.themusicrepository.com`) when the web app and API run on
+  // sibling subdomains, so the session cookie is shared across them. Unset for local dev.
+  AUTH_COOKIE_DOMAIN: z.string().optional(),
 
   // Billing. When STRIPE_SECRET_KEY is set the Stripe checkout gateway is used; otherwise
   // the MockCheckoutGateway (dev/CI) — no keys, no charges. STRIPE_WEBHOOK_SECRET defaults to a
@@ -38,6 +41,9 @@ export const envSchema = z.object({
   // connection string (e.g. smtps://user:pass@host:465) to switch to real SMTP delivery.
   SMTP_URL: z.string().optional(),
   MAIL_FROM: z.string().default('The Music Repository <no-reply@localhost>'),
+
+  // Where contact-form submissions are delivered.
+  CONTACT_RECIPIENT: z.string().default('michael.hewett.87@gmail.com'),
 });
 
 export type Env = z.infer<typeof envSchema>;

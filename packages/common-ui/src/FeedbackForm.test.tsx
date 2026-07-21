@@ -37,7 +37,7 @@ describe('FeedbackForm island', () => {
 
   it('submits the feedback and shows a success message', async () => {
     render(<FeedbackForm locale="en" signedIn />);
-    fireEvent.change(screen.getByPlaceholderText("Tell us what's on your mind…"), {
+    fireEvent.change(screen.getByPlaceholderText("Tell me what's on your mind…"), {
       target: { value: 'Add a metronome' },
     });
     fireEvent.click(screen.getByText('Send feedback'));

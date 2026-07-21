@@ -34,7 +34,24 @@ const trustedOrigins = (
  */
 const mailer = createMailTransport({ smtpUrl: process.env.SMTP_URL, from: process.env.MAIL_FROM });
 
+/**
+ * When the web app and API run on sibling subdomains (e.g. `themusicrepository.com` +
+ * `api.themusicrepository.com`), set `AUTH_COOKIE_DOMAIN=.themusicrepository.com` so the session cookie
+ * is shared across them (`SameSite=None; Secure`). Unset for local dev, where the default host-only,
+ * lax cookie over http works.
+ */
+const cookieDomain = process.env.AUTH_COOKIE_DOMAIN?.trim();
+const crossSubDomain = cookieDomain
+  ? {
+      advanced: {
+        crossSubDomainCookies: { enabled: true, domain: cookieDomain },
+        defaultCookieAttributes: { sameSite: 'none' as const, secure: true },
+      },
+    }
+  : {};
+
 export const auth = betterAuth({
+  ...crossSubDomain,
   database: drizzleAdapter(db, { provider: 'pg', schema: authSchema }),
   secret: process.env.BETTER_AUTH_SECRET ?? 'dev-insecure-secret-change-me-please-32chars',
   baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:3000',

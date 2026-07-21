@@ -10,6 +10,7 @@ import { CatalogueModule } from './catalogue/catalogue.module';
 import { ClassroomsModule } from './classrooms/classrooms.module';
 import { CollectionsModule } from './collections/collections.module';
 import { validateEnv } from './config/env';
+import { ContactModule } from './contact/contact.module';
 import { DashboardSpacesModule } from './dashboard-spaces/dashboard-spaces.module';
 import { DemoModule } from './demo/demo.module';
 import { EntitlementsModule } from './entitlements/entitlements.module';
@@ -66,6 +67,7 @@ import { TranslationsModule } from './translations/translations.module';
     TranslationsModule,
     SupportModule,
     FeedbackModule,
+    ContactModule,
   ],
 })
 export class AppModule {}

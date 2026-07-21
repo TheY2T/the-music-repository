@@ -1,0 +1,34 @@
+---
+import ContactForm from '@TheY2T/tmr-common-ui/ContactForm';
+import { localizedPath, t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { breadcrumbJsonLd, pageTitle } from '@/lib/seo';
+
+const locale = Astro.locals.locale;
+const siteName = t(locale, 'site.name');
+const site = Astro.site;
+
+const abs = (path: string) => (site ? new URL(path, site).href : path);
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: t(locale, 'common.home'), url: abs(localizedPath(locale, '/')) },
+    { name: t(locale, 'contact.title'), url: abs(localizedPath(locale, '/contact')) },
+  ]),
+];
+---
+
+<BaseLayout
+  title={pageTitle(t(locale, 'contact.title'), siteName)}
+  description={t(locale, 'seo.contact.description')}
+  jsonLd={jsonLd}
+>
+  <PageShell
+    title={t(locale, 'contact.title')}
+    subtitle={t(locale, 'contact.subtitle')}
+    back={{ href: localizedPath(locale, '/'), label: t(locale, 'common.backHome') }}
+    maxWidth="max-w-2xl"
+  >
+    <ContactForm client:load locale={locale} />
+  </PageShell>
+</BaseLayout>

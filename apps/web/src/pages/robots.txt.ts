@@ -4,6 +4,12 @@ import type { APIRoute } from 'astro';
 // (admin, account, auth) are kept out of the index with a `noindex` meta tag rather than disallowed here,
 // so crawlers can still fetch the page and see the directive (a robots.txt disallow would hide it).
 export const GET: APIRoute = (context) => {
+  // Non-production environments (dev/uat) are private: disallow all crawling outright.
+  if ((process.env.APP_ENV ?? 'dev') !== 'production') {
+    return new Response('User-agent: *\nDisallow: /\n', {
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    });
+  }
   const sitemap = context.site
     ? new URL('/sitemap-index.xml', context.site).href
     : '/sitemap-index.xml';

@@ -32,6 +32,7 @@ export function createMailTransport({
         await transporter.sendMail({
           from,
           to: message.to,
+          replyTo: message.replyTo,
           subject: message.subject,
           text: message.text,
           html: message.html,

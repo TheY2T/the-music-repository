@@ -65,6 +65,9 @@
     },
     {
       "name": "feature-flags"
+    },
+    {
+      "name": "contact"
     }
   ],
   "paths": {
@@ -2983,6 +2986,38 @@
         "tags": [
           "collections"
         ]
+      }
+    },
+    "/contact": {
+      "post": {
+        "operationId": "submitContact",
+        "description": "Send a message to the site operators. Public (no auth).",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactMessageResult"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "contact"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactMessageInput"
+              }
+            }
+          }
+        }
       }
     },
     "/content": {
@@ -6312,6 +6347,50 @@
           }
         },
         "description": "Create/replace payload for an editorial collection (items/sections set separately)."
+      },
+      "ContactMessageInput": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "subject",
+          "message"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Sender's name."
+          },
+          "email": {
+            "type": "string",
+            "description": "Sender's email address, used as the reply-to."
+          },
+          "subject": {
+            "type": "string",
+            "description": "Message subject."
+          },
+          "message": {
+            "type": "string",
+            "description": "Message body."
+          },
+          "company": {
+            "type": "string",
+            "description": "Anti-spam honeypot — real users leave this empty. A filled value is accepted but dropped."
+          }
+        },
+        "description": "A public contact-form submission."
+      },
+      "ContactMessageResult": {
+        "type": "object",
+        "required": [
+          "ok"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          }
+        },
+        "description": "Acknowledgement that a contact message was accepted for delivery."
       },
       "ContentAdminList": {
         "type": "object",

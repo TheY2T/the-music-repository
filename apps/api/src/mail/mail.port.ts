@@ -3,6 +3,8 @@ export interface MailMessage {
   subject: string;
   text: string;
   html?: string;
+  /** Address replies should go to (e.g. the contact-form sender), when different from the `From`. */
+  replyTo?: string;
 }
 
 /**

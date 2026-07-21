@@ -2594,6 +2594,22 @@ export const GetCollectionWithProgressResponse = zod.object({
 
 
 /**
+ * Send a message to the site operators. Public (no auth).
+ */
+export const SubmitContactBody = zod.object({
+  "name": zod.string().describe('Sender\'s name.'),
+  "email": zod.string().describe('Sender\'s email address, used as the reply-to.'),
+  "subject": zod.string().describe('Message subject.'),
+  "message": zod.string().describe('Message body.'),
+  "company": zod.string().optional().describe('Anti-spam honeypot — real users leave this empty. A filled value is accepted but dropped.')
+}).describe('A public contact-form submission.')
+
+export const SubmitContactResponse = zod.object({
+  "ok": zod.boolean()
+}).describe('Acknowledgement that a contact message was accepted for delivery.')
+
+
+/**
  * List every content item (all statuses) for the admin table.
  */
 export const ListContentResponse = zod.object({

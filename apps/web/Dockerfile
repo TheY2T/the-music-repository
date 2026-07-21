@@ -16,6 +16,14 @@ COPY --from=pruner /app/out/full/ .
 # `../../tsconfig.base.json` (the real compilerOptions incl. esModuleInterop). Copy it back in so
 # tsc/tsup DTS builds resolve it — otherwise strict/interop options vanish and builds fail. ADR 0005.
 COPY --from=pruner /app/tsconfig.base.json ./tsconfig.base.json
+# Public config is baked into the client bundle + Astro.site at build time. Render passes service env
+# vars with matching ARG names as build args; locally they default to the dev origins.
+ARG PUBLIC_SITE_URL=http://localhost:4321
+ARG PUBLIC_API_BASE_URL=http://localhost:3000
+ARG PUBLIC_KOFI_USERNAME=""
+ENV PUBLIC_SITE_URL=$PUBLIC_SITE_URL \
+    PUBLIC_API_BASE_URL=$PUBLIC_API_BASE_URL \
+    PUBLIC_KOFI_USERNAME=$PUBLIC_KOFI_USERNAME
 RUN pnpm turbo run build --filter=@TheY2T/tmr-web
 
 FROM base AS runner

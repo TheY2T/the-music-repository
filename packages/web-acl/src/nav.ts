@@ -104,6 +104,7 @@ export function buildAccountNav(ctx: NavContext): NavItem[] {
 export function buildLegalNav(ctx: NavContext): NavItem[] {
   const items = [
     makeItem(ctx, 'about', '/about', 'nav.about', 'building'),
+    makeItem(ctx, 'contact', '/contact', 'nav.contact', 'mail'),
     makeItem(ctx, 'privacy', '/privacy', 'nav.privacy', 'shield'),
     makeItem(ctx, 'terms', '/terms', 'nav.terms', 'file-text'),
     makeItem(ctx, 'cookies', '/cookies', 'nav.cookies', 'cookie'),

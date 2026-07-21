@@ -47,7 +47,19 @@ const rawPath = new URL(Astro.request.url).pathname;
 const { path } = splitLocalePath(rawPath);
 const site = Astro.site;
 
-const seo = buildSeo({ locale, site, path, title, description, image, type, noindex, i18nEnabled });
+// Non-production environments are kept out of search indexes entirely, regardless of per-page intent.
+const isProduction = (process.env.APP_ENV ?? 'dev') === 'production';
+const seo = buildSeo({
+  locale,
+  site,
+  path,
+  title,
+  description,
+  image,
+  type,
+  noindex: noindex || !isProduction,
+  i18nEnabled,
+});
 
 // Global navigation model (see src/lib/nav.ts) — shared by the header, mobile drawer, and footer.
 const navCtx = { flags: Astro.locals.flags, user: Astro.locals.user, locale, path: rawPath };

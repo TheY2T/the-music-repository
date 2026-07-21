@@ -2563,3 +2563,38 @@ op deleteEnvironment(@path id: string): FlagEnvironmentAdminRow | {
   @statusCode statusCode: 404;
   @body body: ProblemDetails;
 };
+
+// ===================== Contact (ADR 0049) =====================
+// A public contact form that emails the site operators via the MailSender port (Resend over SMTP).
+
+/** A public contact-form submission. */
+model ContactMessageInput {
+  /** Sender's name. */
+  name: string;
+
+  /** Sender's email address, used as the reply-to. */
+  email: string;
+
+  /** Message subject. */
+  subject: string;
+
+  /** Message body. */
+  message: string;
+
+  /** Anti-spam honeypot — real users leave this empty. A filled value is accepted but dropped. */
+  company?: string;
+}
+
+/** Acknowledgement that a contact message was accepted for delivery. */
+model ContactMessageResult {
+  ok: boolean;
+}
+
+/** Send a message to the site operators. Public (no auth). */
+@route("/contact")
+@tag("contact")
+@post
+op submitContact(@body body: ContactMessageInput): {
+  @statusCode statusCode: 201;
+  @body body: ContactMessageResult;
+};
