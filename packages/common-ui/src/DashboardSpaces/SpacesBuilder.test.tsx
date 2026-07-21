@@ -55,8 +55,10 @@ describe('SpacesBuilder island', () => {
 
     await user.click(screen.getByRole('button', { name: 'Edit' }));
     await user.click(screen.getByRole('button', { name: 'Add widget' }));
-    // The palette lists widget types as buttons, including the coursework "Courses" widget.
+    // The palette lists widget types as buttons, including the coursework + gamification widgets.
     expect(screen.getByRole('button', { name: 'Courses' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Progress' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Achievements' })).toBeInTheDocument();
     // The "Note" button appends a second note widget.
     await user.click(screen.getByRole('button', { name: 'Note' }));
 

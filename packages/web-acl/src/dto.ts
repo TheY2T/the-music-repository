@@ -2,6 +2,8 @@
 // never from the generated api-client. This module is the only place outside the seam allowed to name
 // api-client for its data-transfer types.
 export type {
+  AchievementsInput,
+  AchievementsView,
   CollectionEntry,
   CollectionItemInput,
   CollectionProgressDetail,

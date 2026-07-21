@@ -1062,6 +1062,38 @@ op getDashboardSpaces(): DashboardSpacesView;
 @put
 op updateDashboardSpaces(@body body: DashboardSpacesInput): DashboardSpacesView;
 
+// ===================== Achievements (ADR 0045) =====================
+// A signed-in user's gamification standing — XP and unlocked badge keys — persisted per user. Derived
+// from learning activity (completion, streaks, practice time) and stored so it is stable across devices.
+
+/** The user's achievements (input body). */
+model AchievementsInput {
+  /** Total experience points. */
+  xp: int32;
+  /** Unlocked badge keys. */
+  badges: string[];
+}
+
+/** The user's achievements as returned to the client. */
+model AchievementsView {
+  xp: int32;
+  badges: string[];
+  /** Last-saved time (ISO-8601); empty when never saved. */
+  updatedAt: string;
+}
+
+/** The current user's achievements (zero XP + no badges when none saved). */
+@route("/me/achievements")
+@tag("achievements")
+@get
+op getAchievements(): AchievementsView;
+
+/** Create or replace the current user's achievements (idempotent upsert). */
+@route("/me/achievements")
+@tag("achievements")
+@put
+op updateAchievements(@body body: AchievementsInput): AchievementsView;
+
 // ===================== Progress (Phase 2) =====================
 // Per-user learning progress: completion, streaks, and practice time. Auth-gated in NestJS.
 

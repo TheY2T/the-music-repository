@@ -3724,6 +3724,31 @@ export const GetLocaleVersionsResponse = zod.object({
 
 
 /**
+ * The current user's achievements (zero XP + no badges when none saved).
+ */
+export const GetAchievementsResponse = zod.object({
+  "xp": zod.number(),
+  "badges": zod.array(zod.string()),
+  "updatedAt": zod.string().describe('Last-saved time (ISO-8601); empty when never saved.')
+}).describe('The user\'s achievements as returned to the client.')
+
+
+/**
+ * Create or replace the current user's achievements (idempotent upsert).
+ */
+export const UpdateAchievementsBody = zod.object({
+  "xp": zod.number().describe('Total experience points.'),
+  "badges": zod.array(zod.string()).describe('Unlocked badge keys.')
+}).describe('The user\'s achievements (input body).')
+
+export const UpdateAchievementsResponse = zod.object({
+  "xp": zod.number(),
+  "badges": zod.array(zod.string()),
+  "updatedAt": zod.string().describe('Last-saved time (ISO-8601); empty when never saved.')
+}).describe('The user\'s achievements as returned to the client.')
+
+
+/**
  * Open the customer billing portal — returns the URL to redirect to.
  */
 export const OpenBillingPortalResponse = zod.object({

@@ -232,6 +232,16 @@ export const dashboardSpaces = pgTable('dashboard_spaces', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+// --- Achievements: a signed-in user's gamification standing (XP + unlocked badge keys),
+//     derived from learning activity and persisted per user (ADR 0045). One row per user. ---
+export const achievements = pgTable('achievements', {
+  userId: text('user_id')
+    .primaryKey()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  data: jsonb('data').notNull().$type<{ xp: number; badges: string[] }>(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 // --- Collections: rich, chaptered groupings — courses / learning
 //     paths / syllabi / song lists. Editorial (curated) or user-created. ---
 export const collections = pgTable('collections', {

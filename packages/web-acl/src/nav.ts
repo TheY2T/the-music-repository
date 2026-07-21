@@ -78,6 +78,8 @@ export function buildAccountNav(ctx: NavContext): NavItem[] {
   const items: NavItem[] = [];
   if (flags.progress)
     items.push(makeItem(ctx, 'progress', '/me/progress', 'nav.myProgress', 'chart'));
+  if (flags.achievements)
+    items.push(makeItem(ctx, 'achievements', '/achievements', 'nav.achievements', 'trophy'));
   if (flags.favorites)
     items.push(makeItem(ctx, 'favorites', '/me/favorites', 'nav.myFavorites', 'heart'));
   if (flags.collectionBookmarks || flags.userCollections)

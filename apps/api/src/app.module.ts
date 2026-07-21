@@ -1,6 +1,7 @@
 import { PlatformModule } from '@TheY2T/tmr-nest-platform';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { AchievementsModule } from './achievements/achievements.module';
 import { AttemptsModule } from './attempts/attempts.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthoringModule } from './authoring/authoring.module';
@@ -56,6 +57,7 @@ import { TranslationsModule } from './translations/translations.module';
     ProgressionsModule,
     PreferencesModule,
     DashboardSpacesModule,
+    AchievementsModule,
     HelpModule,
     FaqModule,
     ReviewsModule,

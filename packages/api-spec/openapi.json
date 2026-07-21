@@ -34,6 +34,9 @@
       "name": "dashboard-spaces"
     },
     {
+      "name": "achievements"
+    },
+    {
       "name": "progress"
     },
     {
@@ -3954,6 +3957,58 @@
         ]
       }
     },
+    "/me/achievements": {
+      "get": {
+        "operationId": "getAchievements",
+        "description": "The current user's achievements (zero XP + no badges when none saved).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AchievementsView"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "achievements"
+        ]
+      },
+      "put": {
+        "operationId": "updateAchievements",
+        "description": "Create or replace the current user's achievements (idempotent upsert).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AchievementsView"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "achievements"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AchievementsInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/me/billing-portal": {
       "post": {
         "operationId": "openBillingPortal",
@@ -5127,6 +5182,53 @@
   },
   "components": {
     "schemas": {
+      "AchievementsInput": {
+        "type": "object",
+        "required": [
+          "xp",
+          "badges"
+        ],
+        "properties": {
+          "xp": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Total experience points."
+          },
+          "badges": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Unlocked badge keys."
+          }
+        },
+        "description": "The user's achievements (input body)."
+      },
+      "AchievementsView": {
+        "type": "object",
+        "required": [
+          "xp",
+          "badges",
+          "updatedAt"
+        ],
+        "properties": {
+          "xp": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "badges": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Last-saved time (ISO-8601); empty when never saved."
+          }
+        },
+        "description": "The user's achievements as returned to the client."
+      },
       "AssignContentInput": {
         "type": "object",
         "required": [

@@ -1,0 +1,26 @@
+---
+import AchievementsWidget from '@TheY2T/tmr-common-ui/DashboardSpaces/AchievementsWidget';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { t } from '@TheY2T/tmr-i18n';
+import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
+
+// Gamification surface: gated on the flag and requires a signed-in user (XP/badges are per-account).
+if (!Astro.locals.flags.achievements) {
+  return Astro.redirect('/');
+}
+if (!Astro.locals.user) {
+  return Astro.redirect('/signin?redirect=/achievements');
+}
+
+const locale = Astro.locals.locale;
+---
+
+<BaseLayout noindex title={`${t(locale, 'nav.achievements')} — ${t(locale, 'site.name')}`}>
+  <PageShell
+    title={t(locale, 'nav.achievements')}
+    subtitle={t(locale, 'achievements.subtitle')}
+    maxWidth="max-w-2xl"
+  >
+    <AchievementsWidget client:load locale={locale} />
+  </PageShell>
+</BaseLayout>

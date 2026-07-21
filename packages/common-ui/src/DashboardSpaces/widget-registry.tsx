@@ -10,9 +10,18 @@ const Metronome = lazy(() => import('@TheY2T/tmr-musickit-ui/Metronome'));
 const CircleOfFifths = lazy(() => import('@TheY2T/tmr-musickit-ui/CircleOfFifths'));
 const EarTrainer = lazy(() => import('@TheY2T/tmr-musickit-ui/EarTrainer'));
 const CollectionsWidget = lazy(() => import('./CollectionsWidget'));
+const ProgressWidget = lazy(() => import('./ProgressWidget'));
+const AchievementsWidget = lazy(() => import('./AchievementsWidget'));
 
 /** The widget types a practice space can host. Extended per phase as more widgets are adapted. */
-export type WidgetType = 'metronome' | 'circle-of-fifths' | 'ear-trainer' | 'collections' | 'note';
+export type WidgetType =
+  | 'metronome'
+  | 'circle-of-fifths'
+  | 'ear-trainer'
+  | 'collections'
+  | 'progress'
+  | 'achievements'
+  | 'note';
 
 /** Ambient context every widget render gets (locale now; user/flags join as widgets need them). */
 export interface WidgetContext {
@@ -65,6 +74,22 @@ export const WIDGET_REGISTRY: Record<WidgetType, WidgetDefinition> = {
     defaultSize: { w: 4, h: 5 },
     minSize: { w: 3, h: 3 },
     render: (_config, ctx) => <CollectionsWidget locale={ctx.locale} />,
+  },
+  progress: {
+    type: 'progress',
+    titleKey: 'spaces.widget.progress',
+    icon: 'chart',
+    defaultSize: { w: 6, h: 2 },
+    minSize: { w: 4, h: 2 },
+    render: (_config, ctx) => <ProgressWidget locale={ctx.locale} />,
+  },
+  achievements: {
+    type: 'achievements',
+    titleKey: 'spaces.widget.achievements',
+    icon: 'trophy',
+    defaultSize: { w: 4, h: 4 },
+    minSize: { w: 3, h: 3 },
+    render: (_config, ctx) => <AchievementsWidget locale={ctx.locale} />,
   },
   note: {
     type: 'note',

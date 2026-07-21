@@ -1,6 +1,7 @@
 # Feature: Dashboard spaces (customizable practice-space builder)
 
-- **Phase:** P0–P5 (incremental) · **Status:** in-progress (P0 foundations + P1 read-only render + P2 editor + P3 templates & coursework landed)
+- **Phase:** P0–P5 (incremental) · **Status:** in-progress (P0 foundations + P1 read-only render + P2 editor + P3 templates & coursework + P4 gamification landed)
+- **Gamification flag:** `learning.achievements` (field `achievements`; off by default)
 - **Flag key:** `personalization.dashboard-spaces` (field `dashboardSpaces`; off by default)
 
 ## Purpose
@@ -39,8 +40,12 @@ and improve their playing, with light gamification and Pixi accents. Full plan +
   that template's widgets (`useSpaces.createSpace(template)`).
 - **Coursework widget** (`collections`) — a compact list of featured collections/guided paths read
   through the `useSearchCollections` data port (`CollectionsWidget`), linking into `/collections/<slug>`.
-- Still to come: per-tool widget config panels (embed-field style), per-space animated background, and
-  gamification (P4).
+- **Gamification (P4)** — a **`progress`** widget (completed/streak/minutes StatTiles from `getProgress`)
+  and an **`achievements`** widget (XP, level, and badges). XP/level/badges are a pure derivation
+  (`achievements.ts` — `computeAchievements`) from the learner's activity and are persisted per user via a
+  new hexagonal **`achievements`** API (`GET`/`PUT /me/achievements`, flag `learning.achievements`, table
+  `achievements`), with a standalone **`/achievements`** page linked from the account menu. Still to come:
+  Pixi XP/level-up + streak-milestone effects and the per-space animated background.
 - Templates (P3) seed a new space from a starter routine. Gamification (P4) surfaces XP/streak/badge
   accents. The builder replaces the legacy `StudioDashboard` at the P5 flip; until then it is only
   reachable when the flag is on.
@@ -66,6 +71,15 @@ Both `@RequireAuth()` + method-level `@RequireFlagsEnabled(FlagKeys.DashboardSpa
 `preferences/`. Web reads/writes via `@TheY2T/tmr-web-acl/dashboard-spaces-api`
 (`getDashboardSpaces` / `saveDashboardSpaces`); DTO types re-exported from `@TheY2T/tmr-web-acl/dto`.
 
+Gamification (`@tag("achievements")`):
+
+- `GET /me/achievements` → `AchievementsView` (zero XP + no badges when never saved).
+- `PUT /me/achievements` (`AchievementsInput`) → `AchievementsView` (idempotent upsert).
+
+Both `@RequireAuth()` + method-level `@RequireFlagsEnabled(FlagKeys.Achievements)`. Hexagonal module
+`apps/api/src/achievements/` (port `LearnerAchievements` ← `DrizzleLearnerAchievements`). Web wrapper
+`@TheY2T/tmr-web-acl/achievements-api` (`getAchievements` / `saveAchievements`).
+
 ## Help topics
 
 Info View entries for the builder + widget palette land with the P2 editor.
@@ -85,6 +99,8 @@ Info View entries for the builder + widget palette land with the P2 editor.
   add/remove widget, **`applyLayout` (move + resize)**, **`expandWidth`/`expandHeight`** (fill to
   neighbour or edge), update config, and create/rename/switch/delete spaces (incl. active reassignment) —
   with the debounced `PUT` asserted, plus **`createSpace(template)`** seeding a template's widgets.
+  `achievements.test.ts` covers the XP/level/badge derivation. The `achievements` API use-cases + Drizzle
+  adapter have unit + Testcontainers integration tests (mirroring dashboard-spaces).
 - **Component:** `SpaceGrid.test.tsx` (view-mode render, edit-mode note textarea + remove, empty state,
   the horizontal-scroll toggle, the expand-width/height buttons, and the drag-handle wiring: header
   carries `widget-drag-handle`, remove button carries `widget-no-drag`)
