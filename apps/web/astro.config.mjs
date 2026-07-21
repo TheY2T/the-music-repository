@@ -24,6 +24,11 @@ export default defineConfig({
     // (Plugin lives in its own `@coderline/alphatab-vite` package; the main package's `/vite` subpath
     // is a broken re-export in 1.8.4.)
     plugins: [alphaTab(), tailwindcss()],
+    // react-grid-layout's dependency react-draggable calls `process.env.DRAGGABLE_DEBUG` in a debug
+    // logger; `process` is undefined in the browser, so a drag/resize start would throw
+    // `ReferenceError: process is not defined`. Replace the reference at build time so the guard is a
+    // plain `false`. See the dashboard-spaces editor (ADR 0045/0046).
+    define: { 'process.env.DRAGGABLE_DEBUG': 'false' },
     // The shared UI packages ship raw source (incl. `.astro`), which Astro must transform rather
     // than treat as externalized node_modules dependencies during SSR. See docs/features/design-system.md.
     ssr: {

@@ -5,6 +5,11 @@
 /* Design tokens + Tailwind theme mapping + `.dark` variant live in the shared package. */
 @import "@TheY2T/tmr-design-tokens/index.css";
 
+/* react-grid-layout — the dashboard-spaces editor grid. Item positions are inline styles; these
+   stylesheets add the drop placeholder + resize-handle affordances (themed to tokens below). */
+@import "react-grid-layout/css/styles.css";
+@import "react-resizable/css/styles.css";
+
 /* Tailwind v4 auto-detects sources only within this app's tree. Point it at the shared
    packages so utility classes used INSIDE their components are generated. If these globs are
    wrong, the library's styles silently go missing (see docs/features/design-system.md). */
@@ -73,4 +78,15 @@ body::before {
   --tw-prose-pre-bg: var(--foreground);
   --tw-prose-th-borders: var(--border);
   --tw-prose-td-borders: var(--border);
+}
+
+/* Dashboard-spaces editor: theme react-grid-layout's drop placeholder + resize handle to tokens. */
+.react-grid-item.react-grid-placeholder {
+  background: var(--color-primary);
+  opacity: 0.15;
+  border-radius: 0.5rem;
+}
+.react-grid-item > .react-resizable-handle::after {
+  border-right-color: var(--color-muted-foreground);
+  border-bottom-color: var(--color-muted-foreground);
 }

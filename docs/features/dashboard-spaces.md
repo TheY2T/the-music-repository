@@ -1,6 +1,6 @@
 # Feature: Dashboard spaces (customizable practice-space builder)
 
-- **Phase:** P0–P5 (incremental) · **Status:** in-progress (P0 foundations + P1 read-only render landed)
+- **Phase:** P0–P5 (incremental) · **Status:** in-progress (P0 foundations + P1 read-only render + P2 editor landed)
 - **Flag key:** `personalization.dashboard-spaces` (field `dashboardSpaces`; off by default)
 
 ## Purpose
@@ -21,9 +21,21 @@ and improve their playing, with light gamification and Pixi accents. Full plan +
   12-column `react-grid-layout` (ADR 0046). Widget types live in a registry (`widget-registry.tsx`:
   type → lazy component + default size + icon/title); tool widgets lazy-load their islands. P1 ships
   `metronome`, `circle-of-fifths`, `ear-trainer`, and a net-new `note` widget.
-- In edit mode (P2) they add widgets from a palette (grouped by the tool taxonomy, gated by the
-  viewer's flags), move/resize them, configure each (embed-field style), and manage multiple named
-  spaces with their own icon + animated background.
+- **Edit mode** (`SpacesBuilder` island) toggles the grid interactive: drag (by the whole card header)
+  and resize widgets (bottom-right corner), remove them (card ✕), add from the **widget palette**, edit
+  the Note inline, rename the space, and switch/create/delete spaces. Every change **autosaves**
+  (debounced `PUT`, with a Saving…/Saved indicator).
+- Each widget header carries a **horizontal-scroll toggle** (ruler icon, available in view and edit
+  modes) that flips the widget body between clipped (`overflow-x-hidden`) and scrollable
+  (`overflow-x-auto`); the choice is stored per widget in its `config.hScroll` and persists like any
+  other config.
+- In edit mode each header also has **Expand to fill width** (⟷) and **Expand to fill height** (↕):
+  width grows the widget to the nearest vertically-overlapping widget on its right (or the grid edge);
+  height grows it to the nearest horizontally-overlapping widget below (or the space's current bottom).
+  Both are layout changes (`useSpaces.expandWidth`/`expandHeight`) and autosave. State lives in the `useSpaces` hook; `SpaceGrid` is the
+  presentational grid (view + edit); `WidgetPalette` lists the addable types.
+- Still to come: per-tool widget config panels (embed-field style), per-space animated background, and
+  starter templates (P3) + gamification (P4).
 - Templates (P3) seed a new space from a starter routine. Gamification (P4) surfaces XP/streak/badge
   accents. The builder replaces the legacy `StudioDashboard` at the P5 flip; until then it is only
   reachable when the flag is on.
@@ -55,13 +67,26 @@ Info View entries for the builder + widget palette land with the P2 editor.
 
 ## Tests
 
+**Definition of Done for this feature:** every builder capability ships with accompanying test coverage
+(regression guard) — the mutation/persistence logic in `useSpaces` (unit) and the editor wiring in
+`SpaceGrid`/`SpacesBuilder` (component). Reinforces the repo-wide tests-as-DoD rule (root `CLAUDE.md`).
+
+
 - **Unit:** `get`/`update` use-cases with a mocked `DashboardSpaces` port
   (`apps/api/src/dashboard-spaces/application/use-cases/*.test.ts`).
 - **Integration:** `DrizzleDashboardSpaces` against Testcontainers Postgres
   (`*.integration.test.ts`) — null-before-save, upsert round-trip, idempotent replace.
-- **Component:** `SpaceView.test.tsx` (renders a note-only space's widgets, i18n-by-prop; the audio/
-  WebGL tool widgets are lazy so they stay out of the unit optimizer) + `react-grid-layout-compat.test.tsx`
-  (ADR 0046 React-19 gate: an interactive grid mounts without the removed `findDOMNode`).
+- **Unit:** `use-spaces.test.ts` covers the state + autosave logic that the editor drives — seed starter,
+  add/remove widget, **`applyLayout` (move + resize)**, **`expandWidth`/`expandHeight`** (fill to
+  neighbour or edge), update config, and create/rename/switch/delete spaces (incl. active reassignment) —
+  with the debounced `PUT` asserted.
+- **Component:** `SpaceGrid.test.tsx` (view-mode render, edit-mode note textarea + remove, empty state,
+  the horizontal-scroll toggle, the expand-width/height buttons, and the drag-handle wiring: header
+  carries `widget-drag-handle`, remove button carries `widget-no-drag`)
+  and `SpacesBuilder.test.tsx` (enter edit → edit a note → debounced autosave; add a widget from the
+  palette → autosave) — both use a note-only space so the audio/WebGL tool widgets (lazy) stay out of the
+  unit optimizer. Plus `react-grid-layout-compat.test.tsx` (ADR 0046 React-19 gate: an interactive grid
+  mounts without the removed `findDOMNode`).
 - **E2E (P2):** `apps/web/e2e/dashboard-spaces.spec.ts` (create → arrange → save → reload) — the
   flag-on smoke lands with P2, when per-request SSR flag control is added (the snapshot is fetched
   server-side, so `page.route` can't toggle it and MSW handlers are global per run). Pixi/audio widget
