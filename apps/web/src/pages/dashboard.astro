@@ -1,5 +1,6 @@
 ---
 import DashboardBackground from '@TheY2T/tmr-common-ui/DashboardBackground';
+import DashboardSpaces from '@/components/islands/DashboardSpaces';
 import StudioDashboard from '@/components/islands/StudioDashboard';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { t } from '@TheY2T/tmr-i18n';
@@ -17,6 +18,8 @@ const locale = Astro.locals.locale;
 const showFavorites = Astro.locals.flags.favorites;
 const showBackground = Astro.locals.flags.dashboardBackground;
 const showMonetization = Astro.locals.flags.monetizationMessaging;
+// The customizable practice-space builder replaces the fixed shelves when enabled.
+const showSpaces = Astro.locals.flags.dashboardSpaces;
 ---
 
 <BaseLayout noindex title={`${t(locale, 'dashboard.title')} — ${t(locale, 'site.name')}`}>
@@ -35,12 +38,18 @@ const showMonetization = Astro.locals.flags.monetizationMessaging;
         subtitle={t(locale, 'dashboard.subtitle')}
         maxWidth="max-w-6xl"
       >
-        <StudioDashboard
-          client:load
-          locale={locale}
-          showFavorites={showFavorites}
-          showMonetization={showMonetization}
-        />
+        {
+          showSpaces ? (
+            <DashboardSpaces client:load authenticated locale={locale} />
+          ) : (
+            <StudioDashboard
+              client:load
+              locale={locale}
+              showFavorites={showFavorites}
+              showMonetization={showMonetization}
+            />
+          )
+        }
       </PageShell>
     </div>
   </div>

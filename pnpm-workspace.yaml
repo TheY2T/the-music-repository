@@ -98,6 +98,12 @@ catalog:
   "class-variance-authority": ^0.7.1
   "lucide-react": ^0.545.0
 
+  # Dashboard-spaces WYSIWYG grid engine (ADR 0046): draggable/resizable 2-D widget layout.
+  # Classic STRML API (WidthProvider HOC, cols/rowHeight/isDraggable); v1.3+ uses nodeRef so it is
+  # React 19 safe (no findDOMNode). See the compat smoke test in common-ui.
+  "react-grid-layout": ^1.5.2
+  "@types/react-grid-layout": ^1.3.5
+
   # --- PixiJS rendering layer (ADR 0022): client-only WebGL canvas for interactive tools,
   # audio-reactive visualizers, notation overlay + ambient polish. @pixi/react v8 peers pixi.js
   # ^8.2.6 + react >=19. Cataloged so apps/web (and later @TheY2T/tmr-ui) resolve ONE copy —

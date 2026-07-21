@@ -1,6 +1,6 @@
 # Feature: Dashboard spaces (customizable practice-space builder)
 
-- **Phase:** P0–P5 (incremental) · **Status:** in-progress (P0 foundations landed)
+- **Phase:** P0–P5 (incremental) · **Status:** in-progress (P0 foundations + P1 read-only render landed)
 - **Flag key:** `personalization.dashboard-spaces` (field `dashboardSpaces`; off by default)
 
 ## Purpose
@@ -14,7 +14,13 @@ and improve their playing, with light gamification and Pixi accents. Full plan +
 
 ## UX behaviour
 
-- A learner opens their active space: a responsive grid of widget cards.
+- A learner opens their active space: a responsive grid of widget cards. When they have saved nothing
+  yet, a starter space (tempo + ear training + circle-of-fifths + a note) is shown. Widgets render live;
+  the grid itself is read-only until the editor lands (P2).
+- The read-only grid is `SpaceView` (`@TheY2T/tmr-common-ui/DashboardSpaces/SpaceView`), rendered on a
+  12-column `react-grid-layout` (ADR 0046). Widget types live in a registry (`widget-registry.tsx`:
+  type → lazy component + default size + icon/title); tool widgets lazy-load their islands. P1 ships
+  `metronome`, `circle-of-fifths`, `ear-trainer`, and a net-new `note` widget.
 - In edit mode (P2) they add widgets from a palette (grouped by the tool taxonomy, gated by the
   viewer's flags), move/resize them, configure each (embed-field style), and manage multiple named
   spaces with their own icon + animated background.
@@ -53,8 +59,13 @@ Info View entries for the builder + widget palette land with the P2 editor.
   (`apps/api/src/dashboard-spaces/application/use-cases/*.test.ts`).
 - **Integration:** `DrizzleDashboardSpaces` against Testcontainers Postgres
   (`*.integration.test.ts`) — null-before-save, upsert round-trip, idempotent replace.
-- **Component/E2E (P1+):** the builder island (i18n-by-prop) + `apps/web/e2e/dashboard-spaces.spec.ts`
-  (create → arrange → save → reload); Pixi/audio widgets covered by E2E only.
+- **Component:** `SpaceView.test.tsx` (renders a note-only space's widgets, i18n-by-prop; the audio/
+  WebGL tool widgets are lazy so they stay out of the unit optimizer) + `react-grid-layout-compat.test.tsx`
+  (ADR 0046 React-19 gate: an interactive grid mounts without the removed `findDOMNode`).
+- **E2E (P2):** `apps/web/e2e/dashboard-spaces.spec.ts` (create → arrange → save → reload) — the
+  flag-on smoke lands with P2, when per-request SSR flag control is added (the snapshot is fetched
+  server-side, so `page.route` can't toggle it and MSW handlers are global per run). Pixi/audio widget
+  render paths are covered by E2E only.
 - Run: `pnpm --filter @TheY2T/tmr-api test` (unit) · `pnpm test:integration` (Docker) ·
   `pnpm spec:generate` (contract) · web via the `run-local` skill with the flag on in
   `/admin/feature-flags`.
