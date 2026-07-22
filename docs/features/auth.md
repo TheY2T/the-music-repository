@@ -4,8 +4,11 @@
 - **Flag keys** (from `@TheY2T/tmr-flags`):
   - `auth.enabled` — gates the web auth entry points (sign-in / account links). Default on.
   - `auth.signup` — gates the self-service sign-up page + the "create an account" link. Default on.
-  - `auth.social` — gates the social sign-in buttons (Google/Facebook). Default off (needs
+  - `auth.social` — gates the Google/Facebook social sign-in buttons. Default off (needs
     provider credentials to function).
+  - `auth.microsoft` — gates the personal Microsoft account button (`consumers` tenant). Default off.
+  - `auth.microsoft-work` — gates the work/school (organizational) Microsoft button (Entra ID). Default
+    off; intended to switch on once classroom features land.
 
 ## Purpose
 
@@ -44,7 +47,9 @@ owns all of them (never run `better-auth migrate`).
 
 Better Auth owns `/api/auth/*` (**not** in our TypeSpec) — e.g. `POST /api/auth/sign-up/email`,
 `POST /api/auth/sign-in/email`, `POST /api/auth/sign-in/social` + the OAuth callback
-`GET /api/auth/callback/<provider>`, `GET /api/auth/get-session`, `POST /api/auth/sign-out`, and the
+`GET /api/auth/callback/<provider>`, `POST /api/auth/sign-in/oauth2` + its callback
+`GET /api/auth/oauth2/callback/<providerId>` (generic-OAuth providers),
+`GET /api/auth/get-session`, `POST /api/auth/sign-out`, and the
 password-reset / email-verification routes: `POST /api/auth/request-password-reset`,
 `POST /api/auth/reset-password`, `POST /api/auth/send-verification-email`, `GET /api/auth/verify-email`.
 Our thin surface:
@@ -76,24 +81,53 @@ The three recovery forms (`ForgotPasswordForm`, `ResetPasswordForm`, `VerifyEmai
 `@TheY2T/tmr-common-ui` and report outcomes neutrally to avoid account enumeration. `SignUpForm` (also in
 common-ui) creates accounts and shows the verify-email confirmation.
 
-## Social sign-in (Google, Facebook)
+## Social sign-in (Google, Facebook, Microsoft)
 
-Configured under `socialProviders` in `apps/api/src/auth/better-auth.ts`; each provider is registered only
-when its credentials are set, so leaving them unset simply hides that button. The browser calls
-`authClient.signIn.social({ provider, callbackURL })` from the shared `SocialSignInButtons`
-(`@TheY2T/tmr-common-ui`), rendered with the `SocialButton` brand-mark component (`@TheY2T/tmr-ui`).
+Configured in `apps/api/src/auth/better-auth.ts`; each provider is registered only when its credentials
+are set, so leaving them unset simply hides that button. `SocialSignInButtons` (`@TheY2T/tmr-common-ui`)
+renders one button per provider using the `SocialButton` brand-mark component (`@TheY2T/tmr-ui`), gated
+per provider by the `showSocial` / `showMicrosoft` / `showMicrosoftWork` props the sign-in and sign-up
+pages derive from the flags.
 
 - **Callback URI** (register in each provider's developer console):
-  `${BETTER_AUTH_URL}/api/auth/callback/<google|facebook>`.
-- **Google / Facebook** — set `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` and
-  `FACEBOOK_CLIENT_ID`/`FACEBOOK_CLIENT_SECRET`.
-- **Account linking** — `account.accountLinking.enabled` links a social sign-in to an existing account
-  when the provider reports the email verified; `trustedProviders: ['google']` additionally links Google
-  without a verification check. Facebook uses the verified-email path only.
+  `${BETTER_AUTH_URL}/api/auth/callback/<google|facebook|microsoft>` for the built-in social providers,
+  and `${BETTER_AUTH_URL}/api/auth/oauth2/callback/microsoft-entra-id` for work/school Microsoft.
+- **Google / Facebook** — built-in `socialProviders`; the browser calls
+  `authClient.signIn.social({ provider, callbackURL })`. Set `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`
+  and `FACEBOOK_CLIENT_ID`/`FACEBOOK_CLIENT_SECRET`.
+- **Account linking** — `account.accountLinking.enabled` links a sign-in to an existing account when the
+  provider reports the email verified; `trustedProviders: ['google']` additionally links Google without a
+  verification check. Facebook and both Microsoft flows use the verified-email path only.
 - **Apple (Sign in with Apple) is deferred** — it requires the paid Apple Developer Program membership
   plus domain verification and a signed-JWT client secret (ADR 0050). Adding it later is a config-only
   change: register the `apple` provider + credentials in `better-auth.ts`, add `apple` to `SocialProvider`
   in `@TheY2T/tmr-ui`, and add a `social.continueApple` string.
+
+### Microsoft (personal vs work/school)
+
+Microsoft sign-in is two independent flows behind two flags, so personal accounts can go live before
+work/school (ADR 0052). Both are off by default and register only when their own credentials are set.
+
+- **Personal accounts** (`auth.microsoft`) — the built-in `microsoft` social provider with
+  `tenantId: 'consumers'`, accepting @outlook/@hotmail/@live accounts. Started via
+  `authClient.signIn.social({ provider: 'microsoft' })`; callback `.../api/auth/callback/microsoft`.
+  Set `MICROSOFT_CLIENT_ID` / `MICROSOFT_CLIENT_SECRET`.
+- **Work/school (organizational) accounts** (`auth.microsoft-work`) — the generic-OAuth
+  `microsoftEntraId` provider (providerId `microsoft-entra-id`) with `tenantId` from
+  `MICROSOFT_WORK_TENANT_ID` (default `organizations`; a directory GUID scopes sign-in to one
+  organization). Started via `authClient.signIn.oauth2({ providerId: 'microsoft-entra-id' })` — the
+  `genericOAuth` server plugin + the `genericOAuthClient` browser plugin surface this. Callback
+  `.../api/auth/oauth2/callback/microsoft-entra-id`. Set `MICROSOFT_WORK_CLIENT_ID` /
+  `MICROSOFT_WORK_CLIENT_SECRET` (+ optional `MICROSOFT_WORK_TENANT_ID`).
+
+**Azure setup** — two separate app registrations in Microsoft Entra ID:
+- *Personal*: supported account types "Personal Microsoft accounts only"; redirect URI
+  `${BETTER_AUTH_URL}/api/auth/callback/microsoft`.
+- *Work/school*: "Accounts in any organizational directory"; redirect URI
+  `${BETTER_AUTH_URL}/api/auth/oauth2/callback/microsoft-entra-id`.
+Each app gets a client secret; store the values locally in `.env` and per environment in Render's `dev`
+group. Because both flags default off, the buttons don't appear in the hermetic E2E run — verify a flow
+by enabling its flag in `/admin/feature-flags` (or locally) against a real Azure app registration.
 
 ## API rate limiting
 

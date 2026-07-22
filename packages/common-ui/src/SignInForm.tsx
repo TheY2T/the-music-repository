@@ -9,11 +9,15 @@ export default function SignInForm({
   locale,
   showSignup = false,
   showSocial = false,
+  showMicrosoft = false,
+  showMicrosoftWork = false,
 }: {
   redirectTo?: string;
   locale: Locale;
   showSignup?: boolean;
   showSocial?: boolean;
+  showMicrosoft?: boolean;
+  showMicrosoftWork?: boolean;
 }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -81,14 +85,20 @@ export default function SignInForm({
         </div>
       </form>
 
-      {showSocial ? (
+      {showSocial || showMicrosoft || showMicrosoftWork ? (
         <div className="space-y-4">
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
             <span className="h-px flex-1 bg-border" />
             {t(locale, 'social.orDivider')}
             <span className="h-px flex-1 bg-border" />
           </div>
-          <SocialSignInButtons locale={locale} callbackURL={redirectTo} />
+          <SocialSignInButtons
+            locale={locale}
+            callbackURL={redirectTo}
+            showSocial={showSocial}
+            showMicrosoft={showMicrosoft}
+            showMicrosoftWork={showMicrosoftWork}
+          />
         </div>
       ) : null}
     </Card>

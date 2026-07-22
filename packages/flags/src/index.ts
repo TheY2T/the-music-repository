@@ -23,8 +23,12 @@ export const FlagKeys = {
   AuthEnabled: 'auth.enabled',
   /** Surfaces the public self-service sign-up page + the "create an account" link. */
   AuthSignup: 'auth.signup',
-  /** Surfaces the social sign-in buttons (Google/Facebook) on the sign-in + sign-up forms. */
+  /** Surfaces the Google/Facebook social sign-in buttons on the sign-in + sign-up forms. */
   AuthSocial: 'auth.social',
+  /** Surfaces the personal-Microsoft-account sign-in button on the sign-in + sign-up forms. */
+  AuthMicrosoft: 'auth.microsoft',
+  /** Surfaces the work/school (organizational) Microsoft sign-in button; on once classroom features land. */
+  AuthMicrosoftWork: 'auth.microsoft-work',
   /** Slice 2b — gates the admin authoring CMS (`/admin` content management). */
   AdminCms: 'admin.cms',
   /** WYSIWYG block editor (ADR 0030) — swaps the Markdown textarea for the TipTap editor in the CMS. */
@@ -243,6 +247,8 @@ export const FlagDefaults = {
   [FlagKeys.AuthEnabled]: true,
   [FlagKeys.AuthSignup]: true,
   [FlagKeys.AuthSocial]: true,
+  [FlagKeys.AuthMicrosoft]: false,
+  [FlagKeys.AuthMicrosoftWork]: false,
   [FlagKeys.AdminCms]: true,
   [FlagKeys.BlockEditor]: true,
   [FlagKeys.BlockEditorPreview]: true,

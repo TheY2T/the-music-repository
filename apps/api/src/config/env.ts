@@ -30,6 +30,15 @@ export const envSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string().optional(),
   FACEBOOK_CLIENT_ID: z.string().optional(),
   FACEBOOK_CLIENT_SECRET: z.string().optional(),
+  // Personal Microsoft accounts (`consumers` tenant); callback `.../api/auth/callback/microsoft`.
+  MICROSOFT_CLIENT_ID: z.string().optional(),
+  MICROSOFT_CLIENT_SECRET: z.string().optional(),
+  // Work/school (organizational) Microsoft accounts via Entra ID; callback
+  // `.../api/auth/oauth2/callback/microsoft-entra-id`. `MICROSOFT_WORK_TENANT_ID` defaults to
+  // `organizations` (any work/school directory); set a directory GUID to scope to one organization.
+  MICROSOFT_WORK_CLIENT_ID: z.string().optional(),
+  MICROSOFT_WORK_CLIENT_SECRET: z.string().optional(),
+  MICROSOFT_WORK_TENANT_ID: z.string().optional(),
 
   // Better Auth API rate limiting. Unset ⇒ on in production, off in development/test. Set 'true'/'false'
   // to force it. State persists in Postgres (the `rate_limit` table) so limits hold across instances.

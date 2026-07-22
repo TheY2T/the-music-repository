@@ -55,7 +55,8 @@ services:
       - key: AUTH_RATE_LIMIT_ENABLED
         value: "true"
       # Shared dev group carries SMTP_URL + MAIL_FROM (Resend) and the social-provider secrets
-      # (GOOGLE_/FACEBOOK_CLIENT_ID+SECRET — set them there, not inline, since they're secrets).
+      # (GOOGLE_/FACEBOOK_/MICROSOFT_CLIENT_ID+SECRET and MICROSOFT_WORK_CLIENT_ID+SECRET+TENANT_ID —
+      # set them there, not inline, since they're secrets).
       - fromGroup: dev
 
   # --- Web (Astro SSR) ---

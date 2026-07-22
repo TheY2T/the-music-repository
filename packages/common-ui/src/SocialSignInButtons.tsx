@@ -3,28 +3,84 @@ import { SocialButton, type SocialProvider } from '@TheY2T/tmr-ui';
 import { authClient } from '@TheY2T/tmr-web-acl/auth-client';
 import { useState } from 'react';
 
+/** Which flag gates a provider button. */
+type ProviderFlag = 'social' | 'microsoft' | 'microsoft-work';
+
+/** How a provider's sign-in flow is started through the Better Auth client. */
+type ProviderStart =
+  | { kind: 'social'; provider: SocialProvider }
+  | { kind: 'oauth2'; providerId: string };
+
+interface ProviderConfig {
+  /** Brand mark shown on the button. */
+  brand: SocialProvider;
+  labelKey: MessageKey;
+  flag: ProviderFlag;
+  start: ProviderStart;
+}
+
 const PROVIDERS = [
-  { provider: 'google', labelKey: 'social.continueGoogle' },
-  { provider: 'facebook', labelKey: 'social.continueFacebook' },
-] as const satisfies ReadonlyArray<{ provider: SocialProvider; labelKey: MessageKey }>;
+  {
+    brand: 'google',
+    labelKey: 'social.continueGoogle',
+    flag: 'social',
+    start: { kind: 'social', provider: 'google' },
+  },
+  {
+    brand: 'facebook',
+    labelKey: 'social.continueFacebook',
+    flag: 'social',
+    start: { kind: 'social', provider: 'facebook' },
+  },
+  {
+    brand: 'microsoft',
+    labelKey: 'social.continueMicrosoft',
+    flag: 'microsoft',
+    start: { kind: 'social', provider: 'microsoft' },
+  },
+  {
+    brand: 'microsoft',
+    labelKey: 'social.continueMicrosoftWork',
+    flag: 'microsoft-work',
+    start: { kind: 'oauth2', providerId: 'microsoft-entra-id' },
+  },
+] as const satisfies ReadonlyArray<ProviderConfig>;
 
 /**
- * Social sign-in row. Each button starts the provider's OAuth flow; on success Better Auth redirects the
+ * Social sign-in row. Each button starts a provider's OAuth flow; on success Better Auth redirects the
  * browser to `callbackURL`, so a returning render only happens on failure — which surfaces a message
- * rather than silently resetting.
+ * rather than silently resetting. Google/Facebook and personal Microsoft accounts use the built-in
+ * social providers; work/school (organizational) Microsoft accounts use the Entra ID generic-OAuth
+ * provider. Which buttons show is decided per provider by the flag props.
  */
 export default function SocialSignInButtons({
   locale,
   callbackURL = '/',
+  showSocial = false,
+  showMicrosoft = false,
+  showMicrosoftWork = false,
 }: {
   locale: Locale;
   callbackURL?: string;
+  showSocial?: boolean;
+  showMicrosoft?: boolean;
+  showMicrosoftWork?: boolean;
 }) {
-  const [busy, setBusy] = useState<SocialProvider | null>(null);
+  const [busy, setBusy] = useState<MessageKey | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function onSelect(provider: SocialProvider) {
-    setBusy(provider);
+  const enabled: Record<ProviderFlag, boolean> = {
+    social: showSocial,
+    microsoft: showMicrosoft,
+    'microsoft-work': showMicrosoftWork,
+  };
+  const visible = PROVIDERS.filter((provider) => enabled[provider.flag]);
+  if (visible.length === 0) {
+    return null;
+  }
+
+  async function onSelect(entry: ProviderConfig) {
+    setBusy(entry.labelKey);
     setError(null);
     // The OAuth round-trip completes on the API origin, so a relative callbackURL would resolve against
     // the API's base URL. Build absolute URLs on the web origin so the provider returns the user to the
@@ -33,20 +89,28 @@ export default function SocialSignInButtons({
     const successUrl = /^https?:\/\//.test(callbackURL)
       ? callbackURL
       : new URL(callbackURL, origin).toString();
+    const errorCallbackURL = new URL('/signin', origin).toString();
     try {
-      const { error: signInError } = await authClient.signIn.social({
-        provider,
-        callbackURL: successUrl,
-        errorCallbackURL: new URL('/signin', origin).toString(),
-      });
+      const { error: signInError } =
+        entry.start.kind === 'oauth2'
+          ? await authClient.signIn.oauth2({
+              providerId: entry.start.providerId,
+              callbackURL: successUrl,
+              errorCallbackURL,
+            })
+          : await authClient.signIn.social({
+              provider: entry.start.provider,
+              callbackURL: successUrl,
+              errorCallbackURL,
+            });
       // On success the browser is redirected to the provider; only a failed request returns here.
       if (signInError) {
-        console.error(`Social sign-in (${provider}) failed`, signInError);
+        console.error(`Social sign-in (${entry.labelKey}) failed`, signInError);
         setError(signInError.message ?? t(locale, 'social.failed'));
         setBusy(null);
       }
     } catch (cause) {
-      console.error(`Social sign-in (${provider}) failed`, cause);
+      console.error(`Social sign-in (${entry.labelKey}) failed`, cause);
       setError(t(locale, 'social.failed'));
       setBusy(null);
     }
@@ -54,13 +118,13 @@ export default function SocialSignInButtons({
 
   return (
     <div className="space-y-2">
-      {PROVIDERS.map(({ provider, labelKey }) => (
+      {visible.map((entry) => (
         <SocialButton
-          key={provider}
-          provider={provider}
-          label={t(locale, labelKey)}
+          key={entry.labelKey}
+          provider={entry.brand}
+          label={t(locale, entry.labelKey)}
           disabled={busy !== null}
-          onClick={() => onSelect(provider)}
+          onClick={() => onSelect(entry)}
         />
       ))}
       {error ? (

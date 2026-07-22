@@ -12,9 +12,13 @@ import SocialSignInButtons from './SocialSignInButtons';
 export default function SignUpForm({
   locale,
   showSocial = false,
+  showMicrosoft = false,
+  showMicrosoftWork = false,
 }: {
   locale: Locale;
   showSocial?: boolean;
+  showMicrosoft?: boolean;
+  showMicrosoftWork?: boolean;
 }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -87,14 +91,19 @@ export default function SignUpForm({
             </Button>
           </form>
 
-          {showSocial ? (
+          {showSocial || showMicrosoft || showMicrosoftWork ? (
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
                 <span className="h-px flex-1 bg-border" />
                 {t(locale, 'social.orDivider')}
                 <span className="h-px flex-1 bg-border" />
               </div>
-              <SocialSignInButtons locale={locale} />
+              <SocialSignInButtons
+                locale={locale}
+                showSocial={showSocial}
+                showMicrosoft={showMicrosoft}
+                showMicrosoftWork={showMicrosoftWork}
+              />
             </div>
           ) : null}
         </>

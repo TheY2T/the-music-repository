@@ -13,6 +13,8 @@ export const FLAG_FIELD_BY_KEY = {
   [FlagKeys.AuthEnabled]: 'authEnabled',
   [FlagKeys.AuthSignup]: 'authSignup',
   [FlagKeys.AuthSocial]: 'authSocial',
+  [FlagKeys.AuthMicrosoft]: 'authMicrosoft',
+  [FlagKeys.AuthMicrosoftWork]: 'authMicrosoftWork',
   [FlagKeys.AdminCms]: 'adminCms',
   [FlagKeys.BlockEditor]: 'blockEditor',
   [FlagKeys.BlockEditorPreview]: 'blockEditorPreview',

@@ -1,6 +1,7 @@
-import { betterAuth } from 'better-auth';
+import { type BetterAuthPlugin, betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { admin } from 'better-auth/plugins';
+import { genericOAuth, microsoftEntraId } from 'better-auth/plugins/generic-oauth';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { createMailTransport } from '../mail/create-mail-transport';
@@ -37,7 +38,9 @@ const mailer = createMailTransport({ smtpUrl: process.env.SMTP_URL, from: proces
 /**
  * Social identity providers. Each provider is registered only when its credentials are present, so local
  * dev and CI boot with no OAuth secrets. The callback each provider must be configured to return to is
- * `${BETTER_AUTH_URL}/api/auth/callback/{google|facebook}`.
+ * `${BETTER_AUTH_URL}/api/auth/callback/{google|facebook|microsoft}`. Microsoft here is the personal
+ * account flow (`consumers` tenant); work/school sign-in is a separate generic-OAuth provider registered
+ * below, with its own callback at `${BETTER_AUTH_URL}/api/auth/oauth2/callback/microsoft-entra-id`.
  */
 const socialProviders: Record<string, unknown> = {};
 
@@ -53,6 +56,45 @@ if (process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET) {
     clientId: process.env.FACEBOOK_CLIENT_ID,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
   };
+}
+
+if (process.env.MICROSOFT_CLIENT_ID && process.env.MICROSOFT_CLIENT_SECRET) {
+  socialProviders.microsoft = {
+    clientId: process.env.MICROSOFT_CLIENT_ID,
+    clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
+    // Personal Microsoft accounts (@outlook/@hotmail/@live) only.
+    tenantId: 'consumers',
+  };
+}
+
+/**
+ * Sign-in providers registered as Better Auth plugins. Work/school (organizational) Microsoft accounts
+ * use the Entra ID generic-OAuth provider — a separate flow from personal accounts above, registered
+ * only when its own credentials are present. `MICROSOFT_WORK_TENANT_ID` accepts `organizations` (any
+ * work/school directory, the default), `common`, or a specific directory (GUID) to scope sign-in to one
+ * organization.
+ */
+const plugins: BetterAuthPlugin[] = [
+  admin({
+    ac,
+    roles,
+    defaultRole: 'learner',
+    adminRoles: ['admin'],
+  }),
+];
+
+if (process.env.MICROSOFT_WORK_CLIENT_ID && process.env.MICROSOFT_WORK_CLIENT_SECRET) {
+  plugins.push(
+    genericOAuth({
+      config: [
+        microsoftEntraId({
+          clientId: process.env.MICROSOFT_WORK_CLIENT_ID,
+          clientSecret: process.env.MICROSOFT_WORK_CLIENT_SECRET,
+          tenantId: process.env.MICROSOFT_WORK_TENANT_ID ?? 'organizations',
+        }),
+      ],
+    }),
+  );
 }
 
 /**
@@ -95,8 +137,8 @@ export const auth = betterAuth({
   account: {
     // Link a social sign-in to an existing account when the provider reports the email as verified.
     // `trustedProviders` additionally links Google without a verification check (Google reliably verifies
-    // email); other providers are left to the verified-email path (Better Auth flags trusted linking as
-    // an account-takeover risk).
+    // email); other providers — Facebook and both Microsoft flows — are left to the verified-email path
+    // (Better Auth flags trusted linking as an account-takeover risk).
     accountLinking: {
       enabled: true,
       trustedProviders: ['google'],
@@ -140,14 +182,7 @@ export const auth = betterAuth({
       });
     },
   },
-  plugins: [
-    admin({
-      ac,
-      roles,
-      defaultRole: 'learner',
-      adminRoles: ['admin'],
-    }),
-  ],
+  plugins,
 });
 
 export type Auth = typeof auth;

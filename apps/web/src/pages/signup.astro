@@ -15,6 +15,8 @@ if (Astro.locals.user) {
 }
 const locale = Astro.locals.locale;
 const showSocial = Astro.locals.flags.authSocial;
+const showMicrosoft = Astro.locals.flags.authMicrosoft;
+const showMicrosoftWork = Astro.locals.flags.authMicrosoftWork;
 ---
 
 <BaseLayout noindex title={t(locale, 'signup.title')}>
@@ -31,6 +33,12 @@ const showSocial = Astro.locals.flags.authSocial;
       </h1>
       <p class="text-muted-foreground">{t(locale, 'signup.subtitle')}</p>
     </header>
-    <SignUpForm client:load locale={locale} showSocial={showSocial} />
+    <SignUpForm
+      client:load
+      locale={locale}
+      showSocial={showSocial}
+      showMicrosoft={showMicrosoft}
+      showMicrosoftWork={showMicrosoftWork}
+    />
   </PageShell>
 </BaseLayout>
