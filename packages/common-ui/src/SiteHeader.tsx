@@ -1,7 +1,5 @@
 import { type Locale, t } from '@TheY2T/tmr-i18n';
 import {
-  Avatar,
-  AvatarFallback,
   cn,
   DropdownMenu,
   DropdownMenuContent,
@@ -121,11 +119,9 @@ export default function SiteHeader({
               <DropdownMenu>
                 <DropdownMenuTrigger
                   aria-label={t(locale, 'nav.account')}
-                  className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="inline-flex size-9 items-center justify-center rounded-full border border-border text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring aria-expanded:bg-muted aria-expanded:text-foreground"
                 >
-                  <Avatar className="size-9 border border-border">
-                    <AvatarFallback>{initials(user)}</AvatarFallback>
-                  </Avatar>
+                  {initials(user)}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
                   <DropdownMenuLabel>{user.name || user.email}</DropdownMenuLabel>
