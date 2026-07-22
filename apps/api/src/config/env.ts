@@ -23,6 +23,25 @@ export const envSchema = z.object({
   // sibling subdomains, so the session cookie is shared across them. Unset for local dev.
   AUTH_COOKIE_DOMAIN: z.string().optional(),
 
+  // Social identity providers. Each pair is optional — a provider is registered only when both its id and
+  // secret are set, so the app boots locally with none configured. Register the callback
+  // `${BETTER_AUTH_URL}/api/auth/callback/<provider>` in each provider's developer console.
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
+  FACEBOOK_CLIENT_ID: z.string().optional(),
+  FACEBOOK_CLIENT_SECRET: z.string().optional(),
+  // Sign in with Apple. APPLE_CLIENT_ID is the Services ID; APPLE_PRIVATE_KEY is the `.p8` contents
+  // (literal `\n` escapes are accepted). APPLE_APP_BUNDLE_IDENTIFIER is only needed for native iOS.
+  APPLE_CLIENT_ID: z.string().optional(),
+  APPLE_TEAM_ID: z.string().optional(),
+  APPLE_KEY_ID: z.string().optional(),
+  APPLE_PRIVATE_KEY: z.string().optional(),
+  APPLE_APP_BUNDLE_IDENTIFIER: z.string().optional(),
+
+  // Better Auth API rate limiting. Unset ⇒ on in production, off in development/test. Set 'true'/'false'
+  // to force it. State persists in Postgres (the `rate_limit` table) so limits hold across instances.
+  AUTH_RATE_LIMIT_ENABLED: z.enum(['true', 'false']).optional(),
+
   // Billing. When STRIPE_SECRET_KEY is set the Stripe checkout gateway is used; otherwise
   // the MockCheckoutGateway (dev/CI) — no keys, no charges. STRIPE_WEBHOOK_SECRET defaults to a
   // non-sensitive dev value the mock ignores. WEB_BASE_URL builds checkout success/cancel URLs.

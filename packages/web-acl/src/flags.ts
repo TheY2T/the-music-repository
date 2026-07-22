@@ -11,6 +11,8 @@ import { type FlagKey, FlagKeys } from '@TheY2T/tmr-flags';
 export const FLAG_FIELD_BY_KEY = {
   [FlagKeys.DemoNewBanner]: 'demoNewBanner',
   [FlagKeys.AuthEnabled]: 'authEnabled',
+  [FlagKeys.AuthSignup]: 'authSignup',
+  [FlagKeys.AuthSocial]: 'authSocial',
   [FlagKeys.AdminCms]: 'adminCms',
   [FlagKeys.BlockEditor]: 'blockEditor',
   [FlagKeys.BlockEditorPreview]: 'blockEditorPreview',

@@ -1,21 +1,23 @@
 ---
-import SignInForm from '@TheY2T/tmr-common-ui/SignInForm';
+import SignUpForm from '@TheY2T/tmr-common-ui/SignUpForm';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { localizedPath, t } from '@TheY2T/tmr-i18n';
 import { buttonVariants, cn } from '@TheY2T/tmr-ui';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
-// Already authenticated? Skip the form.
-const redirectTo = Astro.url.searchParams.get('redirect') ?? '/admin';
+// Self-service sign-up is gated; fall back to sign-in when it's off.
+if (!Astro.locals.flags.authSignup) {
+  return Astro.redirect('/signin');
+}
+// Already authenticated? Nothing to sign up for.
 if (Astro.locals.user) {
-  return Astro.redirect(redirectTo);
+  return Astro.redirect('/');
 }
 const locale = Astro.locals.locale;
-const showSignup = Astro.locals.flags.authSignup;
 const showSocial = Astro.locals.flags.authSocial;
 ---
 
-<BaseLayout noindex title={t(locale, 'signin.title')}>
+<BaseLayout noindex title={t(locale, 'signup.title')}>
   <PageShell maxWidth="max-w-md" class="flex min-h-screen flex-col justify-center">
     <header class="mb-6 space-y-1 text-center">
       <a
@@ -25,16 +27,10 @@ const showSocial = Astro.locals.flags.authSocial;
         {t(locale, 'common.backHome')}
       </a>
       <h1 class="font-display text-3xl font-semibold tracking-tight">
-        {t(locale, 'signin.heading')}
+        {t(locale, 'signup.heading')}
       </h1>
-      <p class="text-muted-foreground">{t(locale, 'signin.subtitle')}</p>
+      <p class="text-muted-foreground">{t(locale, 'signup.subtitle')}</p>
     </header>
-    <SignInForm
-      client:load
-      redirectTo={redirectTo}
-      locale={locale}
-      showSignup={showSignup}
-      showSocial={showSocial}
-    />
+    <SignUpForm client:load locale={locale} showSocial={showSocial} />
   </PageShell>
 </BaseLayout>

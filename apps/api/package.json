@@ -41,6 +41,7 @@
     "@thallesp/nestjs-better-auth": "catalog:",
     "better-auth": "catalog:",
     "drizzle-orm": "catalog:",
+    "jose": "catalog:",
     "nestjs-pino": "catalog:",
     "nestjs-zod": "catalog:",
     "nodemailer": "^9.0.3",

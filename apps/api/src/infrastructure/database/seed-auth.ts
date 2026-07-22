@@ -37,8 +37,12 @@ async function main(): Promise<void> {
     } else {
       log.log(`${seed.email} already exists`);
     }
-    // Elevate/refresh the role every run so the mapping is deterministic.
-    await db.update(user).set({ role: seed.role }).where(eq(user.email, seed.email));
+    // Elevate/refresh the role every run so the mapping is deterministic, and mark the address verified
+    // so these accounts can sign in (sign-in requires a verified email).
+    await db
+      .update(user)
+      .set({ role: seed.role, emailVerified: true })
+      .where(eq(user.email, seed.email));
     log.log(`${seed.email} → role '${seed.role}'`);
   }
 

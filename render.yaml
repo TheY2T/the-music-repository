@@ -51,7 +51,12 @@ services:
         value: https://themusicrepository.com
       - key: MEDIA_PUBLIC_URL
         value: https://api.themusicrepository.com
-      # SMTP_URL + MAIL_FROM (Resend) live in the shared dev group.
+      # Persist rate-limit counters in Postgres so limits hold across instances.
+      - key: AUTH_RATE_LIMIT_ENABLED
+        value: "true"
+      # Shared dev group carries SMTP_URL + MAIL_FROM (Resend) and the social-provider secrets
+      # (GOOGLE_/FACEBOOK_/APPLE_* — set them there, not inline, since they're secrets). When Apple is
+      # configured, the app adds https://appleid.apple.com to its trusted origins automatically.
       - fromGroup: dev
 
   # --- Web (Astro SSR) ---

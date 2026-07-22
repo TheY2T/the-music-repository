@@ -21,6 +21,10 @@ export const FlagKeys = {
   DemoNewBanner: 'demo.new-banner',
   /** Slice 2a — surfaces auth entry points (sign-in, account) in the web app. */
   AuthEnabled: 'auth.enabled',
+  /** Surfaces the public self-service sign-up page + the "create an account" link. */
+  AuthSignup: 'auth.signup',
+  /** Surfaces the social sign-in buttons (Google/Facebook/Apple) on the sign-in + sign-up forms. */
+  AuthSocial: 'auth.social',
   /** Slice 2b — gates the admin authoring CMS (`/admin` content management). */
   AdminCms: 'admin.cms',
   /** WYSIWYG block editor (ADR 0030) — swaps the Markdown textarea for the TipTap editor in the CMS. */
@@ -237,6 +241,8 @@ export type FlagKey = (typeof FlagKeys)[keyof typeof FlagKeys];
 export const FlagDefaults = {
   [FlagKeys.DemoNewBanner]: false,
   [FlagKeys.AuthEnabled]: true,
+  [FlagKeys.AuthSignup]: true,
+  [FlagKeys.AuthSocial]: false,
   [FlagKeys.AdminCms]: true,
   [FlagKeys.BlockEditor]: true,
   [FlagKeys.BlockEditorPreview]: true,

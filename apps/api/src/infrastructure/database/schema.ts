@@ -177,7 +177,7 @@ export const contentTags = pgTable(
 
 // --- Auth (Slice 2): Better Auth tables live in `src/auth/auth-schema.ts`.
 // Re-exported here so drizzle-kit (and the shared Drizzle client) see one schema surface. ---
-export { account, session, user, verification } from '../../auth/auth-schema';
+export { account, rateLimit, session, user, verification } from '../../auth/auth-schema';
 
 // --- Favorites (Slice 2c): a user ↔ content bookmark. One row per (user, content). ---
 export const favorites = pgTable(

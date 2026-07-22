@@ -240,6 +240,9 @@ catalogs:
     happy-dom:
       specifier: ^15.11.0
       version: 15.11.7
+    jose:
+      specifier: ^6.2.3
+      version: 6.2.3
     jsdom:
       specifier: ^25.0.1
       version: 25.0.1
@@ -410,6 +413,9 @@ importers:
       drizzle-orm:
         specifier: 'catalog:'
         version: 0.45.2(@opentelemetry/api@1.9.1)(@types/pg@8.15.6)(kysely@0.29.3)(postgres@3.4.9)
+      jose:
+        specifier: 'catalog:'
+        version: 6.2.3
       nestjs-pino:
         specifier: 'catalog:'
         version: 4.6.1(@nestjs/common@11.1.28(reflect-metadata@0.2.2)(rxjs@7.8.2))(pino-http@11.0.0)(pino@10.3.1)(rxjs@7.8.2)

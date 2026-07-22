@@ -1,4 +1,4 @@
-import { boolean, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { bigint, boolean, integer, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 
 /**
  * Better Auth tables (email/password + admin plugin). Property keys match Better Auth's field
@@ -57,4 +57,16 @@ export const verification = pgTable('verification', {
   expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+/**
+ * API rate-limit counters (Better Auth `rateLimit` model, `storage: 'database'`). One row per limit key
+ * (endpoint + client IP); `lastRequest` is a millisecond epoch. Persisting here means limits hold across
+ * instances and restarts. Property keys match Better Auth's field names.
+ */
+export const rateLimit = pgTable('rate_limit', {
+  id: text('id').primaryKey(),
+  key: text('key'),
+  count: integer('count'),
+  lastRequest: bigint('last_request', { mode: 'number' }),
 });

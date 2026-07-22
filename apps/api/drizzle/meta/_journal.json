@@ -15,6 +15,13 @@
       "when": 1784638510518,
       "tag": "0001_dazzling_omega_sentinel",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784677523141,
+      "tag": "0002_stale_lord_hawal",
+      "breakpoints": true
     }
   ]
 }

@@ -2,6 +2,7 @@ import { type Locale, type MessageKey, t } from '@TheY2T/tmr-i18n';
 import { Button, Card, Field, Input } from '@TheY2T/tmr-ui';
 import { authClient } from '@TheY2T/tmr-web-acl/auth-client';
 import { type FormEvent, useState } from 'react';
+import SocialSignInButtons from './SocialSignInButtons';
 
 /** Local dev accounts (seeded by `pnpm --filter @TheY2T/tmr-api db:seed:auth`). */
 const DEV_ACCOUNTS = [
@@ -13,9 +14,13 @@ const DEV_ACCOUNTS = [
 export default function SignInForm({
   redirectTo = '/admin',
   locale,
+  showSignup = false,
+  showSocial = false,
 }: {
   redirectTo?: string;
   locale: Locale;
+  showSignup?: boolean;
+  showSocial?: boolean;
 }) {
   const [email, setEmail] = useState('admin@local.dev');
   const [password, setPassword] = useState('password123');
@@ -64,15 +69,34 @@ export default function SignInForm({
         <Button type="submit" disabled={busy} className="w-full">
           {busy ? t(locale, 'signin.submitBusy') : t(locale, 'signin.submit')}
         </Button>
-        <div className="text-center">
+        <div className="flex flex-col items-center gap-1 text-center">
           <a
             href="/forgot-password"
             className="text-sm text-muted-foreground underline-offset-4 hover:underline"
           >
             {t(locale, 'signin.forgotLink')}
           </a>
+          {showSignup ? (
+            <a
+              href="/signup"
+              className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+            >
+              {t(locale, 'signin.createAccount')}
+            </a>
+          ) : null}
         </div>
       </form>
+
+      {showSocial ? (
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="h-px flex-1 bg-border" />
+            {t(locale, 'social.orDivider')}
+            <span className="h-px flex-1 bg-border" />
+          </div>
+          <SocialSignInButtons locale={locale} callbackURL={redirectTo} />
+        </div>
+      ) : null}
 
       <div className="space-y-2 border-t border-border pt-4">
         <p className="text-xs text-muted-foreground">{t(locale, 'signin.devAccounts')}</p>

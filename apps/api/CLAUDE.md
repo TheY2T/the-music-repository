@@ -85,8 +85,17 @@ Better Auth lives in `src/auth/` and owns `/api/auth/*`. Key rules:
   the request-scoped `BetterAuthCurrentUser` adapter. **Never import `better-auth` in domain/application.**
 - **Tables** are hand-written in `src/auth/auth-schema.ts` (re-exported from `database/schema.ts`) so
   **drizzle-kit** owns migrations — do **not** run `better-auth migrate`. Regenerate with `db:generate`.
+  Includes `rate_limit` (Better Auth `rateLimit` with `storage: 'database'`).
+- **Social sign-in (Google/Facebook/Apple, ADR 0050):** `socialProviders` in `better-auth.ts`, each
+  registered only when its env credentials are set. Apple's client secret is a runtime-signed ES256 JWT
+  (`apple-client-secret.ts`, jose). Account linking is on (`trustedProviders: ['google','apple']`).
+- **Rate limiting (ADR 0050):** built-in `rateLimit`, Postgres-backed, keyed off `cf-connecting-ip`;
+  env-toggled by `AUTH_RATE_LIMIT_ENABLED` (unset ⇒ on in prod, off in dev/test). It's boot config, not a
+  DB flag.
+- **`requireEmailVerification` is `true`** — a new account must verify its email before sign-in; the seed
+  marks dev accounts `emailVerified: true`.
 - **Seed dev users:** `pnpm --filter @TheY2T/tmr-api db:seed:auth` → `admin|editor|learner@local.dev` /
-  `password123` (**local only**).
+  `password123` (**local only**, email pre-verified).
 - **ESM interop:** `better-auth` + `@thallesp/nestjs-better-auth` are ESM-only; Node 22 `require(esm)`
   loads them from the CJS build, and classic-`Node` tsc resolves their types (verified). No `paths`
   mapping needed.
@@ -161,7 +170,9 @@ DB-backed — no flagd reload; `.claude/rules/flags.md`); read the viewer on pub
 ## Config
 
 Env is validated at boot by Zod (`src/config/env.ts`) via `@nestjs/config`. Add new vars there.
-Auth vars: `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `TRUSTED_ORIGINS` (dev defaults are local-only).
+Auth vars: `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `TRUSTED_ORIGINS`, `AUTH_COOKIE_DOMAIN` (dev defaults
+are local-only); social providers `GOOGLE_/FACEBOOK_CLIENT_ID+SECRET`, `APPLE_CLIENT_ID/TEAM_ID/KEY_ID/
+PRIVATE_KEY` (all optional — a provider registers only when set); `AUTH_RATE_LIMIT_ENABLED`.
 
 ## Testing (ADR 0020, `docs/features/testing.md`)
 
