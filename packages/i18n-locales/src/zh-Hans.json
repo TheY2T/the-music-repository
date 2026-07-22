@@ -2,6 +2,8 @@
   "common.language": "语言",
   "common.home": "首页",
   "common.backHome": "首页",
+  "common.showPassword": "显示密码",
+  "common.hidePassword": "隐藏密码",
   "common.loading": "加载中…",
 
   "site.name": "音乐资料库",
@@ -139,10 +141,6 @@
   "signin.submit": "登录",
   "signin.submitBusy": "登录中…",
   "signin.failed": "登录失败，请检查凭据。",
-  "signin.devAccounts": "快速填充（开发账户，共用密码）：",
-  "signin.roleAdmin": "管理员",
-  "signin.roleEditor": "编辑",
-  "signin.roleLearner": "学习者",
   "signin.forgotLink": "忘记密码？",
   "signin.createAccount": "创建账户",
 
@@ -161,6 +159,7 @@
   "social.orDivider": "或",
   "social.continueGoogle": "使用 Google 继续",
   "social.continueFacebook": "使用 Facebook 继续",
+  "social.failed": "无法使用该方式登录，请重试。",
 
   "forgot.title": "忘记密码 — 音乐资料库",
   "forgot.heading": "忘记密码了？",

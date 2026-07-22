@@ -46,7 +46,7 @@ services:
       - key: AUTH_COOKIE_DOMAIN
         value: .themusicrepository.com
       - key: TRUSTED_ORIGINS
-        value: https://themusicrepository.com,https://api.themusicrepository.com
+        value: https://themusicrepository.com,https://www.themusicrepository.com,https://api.themusicrepository.com
       - key: WEB_BASE_URL
         value: https://themusicrepository.com
       - key: MEDIA_PUBLIC_URL

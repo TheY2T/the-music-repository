@@ -111,4 +111,59 @@ describe('web middleware', () => {
 
     expect(ctx.locals.user).toBeNull();
   });
+
+  it('shares an anonymous public page at the edge with Vary: Cookie', async () => {
+    const ctx = makeContext('http://localhost:4321/catalogue');
+    const next = vi.fn().mockResolvedValue(new Response('ok'));
+
+    const res = (await onRequest(ctx as never, next as never)) as Response;
+
+    expect(res.headers.get('Cache-Control')).toBe(
+      'public, max-age=0, s-maxage=60, stale-while-revalidate=600',
+    );
+    expect(res.headers.get('Vary')).toMatch(/\bCookie\b/);
+  });
+
+  it('never shares a private route, even when anonymous', async () => {
+    const ctx = makeContext('http://localhost:4321/admin/feature-flags');
+    const next = vi.fn().mockResolvedValue(new Response('ok'));
+
+    const res = (await onRequest(ctx as never, next as never)) as Response;
+
+    expect(res.headers.get('Cache-Control')).toBe('private, no-store');
+  });
+
+  it('never shares a page rendered for a signed-in user', async () => {
+    // The session check fetches get-session only when a Better Auth cookie is present.
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ user: { id: 'u1', email: 'a@b.co', role: 'learner' } }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      // `Cookie` is a forbidden header on the Request/Headers API, so back the lookup directly.
+      const cookie = 'better-auth.session_token=abc';
+      const ctx = {
+        request: {
+          method: 'GET',
+          url: 'http://localhost:4321/catalogue',
+          headers: {
+            get: (name: string) =>
+              name === 'cookie' ? cookie : name === 'host' ? 'localhost:4321' : null,
+          },
+        },
+        locals: {} as Record<string, unknown>,
+        redirect: (path: string) => `REDIRECT:${path}`,
+      };
+      const next = vi.fn().mockResolvedValue(new Response('ok'));
+
+      const res = (await onRequest(ctx as never, next as never)) as Response;
+
+      expect(ctx.locals.user).toEqual({ id: 'u1', email: 'a@b.co', name: '', role: 'learner' });
+      expect(fetchMock).toHaveBeenCalled();
+      expect(res.headers.get('Cache-Control')).toBe('private, no-store');
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
 });

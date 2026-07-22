@@ -28,6 +28,10 @@ export { FormActions, type FormActionsProps } from './components/molecules/form-
 export { Hero, type HeroProps } from './components/molecules/hero';
 export { MediaCard, type MediaCardProps } from './components/molecules/media-card';
 export { PageHeader, type PageHeaderProps } from './components/molecules/page-header';
+export {
+  PasswordInput,
+  type PasswordInputProps,
+} from './components/molecules/password-input';
 export { SearchField, type SearchFieldProps } from './components/molecules/search-field';
 export {
   SegmentedToggle,

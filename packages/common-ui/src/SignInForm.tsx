@@ -1,18 +1,11 @@
-import { type Locale, type MessageKey, t } from '@TheY2T/tmr-i18n';
-import { Button, Card, Field, Input } from '@TheY2T/tmr-ui';
+import { type Locale, t } from '@TheY2T/tmr-i18n';
+import { Button, Card, Field, Input, PasswordInput } from '@TheY2T/tmr-ui';
 import { authClient } from '@TheY2T/tmr-web-acl/auth-client';
 import { type FormEvent, useState } from 'react';
 import SocialSignInButtons from './SocialSignInButtons';
 
-/** Local dev accounts (seeded by `pnpm --filter @TheY2T/tmr-api db:seed:auth`). */
-const DEV_ACCOUNTS = [
-  { labelKey: 'signin.roleAdmin', email: 'admin@local.dev' },
-  { labelKey: 'signin.roleEditor', email: 'editor@local.dev' },
-  { labelKey: 'signin.roleLearner', email: 'learner@local.dev' },
-] as const satisfies ReadonlyArray<{ labelKey: MessageKey; email: string }>;
-
 export default function SignInForm({
-  redirectTo = '/admin',
+  redirectTo = '/',
   locale,
   showSignup = false,
   showSocial = false,
@@ -22,8 +15,8 @@ export default function SignInForm({
   showSignup?: boolean;
   showSocial?: boolean;
 }) {
-  const [email, setEmail] = useState('admin@local.dev');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -53,12 +46,13 @@ export default function SignInForm({
           />
         </Field>
         <Field label={t(locale, 'signin.password')} htmlFor="password">
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            showLabel={t(locale, 'common.showPassword')}
+            hideLabel={t(locale, 'common.hidePassword')}
           />
         </Field>
         {error ? (
@@ -97,26 +91,6 @@ export default function SignInForm({
           <SocialSignInButtons locale={locale} callbackURL={redirectTo} />
         </div>
       ) : null}
-
-      <div className="space-y-2 border-t border-border pt-4">
-        <p className="text-xs text-muted-foreground">{t(locale, 'signin.devAccounts')}</p>
-        <div className="flex flex-wrap gap-2">
-          {DEV_ACCOUNTS.map((account) => (
-            <Button
-              key={account.email}
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setEmail(account.email);
-                setPassword('password123');
-              }}
-            >
-              {t(locale, account.labelKey)}
-            </Button>
-          ))}
-        </div>
-      </div>
     </Card>
   );
 }

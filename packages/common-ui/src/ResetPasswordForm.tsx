@@ -1,5 +1,5 @@
 import { type Locale, t } from '@TheY2T/tmr-i18n';
-import { Button, Card, Field, Input } from '@TheY2T/tmr-ui';
+import { Button, Card, Field, PasswordInput } from '@TheY2T/tmr-ui';
 import { resetPassword } from '@TheY2T/tmr-web-acl/auth-client';
 import { type FormEvent, useState } from 'react';
 
@@ -51,23 +51,25 @@ export default function ResetPasswordForm({ locale, token }: { locale: Locale; t
     <Card className="mx-auto w-full max-w-sm space-y-6 p-6">
       <form onSubmit={onSubmit} className="space-y-4">
         <Field label={t(locale, 'reset.newPassword')} htmlFor="new-password">
-          <Input
+          <PasswordInput
             id="new-password"
-            type="password"
             autoComplete="new-password"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            showLabel={t(locale, 'common.showPassword')}
+            hideLabel={t(locale, 'common.hidePassword')}
           />
         </Field>
         <Field label={t(locale, 'reset.confirmPassword')} htmlFor="confirm-password">
-          <Input
+          <PasswordInput
             id="confirm-password"
-            type="password"
             autoComplete="new-password"
             required
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
+            showLabel={t(locale, 'common.showPassword')}
+            hideLabel={t(locale, 'common.hidePassword')}
           />
         </Field>
         {error ? (

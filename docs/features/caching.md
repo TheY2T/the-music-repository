@@ -67,7 +67,14 @@ plan before quoting numbers.
   is emitted over HTTP (Supertest).
 - **API integration** — `postgres-media-library.integration.test.ts` asserts `getObject` returns the
   `bytes`/`updatedAt` validators.
-- **Web unit** — `lib/http-cache.test.ts` (shared vs `no-store` decisions, private-path matching).
+- **API unit (caching)** — `feature-flags/feature-flags.controller.test.ts` +
+  `i18n/i18n.controller.test.ts` assert the versioned ETag, the short shared-cache window, and the 304 on
+  a matching `If-None-Match`.
+- **Web unit** — `lib/http-cache.test.ts` (shared vs `no-store` decisions, private-path matching);
+  `middleware.test.ts` asserts the header is applied on the response (anonymous shared + `Vary: Cookie`,
+  private route `no-store`, signed-in `no-store`).
+- **Web E2E** — `e2e/caching.spec.ts` runs against the production server (`server.mjs`) and asserts
+  immutable static headers, the anonymous-page shared policy, and `no-store` on a private route.
 - **Manual verify** — `curl -I` the origin for `Content-Encoding` + `Cache-Control` (see runbook); after
-  the Cloudflare rules, confirm `cf-cache-status: MISS → HIT` on a warmed public API path and `BYPASS` when
-  a `better-auth` cookie is sent.
+  the Cloudflare rules, confirm `cf-cache-status: MISS → HIT` on a warmed public API path and that a
+  `better-auth` cookie is not served from cache.

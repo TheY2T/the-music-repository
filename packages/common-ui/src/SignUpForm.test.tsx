@@ -24,6 +24,7 @@ describe('SignUpForm island', () => {
     signUpEmailMock.mockReset();
     signUpEmailMock.mockResolvedValue({ data: {}, error: null });
     signInSocialMock.mockReset();
+    signInSocialMock.mockResolvedValue({ error: null });
   });
 
   it('creates the account and shows a verify-your-email confirmation', async () => {
@@ -60,5 +61,12 @@ describe('SignUpForm island', () => {
     fireEvent.click(screen.getByText('Continue with Google'));
     await waitFor(() => expect(signInSocialMock).toHaveBeenCalledTimes(1));
     expect(signInSocialMock.mock.calls[0][0]).toMatchObject({ provider: 'google' });
+  });
+
+  it('surfaces a message when a social sign-in fails instead of silently resetting', async () => {
+    signInSocialMock.mockResolvedValue({ error: { message: 'Provider not found' } });
+    render(<SignUpForm locale="en" showSocial />);
+    fireEvent.click(screen.getByText('Continue with Google'));
+    await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('Provider not found'));
   });
 });

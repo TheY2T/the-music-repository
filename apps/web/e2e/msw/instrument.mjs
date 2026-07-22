@@ -1,4 +1,4 @@
-// SSR mock preload — started via `node --import ./e2e/msw/instrument.mjs ./dist/server/entry.mjs`
+// SSR mock preload — started via `node --import ./e2e/msw/instrument.mjs ./server.mjs`
 // (mirrors the api's OTEL `--require`). Boots an MSW node server so backend fetches made by the
 // Astro SSR process are intercepted before the first request. Unmatched requests bypass to the real
 // backend (subset mocking). Only loaded in mock mode (see playwright.config.ts). ADR 0020.

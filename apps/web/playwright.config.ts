@@ -7,13 +7,17 @@ import { defineConfig, devices } from '@playwright/test';
 //  • live: serve against the real stack (`pnpm infra:up` + api running, or the podman-compose
 //    stack). Run with `TMR_E2E_MODE=live`.
 const MODE = process.env.TMR_E2E_MODE ?? 'mock';
-const PORT = 4321;
+// Overridable so a run doesn't clash with a local dev/containerized app already on 4321.
+const PORT = Number(process.env.TMR_E2E_PORT ?? 4321);
 const BASE_URL = `http://localhost:${PORT}`;
 
+// Boot the production server (`server.mjs` — compression + immutable static + SSR handler), the same
+// entry the Docker image runs, so E2E exercises the real caching headers. In mock mode the MSW preload
+// (`--import`) intercepts the SSR fetches before the server starts.
 const serveCommand =
   MODE === 'live'
-    ? 'pnpm build && node ./dist/server/entry.mjs'
-    : 'pnpm build && node --import ./e2e/msw/instrument.mjs ./dist/server/entry.mjs';
+    ? 'pnpm build && node ./server.mjs'
+    : 'pnpm build && node --import ./e2e/msw/instrument.mjs ./server.mjs';
 
 export default defineConfig({
   testDir: './e2e',

@@ -2,6 +2,8 @@
   "common.language": "Language",
   "common.home": "Home",
   "common.backHome": "Home",
+  "common.showPassword": "Show password",
+  "common.hidePassword": "Hide password",
   "common.loading": "Loading…",
 
   "site.name": "The Music Repository",
@@ -139,10 +141,6 @@
   "signin.submit": "Sign in",
   "signin.submitBusy": "Signing in…",
   "signin.failed": "Sign-in failed. Check your credentials.",
-  "signin.devAccounts": "Quick fill (dev accounts, password shared):",
-  "signin.roleAdmin": "Admin",
-  "signin.roleEditor": "Editor",
-  "signin.roleLearner": "Learner",
   "signin.forgotLink": "Forgot password?",
   "signin.createAccount": "Create an account",
 
@@ -161,6 +159,7 @@
   "social.orDivider": "or",
   "social.continueGoogle": "Continue with Google",
   "social.continueFacebook": "Continue with Facebook",
+  "social.failed": "Couldn't sign in with that provider. Please try again.",
 
   "forgot.title": "Forgot password — The Music Repository",
   "forgot.heading": "Forgot your password?",

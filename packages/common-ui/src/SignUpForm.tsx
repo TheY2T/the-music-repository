@@ -1,5 +1,5 @@
 import { type Locale, t } from '@TheY2T/tmr-i18n';
-import { Button, Card, Field, Input } from '@TheY2T/tmr-ui';
+import { Button, Card, Field, Input, PasswordInput } from '@TheY2T/tmr-ui';
 import { authClient } from '@TheY2T/tmr-web-acl/auth-client';
 import { type FormEvent, useState } from 'react';
 import SocialSignInButtons from './SocialSignInButtons';
@@ -66,14 +66,15 @@ export default function SignUpForm({
               />
             </Field>
             <Field label={t(locale, 'signup.password')} htmlFor="password">
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 autoComplete="new-password"
                 required
                 minLength={8}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                showLabel={t(locale, 'common.showPassword')}
+                hideLabel={t(locale, 'common.hidePassword')}
               />
             </Field>
             {error ? (

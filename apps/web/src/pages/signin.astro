@@ -5,8 +5,9 @@ import { localizedPath, t } from '@TheY2T/tmr-i18n';
 import { buttonVariants, cn } from '@TheY2T/tmr-ui';
 import PageShell from '@TheY2T/tmr-ui/astro/PageShell.astro';
 
-// Already authenticated? Skip the form.
-const redirectTo = Astro.url.searchParams.get('redirect') ?? '/admin';
+// Already authenticated? Skip the form. Gated routes pass an explicit `?redirect`; a bare sign-in
+// (e.g. the header link or a social sign-in) falls back to the site root, not the admin area.
+const redirectTo = Astro.url.searchParams.get('redirect') ?? '/';
 if (Astro.locals.user) {
   return Astro.redirect(redirectTo);
 }
