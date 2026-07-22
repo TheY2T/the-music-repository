@@ -247,7 +247,7 @@ export const FlagDefaults = {
   [FlagKeys.AuthEnabled]: true,
   [FlagKeys.AuthSignup]: true,
   [FlagKeys.AuthSocial]: true,
-  [FlagKeys.AuthMicrosoft]: false,
+  [FlagKeys.AuthMicrosoft]: true,
   [FlagKeys.AuthMicrosoftWork]: false,
   [FlagKeys.AdminCms]: true,
   [FlagKeys.BlockEditor]: true,

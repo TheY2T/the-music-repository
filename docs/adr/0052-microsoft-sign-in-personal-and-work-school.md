@@ -12,9 +12,10 @@
   - **Two independent flows, two flags.** Personal accounts use the built-in `microsoft` social provider
     with `tenantId: 'consumers'`, gated by `auth.microsoft`. Work/school accounts use the generic-OAuth
     `microsoftEntraId` provider (providerId `microsoft-entra-id`) with `tenantId` from
-    `MICROSOFT_WORK_TENANT_ID` (default `organizations`), gated by `auth.microsoft-work`. Both flags
-    default **off**; personal is the near-term one, work/school is deferred until classroom features land.
-    Each provider registers only when its own credentials are set, so local dev and CI boot with none.
+    `MICROSOFT_WORK_TENANT_ID` (default `organizations`), gated by `auth.microsoft-work`. `auth.microsoft`
+    defaults **on** (personal sign-in ships now); `auth.microsoft-work` defaults **off**, deferred until
+    classroom features land. Each provider registers only when its own credentials are set, so local dev
+    and CI boot with none — and a flag being on without credentials shows a button that errors on click.
   - **Client calls differ by flow.** Personal goes through `authClient.signIn.social({ provider:
     'microsoft' })` (callback `.../api/auth/callback/microsoft`); work/school goes through
     `authClient.signIn.oauth2({ providerId: 'microsoft-entra-id' })` (callback

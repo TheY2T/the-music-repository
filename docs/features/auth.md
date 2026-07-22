@@ -6,7 +6,8 @@
   - `auth.signup` — gates the self-service sign-up page + the "create an account" link. Default on.
   - `auth.social` — gates the Google/Facebook social sign-in buttons. Default off (needs
     provider credentials to function).
-  - `auth.microsoft` — gates the personal Microsoft account button (`consumers` tenant). Default off.
+  - `auth.microsoft` — gates the personal Microsoft account button (`consumers` tenant). Default on
+    (needs `MICROSOFT_CLIENT_ID`/`SECRET` to function).
   - `auth.microsoft-work` — gates the work/school (organizational) Microsoft button (Entra ID). Default
     off; intended to switch on once classroom features land.
 
@@ -106,7 +107,9 @@ pages derive from the flags.
 ### Microsoft (personal vs work/school)
 
 Microsoft sign-in is two independent flows behind two flags, so personal accounts can go live before
-work/school (ADR 0052). Both are off by default and register only when their own credentials are set.
+work/school (ADR 0052). Personal defaults on and work/school defaults off; each provider registers only
+when its own credentials are set, so the flag being on with no credentials shows a button that errors on
+click rather than a working sign-in.
 
 - **Personal accounts** (`auth.microsoft`) — the built-in `microsoft` social provider with
   `tenantId: 'consumers'`, accepting @outlook/@hotmail/@live accounts. Started via
