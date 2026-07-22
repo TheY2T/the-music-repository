@@ -3,6 +3,14 @@
 Astro SSR + React islands + Tailwind v4 + shadcn. See root `CLAUDE.md` for repo-wide rules. This file is
 the **shell playbook**; situational detail loads from `.claude/rules/*` and `docs/features/*`.
 
+## Production server (ADR 0051)
+
+The `@astrojs/node` adapter runs in **`middleware` mode**; production boots `server.mjs` (Dockerfile
+`CMD`, and `pnpm preview`), which wraps the SSR handler with `compression()` and serves `dist/client` via
+`sirv` with immutable cache headers. `astro dev` is unaffected. HTML `Cache-Control` is set in
+`middleware.ts` from `src/lib/http-cache.ts` — **`no-store` by default**, shared only for anonymous public
+GETs. See `docs/features/caching.md`.
+
 ## `apps/web` is a SHELL (ADR 0033)
 
 Complex UI lives in shared raw-source ESM packages, not here. This app keeps only: routes, middleware /

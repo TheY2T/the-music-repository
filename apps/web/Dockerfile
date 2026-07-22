@@ -34,4 +34,4 @@ RUN addgroup -S nodejs && adduser -S astro -G nodejs
 COPY --from=installer --chown=astro:nodejs /app .
 USER astro
 EXPOSE 4321
-CMD ["node", "apps/web/dist/server/entry.mjs"]
+CMD ["node", "apps/web/server.mjs"]

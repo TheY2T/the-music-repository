@@ -9,6 +9,8 @@ import {
 } from '@TheY2T/tmr-i18n';
 import { FLAG_FIELD_BY_KEY, type Flags } from '@TheY2T/tmr-web-acl';
 import { defineMiddleware } from 'astro:middleware';
+import type { APIContext } from 'astro';
+import { htmlCachePolicy } from './lib/http-cache';
 import { ensureCatalogue } from './lib/i18n-catalogue';
 import { contentPageMarkdown } from './lib/llms-sources';
 import { htmlToMarkdown, MARKDOWN_HEADERS, prefersMarkdown } from './lib/markdown';
@@ -182,12 +184,31 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   const res = await render();
   addVaryAccept(res.headers);
+  applyHtmlCacheControl(res, context, canonicalPath);
   return res;
 });
 
-/** Add `Accept` to the response's `Vary` header without dropping an existing value. */
-function addVaryAccept(headers: Headers): void {
+/** Add a token to the response's `Vary` header without dropping an existing value. */
+function appendVary(headers: Headers, token: string): void {
   const existing = headers.get('Vary');
-  if (!existing) headers.set('Vary', 'Accept');
-  else if (!/\baccept\b/i.test(existing)) headers.set('Vary', `${existing}, Accept`);
+  if (!existing) headers.set('Vary', token);
+  else if (!new RegExp(`\\b${token}\\b`, 'i').test(existing))
+    headers.set('Vary', `${existing}, ${token}`);
+}
+
+/** Add `Accept` to the response's `Vary` header (HTML-vs-markdown content negotiation). */
+function addVaryAccept(headers: Headers): void {
+  appendVary(headers, 'Accept');
+}
+
+/** Set `Cache-Control` on an HTML response from the shared policy; tag shared responses `Vary: Cookie`. */
+function applyHtmlCacheControl(res: Response, context: APIContext, canonicalPath: string): void {
+  const { cacheControl, shared } = htmlCachePolicy({
+    method: context.request.method,
+    status: res.status,
+    authenticated: Boolean(context.locals.user),
+    path: canonicalPath,
+  });
+  res.headers.set('Cache-Control', cacheControl);
+  if (shared) appendVary(res.headers, 'Cookie');
 }

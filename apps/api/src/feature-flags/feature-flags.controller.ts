@@ -1,4 +1,5 @@
-import { Controller, Get, Param, Req, Res } from '@nestjs/common';
+import { Controller, Get, Header, Param, Req, Res } from '@nestjs/common';
+import { CACHE_PUBLIC_MEDIUM } from '../http/cache-control';
 import { FeatureFlagCatalogue } from './application/ports/feature-flag-catalogue.port';
 
 /** Structural request/response shapes (avoids an express import). */
@@ -20,6 +21,7 @@ export class FeatureFlagController {
   constructor(private readonly catalogue: FeatureFlagCatalogue) {}
 
   @Get('environments')
+  @Header('Cache-Control', CACHE_PUBLIC_MEDIUM)
   async environments() {
     return { items: await this.catalogue.environments() };
   }
@@ -33,7 +35,9 @@ export class FeatureFlagController {
     const snapshot = await this.catalogue.snapshot(env);
     const etag = `"${snapshot.version}"`;
     res.setHeader('ETag', etag);
-    res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+    // Browsers revalidate every time (max-age=0, ETag → cheap 304); the edge may serve a snapshot for a
+    // short window and refresh in the background, so a flag toggle propagates within ~a minute.
+    res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=30, stale-while-revalidate=60');
     if (req.headers['if-none-match'] === etag) {
       res.status(304);
       return undefined;

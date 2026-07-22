@@ -1,4 +1,5 @@
-import { Controller, Get, Param, Req, Res } from '@nestjs/common';
+import { Controller, Get, Header, Param, Req, Res } from '@nestjs/common';
+import { CACHE_PUBLIC_MEDIUM } from '../http/cache-control';
 import {
   GetLocaleCatalogueUseCase,
   GetLocalesUseCase,
@@ -28,11 +29,13 @@ export class I18nController {
   ) {}
 
   @Get('version')
+  @Header('Cache-Control', CACHE_PUBLIC_MEDIUM)
   async versions() {
     return { versions: await this.getVersions.execute() };
   }
 
   @Get('locales')
+  @Header('Cache-Control', CACHE_PUBLIC_MEDIUM)
   async locales() {
     return { items: await this.getLocales.execute() };
   }
@@ -46,7 +49,9 @@ export class I18nController {
     const snapshot = await this.getCatalogue.execute(locale);
     const etag = `"${snapshot.version}"`;
     res.setHeader('ETag', etag);
-    res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+    // Browsers revalidate every time (max-age=0, ETag → cheap 304); the edge may serve the catalogue for
+    // a short window and refresh in the background, so a published string change propagates within ~a minute.
+    res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=30, stale-while-revalidate=60');
     if (req.headers['if-none-match'] === etag) {
       res.status(304);
       return undefined;

@@ -1,9 +1,10 @@
 import { FlagDefaults, FlagKeys } from '@TheY2T/tmr-flags';
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Header, Param, Query } from '@nestjs/common';
 import { OpenFeatureClient } from '@openfeature/nestjs-sdk';
 import type { Client } from '@openfeature/server-sdk';
 import { ResolveOptionalAuth } from '../auth/require-permissions.decorator';
 import { PremiumAccessService } from '../entitlements/application/premium-access.service';
+import { CACHE_PUBLIC_MEDIUM, CACHE_PUBLIC_SHORT } from '../http/cache-control';
 import { GetContentBySlugUseCase } from './application/use-cases/get-content-by-slug.use-case';
 import { GetRelatedContentUseCase } from './application/use-cases/get-related-content.use-case';
 import { SearchCatalogueUseCase } from './application/use-cases/search-catalogue.use-case';
@@ -41,6 +42,7 @@ export class CatalogueController {
   }
 
   @Get('items')
+  @Header('Cache-Control', CACHE_PUBLIC_SHORT)
   @ResolveOptionalAuth()
   async search(@Query() query: RawQuery) {
     // Search filters over base fields (not per-locale), so `locale` is accepted but not overlaid
@@ -49,12 +51,14 @@ export class CatalogueController {
   }
 
   @Get('items/:slug')
+  @Header('Cache-Control', CACHE_PUBLIC_MEDIUM)
   @ResolveOptionalAuth()
   async detail(@Param('slug') slug: string, @Query('locale') locale?: string) {
     return this.getContent.execute(slug, await this.resolveViewerRank(), localeOf(locale));
   }
 
   @Get('items/:slug/related')
+  @Header('Cache-Control', CACHE_PUBLIC_MEDIUM)
   async related(@Param('slug') slug: string, @Query('locale') locale?: string) {
     return { items: await this.getRelated.execute(slug, localeOf(locale)) };
   }

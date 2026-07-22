@@ -53,10 +53,17 @@ export class PostgresMediaLibrary extends MediaLibrary {
 
   async getObject(storageKey: string): Promise<MediaObject | null> {
     const [row] = await this.db
-      .select({ data: mediaObjects.data, mime: mediaObjects.mime })
+      .select({
+        data: mediaObjects.data,
+        mime: mediaObjects.mime,
+        bytes: mediaObjects.bytes,
+        updatedAt: mediaObjects.updatedAt,
+      })
       .from(mediaObjects)
       .where(eq(mediaObjects.storageKey, storageKey))
       .limit(1);
-    return row ? { data: row.data, mime: row.mime } : null;
+    return row
+      ? { data: row.data, mime: row.mime, bytes: row.bytes, updatedAt: row.updatedAt }
+      : null;
   }
 }

@@ -30,6 +30,9 @@ Three resources, deployed from GitHub `TheY2T/the-music-repository` into the **`
   operator's email — keeps the dev environment private with no app code.
 - **De-indexing (defence in depth):** with `APP_ENV=dev`, `BaseLayout` emits a global `noindex,nofollow`
   and `robots.txt` returns `Disallow: /`. Flipping `APP_ENV=production` restores indexing.
+- **CDN caching:** the origins compress responses and set `Cache-Control`; Cloudflare Cache Rules (Tiered
+  Cache, auth-cookie bypass) activate edge caching. See [caching.md](./caching.md) + ADR 0051; the rules
+  are applied per the deploy runbook.
 
 ## Resend + contact form
 

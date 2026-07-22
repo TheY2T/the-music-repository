@@ -1,7 +1,11 @@
-/** A stored media object's bytes and content type. */
+/** A stored media object's bytes, content type, and cache validators. */
 export interface MediaObject {
   data: Uint8Array;
   mime: string;
+  /** Byte length — a component of the `ETag`. */
+  bytes: number;
+  /** Last write time — the `Last-Modified` validator and the other `ETag` component. */
+  updatedAt: Date;
 }
 
 /** MediaLibrary — the application's requirement: store media files and hand out shareable links. */

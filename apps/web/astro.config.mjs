@@ -12,7 +12,9 @@ import icon from 'astro-icon';
 export default defineConfig({
   output: 'server',
   site: process.env.PUBLIC_SITE_URL ?? 'http://localhost:4321',
-  adapter: node({ mode: 'standalone' }),
+  // `middleware` (not `standalone`) so the production server (server.mjs) wraps the SSR handler with
+  // response compression and serves the built client assets with long-lived immutable cache headers.
+  adapter: node({ mode: 'middleware' }),
   // `icon()` renders Lucide (@iconify-json/lucide) as zero-JS inline SVG in .astro files.
   integrations: [react(), icon()],
   server: { port: 4321 },

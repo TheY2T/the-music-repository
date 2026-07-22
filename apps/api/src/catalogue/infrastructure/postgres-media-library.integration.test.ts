@@ -42,6 +42,9 @@ describe('PostgresMediaLibrary (Testcontainers Postgres)', () => {
     const object = await media.getObject('scores/demo.alphatex');
     expect(object?.mime).toBe('text/plain; charset=utf-8');
     expect(new TextDecoder().decode(object?.data)).toBe('\\title "Demo" . 3.4 4.4 |');
+    // Validators used to build the response ETag / Last-Modified.
+    expect(object?.bytes).toBe(bytes.byteLength);
+    expect(object?.updatedAt).toBeInstanceOf(Date);
   });
 
   it('overwrites the bytes on a repeated key (idempotent seed)', async () => {

@@ -24,6 +24,14 @@ catalog:
   zod: ^4.4.3
   tsup: ^8.5.1
 
+  # --- HTTP compression + static serving (origin bandwidth) ---
+  # `compression` gzip/brotli-compresses origin responses (the bytes Render bills as egress); the API
+  # applies it as Nest middleware and the web app's production server wraps the Astro handler with it.
+  # `sirv` serves the web app's built client assets with long-lived immutable cache headers.
+  compression: ^1.8.0
+  "@types/compression": ^1.8.0
+  sirv: ^3.0.1
+
   # --- Catalogue (Phase 1): search + object storage ---
 
   # --- Auth (Phase 1 Slice 2): Better Auth ---

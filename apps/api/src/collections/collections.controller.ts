@@ -1,6 +1,7 @@
-import { Controller, Get, HttpCode, Param, Post, Query } from '@nestjs/common';
+import { Controller, Get, Header, HttpCode, Param, Post, Query } from '@nestjs/common';
 import { CurrentUser } from '../auth/application/current-user';
 import { ResolveOptionalAuth } from '../auth/require-permissions.decorator';
+import { CACHE_PRIVATE, CACHE_PUBLIC_MEDIUM, CACHE_PUBLIC_SHORT } from '../http/cache-control';
 import { RecordCollectionOpenUseCase } from './application/use-cases/collection-engagement.use-case';
 import { GetCollectionBySlugUseCase } from './application/use-cases/get-collection.use-case';
 import { GetCollectionWithProgressUseCase } from './application/use-cases/get-collection-progress.use-case';
@@ -27,26 +28,31 @@ export class CollectionsController {
   ) {}
 
   @Get()
+  @Header('Cache-Control', CACHE_PUBLIC_SHORT)
   async list() {
     return { items: await this.listCollections.execute() };
   }
 
   @Get('search')
+  @Header('Cache-Control', CACHE_PUBLIC_SHORT)
   search(@Query() query: RawQuery) {
     return this.searchCollections.execute(normalizeQuery(query));
   }
 
   @Get('by-content/:slug')
+  @Header('Cache-Control', CACHE_PUBLIC_MEDIUM)
   async byContent(@Param('slug') slug: string) {
     return { items: await this.listForContent.execute(slug) };
   }
 
   @Get(':slug')
+  @Header('Cache-Control', CACHE_PUBLIC_MEDIUM)
   detail(@Param('slug') slug: string, @Query('locale') locale?: string) {
     return this.getCollection.execute(slug, collectionLocale(locale));
   }
 
   @Get(':slug/progress')
+  @Header('Cache-Control', CACHE_PRIVATE)
   @ResolveOptionalAuth()
   progress(@Param('slug') slug: string, @Query('locale') locale?: string) {
     return this.getWithProgress.execute(

@@ -3,6 +3,7 @@ import './otel';
 import { Logger as NestLogger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import compression from 'compression';
 import { Logger as PinoLogger } from 'nestjs-pino';
 import { AppModule } from './app.module';
 
@@ -12,6 +13,10 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, { bufferLogs: true, bodyParser: false });
   app.useLogger(app.get(PinoLogger));
   app.enableShutdownHooks();
+
+  // Compress responses so the bytes leaving the origin (Render egress) are gzip/brotli-encoded. The
+  // edge (Cloudflare) may re-compress toward the client, but the origin→edge leg is what Render bills.
+  app.use(compression());
 
   // Only serve traffic that arrives through the front door (custom domain via Cloudflare). Render's
   // default `*.onrender.com` URL bypasses Cloudflare (and its Access gate), so refuse it — except the

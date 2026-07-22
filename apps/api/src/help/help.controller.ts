@@ -1,4 +1,5 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Header, Param, Query } from '@nestjs/common';
+import { CACHE_PUBLIC_MEDIUM } from '../http/cache-control';
 import { GetHelpTopicUseCase, ListHelpTopicsUseCase } from './application/help-topic.use-cases';
 
 /** The `locale` query param: undefined for the base locale (`en`), else the locale id (ADR 0034). */
@@ -15,11 +16,13 @@ export class HelpController {
   ) {}
 
   @Get()
+  @Header('Cache-Control', CACHE_PUBLIC_MEDIUM)
   async list(@Query('locale') locale?: string) {
     return { items: await this.listTopics.execute(localeOf(locale)) };
   }
 
   @Get(':slug')
+  @Header('Cache-Control', CACHE_PUBLIC_MEDIUM)
   get(@Param('slug') slug: string, @Query('locale') locale?: string) {
     return this.getTopic.execute(slug, localeOf(locale));
   }

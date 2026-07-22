@@ -223,6 +223,50 @@ Ordered by where they bit us:
   only). A URI-Path rule on `/contact` + Bot Fight Mode is a stopgap; Turnstile is the real contact-form
   defense.
 
+## CDN caching (activate the origin headers)
+
+The API and web origins set compression + `Cache-Control` headers in-repo (ADR 0051 ·
+[`docs/features/caching.md`](../features/caching.md)), but Cloudflare will not cache JSON/media by default
+— it needs **Cache Rules**. These are **already applied** on the dev zone (rules 1–3 below, in the
+`http_request_cache_settings` phase, verified `MISS→HIT`). Re-apply them from here if rebuilding the zone.
+A token with **Zone → Cache Rules → Edit** is required (steps 4–5 additionally need **Zone Settings →
+Edit**, and Smart Tiered Cache a paid plan; Brotli is on by default).
+
+1. **Cache public API GETs** — When incoming requests match
+   `(http.host eq "api.themusicrepository.com") and (http.request.method eq "GET") and (starts_with(http.request.uri.path, "/catalogue") or starts_with(http.request.uri.path, "/collections") or starts_with(http.request.uri.path, "/i18n") or starts_with(http.request.uri.path, "/help-topics") or starts_with(http.request.uri.path, "/faq-entries") or starts_with(http.request.uri.path, "/feature-flags") or http.request.uri.path eq "/media")`
+   → **Eligible for cache**, Edge TTL + Browser TTL **Respect origin**, **Serve stale while updating** on.
+2. **Bypass authenticated requests** (place after rule 1 so it overrides) — match
+   `(http.host eq "api.themusicrepository.com") and (http.cookie contains "better-auth")` → **Bypass cache**.
+3. **Cache web static assets** (takes effect once the Access gate is removed) — match
+   `(http.host eq "themusicrepository.com" or http.host eq "www.themusicrepository.com") and (starts_with(http.request.uri.path, "/_astro/") or starts_with(http.request.uri.path, "/font/") or starts_with(http.request.uri.path, "/soundfont/"))`
+   → **Eligible for cache**, Respect origin.
+4. **Smart Tiered Cache:** Caching → Tiered Cache → enable Smart Tiered Cache Topology (fewer origin fills
+   across PoPs).
+5. **Brotli:** Speed → Optimization → Content Optimization → ensure Brotli is on (edge→client).
+
+Ready-to-run API payload (create the `http_request_cache_settings` phase entrypoint), zone
+`d5b3cb2ab942280b1eda955f0b6b5d9a`:
+
+```
+PUT /zones/{zone}/rulesets/phases/http_request_cache_settings/entrypoint
+{ "rules": [
+  { "description": "Cache public API GET reads", "expression": "<rule 1 above>",
+    "action": "set_cache_settings",
+    "action_parameters": { "cache": true, "edge_ttl": {"mode":"respect_origin"},
+      "browser_ttl": {"mode":"respect_origin"}, "serve_stale": {"disable_stale_while_updating": false} } },
+  { "description": "Bypass authenticated API requests", "expression": "<rule 2 above>",
+    "action": "set_cache_settings", "action_parameters": { "cache": false } },
+  { "description": "Cache web static assets", "expression": "<rule 3 above>",
+    "action": "set_cache_settings",
+    "action_parameters": { "cache": true, "edge_ttl": {"mode":"respect_origin"},
+      "browser_ttl": {"mode":"respect_origin"} } }
+] }
+```
+
+**Verify:** `curl -I https://api.themusicrepository.com/i18n/version` twice → `cf-cache-status` goes
+`MISS` → `HIT`; the same path with `-H 'Cookie: better-auth.session_token=x'` shows `BYPASS`. `curl -I`
+the origin (bypassing Cloudflare) should show `Content-Encoding: br` and the expected `Cache-Control`.
+
 ## Going public at launch
 
 - Set `APP_ENV=production` → drops the global `noindex` and restores the real `robots.txt` + sitemaps.
