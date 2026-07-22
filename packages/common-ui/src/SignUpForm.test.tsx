@@ -52,7 +52,7 @@ describe('SignUpForm island', () => {
     expect(screen.queryByText('Continue with Google')).toBeNull();
     rerender(<SignUpForm locale="en" showSocial />);
     expect(screen.getByText('Continue with Google')).toBeTruthy();
-    expect(screen.getByText('Continue with Apple')).toBeTruthy();
+    expect(screen.getByText('Continue with Facebook')).toBeTruthy();
   });
 
   it('starts the provider OAuth flow when a social button is clicked', async () => {

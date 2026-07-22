@@ -23,7 +23,7 @@ export const FlagKeys = {
   AuthEnabled: 'auth.enabled',
   /** Surfaces the public self-service sign-up page + the "create an account" link. */
   AuthSignup: 'auth.signup',
-  /** Surfaces the social sign-in buttons (Google/Facebook/Apple) on the sign-in + sign-up forms. */
+  /** Surfaces the social sign-in buttons (Google/Facebook) on the sign-in + sign-up forms. */
   AuthSocial: 'auth.social',
   /** Slice 2b — gates the admin authoring CMS (`/admin` content management). */
   AdminCms: 'admin.cms',

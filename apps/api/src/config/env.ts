@@ -30,13 +30,6 @@ export const envSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string().optional(),
   FACEBOOK_CLIENT_ID: z.string().optional(),
   FACEBOOK_CLIENT_SECRET: z.string().optional(),
-  // Sign in with Apple. APPLE_CLIENT_ID is the Services ID; APPLE_PRIVATE_KEY is the `.p8` contents
-  // (literal `\n` escapes are accepted). APPLE_APP_BUNDLE_IDENTIFIER is only needed for native iOS.
-  APPLE_CLIENT_ID: z.string().optional(),
-  APPLE_TEAM_ID: z.string().optional(),
-  APPLE_KEY_ID: z.string().optional(),
-  APPLE_PRIVATE_KEY: z.string().optional(),
-  APPLE_APP_BUNDLE_IDENTIFIER: z.string().optional(),
 
   // Better Auth API rate limiting. Unset ⇒ on in production, off in development/test. Set 'true'/'false'
   // to force it. State persists in Postgres (the `rate_limit` table) so limits hold across instances.

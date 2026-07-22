@@ -55,8 +55,7 @@ services:
       - key: AUTH_RATE_LIMIT_ENABLED
         value: "true"
       # Shared dev group carries SMTP_URL + MAIL_FROM (Resend) and the social-provider secrets
-      # (GOOGLE_/FACEBOOK_/APPLE_* — set them there, not inline, since they're secrets). When Apple is
-      # configured, the app adds https://appleid.apple.com to its trusted origins automatically.
+      # (GOOGLE_/FACEBOOK_CLIENT_ID+SECRET — set them there, not inline, since they're secrets).
       - fromGroup: dev
 
   # --- Web (Astro SSR) ---

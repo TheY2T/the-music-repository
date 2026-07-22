@@ -5,7 +5,6 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { createMailTransport } from '../mail/create-mail-transport';
 import { ac, roles } from './access-control';
-import { generateAppleClientSecret } from './apple-client-secret';
 import * as authSchema from './auth-schema';
 
 /**
@@ -38,7 +37,7 @@ const mailer = createMailTransport({ smtpUrl: process.env.SMTP_URL, from: proces
 /**
  * Social identity providers. Each provider is registered only when its credentials are present, so local
  * dev and CI boot with no OAuth secrets. The callback each provider must be configured to return to is
- * `${BETTER_AUTH_URL}/api/auth/callback/{google|facebook|apple}`.
+ * `${BETTER_AUTH_URL}/api/auth/callback/{google|facebook}`.
  */
 const socialProviders: Record<string, unknown> = {};
 
@@ -54,39 +53,6 @@ if (process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET) {
     clientId: process.env.FACEBOOK_CLIENT_ID,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
   };
-}
-
-/**
- * Sign in with Apple. Apple's client secret is a short-lived ES256 JWT signed with the `.p8` private key
- * (not a static value), so the provider is an async factory that mints the secret at config-resolution
- * time. `APPLE_PRIVATE_KEY` is the `.p8` contents; on hosts that can't store literal newlines it may carry
- * `\n` escapes, which are restored before signing. Apple POSTs the callback as `form_post`, so
- * `https://appleid.apple.com` must be a trusted origin.
- */
-if (
-  process.env.APPLE_CLIENT_ID &&
-  process.env.APPLE_TEAM_ID &&
-  process.env.APPLE_KEY_ID &&
-  process.env.APPLE_PRIVATE_KEY
-) {
-  const appleClientId = process.env.APPLE_CLIENT_ID;
-  const appleTeamId = process.env.APPLE_TEAM_ID;
-  const appleKeyId = process.env.APPLE_KEY_ID;
-  const applePrivateKey = process.env.APPLE_PRIVATE_KEY;
-  const appleBundleId = process.env.APPLE_APP_BUNDLE_IDENTIFIER;
-  socialProviders.apple = async () => ({
-    clientId: appleClientId,
-    clientSecret: await generateAppleClientSecret({
-      clientId: appleClientId,
-      teamId: appleTeamId,
-      keyId: appleKeyId,
-      privateKey: applePrivateKey,
-    }),
-    ...(appleBundleId ? { appBundleIdentifier: appleBundleId } : {}),
-  });
-  if (!trustedOrigins.includes('https://appleid.apple.com')) {
-    trustedOrigins.push('https://appleid.apple.com');
-  }
 }
 
 /**
@@ -128,12 +94,12 @@ export const auth = betterAuth({
   socialProviders,
   account: {
     // Link a social sign-in to an existing account when the provider reports the email as verified.
-    // `trustedProviders` additionally links Google/Apple without a verification check — both reliably
-    // verify email; other providers are left to the verified-email path (Better Auth flags trusted
-    // linking as an account-takeover risk).
+    // `trustedProviders` additionally links Google without a verification check (Google reliably verifies
+    // email); other providers are left to the verified-email path (Better Auth flags trusted linking as
+    // an account-takeover risk).
     accountLinking: {
       enabled: true,
-      trustedProviders: ['google', 'apple'],
+      trustedProviders: ['google'],
     },
   },
   rateLimit: {

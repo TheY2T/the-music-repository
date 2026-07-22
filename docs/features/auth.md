@@ -4,14 +4,14 @@
 - **Flag keys** (from `@TheY2T/tmr-flags`):
   - `auth.enabled` — gates the web auth entry points (sign-in / account links). Default on.
   - `auth.signup` — gates the self-service sign-up page + the "create an account" link. Default on.
-  - `auth.social` — gates the social sign-in buttons (Google/Facebook/Apple). Default off (needs
+  - `auth.social` — gates the social sign-in buttons (Google/Facebook). Default off (needs
     provider credentials to function).
 
 ## Purpose
 
 The people layer: sign in, know who the acting user is, and authorize actions by **permission** so the
 admin CMS (2b) and favorites (2c) can be gated. Users sign up and sign in with email/password (email
-verified before first sign-in) or with a Google, Facebook, or Apple identity (ADR 0013, ADR 0050).
+verified before first sign-in) or with a Google or Facebook identity (ADR 0013, ADR 0050).
 
 ## UX behaviour
 
@@ -76,7 +76,7 @@ The three recovery forms (`ForgotPasswordForm`, `ResetPasswordForm`, `VerifyEmai
 `@TheY2T/tmr-common-ui` and report outcomes neutrally to avoid account enumeration. `SignUpForm` (also in
 common-ui) creates accounts and shows the verify-email confirmation.
 
-## Social sign-in (Google, Facebook, Apple)
+## Social sign-in (Google, Facebook)
 
 Configured under `socialProviders` in `apps/api/src/auth/better-auth.ts`; each provider is registered only
 when its credentials are set, so leaving them unset simply hides that button. The browser calls
@@ -84,18 +84,16 @@ when its credentials are set, so leaving them unset simply hides that button. Th
 (`@TheY2T/tmr-common-ui`), rendered with the `SocialButton` brand-mark component (`@TheY2T/tmr-ui`).
 
 - **Callback URI** (register in each provider's developer console):
-  `${BETTER_AUTH_URL}/api/auth/callback/<google|facebook|apple>`.
+  `${BETTER_AUTH_URL}/api/auth/callback/<google|facebook>`.
 - **Google / Facebook** — set `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` and
   `FACEBOOK_CLIENT_ID`/`FACEBOOK_CLIENT_SECRET`.
-- **Apple (Sign in with Apple)** — create an App ID, a **Services ID** (→ `APPLE_CLIENT_ID`), and a **Key**
-  with Sign in with Apple enabled (download the `.p8` once → `APPLE_PRIVATE_KEY`, with `APPLE_TEAM_ID` +
-  `APPLE_KEY_ID`). The client secret is a short-lived ES256 JWT minted from the `.p8` at runtime
-  (`apps/api/src/auth/apple-client-secret.ts`); `https://appleid.apple.com` is auto-added to
-  `trustedOrigins`. `APPLE_APP_BUNDLE_IDENTIFIER` is only needed for native iOS. The `.p8` may be stored
-  with literal `\n` escapes.
 - **Account linking** — `account.accountLinking.enabled` links a social sign-in to an existing account
-  when the provider reports the email verified; `trustedProviders: ['google', 'apple']` additionally links
-  those without a verification check. Facebook uses the verified-email path only.
+  when the provider reports the email verified; `trustedProviders: ['google']` additionally links Google
+  without a verification check. Facebook uses the verified-email path only.
+- **Apple (Sign in with Apple) is deferred** — it requires the paid Apple Developer Program membership
+  plus domain verification and a signed-JWT client secret (ADR 0050). Adding it later is a config-only
+  change: register the `apple` provider + credentials in `better-auth.ts`, add `apple` to `SocialProvider`
+  in `@TheY2T/tmr-ui`, and add a `social.continueApple` string.
 
 ## API rate limiting
 
@@ -122,7 +120,5 @@ None yet (Info View arrives in Phase 2).
   covers request → confirmation, reset → `/signin`, missing-token, and the signin link.
 - **Sign-up & social:** `SignUpForm.test.tsx` (create → verify-email confirmation, error path, social
   buttons gated + provider OAuth start); E2E `signup.spec.ts` (sign-up → confirmation, signin→signup link).
-- **Apple client secret:** `apple-client-secret.test.ts` — the minted JWT is ES256, carries the key id,
-  and verifies against the public key with Apple-shaped `iss`/`sub`/`aud` claims.
 - **Setup:** `pnpm infra:up`, `pnpm --filter @TheY2T/tmr-api db:migrate && db:seed:auth`, then run both
   apps. Dev accounts: `admin|editor|learner@local.dev` / `password123` (local only).

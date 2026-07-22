@@ -86,9 +86,9 @@ Better Auth lives in `src/auth/` and owns `/api/auth/*`. Key rules:
 - **Tables** are hand-written in `src/auth/auth-schema.ts` (re-exported from `database/schema.ts`) so
   **drizzle-kit** owns migrations — do **not** run `better-auth migrate`. Regenerate with `db:generate`.
   Includes `rate_limit` (Better Auth `rateLimit` with `storage: 'database'`).
-- **Social sign-in (Google/Facebook/Apple, ADR 0050):** `socialProviders` in `better-auth.ts`, each
-  registered only when its env credentials are set. Apple's client secret is a runtime-signed ES256 JWT
-  (`apple-client-secret.ts`, jose). Account linking is on (`trustedProviders: ['google','apple']`).
+- **Social sign-in (Google/Facebook, ADR 0050):** `socialProviders` in `better-auth.ts`, each
+  registered only when its env credentials are set. Account linking is on (`trustedProviders: ['google']`).
+  Apple is deferred (paid Apple Developer Program) — adding it later is config-only.
 - **Rate limiting (ADR 0050):** built-in `rateLimit`, Postgres-backed, keyed off `cf-connecting-ip`;
   env-toggled by `AUTH_RATE_LIMIT_ENABLED` (unset ⇒ on in prod, off in dev/test). It's boot config, not a
   DB flag.
@@ -171,8 +171,8 @@ DB-backed — no flagd reload; `.claude/rules/flags.md`); read the viewer on pub
 
 Env is validated at boot by Zod (`src/config/env.ts`) via `@nestjs/config`. Add new vars there.
 Auth vars: `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `TRUSTED_ORIGINS`, `AUTH_COOKIE_DOMAIN` (dev defaults
-are local-only); social providers `GOOGLE_/FACEBOOK_CLIENT_ID+SECRET`, `APPLE_CLIENT_ID/TEAM_ID/KEY_ID/
-PRIVATE_KEY` (all optional — a provider registers only when set); `AUTH_RATE_LIMIT_ENABLED`.
+are local-only); social providers `GOOGLE_/FACEBOOK_CLIENT_ID+SECRET` (optional — a provider registers
+only when set); `AUTH_RATE_LIMIT_ENABLED`.
 
 ## Testing (ADR 0020, `docs/features/testing.md`)
 

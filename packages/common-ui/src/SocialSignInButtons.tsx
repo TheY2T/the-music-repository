@@ -6,7 +6,6 @@ import { useState } from 'react';
 const PROVIDERS = [
   { provider: 'google', labelKey: 'social.continueGoogle' },
   { provider: 'facebook', labelKey: 'social.continueFacebook' },
-  { provider: 'apple', labelKey: 'social.continueApple' },
 ] as const satisfies ReadonlyArray<{ provider: SocialProvider; labelKey: MessageKey }>;
 
 /**
