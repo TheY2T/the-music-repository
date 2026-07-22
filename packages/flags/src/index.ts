@@ -242,7 +242,7 @@ export const FlagDefaults = {
   [FlagKeys.DemoNewBanner]: false,
   [FlagKeys.AuthEnabled]: true,
   [FlagKeys.AuthSignup]: true,
-  [FlagKeys.AuthSocial]: false,
+  [FlagKeys.AuthSocial]: true,
   [FlagKeys.AdminCms]: true,
   [FlagKeys.BlockEditor]: true,
   [FlagKeys.BlockEditorPreview]: true,
