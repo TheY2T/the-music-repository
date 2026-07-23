@@ -1,0 +1,12 @@
+---
+import { splitLocalePath } from '@TheY2T/tmr-i18n';
+
+// Entry for the injected locale-prefix catch-all routes (`/zh/[...path]`, see astro.config.mjs). Its only
+// job is to make a locale-prefixed URL match an Astro route so the SSR middleware runs and rewrites the
+// request to its canonical page (`Astro.locals.locale` carries the locale). That rewrite happens before
+// this component renders, so this frontmatter runs only when localized routing is disabled and the
+// middleware left the request un-rewritten — in which case the prefix is meaningless, so redirect to the
+// canonical (un-prefixed) path.
+const { path } = splitLocalePath(Astro.url.pathname);
+return Astro.redirect(`${path}${Astro.url.search}`);
+---

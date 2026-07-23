@@ -129,8 +129,12 @@ click rather than a working sign-in.
 - *Work/school*: "Accounts in any organizational directory"; redirect URI
   `${BETTER_AUTH_URL}/api/auth/oauth2/callback/microsoft-entra-id`.
 Each app gets a client secret; store the values locally in `.env` and per environment in Render's `dev`
-group. Because both flags default off, the buttons don't appear in the hermetic E2E run — verify a flow
-by enabling its flag in `/admin/feature-flags` (or locally) against a real Azure app registration.
+group. A provider only registers when its credentials are present, so verify a flow against a real Azure
+app registration (a flag on with no credentials shows a button that errors on click).
+
+Full step-by-step — Azure app registration, publisher verification, and the Partner Center
+identity-verification gotchas — is in
+[`docs/runbooks/microsoft-oauth-setup.md`](../runbooks/microsoft-oauth-setup.md).
 
 ## API rate limiting
 

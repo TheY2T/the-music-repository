@@ -2,6 +2,7 @@ import node from '@astrojs/node';
 import react from '@astrojs/react';
 import { alphaTab } from '@coderline/alphatab-vite';
 import tailwindcss from '@tailwindcss/vite';
+import { LOCALES, localePrefix } from '@TheY2T/tmr-i18n';
 import { defineConfig } from 'astro/config';
 import icon from 'astro-icon';
 
@@ -23,10 +24,38 @@ function wellKnownRoutes() {
   };
 }
 
+/**
+ * Registers a catch-all route for each localized URL prefix (e.g. `/zh/[...path]`). Localized routing is
+ * a rewrite in `src/middleware.ts` that maps `/zh/…` to its canonical page, but the node adapter's
+ * `middleware` mode runs the SSR handler (and thus the middleware) ONLY for requests that match a route.
+ * Without these, a `/zh/…` request matches nothing, so server.mjs 404s it before the rewrite can run.
+ * The entrypoint renders only when localized routing is disabled (the middleware then leaves the request
+ * un-rewritten); it redirects to the canonical path. Prefixes come from `@TheY2T/tmr-i18n` (one source).
+ */
+function localePrefixRoutes() {
+  return {
+    name: 'locale-prefix-routes',
+    hooks: {
+      'astro:config:setup': ({ injectRoute }) => {
+        for (const locale of LOCALES) {
+          const prefix = localePrefix(locale);
+          if (!prefix) continue;
+          injectRoute({
+            pattern: `${prefix}/[...path]`,
+            entrypoint: './src/i18n/locale-prefix-route.astro',
+          });
+        }
+      },
+    },
+  };
+}
+
 // SSR so the OpenFeature middleware can evaluate flags per request and gate personalized views.
 // `site` gives i18n `hreflang` alternates an absolute base (override with PUBLIC_SITE_URL in prod).
 // Locale routing (the `/zh` prefix) is handled in src/middleware.ts, not Astro's built-in `i18n`
 // config, so a single set of page files serves every locale (see docs/features/i18n.md).
+// `localePrefixRoutes` injects a catch-all per prefix so those URLs match a route and the middleware
+// (which rewrites them to the canonical page) actually runs under the node adapter's `middleware` mode.
 export default defineConfig({
   output: 'server',
   site: process.env.PUBLIC_SITE_URL ?? 'http://localhost:4321',
@@ -37,7 +66,7 @@ export default defineConfig({
   // `wellKnownRoutes` registers `/.well-known/*` endpoints the route scanner can't discover on its own
   // (it skips dotfile directories). Without an injected route, requests to these paths match nothing and
   // the node adapter's `middleware` mode never runs the SSR handler for them.
-  integrations: [react(), icon(), wellKnownRoutes()],
+  integrations: [react(), icon(), wellKnownRoutes(), localePrefixRoutes()],
   server: { port: 4321 },
   vite: {
     // alphaTab() (ADR 0027) is the single score engine's build integration: it copies the
