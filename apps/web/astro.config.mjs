@@ -5,6 +5,24 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import icon from 'astro-icon';
 
+/**
+ * Registers `/.well-known/*` endpoints. The route scanner globs `src/pages/**` with dotfiles excluded,
+ * so a `.well-known` directory there is never discovered; `injectRoute` maps the paths explicitly.
+ */
+function wellKnownRoutes() {
+  return {
+    name: 'well-known-routes',
+    hooks: {
+      'astro:config:setup': ({ injectRoute }) => {
+        injectRoute({
+          pattern: '/.well-known/microsoft-identity-association.json',
+          entrypoint: './src/well-known/microsoft-identity-association.ts',
+        });
+      },
+    },
+  };
+}
+
 // SSR so the OpenFeature middleware can evaluate flags per request and gate personalized views.
 // `site` gives i18n `hreflang` alternates an absolute base (override with PUBLIC_SITE_URL in prod).
 // Locale routing (the `/zh` prefix) is handled in src/middleware.ts, not Astro's built-in `i18n`
@@ -16,7 +34,10 @@ export default defineConfig({
   // response compression and serves the built client assets with long-lived immutable cache headers.
   adapter: node({ mode: 'middleware' }),
   // `icon()` renders Lucide (@iconify-json/lucide) as zero-JS inline SVG in .astro files.
-  integrations: [react(), icon()],
+  // `wellKnownRoutes` registers `/.well-known/*` endpoints the route scanner can't discover on its own
+  // (it skips dotfile directories). Without an injected route, requests to these paths match nothing and
+  // the node adapter's `middleware` mode never runs the SSR handler for them.
+  integrations: [react(), icon(), wellKnownRoutes()],
   server: { port: 4321 },
   vite: {
     // alphaTab() (ADR 0027) is the single score engine's build integration: it copies the

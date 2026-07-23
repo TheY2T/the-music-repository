@@ -46,6 +46,14 @@ const server = createServer((req, res) => {
         if (err) {
           res.statusCode = 500;
           res.end('Internal Server Error');
+          return;
+        }
+        // In `middleware` mode the SSR handler calls back (rather than responding) for any request that
+        // matches no Astro route or static asset. Nothing downstream answers, so send a 404 here instead
+        // of leaving the connection open until it times out.
+        if (!res.headersSent) {
+          res.statusCode = 404;
+          res.end('Not found');
         }
       });
     });
