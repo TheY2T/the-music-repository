@@ -16,7 +16,7 @@
     `noindex,nofollow` and `robots.txt` returns `Disallow: /`.
   - **Resend** sends transactional email through the existing `MailSender`/SMTP path — no new mail code,
     just `SMTP_URL=smtps://resend:<key>@smtp.resend.com:465` + a verified `MAIL_FROM`. A **contact form**
-    (`POST /contact` → `MailSender`) emails `contact@themusicrepository.com` → the operator, using the
+    (`POST /contact` → `MailSender`) emails `admin@themusicrepository.com` → the operator, using the
     sender's address as the reply-to; a honeypot drops bots silently.
   - **Cross-subdomain auth:** with web on the apex and API on `api.`, `AUTH_COOKIE_DOMAIN` shares the
     Better Auth session cookie across both (`SameSite=None; Secure`). Unset locally.

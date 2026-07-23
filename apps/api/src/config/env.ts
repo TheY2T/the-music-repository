@@ -64,7 +64,7 @@ export const envSchema = z.object({
   MAIL_FROM: z.string().default('The Music Repository <no-reply@localhost>'),
 
   // Where contact-form submissions are delivered.
-  CONTACT_RECIPIENT: z.string().default('michael.hewett.87@gmail.com'),
+  CONTACT_RECIPIENT: z.string().default('admin@themusicrepository.com'),
 
   // Cloudflare Turnstile secret for verifying the contact form's anti-bot token. Unset ⇒ verification
   // is skipped (local/dev). Set it (with the matching PUBLIC_TURNSTILE_SITE_KEY on the web) to enforce.

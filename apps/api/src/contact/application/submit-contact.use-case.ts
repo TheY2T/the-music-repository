@@ -35,7 +35,7 @@ export class SubmitContactUseCase {
     if (!(await this.captcha.verify(input.turnstileToken, remoteIp))) {
       throw new CaptchaFailedError();
     }
-    const recipient = this.config.get<string>('CONTACT_RECIPIENT') ?? 'michael.hewett.87@gmail.com';
+    const recipient = this.config.get<string>('CONTACT_RECIPIENT') ?? 'admin@themusicrepository.com';
     await this.mail.send({
       to: recipient,
       replyTo: input.email,

@@ -13,7 +13,7 @@ export const business = {
   /** ABN without spacing — for machine-readable structured data. */
   abnRaw: '31769705046',
   /** Contact point for privacy access/correction requests, complaints, and general enquiries. */
-  contactEmail: 'michael.hewett.87@gmail.com',
+  contactEmail: 'admin@themusicrepository.com',
   /** Date the current privacy policy and terms take effect. */
   effectiveDate: '19 July 2026',
   /** Australian state whose law governs the terms of service. */

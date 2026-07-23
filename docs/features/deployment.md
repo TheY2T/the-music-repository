@@ -37,7 +37,7 @@ Three resources, deployed from GitHub `TheY2T/the-music-repository` into the **`
 ## Resend + contact form
 
 - Resend sends via the existing SMTP path: `SMTP_URL=smtps://resend:<RESEND_API_KEY>@smtp.resend.com:465`,
-  `MAIL_FROM="The Music Repository <contact@themusicrepository.com>"` — set in the `dev` group. No new
+  `MAIL_FROM="The Music Repository <admin@themusicrepository.com>"` — set in the `dev` group. No new
   mail code (Better Auth account emails also flow through it).
 - Add the SPF/DKIM/DMARC + return-path records Resend generates into Cloudflare DNS and verify the domain.
 - Contact form: see `contact.md`. Protect it with **Cloudflare Turnstile** — create a widget in the
@@ -62,4 +62,4 @@ locally, where host-only lax cookies over http work.
 - Blueprint deploys web + API + Postgres; `preDeployCommand` migrations succeed.
 - Cloudflare Access challenges both hostnames; `/robots.txt` is `Disallow: /`; page source carries the
   global `noindex`. Sign in on the apex → the session cookie reaches `api.` (cross-subdomain auth).
-- Submit the contact form → email arrives at the operator from `contact@themusicrepository.com`.
+- Submit the contact form → email arrives at the operator from `admin@themusicrepository.com`.

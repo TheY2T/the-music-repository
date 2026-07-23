@@ -7,7 +7,7 @@
 
 `/contact` (`ContactForm` island, `@TheY2T/tmr-common-ui`) → `POST /contact` → `SubmitContactUseCase` →
 `MailSender.send()`. The email is delivered to `CONTACT_RECIPIENT` (default
-`michael.hewett.87@gmail.com`) from `MAIL_FROM` (`contact@themusicrepository.com` in production, via
+`admin@themusicrepository.com`) from `MAIL_FROM` (`admin@themusicrepository.com` in production, via
 Resend/SMTP), with the sender's address as the **reply-to** so a reply reaches them directly.
 
 ## API (spec-first)

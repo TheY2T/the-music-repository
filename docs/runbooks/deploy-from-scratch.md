@@ -102,13 +102,13 @@ still require a Better Auth login.
 3. In the Render **`dev` env group**, set (the key must be **inlined**, Render does not interpolate
    variables — see gotchas):
    - `SMTP_URL` = `smtps://resend:re_YOUR_REAL_KEY@smtp.resend.com:465` (no `<>`, no `${}`, no quotes)
-   - `MAIL_FROM` = `The Music Repository <contact@themusicrepository.com>`
+   - `MAIL_FROM` = `The Music Repository <admin@themusicrepository.com>`
 4. **Redeploy the API** so it picks up the new env (env-group edits don't always auto-redeploy):
    `render deploys create <api-service-id> --confirm`, or save any service field to trigger one.
 
 The mail path is nodemailer over SMTP (`SmtpMailSender`); Resend offers SMTP, so no code change is
 needed. Contact form: `POST /contact` → `MailSender` → `CONTACT_RECIPIENT` (default
-`michael.hewett.87@gmail.com`), sender = `MAIL_FROM`, reply-to = the submitter.
+`admin@themusicrepository.com`), sender = `MAIL_FROM`, reply-to = the submitter.
 
 5. **(Optional) Anti-bot on the contact form — Cloudflare Turnstile.** Cloudflare → Turnstile → add a
    widget for `themusicrepository.com`. In the `dev` env group set `TURNSTILE_SECRET_KEY` (secret) and
@@ -210,7 +210,7 @@ Ordered by where they bit us:
 `PUBLIC_SITE_URL`.
 
 **Set in the `dev` env group (secrets, by hand):** `SMTP_URL`, `MAIL_FROM` (and optionally
-`CONTACT_RECIPIENT`, which defaults to `michael.hewett.87@gmail.com`); for the contact-form challenge,
+`CONTACT_RECIPIENT`, which defaults to `admin@themusicrepository.com`); for the contact-form challenge,
 `TURNSTILE_SECRET_KEY` + `PUBLIC_TURNSTILE_SITE_KEY`.
 
 ## Deferred hardening follow-ups
