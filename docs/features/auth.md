@@ -4,12 +4,16 @@
 - **Flag keys** (from `@TheY2T/tmr-flags`):
   - `auth.enabled` — gates the web auth entry points (sign-in / account links). Default on.
   - `auth.signup` — gates the self-service sign-up page + the "create an account" link. Default on.
-  - `auth.social` — gates the Google/Facebook social sign-in buttons. Default off (needs
-    provider credentials to function).
+  - `auth.social` — gates the Google social sign-in button. Default off (needs provider credentials to
+    function).
+  - `auth.facebook` — gates the Facebook social sign-in button. Default on (needs
+    `FACEBOOK_CLIENT_ID`/`SECRET` to function); toggle off per-environment to hide the button.
   - `auth.microsoft` — gates the personal Microsoft account button (`consumers` tenant). Default on
     (needs `MICROSOFT_CLIENT_ID`/`SECRET` to function).
   - `auth.microsoft-work` — gates the work/school (organizational) Microsoft button (Entra ID). Default
     off; intended to switch on once classroom features land.
+  - `auth.whatsapp` — gates the "Continue with WhatsApp" phone-OTP sign-in (ADR 0053). Default off (needs
+    a provisioned WhatsApp Business sender + an approved template to function).
 
 ## Purpose
 
@@ -20,11 +24,13 @@ verified before first sign-in) or with a Google or Facebook identity (ADR 0013, 
 ## UX behaviour
 
 - `/signin` — email/password form (React island) with dev-account quick-fill, a **Forgot password?**
-  link, a **Create an account** link (when `auth.signup`), and social sign-in buttons (when
-  `auth.social`). On success → `?redirect` target (default `/admin`).
+  link, a **Create an account** link (when `auth.signup`), and social sign-in buttons (each gated by its
+  own provider flag — `auth.social`, `auth.facebook`, `auth.microsoft`, `auth.microsoft-work`,
+  `auth.whatsapp`). On success → `?redirect` target (default `/admin`).
 - `/signup` — name/email/password form (when `auth.signup`; else redirects to `/signin`). On success a
   verification email is sent and the form shows a "check your email" confirmation — the account can't
-  sign in until the address is verified. Social buttons appear when `auth.social`. Anonymous only.
+  sign in until the address is verified. Social buttons appear per provider flag (`auth.social`,
+  `auth.facebook`, `auth.microsoft`, `auth.microsoft-work`, `auth.whatsapp`). Anonymous only.
 - `/forgot-password` — enter an email to request a reset link. The confirmation is neutral (it never
   reveals whether an account exists). Anonymous only.
 - `/reset-password?token=…` — set a new password from the emailed link; on success → `/signin`. Missing or
@@ -136,11 +142,41 @@ Full step-by-step — Azure app registration, publisher verification, and the Pa
 identity-verification gotchas — is in
 [`docs/runbooks/microsoft-oauth-setup.md`](../runbooks/microsoft-oauth-setup.md).
 
+## WhatsApp (phone OTP)
+
+Passwordless phone sign-in over WhatsApp (`auth.whatsapp`, default off; ADR 0053). The learner enters a
+phone number, receives a one-time code on WhatsApp, and verifying it signs them in — creating an account
+on first use. Built on Better Auth's `phoneNumber` plugin; unlike the redirect-based social buttons it's
+a two-step flow, so it renders as a dedicated `WhatsAppSignIn` island (`@TheY2T/tmr-common-ui`) that steps
+number → code inline, gated by the `showWhatsapp` prop the sign-in/sign-up pages derive from the flag.
+
+- **Client** — `authClient.phoneNumber.sendOtp({ phoneNumber })` then
+  `authClient.phoneNumber.verify({ phoneNumber, code })` (the `phoneNumberClient` browser plugin in
+  `@TheY2T/tmr-web-acl`). Verifying establishes the session; there is no phone password.
+- **Account creation** — `signUpOnVerification` creates the account on first verify with a placeholder
+  `<digits>@whatsapp.local` email and the number as the name (completable later).
+- **Delivery** — the `sendOTP` callback calls a `WhatsAppSender` (ADR 0012): `CloudApiWhatsAppSender`
+  posts an approved AUTHENTICATION-category template with a copy-code button to the WhatsApp Business
+  Cloud API when a sender is configured (`WHATSAPP_ACCESS_TOKEN` + `WHATSAPP_PHONE_NUMBER_ID` +
+  `WHATSAPP_OTP_TEMPLATE_NAME`), else `LogWhatsAppSender` logs the code (dev/CI). The `WhatsAppModule`
+  binds the port; `better-auth.ts` builds the same transport from `process.env` (it runs outside Nest DI).
+- **Endpoint exposure** — the `phoneNumber` plugin registers when a sender is configured **or** outside
+  production, so local dev / CI can run the flow through the log adapter (the code prints to the API log)
+  while production only exposes the endpoints once a sender exists. The user-facing gate stays the flag.
+- **Schema** — the plugin's `phone_number` (unique) + `phone_number_verified` columns are hand-added to
+  the `user` table in `auth-schema.ts` (drizzle-kit owns the migration).
+- **Delivery note** — authentication-template messages reach only the user's **primary** WhatsApp device;
+  linked devices show a masked prompt.
+
+Full step-by-step — WhatsApp Business number, an approved authentication template, and the env vars — is
+in [`docs/runbooks/whatsapp-otp-setup.md`](../runbooks/whatsapp-otp-setup.md).
+
 ## API rate limiting
 
 Better Auth's built-in `rateLimit` (in `better-auth.ts`) with `storage: 'database'` (the `rate_limit`
 table) so counters persist across instances and restarts. Global 60s/100-request window plus tighter
-`customRules` (5/60s) on `/sign-in/email`, `/sign-up/email`, and `/forget-password`. Keys derive from the
+`customRules` (5/60s) on `/sign-in/email`, `/sign-up/email`, `/forget-password`, and
+`/phone-number/send-otp`. Keys derive from the
 real client IP via `advanced.ipAddress.ipAddressHeaders` (`cf-connecting-ip`, then `x-forwarded-for`)
 behind Cloudflare→Render. Toggled by `AUTH_RATE_LIMIT_ENABLED` (unset ⇒ on in production, off in
 development/test).

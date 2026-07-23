@@ -1,10 +1,11 @@
 import { type BetterAuthPlugin, betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { admin } from 'better-auth/plugins';
+import { admin, phoneNumber } from 'better-auth/plugins';
 import { genericOAuth, microsoftEntraId } from 'better-auth/plugins/generic-oauth';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { createMailTransport } from '../mail/create-mail-transport';
+import { createWhatsAppTransport } from '../whatsapp/create-whatsapp-sender';
 import { ac, roles } from './access-control';
 import * as authSchema from './auth-schema';
 
@@ -34,6 +35,20 @@ const trustedOrigins = (
  * module-scoped and doesn't participate in Nest DI — the same selection the `MailModule` factory makes.
  */
 const mailer = createMailTransport({ smtpUrl: process.env.SMTP_URL, from: process.env.MAIL_FROM });
+
+/**
+ * WhatsApp OTP transport for phone-number sign-in. Sends via the WhatsApp Business Cloud API when a
+ * sender is configured (token + phone-number id + an approved template), else logs the code (local dev).
+ * Built here from `process.env` for the same reason as the mailer — the auth instance is module-scoped
+ * and outside Nest DI, so it can't inject the `WhatsAppSender` port the `WhatsAppModule` binds.
+ */
+const whatsappSender = createWhatsAppTransport({
+  accessToken: process.env.WHATSAPP_ACCESS_TOKEN,
+  phoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID,
+  templateName: process.env.WHATSAPP_OTP_TEMPLATE_NAME,
+  templateLang: process.env.WHATSAPP_TEMPLATE_LANG,
+  graphVersion: process.env.WHATSAPP_GRAPH_VERSION,
+});
 
 /**
  * Social identity providers. Each provider is registered only when its credentials are present, so local
@@ -98,6 +113,37 @@ if (process.env.MICROSOFT_WORK_CLIENT_ID && process.env.MICROSOFT_WORK_CLIENT_SE
 }
 
 /**
+ * WhatsApp phone-OTP sign-in. Passwordless: the user requests a code, and verifying it signs them in —
+ * creating an account on first use (`signUpOnVerification` derives a placeholder email/name from the
+ * number, which they can complete later). Whether the "Continue with WhatsApp" button is shown is gated
+ * separately by the `auth.whatsapp` flag in the web app. The plugin registers when a real sender is
+ * configured, and also outside production so local dev / CI can exercise the flow through the log
+ * transport (the code is written to the API log). The user-facing gate stays the flag; production only
+ * exposes the endpoints once a sender exists.
+ */
+const whatsappConfigured = Boolean(
+  process.env.WHATSAPP_ACCESS_TOKEN &&
+    process.env.WHATSAPP_PHONE_NUMBER_ID &&
+    process.env.WHATSAPP_OTP_TEMPLATE_NAME,
+);
+if (whatsappConfigured || process.env.NODE_ENV !== 'production') {
+  plugins.push(
+    phoneNumber({
+      otpLength: 6,
+      expiresIn: 300,
+      allowedAttempts: 3,
+      signUpOnVerification: {
+        getTempEmail: (phone) => `${phone.replace(/\D/g, '')}@whatsapp.local`,
+        getTempName: (phone) => phone,
+      },
+      sendOTP: async ({ phoneNumber: to, code }) => {
+        await whatsappSender.send({ to, code });
+      },
+    }),
+  );
+}
+
+/**
  * Rate limiting is a boot-time construction option (it can't wait on the async DB-backed flag snapshot),
  * so it's env-driven: explicitly by `AUTH_RATE_LIMIT_ENABLED`, otherwise on in production and off in
  * development/test (so the seed script and E2E runs don't trip limits). State is stored in Postgres via
@@ -155,6 +201,7 @@ export const auth = betterAuth({
       '/sign-in/email': { window: 60, max: 5 },
       '/sign-up/email': { window: 60, max: 5 },
       '/forget-password': { window: 60, max: 5 },
+      '/phone-number/send-otp': { window: 60, max: 5 },
     },
   },
   emailAndPassword: {

@@ -23,12 +23,17 @@ export const FlagKeys = {
   AuthEnabled: 'auth.enabled',
   /** Surfaces the public self-service sign-up page + the "create an account" link. */
   AuthSignup: 'auth.signup',
-  /** Surfaces the Google/Facebook social sign-in buttons on the sign-in + sign-up forms. */
+  /** Surfaces the Google social sign-in button on the sign-in + sign-up forms. */
   AuthSocial: 'auth.social',
+  /** Surfaces the Facebook social sign-in button on the sign-in + sign-up forms. */
+  AuthFacebook: 'auth.facebook',
   /** Surfaces the personal-Microsoft-account sign-in button on the sign-in + sign-up forms. */
   AuthMicrosoft: 'auth.microsoft',
   /** Surfaces the work/school (organizational) Microsoft sign-in button; on once classroom features land. */
   AuthMicrosoftWork: 'auth.microsoft-work',
+  /** Surfaces the "Continue with WhatsApp" phone-OTP sign-in on the sign-in + sign-up forms; needs a
+   *  provisioned WhatsApp Business sender, so it stays off until credentials + an approved template exist. */
+  AuthWhatsapp: 'auth.whatsapp',
   /** Slice 2b — gates the admin authoring CMS (`/admin` content management). */
   AdminCms: 'admin.cms',
   /** WYSIWYG block editor (ADR 0030) — swaps the Markdown textarea for the TipTap editor in the CMS. */
@@ -247,8 +252,10 @@ export const FlagDefaults = {
   [FlagKeys.AuthEnabled]: true,
   [FlagKeys.AuthSignup]: true,
   [FlagKeys.AuthSocial]: true,
+  [FlagKeys.AuthFacebook]: true,
   [FlagKeys.AuthMicrosoft]: true,
   [FlagKeys.AuthMicrosoftWork]: false,
+  [FlagKeys.AuthWhatsapp]: false,
   [FlagKeys.AdminCms]: true,
   [FlagKeys.BlockEditor]: true,
   [FlagKeys.BlockEditorPreview]: true,

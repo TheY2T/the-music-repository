@@ -22,6 +22,13 @@
       "when": 1784677523141,
       "tag": "0002_stale_lord_hawal",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1784815159789,
+      "tag": "0003_loud_jazinda",
+      "breakpoints": true
     }
   ]
 }

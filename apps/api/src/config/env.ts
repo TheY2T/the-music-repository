@@ -40,6 +40,16 @@ export const envSchema = z.object({
   MICROSOFT_WORK_CLIENT_SECRET: z.string().optional(),
   MICROSOFT_WORK_TENANT_ID: z.string().optional(),
 
+  // WhatsApp phone-OTP sign-in (Better Auth `phoneNumber` plugin). The plugin registers only when a
+  // sender is configured — all three of ACCESS_TOKEN + PHONE_NUMBER_ID + OTP_TEMPLATE_NAME set — so the
+  // app boots locally with none. The template must be a pre-approved AUTHENTICATION-category template
+  // with a copy-code button; TEMPLATE_LANG is its approved language code (e.g. `en`, `en_US`).
+  WHATSAPP_ACCESS_TOKEN: z.string().optional(),
+  WHATSAPP_PHONE_NUMBER_ID: z.string().optional(),
+  WHATSAPP_OTP_TEMPLATE_NAME: z.string().optional(),
+  WHATSAPP_TEMPLATE_LANG: z.string().default('en'),
+  WHATSAPP_GRAPH_VERSION: z.string().default('v21.0'),
+
   // Better Auth API rate limiting. Unset ⇒ on in production, off in development/test. Set 'true'/'false'
   // to force it. State persists in Postgres (the `rate_limit` table) so limits hold across instances.
   AUTH_RATE_LIMIT_ENABLED: z.enum(['true', 'false']).optional(),

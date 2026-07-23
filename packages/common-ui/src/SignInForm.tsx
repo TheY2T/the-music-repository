@@ -3,21 +3,26 @@ import { Button, Card, Field, Input, PasswordInput } from '@TheY2T/tmr-ui';
 import { authClient } from '@TheY2T/tmr-web-acl/auth-client';
 import { type FormEvent, useState } from 'react';
 import SocialSignInButtons from './SocialSignInButtons';
+import WhatsAppSignIn from './WhatsAppSignIn';
 
 export default function SignInForm({
   redirectTo = '/',
   locale,
   showSignup = false,
   showSocial = false,
+  showFacebook = false,
   showMicrosoft = false,
   showMicrosoftWork = false,
+  showWhatsapp = false,
 }: {
   redirectTo?: string;
   locale: Locale;
   showSignup?: boolean;
   showSocial?: boolean;
+  showFacebook?: boolean;
   showMicrosoft?: boolean;
   showMicrosoftWork?: boolean;
+  showWhatsapp?: boolean;
 }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -85,20 +90,24 @@ export default function SignInForm({
         </div>
       </form>
 
-      {showSocial || showMicrosoft || showMicrosoftWork ? (
+      {showSocial || showFacebook || showMicrosoft || showMicrosoftWork || showWhatsapp ? (
         <div className="space-y-4">
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
             <span className="h-px flex-1 bg-border" />
             {t(locale, 'social.orDivider')}
             <span className="h-px flex-1 bg-border" />
           </div>
-          <SocialSignInButtons
-            locale={locale}
-            callbackURL={redirectTo}
-            showSocial={showSocial}
-            showMicrosoft={showMicrosoft}
-            showMicrosoftWork={showMicrosoftWork}
-          />
+          <div className="space-y-2">
+            <SocialSignInButtons
+              locale={locale}
+              callbackURL={redirectTo}
+              showSocial={showSocial}
+              showFacebook={showFacebook}
+              showMicrosoft={showMicrosoft}
+              showMicrosoftWork={showMicrosoftWork}
+            />
+            {showWhatsapp ? <WhatsAppSignIn locale={locale} callbackURL={redirectTo} /> : null}
+          </div>
         </div>
       ) : null}
     </Card>

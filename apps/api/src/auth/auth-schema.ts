@@ -10,6 +10,10 @@ export const user = pgTable('user', {
   email: text('email').notNull().unique(),
   emailVerified: boolean('email_verified').notNull().default(false),
   image: text('image'),
+  // phoneNumber plugin — WhatsApp phone-OTP sign-in. The number is the login identifier; verified flips
+  // true once an OTP is confirmed.
+  phoneNumber: text('phone_number').unique(),
+  phoneNumberVerified: boolean('phone_number_verified').default(false),
   role: text('role'), // admin plugin (we default to 'learner')
   banned: boolean('banned').default(false),
   banReason: text('ban_reason'),

@@ -4,7 +4,7 @@ import { authClient } from '@TheY2T/tmr-web-acl/auth-client';
 import { useState } from 'react';
 
 /** Which flag gates a provider button. */
-type ProviderFlag = 'social' | 'microsoft' | 'microsoft-work';
+type ProviderFlag = 'social' | 'facebook' | 'microsoft' | 'microsoft-work';
 
 /** How a provider's sign-in flow is started through the Better Auth client. */
 type ProviderStart =
@@ -29,7 +29,7 @@ const PROVIDERS = [
   {
     brand: 'facebook',
     labelKey: 'social.continueFacebook',
-    flag: 'social',
+    flag: 'facebook',
     start: { kind: 'social', provider: 'facebook' },
   },
   {
@@ -49,7 +49,7 @@ const PROVIDERS = [
 /**
  * Social sign-in row. Each button starts a provider's OAuth flow; on success Better Auth redirects the
  * browser to `callbackURL`, so a returning render only happens on failure — which surfaces a message
- * rather than silently resetting. Google/Facebook and personal Microsoft accounts use the built-in
+ * rather than silently resetting. Google, Facebook, and personal Microsoft accounts use the built-in
  * social providers; work/school (organizational) Microsoft accounts use the Entra ID generic-OAuth
  * provider. Which buttons show is decided per provider by the flag props.
  */
@@ -57,12 +57,14 @@ export default function SocialSignInButtons({
   locale,
   callbackURL = '/',
   showSocial = false,
+  showFacebook = false,
   showMicrosoft = false,
   showMicrosoftWork = false,
 }: {
   locale: Locale;
   callbackURL?: string;
   showSocial?: boolean;
+  showFacebook?: boolean;
   showMicrosoft?: boolean;
   showMicrosoftWork?: boolean;
 }) {
@@ -71,6 +73,7 @@ export default function SocialSignInButtons({
 
   const enabled: Record<ProviderFlag, boolean> = {
     social: showSocial,
+    facebook: showFacebook,
     microsoft: showMicrosoft,
     'microsoft-work': showMicrosoftWork,
   };

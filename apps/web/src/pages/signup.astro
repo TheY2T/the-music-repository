@@ -15,8 +15,10 @@ if (Astro.locals.user) {
 }
 const locale = Astro.locals.locale;
 const showSocial = Astro.locals.flags.authSocial;
+const showFacebook = Astro.locals.flags.authFacebook;
 const showMicrosoft = Astro.locals.flags.authMicrosoft;
 const showMicrosoftWork = Astro.locals.flags.authMicrosoftWork;
+const showWhatsapp = Astro.locals.flags.authWhatsapp;
 ---
 
 <BaseLayout noindex title={t(locale, 'signup.title')}>
@@ -37,8 +39,10 @@ const showMicrosoftWork = Astro.locals.flags.authMicrosoftWork;
       client:load
       locale={locale}
       showSocial={showSocial}
+      showFacebook={showFacebook}
       showMicrosoft={showMicrosoft}
       showMicrosoftWork={showMicrosoftWork}
+      showWhatsapp={showWhatsapp}
     />
   </PageShell>
 </BaseLayout>

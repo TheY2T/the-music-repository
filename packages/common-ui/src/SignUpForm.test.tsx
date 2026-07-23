@@ -57,20 +57,34 @@ describe('SignUpForm island', () => {
   it('omits the social buttons unless enabled', () => {
     const { rerender } = render(<SignUpForm locale="en" />);
     expect(screen.queryByText('Continue with Google')).toBeNull();
-    rerender(<SignUpForm locale="en" showSocial />);
+    rerender(<SignUpForm locale="en" showSocial showFacebook />);
     expect(screen.getByText('Continue with Google')).toBeTruthy();
     expect(screen.getByText('Continue with Facebook')).toBeTruthy();
   });
 
+  it('shows the WhatsApp option only when its flag is on', () => {
+    const { rerender } = render(<SignUpForm locale="en" />);
+    expect(screen.queryByText('Continue with WhatsApp')).toBeNull();
+    rerender(<SignUpForm locale="en" showWhatsapp />);
+    expect(screen.getByText('Continue with WhatsApp')).toBeTruthy();
+  });
+
   it('gates each provider on its own flag', () => {
     const { rerender } = render(<SignUpForm locale="en" showSocial />);
-    // auth.social covers Google/Facebook only — the Microsoft buttons stay hidden.
+    // auth.social covers Google only — Facebook and the Microsoft buttons stay hidden.
+    expect(screen.getByText('Continue with Google')).toBeTruthy();
+    expect(screen.queryByText('Continue with Facebook')).toBeNull();
     expect(screen.queryByText('Continue with Microsoft')).toBeNull();
     expect(screen.queryByText('Continue with a work or school account')).toBeNull();
+
+    rerender(<SignUpForm locale="en" showFacebook />);
+    expect(screen.getByText('Continue with Facebook')).toBeTruthy();
+    expect(screen.queryByText('Continue with Google')).toBeNull();
 
     rerender(<SignUpForm locale="en" showMicrosoft />);
     expect(screen.getByText('Continue with Microsoft')).toBeTruthy();
     expect(screen.queryByText('Continue with Google')).toBeNull();
+    expect(screen.queryByText('Continue with Facebook')).toBeNull();
     expect(screen.queryByText('Continue with a work or school account')).toBeNull();
 
     rerender(<SignUpForm locale="en" showMicrosoftWork />);

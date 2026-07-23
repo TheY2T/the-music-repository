@@ -3,6 +3,7 @@ import { Button, Card, Field, Input, PasswordInput } from '@TheY2T/tmr-ui';
 import { authClient } from '@TheY2T/tmr-web-acl/auth-client';
 import { type FormEvent, useState } from 'react';
 import SocialSignInButtons from './SocialSignInButtons';
+import WhatsAppSignIn from './WhatsAppSignIn';
 
 /**
  * Creates an account with name/email/password. A verification email is sent on sign-up and the address
@@ -12,13 +13,17 @@ import SocialSignInButtons from './SocialSignInButtons';
 export default function SignUpForm({
   locale,
   showSocial = false,
+  showFacebook = false,
   showMicrosoft = false,
   showMicrosoftWork = false,
+  showWhatsapp = false,
 }: {
   locale: Locale;
   showSocial?: boolean;
+  showFacebook?: boolean;
   showMicrosoft?: boolean;
   showMicrosoftWork?: boolean;
+  showWhatsapp?: boolean;
 }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -91,19 +96,23 @@ export default function SignUpForm({
             </Button>
           </form>
 
-          {showSocial || showMicrosoft || showMicrosoftWork ? (
+          {showSocial || showFacebook || showMicrosoft || showMicrosoftWork || showWhatsapp ? (
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
                 <span className="h-px flex-1 bg-border" />
                 {t(locale, 'social.orDivider')}
                 <span className="h-px flex-1 bg-border" />
               </div>
-              <SocialSignInButtons
-                locale={locale}
-                showSocial={showSocial}
-                showMicrosoft={showMicrosoft}
-                showMicrosoftWork={showMicrosoftWork}
-              />
+              <div className="space-y-2">
+                <SocialSignInButtons
+                  locale={locale}
+                  showSocial={showSocial}
+                  showFacebook={showFacebook}
+                  showMicrosoft={showMicrosoft}
+                  showMicrosoftWork={showMicrosoftWork}
+                />
+                {showWhatsapp ? <WhatsAppSignIn locale={locale} /> : null}
+              </div>
             </div>
           ) : null}
         </>
