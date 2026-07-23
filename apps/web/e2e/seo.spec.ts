@@ -55,6 +55,18 @@ test.describe('SEO — crawlability', () => {
     const body = await (await page.request.get('/robots.txt')).text();
     expect(body).toMatch(/# LLM index[^\n]*https?:\/\/\S+\/llms\.txt/);
   });
+
+  test('Microsoft identity association is served as JSON with the app registration id', async ({
+    page,
+  }) => {
+    const res = await page.request.get('/.well-known/microsoft-identity-association.json');
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toContain('application/json');
+    const body = (await res.json()) as { associatedApplications: { applicationId: string }[] };
+    expect(body.associatedApplications[0]?.applicationId).toBe(
+      'd1835fb5-956f-4b9e-9b32-2d717be0492d',
+    );
+  });
 });
 
 test.describe('SEO — LLM ingestion', () => {

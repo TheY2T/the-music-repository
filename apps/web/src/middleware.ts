@@ -111,6 +111,19 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return new Response('Not found', { status: 404 });
   }
 
+  // Microsoft Entra publisher-domain verification fetches this well-known document to confirm the
+  // domain owns the app registration whose id it lists. Answered here (ahead of locale routing,
+  // content negotiation, and session/flag resolution) so the crawler always receives raw JSON.
+  // The Cloudflare Access gate must also bypass this exact path — the crawler is unauthenticated.
+  if (context.url.pathname === '/.well-known/microsoft-identity-association.json') {
+    return new Response(
+      JSON.stringify({
+        associatedApplications: [{ applicationId: 'd1835fb5-956f-4b9e-9b32-2d717be0492d' }],
+      }),
+      { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=3600' } },
+    );
+  }
+
   // Resolve the user first so flag targeting (roles / percentage rollout) can use it.
   context.locals.user = await resolveSessionUser(context.request.headers.get('cookie') ?? '');
 
