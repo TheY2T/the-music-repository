@@ -57,3 +57,7 @@ packages/storybook/public/
 *.p8
 hetzner
 hetzner.pub
+
+# DB / env dumps — never commit
+*.dump
+/dump
