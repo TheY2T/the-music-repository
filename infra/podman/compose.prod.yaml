@@ -1,0 +1,220 @@
+# Single-box production stack for a Hetzner VPS: Postgres + Meilisearch + API + web, the self-hosted
+# observability stack (OTel Collector → Tempo/Loki/Prometheus → Grafana), and a Cloudflare Tunnel that
+# is the only ingress (no published ports — the box exposes nothing directly to the internet).
+#
+# Run from the repo root:  docker compose -f infra/podman/compose.prod.yaml up -d --build
+# Secrets + per-env values come from a root `.env` file (chmod 600) — see docs/runbooks/deploy-hetzner.md.
+name: tmr-prod
+
+x-api-build: &api-build
+  context: ../..
+  dockerfile: apps/api/Dockerfile
+
+# Shared API/runtime env. Infra endpoints are wired to compose service names; secrets + public URLs
+# come from the environment (.env). Search + media are env-selected: MEILI_HOST → Meilisearch,
+# R2_BUCKET → Cloudflare R2 (else the code falls back to Postgres for both).
+x-app-env: &app-env
+  NODE_ENV: production
+  APP_ENV: ${APP_ENV:-prod}
+  DATABASE_URL: postgres://${POSTGRES_USER:-tmr}:${POSTGRES_PASSWORD:?set in .env}@db:5432/${POSTGRES_DB:-tmr}
+  # Search (Meilisearch)
+  MEILI_HOST: http://meilisearch:7700
+  MEILI_API_KEY: ${MEILI_MASTER_KEY:?set in .env}
+  MEILI_INDEX_PREFIX: ${APP_ENV:-prod}
+  # Object storage (Cloudflare R2, S3-compatible)
+  R2_ACCOUNT_ID: ${R2_ACCOUNT_ID:?set in .env}
+  R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID:?set in .env}
+  R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY:?set in .env}
+  R2_BUCKET: ${R2_BUCKET:?set in .env}
+  R2_PUBLIC_URL: ${R2_PUBLIC_URL:?set in .env}
+  # Observability — export OTLP to the collector on the compose network.
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+  OTEL_SERVICE_NAME: tmr-api
+  # Auth + mail + site (secrets/URLs from .env)
+  BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set in .env}
+  BETTER_AUTH_URL: ${BETTER_AUTH_URL:-https://api.themusicrepository.com}
+  AUTH_COOKIE_DOMAIN: ${AUTH_COOKIE_DOMAIN:-.themusicrepository.com}
+  TRUSTED_ORIGINS: ${TRUSTED_ORIGINS:-https://themusicrepository.com,https://www.themusicrepository.com,https://api.themusicrepository.com}
+  WEB_BASE_URL: ${WEB_BASE_URL:-https://themusicrepository.com}
+  MEDIA_PUBLIC_URL: ${R2_PUBLIC_URL:?set in .env}
+  AUTH_RATE_LIMIT_ENABLED: "true"
+  SMTP_URL: ${SMTP_URL:-}
+  MAIL_FROM: ${MAIL_FROM:-The Music Repository <no-reply@themusicrepository.com>}
+  CONTACT_RECIPIENT: ${CONTACT_RECIPIENT:-admin@themusicrepository.com}
+  TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY:-}
+  # Social providers (each registers only when both id + secret are set)
+  GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+  GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+  FACEBOOK_CLIENT_ID: ${FACEBOOK_CLIENT_ID:-}
+  FACEBOOK_CLIENT_SECRET: ${FACEBOOK_CLIENT_SECRET:-}
+  MICROSOFT_CLIENT_ID: ${MICROSOFT_CLIENT_ID:-}
+  MICROSOFT_CLIENT_SECRET: ${MICROSOFT_CLIENT_SECRET:-}
+  MICROSOFT_WORK_CLIENT_ID: ${MICROSOFT_WORK_CLIENT_ID:-}
+  MICROSOFT_WORK_CLIENT_SECRET: ${MICROSOFT_WORK_CLIENT_SECRET:-}
+  MICROSOFT_WORK_TENANT_ID: ${MICROSOFT_WORK_TENANT_ID:-}
+
+services:
+  db:
+    image: docker.io/library/postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-tmr}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-tmr}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tmr} -d ${POSTGRES_DB:-tmr}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  meilisearch:
+    image: docker.io/getmeili/meilisearch:v1.12
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:?set in .env}
+      MEILI_ENV: production
+      MEILI_NO_ANALYTICS: "true"
+    volumes:
+      - meili_data:/meili_data
+
+  # One-shot bootstrap: apply migrations, seed auth + catalogue content. With Meilisearch + R2
+  # configured, the seed builds the search index and writes media into R2. Waits for Meilisearch to
+  # answer /health first (the seed's reindex needs it). To migrate media that already lives in the
+  # restored Postgres dump instead of re-seeding, run `pnpm --filter @TheY2T/tmr-api db:migrate-media`.
+  init:
+    image: tmr-api:prod
+    build: *api-build
+    environment: *app-env
+    command:
+      - sh
+      - -c
+      - >-
+        until wget -qO- http://meilisearch:7700/health >/dev/null 2>&1;
+        do echo '[init] waiting for meilisearch'; sleep 2; done &&
+        pnpm --filter @TheY2T/tmr-api db:migrate &&
+        pnpm --filter @TheY2T/tmr-api db:seed:auth &&
+        { pnpm --filter @TheY2T/tmr-api db:seed
+        || echo '[init] content seed failed — sign-in still works; re-run db:seed'; }
+    depends_on:
+      db:
+        condition: service_healthy
+      meilisearch:
+        condition: service_started
+    restart: "no"
+
+  api:
+    image: tmr-api:prod
+    build: *api-build
+    restart: unless-stopped
+    environment:
+      <<: *app-env
+      PORT: "3000"
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      meilisearch:
+        condition: service_started
+      otel-collector:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  web:
+    build:
+      context: ../..
+      dockerfile: apps/web/Dockerfile
+      # PUBLIC_* are baked into the client bundle at build time — a change requires a rebuild.
+      args:
+        PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-https://themusicrepository.com}
+        PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:-https://api.themusicrepository.com}
+        PUBLIC_KOFI_USERNAME: ${PUBLIC_KOFI_USERNAME:-}
+        PUBLIC_TURNSTILE_SITE_KEY: ${PUBLIC_TURNSTILE_SITE_KEY:-}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "4321"
+      # SSR reaches the API over the compose network (never localhost — that's this container).
+      API_INTERNAL_URL: http://api:3000
+      APP_ENV: ${APP_ENV:-prod}
+    depends_on:
+      api:
+        condition: service_healthy
+
+  # --- Observability (self-hosted; reachable only via the tunnel, Grafana behind Cloudflare Access) ---
+  otel-collector:
+    image: docker.io/otel/opentelemetry-collector-contrib:0.119.0
+    restart: unless-stopped
+    command: ["--config=/etc/otel-collector.yaml"]
+    volumes:
+      - ./observability/otel-collector.yaml:/etc/otel-collector.yaml:ro,Z
+    depends_on: [tempo, loki, prometheus]
+
+  tempo:
+    image: docker.io/grafana/tempo:2.7.0
+    restart: unless-stopped
+    command: ["-config.file=/etc/tempo.yaml"]
+    volumes:
+      - ./observability/tempo.yaml:/etc/tempo.yaml:ro,Z
+      - tempo_data:/var/tempo
+
+  loki:
+    image: docker.io/grafana/loki:3.3.0
+    restart: unless-stopped
+    command: ["-config.file=/etc/loki/local-config.yaml"]
+    volumes:
+      - loki_data:/loki
+
+  prometheus:
+    image: docker.io/prom/prometheus:v3.1.0
+    restart: unless-stopped
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--web.enable-otlp-receiver"
+      - "--storage.tsdb.retention.time=15d"
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro,Z
+      - prometheus_data:/prometheus
+
+  grafana:
+    image: docker.io/grafana/grafana:11.5.0
+    restart: unless-stopped
+    environment:
+      # Locked down for a public box: no anonymous access, real admin login required. Reached only
+      # through the tunnel at grafana.themusicrepository.com, itself gated by Cloudflare Access.
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD:?set in .env}
+      GF_SERVER_ROOT_URL: https://grafana.themusicrepository.com
+    volumes:
+      - ./observability/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/ds.yaml:ro,Z
+      - grafana_data:/var/lib/grafana
+    depends_on: [tempo, loki, prometheus]
+
+  # --- Ingress: Cloudflare Tunnel (the only path in; no ports published on any service) ---
+  cloudflared:
+    image: docker.io/cloudflare/cloudflared:2025.1.0
+    restart: unless-stopped
+    command: ["tunnel", "--no-autoupdate", "run"]
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?set in .env}
+    depends_on:
+      api:
+        condition: service_healthy
+      web:
+        condition: service_started
+
+volumes:
+  pgdata:
+  meili_data:
+  tempo_data:
+  loki_data:
+  prometheus_data:
+  grafana_data:

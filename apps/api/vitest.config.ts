@@ -4,8 +4,8 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
 // Unit tier (no Docker): use-cases + domain + the problem+json filter. unplugin-swc compiles
-// NestJS decorators + emitDecoratorMetadata (read from tsconfig); tsconfigPaths resolves the
-// `meilisearch` path mapping. Integration tests (Testcontainers) run via vitest.integration.config.ts.
+// NestJS decorators + emitDecoratorMetadata (read from tsconfig); tsconfigPaths resolves workspace
+// tsconfig path aliases. Integration tests (Testcontainers) run via vitest.integration.config.ts.
 // See ADR 0020 · docs/features/testing.md.
 export default defineConfig({
   plugins: [tsconfigPaths(), swc.vite()],

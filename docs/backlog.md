@@ -53,14 +53,31 @@ Status legend: 🟢 dependency-free · 📚 needs a client library · 💳 needs
 | ✅ **High-quality instrument playback** | **Shipped** `/tools/soundfont` (`tools.soundfont`) — sampled General-MIDI instruments via **smplr**, lazy-loaded, with **graceful fallback** to the oscillator engine when samples can't load (offline). Reuses `useMidiInput` | Med | High |
 | ✅ **Notation-synced playback of imported scores** | **Shipped** — `/tools/score` gained **Play** + a speed slider: Verovio's `renderToTimemap` + `getMIDIValuesForElement` schedule the audio (`scheduleTone`) and `getElementsAtTime` drives a red highlight cursor over the engraved SVG (per-note, synced). Reuses the Verovio toolkit already loaded for engraving | High | High |
 
+## Group 5 — Search & discovery (leverage Meilisearch)
+
+Meilisearch is now the search backend behind the `CatalogueSearch`/`CollectionSearchIndex` ports
+(env-selected, ADR 0055), but the web app only uses it in two places — the `/catalogue` and
+`/collections` **Browse** views (a plain `SearchField` → `q=`, no debounce, no autocomplete). There is
+**no global/site-wide search, no header search box, no `/search` route, no instant-search/autocomplete**.
+This group is to **research Meilisearch's strengths and map where they'd add the most value** before
+building.
+
+| Idea | Notes | Effort | Value |
+|---|---|---|---|
+| **Research: best uses for Meilisearch + where to apply it** | Survey Meilisearch capabilities (instant search-as-you-type, prefix + typo tolerance, `multi-search`/federated queries across indexes, synonyms, custom ranking rules, `sort`/geo, highlighting/`_formatted`, faceted refinement, query suggestions / "did you mean", stop-words, distinct, search analytics) and produce a short doc mapping each to concrete web-app opportunities. **Deliverable: a findings doc + a prioritized shortlist.** | Low (research) | High |
+| **Global site search (header + `/search`)** | A header search entry (magnifier / ⌘K command palette) and a `/search` route that runs a **federated `multi-search`** across catalogue items, collections, scores, help topics/FAQ — one box, grouped results. The single biggest discovery gap today | Med→High | High |
+| **Instant search-as-you-type + autocomplete** | Debounced instant results / suggestions on the catalogue + collections `SearchField` (and the global box) using Meili's prefix search + `_formatted` highlighting; query-suggestions index for "did you mean" | Med | Med→High |
+| **Ranking, synonyms & relevance tuning** | Configure synonyms (e.g. "sonatina"≈"sonata", instrument aliases), custom ranking rules, and per-field weights so results feel authored; add search analytics to see what learners actually search for | Med | Med |
+
 ---
 
 ## Suggested first picks (when we return here)
 
-**The entire Phase-5 backlog above (Groups 1–4) is now shipped** — including the two library items
-(Verovio score rendering + notation-synced playback, smplr soundfonts), analyzer reharmonization, the
-backend save/share sync, and tool-practice logging. The only remaining line is the perpetual "more
-content" one (add songs / voicings / CAGED shapes as desired).
+**Groups 1–4 are shipped** — including the two library items (Verovio score rendering + notation-synced
+playback, smplr soundfonts), analyzer reharmonization, the backend save/share sync, and tool-practice
+logging. **Group 5 (search & discovery on Meilisearch) is open** — start with its research item, then
+the global site search. The other remaining line is the perpetual "more content" one (add songs /
+voicings / CAGED shapes as desired).
 
 The next substantive body of work is the **Phase 6 — Monetization extensions** below (the headline is
 Stripe wiring), which is gated on real payment-provider credentials.

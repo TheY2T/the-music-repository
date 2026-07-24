@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AuthModule } from '../auth/auth.module';
 import { CatalogueModule } from '../catalogue/catalogue.module';
 import { TranslationsModule } from '../translations/translations.module';
@@ -50,6 +51,7 @@ import { DrizzleCollectionRepository } from './infrastructure/drizzle-collection
 import { DrizzleCollectionBookmarks } from './infrastructure/drizzle-collection-bookmarks.repository';
 import { DrizzleCollectionRatings } from './infrastructure/drizzle-collection-ratings.repository';
 import { DrizzleLearnerProgress } from './infrastructure/drizzle-learner-progress';
+import { MeiliCollectionSearch } from './infrastructure/meili-collection-search.adapter';
 import { PostgresCollectionSearch } from './infrastructure/postgres-collection-search.adapter';
 
 /**
@@ -101,7 +103,19 @@ import { PostgresCollectionSearch } from './infrastructure/postgres-collection-s
     { provide: CollectionBookmarks, useClass: DrizzleCollectionBookmarks },
     { provide: CollectionRatings, useClass: DrizzleCollectionRatings },
     { provide: LearnerProgress, useClass: DrizzleLearnerProgress },
-    { provide: CollectionSearchIndex, useClass: PostgresCollectionSearch },
+    {
+      // Meilisearch when MEILI_HOST is configured, else in-memory search over Postgres.
+      provide: CollectionSearchIndex,
+      useFactory: (
+        config: ConfigService,
+        repository: CollectionRepository,
+        ratings: CollectionRatings,
+      ) =>
+        config.get<string>('MEILI_HOST')
+          ? new MeiliCollectionSearch(config)
+          : new PostgresCollectionSearch(repository, ratings),
+      inject: [ConfigService, CollectionRepository, CollectionRatings],
+    },
   ],
   exports: [CollectionRepository, CollectionReindexService],
 })

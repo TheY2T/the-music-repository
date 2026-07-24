@@ -25,13 +25,20 @@ technology, **no `Port` suffix** (e.g. `CatalogueSearch`, `MediaLibrary`, `Conte
 
 Reference implementations: `src/health/` (`DatastoreHealthCheck` ← `DrizzleDatastoreHealthCheck`) and
 **`src/catalogue/`** (the full Phase-1 feature — `ContentRepository`/`CatalogueSearch`/`MediaLibrary`
-behind ports; all Postgres-backed adapters (ADR 0048); spec-first DTOs; a domain error → problem+json).
+behind ports; **env-selected adapters** — Postgres by default, Meilisearch + Cloudflare R2 when
+configured (ADR 0048/0055); spec-first DTOs; a domain error → problem+json).
 Copy `catalogue/` when adding a feature; follow the `add-endpoint` skill.
 
 **Gotchas learned in catalogue:** the FE serializes unselected array facets as `genre=` (empty string);
-the controller drops empties. Search (`PostgresCatalogueSearch`/`PostgresCollectionSearch`) filters and
-facets in memory over the published set (ADR 0048); the reindex services' `indexAll` is a no-op. Media
-bytes live in `media_objects` and are served from `GET /media?key=…` (`PostgresMediaLibrary`).
+the controller drops empties. **Search + media are env-selected** (`useFactory` bindings in
+`catalogue.module.ts`/`collections.module.ts`, mirroring Mail/WhatsApp/Billing):
+- unset → `PostgresCatalogueSearch`/`PostgresCollectionSearch` (filter/facet **in memory** over the
+  published set, `indexAll` a no-op) + `PostgresMediaLibrary` (bytes in `media_objects`, served from
+  `GET /media?key=…`). This is the default for local dev + CI (no extra services).
+- `MEILI_HOST` set → `MeiliCatalogueSearch`/`MeiliCollectionSearch` (typo-tolerant + faceted; real
+  `indexAll` runs on every reindex — seed + authoring writes — so no call-site changes were needed).
+- `R2_BUCKET` set → `S3MediaLibrary` (public R2 reads on a custom domain + presigned PUT uploads;
+  `GET`/`PUT /media` are bypassed for reads/uploads). See ADR 0055 + `docs/features/deployment.md`.
 
 ## Data (Drizzle)
 
@@ -122,9 +129,11 @@ write-side features:
   `ZodValidationPipe` yields **422 problem+json with `errors[]`** on invalid bodies.
 - **RBAC:** every route uses `@RequirePermissions({ resource: [actions] })` (editor can't delete —
   `content:delete` is admin-only).
-- **Media upload:** `MediaLibrary.presignPutUrl` returns the API's `/media?key=…` route; the browser
-  PUTs the bytes there (credentialed, RBAC `content:update`) and `PostgresMediaLibrary.putObject` stores
-  them in `media_objects`. Public reads stream from `GET /media?key=…` (ADR 0048).
+- **Media upload:** `MediaLibrary.presignPutUrl` returns an upload URL and the browser PUTs the bytes to
+  it. With Postgres (default) that URL is the API's `/media?key=…` route (credentialed, RBAC
+  `content:update`) and `PostgresMediaLibrary.putObject` stores bytes in `media_objects`; public reads
+  stream from `GET /media?key=…`. With R2 (`R2_BUCKET` set), `presignPutUrl` is a presigned R2 PUT and
+  `presignGetUrl` a public R2 URL, so bytes go browser↔R2 direct (ADR 0048/0055).
 - **List responses wrap in `{ items }`** to match the contract; `POST .../publish` sets `@HttpCode(200)`
   (Nest defaults POST to 201).
 
@@ -182,7 +191,11 @@ Env is validated at boot by Zod (`src/config/env.ts`) via `@nestjs/config`. Add 
 Auth vars: `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `TRUSTED_ORIGINS`, `AUTH_COOKIE_DOMAIN` (dev defaults
 are local-only); social providers `GOOGLE_/FACEBOOK_/MICROSOFT_CLIENT_ID+SECRET` and Apple
 `APPLE_CLIENT_ID/TEAM_ID/KEY_ID/PRIVATE_KEY` (optional — a provider registers only when set);
-`AUTH_RATE_LIMIT_ENABLED`.
+`AUTH_RATE_LIMIT_ENABLED`. Search/media adapter selection (ADR 0055): `MEILI_HOST`/`MEILI_API_KEY`/
+`MEILI_INDEX_PREFIX` switch search to Meilisearch; `R2_ACCOUNT_ID`/`R2_ACCESS_KEY_ID`/
+`R2_SECRET_ACCESS_KEY`/`R2_BUCKET`/`R2_PUBLIC_URL` switch media to Cloudflare R2 (unset → Postgres for
+both). `OTEL_EXPORTER_OTLP_ENDPOINT` (read directly via `process.env`, not Zod) activates tracing/logs/
+metrics export.
 
 ## Testing (ADR 0020, `docs/features/testing.md`)
 

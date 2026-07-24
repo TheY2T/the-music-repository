@@ -21,6 +21,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "node dist/infrastructure/database/seed.js",
     "db:seed:auth": "node dist/infrastructure/database/seed-auth.js",
+    "db:migrate-media": "node dist/infrastructure/database/migrate-media-to-r2.js",
     "db:deploy": "pnpm run db:migrate && pnpm run db:seed:auth && (pnpm run db:seed || true)"
   },
   "dependencies": {
@@ -32,6 +33,8 @@
     "@TheY2T/tmr-i18n-locales": "workspace:*",
     "@TheY2T/tmr-nest-platform": "workspace:*",
     "@TheY2T/tmr-observability": "workspace:*",
+    "@aws-sdk/client-s3": "catalog:",
+    "@aws-sdk/s3-request-presigner": "catalog:",
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:",
@@ -42,6 +45,7 @@
     "better-auth": "catalog:",
     "compression": "catalog:",
     "drizzle-orm": "catalog:",
+    "meilisearch": "catalog:",
     "nestjs-pino": "catalog:",
     "nestjs-zod": "catalog:",
     "nodemailer": "^9.0.3",

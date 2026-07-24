@@ -1,6 +1,6 @@
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { test as setup } from '@playwright/test';
+import { expect, test as setup } from '@playwright/test';
 // @ts-expect-error — .mjs sibling without types.
 import { authFile, MOCK_USERS, ROLES } from './mocks/data.mjs';
 
@@ -17,9 +17,15 @@ setup('authenticate roles', async ({ browser }) => {
 
     if (MODE === 'live') {
       const page = await context.newPage();
-      await page.goto('/signin');
+      // Wait for the client:load SignInForm island to hydrate before filling — otherwise the fill can
+      // land before React attaches its onChange handlers, the email state stays empty, and the sign-in
+      // POST is rejected 400 (empty body).
+      await page.goto('/signin', { waitUntil: 'networkidle' });
       await page.getByLabel(/email/i).fill(MOCK_USERS[role].email);
-      await page.getByLabel(/password/i).fill('password123');
+      // Exact label so the "Show password" toggle (aria-label "Show password") isn't also matched.
+      await page.getByLabel('Password', { exact: true }).fill('password123');
+      // Guard against the controlled-input commit race: confirm React holds the values before submit.
+      await expect(page.getByLabel(/email/i)).toHaveValue(MOCK_USERS[role].email);
       await page.getByRole('button', { name: /sign in/i }).click();
       await page.waitForURL('**/');
     } else {

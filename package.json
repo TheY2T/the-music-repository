@@ -26,6 +26,8 @@
     "app:up": "pkill -f 'astro.*dev' 2>/dev/null; pkill -f 'apps/api/dist/main.js' 2>/dev/null; docker compose -f infra/podman/compose.yaml --profile app up -d --build",
     "app:down": "docker compose -f infra/podman/compose.yaml --profile app down --remove-orphans; pkill -f 'astro.*dev' 2>/dev/null; pkill -f 'apps/api/dist/main.js' 2>/dev/null; true",
     "app:seed": "docker compose -f infra/podman/compose.yaml run --rm init",
+    "prod:up": "docker compose -f infra/podman/compose.prod.yaml up -d --build",
+    "prod:down": "docker compose -f infra/podman/compose.prod.yaml down",
     "obs:up": "docker compose -f infra/podman/observability/compose.observability.yaml up -d",
     "obs:down": "docker compose -f infra/podman/observability/compose.observability.yaml down",
     "spec:generate": "turbo run build:openapi generate",

@@ -1,4 +1,8 @@
-# Runbook: Deploy the private dev environment from scratch
+# Runbook: Deploy the private dev environment from scratch (Render — superseded)
+
+> **Superseded by [`deploy-hetzner.md`](./deploy-hetzner.md)** (ADR 0055): the app now runs on a single
+> Hetzner VPS behind a Cloudflare Tunnel, with media on R2 and search on Meilisearch. This Render
+> procedure is kept for historical reference and for the Cloudflare/Resend steps that carried over.
 
 A step-by-step, replayable record of standing up **The Music Repository** dev environment on
 **Render + Cloudflare + Resend**. Follow top to bottom to rebuild from nothing. Architecture rationale

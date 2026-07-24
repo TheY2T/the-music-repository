@@ -33,6 +33,15 @@ catalog:
   sirv: ^3.0.1
 
   # --- Catalogue (Phase 1): search + object storage ---
+  # Object storage behind the `MediaLibrary` port — the S3 adapter targets Cloudflare R2 in
+  # production (S3-compatible, `region: 'auto'`) and MinIO for local verification. Bound only when
+  # `R2_BUCKET` is set; Postgres-backed media is the default.
+  "@aws-sdk/client-s3": ^3.716.0
+  "@aws-sdk/s3-request-presigner": ^3.716.0
+  # Full-text + faceted catalogue search behind the `CatalogueSearch`/`CollectionSearchIndex` ports;
+  # bound only when `MEILI_HOST` is set (Postgres in-memory search is the default). The client package
+  # is exports-only, so `apps/api/tsconfig.json` carries a `paths` mapping for it.
+  meilisearch: ^0.51.0
 
   # --- Auth (Phase 1 Slice 2): Better Auth ---
   "better-auth": ^1.6.23

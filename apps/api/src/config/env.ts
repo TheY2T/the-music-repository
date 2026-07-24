@@ -14,6 +14,26 @@ export const envSchema = z.object({
   // BETTER_AUTH_URL when unset, so local dev needs no extra config.
   MEDIA_PUBLIC_URL: z.string().optional(),
 
+  // Object storage for media (S3-compatible: Cloudflare R2 in production, MinIO locally). Media is
+  // stored in the bucket and read from R2_PUBLIC_URL when R2_BUCKET is set; otherwise media lives in
+  // Postgres (media_objects) and is served from the API's /media route. Set all of ACCOUNT_ID (or
+  // ENDPOINT) + ACCESS_KEY_ID + SECRET_ACCESS_KEY + BUCKET + PUBLIC_URL to switch to object storage.
+  R2_ACCOUNT_ID: z.string().optional(),
+  R2_ENDPOINT: z.string().optional(),
+  R2_REGION: z.string().optional(),
+  R2_ACCESS_KEY_ID: z.string().optional(),
+  R2_SECRET_ACCESS_KEY: z.string().optional(),
+  R2_BUCKET: z.string().optional(),
+  // Public base URL the browser reads objects from (e.g. https://media.themusicrepository.com).
+  R2_PUBLIC_URL: z.string().optional(),
+
+  // Full-text + faceted catalogue/collections search (Meilisearch). Bound only when MEILI_HOST is
+  // set; otherwise search runs in-memory over Postgres. MEILI_INDEX_PREFIX defaults to APP_ENV so
+  // multiple environments can share one instance without colliding.
+  MEILI_HOST: z.string().optional(),
+  MEILI_API_KEY: z.string().optional(),
+  MEILI_INDEX_PREFIX: z.string().optional(),
+
   // Auth (Slice 2, Better Auth). Dev defaults are local-only — never reuse in production.
   BETTER_AUTH_SECRET: z.string().min(1).default('dev-insecure-secret-change-me-please-32chars'),
   BETTER_AUTH_URL: z.string().default('http://localhost:3000'),
