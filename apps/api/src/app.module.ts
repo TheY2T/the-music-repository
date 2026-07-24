@@ -29,7 +29,6 @@ import { RedemptionModule } from './redemption/redemption.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { SupportModule } from './support/support.module';
 import { TranslationsModule } from './translations/translations.module';
-import { WellKnownModule } from './well-known/well-known.module';
 
 @Module({
   imports: [
@@ -69,7 +68,6 @@ import { WellKnownModule } from './well-known/well-known.module';
     SupportModule,
     FeedbackModule,
     ContactModule,
-    WellKnownModule,
   ],
 })
 export class AppModule {}

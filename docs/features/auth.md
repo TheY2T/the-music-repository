@@ -163,11 +163,10 @@ the other providers in two ways handled in code:
   with `Origin: https://appleid.apple.com`, so `better-auth.ts` adds that origin to `trustedOrigins` when
   Apple is configured — otherwise Better Auth rejects the callback with `INVALID_ORIGIN`.
 - **Domain verification is on the API domain.** Better Auth builds the redirect_uri from `BETTER_AUTH_URL`
-  (the API, `api.<site>`), so Apple must have **`api.<site>`** — not the web/apex domain — registered and
-  verified on the Services ID, with the exact Return URL `.../api/auth/callback/apple`. Apple fetches the
-  verification file from that domain, so the **API** serves it: `apps/api`'s `WellKnownModule` returns the
-  `APPLE_DOMAIN_ASSOCIATION_TXT` env var at `/.well-known/apple-developer-domain-association.txt` (unset ⇒ 404).
-  Registering the apex domain / serving the file from the web app yields **"Invalid client id or web
+  (the API, `api.<site>`), so Apple must have **`api.<site>`** — not the web/apex domain — registered on the
+  Services ID, with the exact Return URL `.../api/auth/callback/apple`. Sign in with Apple for the Web no
+  longer requires hosting a domain-association file (per Apple's current docs), so there's no `.well-known`
+  document to serve. Registering the apex domain instead of `api.<site>` yields **"Invalid client id or web
   redirect url"** at sign-in.
 
 Apple disallows `localhost` return URLs, so the full callback round-trip is verified on the deployed HTTPS

@@ -55,12 +55,11 @@ x-app-env: &app-env
   MICROSOFT_WORK_CLIENT_ID: ${MICROSOFT_WORK_CLIENT_ID:-}
   MICROSOFT_WORK_CLIENT_SECRET: ${MICROSOFT_WORK_CLIENT_SECRET:-}
   MICROSOFT_WORK_TENANT_ID: ${MICROSOFT_WORK_TENANT_ID:-}
-  # Sign in with Apple (registers only when all four are set) + the domain-verification file.
+  # Sign in with Apple (registers only when all four are set).
   APPLE_CLIENT_ID: ${APPLE_CLIENT_ID:-}
   APPLE_TEAM_ID: ${APPLE_TEAM_ID:-}
   APPLE_KEY_ID: ${APPLE_KEY_ID:-}
   APPLE_PRIVATE_KEY: ${APPLE_PRIVATE_KEY:-}
-  APPLE_DOMAIN_ASSOCIATION_TXT: ${APPLE_DOMAIN_ASSOCIATION_TXT:-}
   # Fixed-role seed account passwords (consumed by the one-shot init/seed:auth; rotated on re-run).
   SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
   SEED_EDITOR_PASSWORD: ${SEED_EDITOR_PASSWORD:-}

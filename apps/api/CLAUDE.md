@@ -99,12 +99,10 @@ Better Auth lives in `src/auth/` and owns `/api/auth/*`. Key rules:
   `create-apple-client-secret.ts` (`node:crypto`, no JWT lib) from `APPLE_CLIENT_ID`/`TEAM_ID`/`KEY_ID`/
   `PRIVATE_KEY`; set up per `docs/runbooks/apple-oauth-setup.md`.
 - **OAuth callbacks are on the API domain** (`redirect_uri = ${BETTER_AUTH_URL}/api/auth/callback/<p>`,
-  i.e. `api.<site>`). Any provider that verifies the redirect_uri's **domain** (Apple) must register +
-  verify **`api.<site>`** (not the web/apex domain) and serve its verification file from the API — Apple's
-  is `WellKnownModule` returning the `APPLE_DOMAIN_ASSOCIATION_TXT` env var at
-  `/.well-known/apple-developer-domain-association.txt`. Getting this domain wrong surfaces as Apple's
-  "Invalid client id or web redirect url". The API is ungated by Cloudflare Access, so `/.well-known/*`
-  there needs no Access bypass (unlike the web app's paths).
+  i.e. `api.<site>`). Apple verifies the redirect_uri's **domain**, so register **`api.<site>`** (not the
+  web/apex domain) on the Services ID. Sign in with Apple for the Web no longer needs a hosted
+  domain-association file (per Apple's current docs). Getting the domain wrong surfaces as Apple's
+  "Invalid client id or web redirect url".
 - **Rate limiting (ADR 0050):** built-in `rateLimit`, Postgres-backed, keyed off `cf-connecting-ip`;
   env-toggled by `AUTH_RATE_LIMIT_ENABLED` (unset ⇒ on in prod, off in dev/test). It's boot config, not a
   DB flag.
