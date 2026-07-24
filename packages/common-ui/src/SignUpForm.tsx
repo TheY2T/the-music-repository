@@ -17,6 +17,7 @@ export default function SignUpForm({
   showMicrosoft = false,
   showMicrosoftWork = false,
   showWhatsapp = false,
+  showApple = false,
 }: {
   locale: Locale;
   showSocial?: boolean;
@@ -24,6 +25,7 @@ export default function SignUpForm({
   showMicrosoft?: boolean;
   showMicrosoftWork?: boolean;
   showWhatsapp?: boolean;
+  showApple?: boolean;
 }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -96,7 +98,12 @@ export default function SignUpForm({
             </Button>
           </form>
 
-          {showSocial || showFacebook || showMicrosoft || showMicrosoftWork || showWhatsapp ? (
+          {showSocial ||
+          showFacebook ||
+          showMicrosoft ||
+          showMicrosoftWork ||
+          showApple ||
+          showWhatsapp ? (
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
                 <span className="h-px flex-1 bg-border" />
@@ -110,6 +117,7 @@ export default function SignUpForm({
                   showFacebook={showFacebook}
                   showMicrosoft={showMicrosoft}
                   showMicrosoftWork={showMicrosoftWork}
+                  showApple={showApple}
                 />
                 {showWhatsapp ? <WhatsAppSignIn locale={locale} /> : null}
               </div>

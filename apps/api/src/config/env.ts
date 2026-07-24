@@ -39,6 +39,14 @@ export const envSchema = z.object({
   MICROSOFT_WORK_CLIENT_ID: z.string().optional(),
   MICROSOFT_WORK_CLIENT_SECRET: z.string().optional(),
   MICROSOFT_WORK_TENANT_ID: z.string().optional(),
+  // Sign in with Apple; callback `${BETTER_AUTH_URL}/api/auth/callback/apple` (Apple POSTs back via
+  // `form_post`). Registers only when all four are set. `APPLE_CLIENT_ID` is the Services ID; the client
+  // secret is a signed ES256 JWT the API generates from `APPLE_PRIVATE_KEY` (the `.p8` PEM, `\n`-escaped
+  // for single-line storage), `APPLE_TEAM_ID`, and `APPLE_KEY_ID`, rotated automatically before it expires.
+  APPLE_CLIENT_ID: z.string().optional(),
+  APPLE_TEAM_ID: z.string().optional(),
+  APPLE_KEY_ID: z.string().optional(),
+  APPLE_PRIVATE_KEY: z.string().optional(),
 
   // WhatsApp phone-OTP sign-in (Better Auth `phoneNumber` plugin). The plugin registers only when a
   // sender is configured — all three of ACCESS_TOKEN + PHONE_NUMBER_ID + OTP_TEMPLATE_NAME set — so the

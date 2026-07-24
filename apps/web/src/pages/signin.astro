@@ -18,6 +18,7 @@ const showFacebook = Astro.locals.flags.authFacebook;
 const showMicrosoft = Astro.locals.flags.authMicrosoft;
 const showMicrosoftWork = Astro.locals.flags.authMicrosoftWork;
 const showWhatsapp = Astro.locals.flags.authWhatsapp;
+const showApple = Astro.locals.flags.authApple;
 ---
 
 <BaseLayout noindex title={t(locale, 'signin.title')}>
@@ -44,6 +45,7 @@ const showWhatsapp = Astro.locals.flags.authWhatsapp;
       showMicrosoft={showMicrosoft}
       showMicrosoftWork={showMicrosoftWork}
       showWhatsapp={showWhatsapp}
+      showApple={showApple}
     />
   </PageShell>
 </BaseLayout>

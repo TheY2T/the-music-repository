@@ -69,13 +69,21 @@ describe('SignUpForm island', () => {
     expect(screen.getByText('Continue with WhatsApp')).toBeTruthy();
   });
 
+  it('shows the Apple option only when its flag is on', () => {
+    const { rerender } = render(<SignUpForm locale="en" />);
+    expect(screen.queryByText('Continue with Apple')).toBeNull();
+    rerender(<SignUpForm locale="en" showApple />);
+    expect(screen.getByText('Continue with Apple')).toBeTruthy();
+  });
+
   it('gates each provider on its own flag', () => {
     const { rerender } = render(<SignUpForm locale="en" showSocial />);
-    // auth.social covers Google only — Facebook and the Microsoft buttons stay hidden.
+    // auth.social covers Google only — Facebook, the Microsoft buttons, and Apple stay hidden.
     expect(screen.getByText('Continue with Google')).toBeTruthy();
     expect(screen.queryByText('Continue with Facebook')).toBeNull();
     expect(screen.queryByText('Continue with Microsoft')).toBeNull();
     expect(screen.queryByText('Continue with a work or school account')).toBeNull();
+    expect(screen.queryByText('Continue with Apple')).toBeNull();
 
     rerender(<SignUpForm locale="en" showFacebook />);
     expect(screen.getByText('Continue with Facebook')).toBeTruthy();
@@ -90,6 +98,10 @@ describe('SignUpForm island', () => {
     rerender(<SignUpForm locale="en" showMicrosoftWork />);
     expect(screen.getByText('Continue with a work or school account')).toBeTruthy();
     expect(screen.queryByText('Continue with Microsoft')).toBeNull();
+
+    rerender(<SignUpForm locale="en" showApple />);
+    expect(screen.getByText('Continue with Apple')).toBeTruthy();
+    expect(screen.queryByText('Continue with a work or school account')).toBeNull();
   });
 
   it('starts the provider OAuth flow when a social button is clicked', async () => {
@@ -97,6 +109,14 @@ describe('SignUpForm island', () => {
     fireEvent.click(screen.getByText('Continue with Google'));
     await waitFor(() => expect(signInSocialMock).toHaveBeenCalledTimes(1));
     expect(signInSocialMock.mock.calls[0][0]).toMatchObject({ provider: 'google' });
+  });
+
+  it('starts the Apple flow via the social provider', async () => {
+    render(<SignUpForm locale="en" showApple />);
+    fireEvent.click(screen.getByText('Continue with Apple'));
+    await waitFor(() => expect(signInSocialMock).toHaveBeenCalledTimes(1));
+    expect(signInSocialMock.mock.calls[0][0]).toMatchObject({ provider: 'apple' });
+    expect(signInOauth2Mock).not.toHaveBeenCalled();
   });
 
   it('starts the personal Microsoft flow via the social provider', async () => {

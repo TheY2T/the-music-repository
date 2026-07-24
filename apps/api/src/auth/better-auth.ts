@@ -8,6 +8,7 @@ import { createMailTransport } from '../mail/create-mail-transport';
 import { createWhatsAppTransport } from '../whatsapp/create-whatsapp-sender';
 import { ac, roles } from './access-control';
 import * as authSchema from './auth-schema';
+import { createAppleClientSecret } from './create-apple-client-secret';
 
 /**
  * Better Auth lives at the presentation edge only (an adapter + guard). The domain never imports it —
@@ -53,9 +54,10 @@ const whatsappSender = createWhatsAppTransport({
 /**
  * Social identity providers. Each provider is registered only when its credentials are present, so local
  * dev and CI boot with no OAuth secrets. The callback each provider must be configured to return to is
- * `${BETTER_AUTH_URL}/api/auth/callback/{google|facebook|microsoft}`. Microsoft here is the personal
- * account flow (`consumers` tenant); work/school sign-in is a separate generic-OAuth provider registered
- * below, with its own callback at `${BETTER_AUTH_URL}/api/auth/oauth2/callback/microsoft-entra-id`.
+ * `${BETTER_AUTH_URL}/api/auth/callback/{google|facebook|microsoft|apple}` (Apple returns via `form_post`,
+ * a POST to that URL). Microsoft here is the personal account flow (`consumers` tenant); work/school
+ * sign-in is a separate generic-OAuth provider registered below, with its own callback at
+ * `${BETTER_AUTH_URL}/api/auth/oauth2/callback/microsoft-entra-id`.
  */
 const socialProviders: Record<string, unknown> = {};
 
@@ -79,6 +81,33 @@ if (process.env.MICROSOFT_CLIENT_ID && process.env.MICROSOFT_CLIENT_SECRET) {
     clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
     // Personal Microsoft accounts (@outlook/@hotmail/@live) only.
     tenantId: 'consumers',
+  };
+}
+
+/**
+ * Apple's client secret is a short-lived ES256 JWT signed with the Sign in with Apple key, so `clientId`
+ * (the Services ID) pairs with a self-refreshing secret rather than a fixed string. Better Auth reads
+ * `clientSecret` at each token exchange, so the getter hands back a token that's rotated automatically
+ * before it expires. Apple returns the user's name only on the first authorization and the email is often
+ * a private-relay address; Better Auth's Apple provider captures both, so no profile mapping is needed.
+ */
+if (
+  process.env.APPLE_CLIENT_ID &&
+  process.env.APPLE_TEAM_ID &&
+  process.env.APPLE_KEY_ID &&
+  process.env.APPLE_PRIVATE_KEY
+) {
+  const appleClientSecret = createAppleClientSecret({
+    clientId: process.env.APPLE_CLIENT_ID,
+    teamId: process.env.APPLE_TEAM_ID,
+    keyId: process.env.APPLE_KEY_ID,
+    privateKey: process.env.APPLE_PRIVATE_KEY,
+  });
+  socialProviders.apple = {
+    clientId: process.env.APPLE_CLIENT_ID,
+    get clientSecret() {
+      return appleClientSecret.value;
+    },
   };
 }
 
@@ -183,8 +212,9 @@ export const auth = betterAuth({
   account: {
     // Link a social sign-in to an existing account when the provider reports the email as verified.
     // `trustedProviders` additionally links Google without a verification check (Google reliably verifies
-    // email); other providers — Facebook and both Microsoft flows — are left to the verified-email path
-    // (Better Auth flags trusted linking as an account-takeover risk).
+    // email); other providers — Facebook, both Microsoft flows, and Apple — are left to the verified-email
+    // path (Better Auth flags trusted linking as an account-takeover risk, and Apple emails are often
+    // private-relay addresses).
     accountLinking: {
       enabled: true,
       trustedProviders: ['google'],

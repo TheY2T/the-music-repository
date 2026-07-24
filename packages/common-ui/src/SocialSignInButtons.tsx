@@ -4,7 +4,7 @@ import { authClient } from '@TheY2T/tmr-web-acl/auth-client';
 import { useState } from 'react';
 
 /** Which flag gates a provider button. */
-type ProviderFlag = 'social' | 'facebook' | 'microsoft' | 'microsoft-work';
+type ProviderFlag = 'social' | 'facebook' | 'microsoft' | 'microsoft-work' | 'apple';
 
 /** How a provider's sign-in flow is started through the Better Auth client. */
 type ProviderStart =
@@ -44,14 +44,20 @@ const PROVIDERS = [
     flag: 'microsoft-work',
     start: { kind: 'oauth2', providerId: 'microsoft-entra-id' },
   },
+  {
+    brand: 'apple',
+    labelKey: 'social.continueApple',
+    flag: 'apple',
+    start: { kind: 'social', provider: 'apple' },
+  },
 ] as const satisfies ReadonlyArray<ProviderConfig>;
 
 /**
  * Social sign-in row. Each button starts a provider's OAuth flow; on success Better Auth redirects the
  * browser to `callbackURL`, so a returning render only happens on failure — which surfaces a message
- * rather than silently resetting. Google, Facebook, and personal Microsoft accounts use the built-in
- * social providers; work/school (organizational) Microsoft accounts use the Entra ID generic-OAuth
- * provider. Which buttons show is decided per provider by the flag props.
+ * rather than silently resetting. Google, Facebook, personal Microsoft accounts, and Apple use the
+ * built-in social providers; work/school (organizational) Microsoft accounts use the Entra ID
+ * generic-OAuth provider. Which buttons show is decided per provider by the flag props.
  */
 export default function SocialSignInButtons({
   locale,
@@ -60,6 +66,7 @@ export default function SocialSignInButtons({
   showFacebook = false,
   showMicrosoft = false,
   showMicrosoftWork = false,
+  showApple = false,
 }: {
   locale: Locale;
   callbackURL?: string;
@@ -67,6 +74,7 @@ export default function SocialSignInButtons({
   showFacebook?: boolean;
   showMicrosoft?: boolean;
   showMicrosoftWork?: boolean;
+  showApple?: boolean;
 }) {
   const [busy, setBusy] = useState<MessageKey | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -76,6 +84,7 @@ export default function SocialSignInButtons({
     facebook: showFacebook,
     microsoft: showMicrosoft,
     'microsoft-work': showMicrosoftWork,
+    apple: showApple,
   };
   const visible = PROVIDERS.filter((provider) => enabled[provider.flag]);
   if (visible.length === 0) {

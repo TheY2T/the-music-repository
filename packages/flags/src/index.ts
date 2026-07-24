@@ -34,6 +34,9 @@ export const FlagKeys = {
   /** Surfaces the "Continue with WhatsApp" phone-OTP sign-in on the sign-in + sign-up forms; needs a
    *  provisioned WhatsApp Business sender, so it stays off until credentials + an approved template exist. */
   AuthWhatsapp: 'auth.whatsapp',
+  /** Surfaces the "Sign in with Apple" button on the sign-in + sign-up forms; needs an Apple Developer
+   *  Program membership + a Services ID and signing key, so it stays off until those credentials exist. */
+  AuthApple: 'auth.apple',
   /** Slice 2b — gates the admin authoring CMS (`/admin` content management). */
   AdminCms: 'admin.cms',
   /** WYSIWYG block editor (ADR 0030) — swaps the Markdown textarea for the TipTap editor in the CMS. */
@@ -256,6 +259,7 @@ export const FlagDefaults = {
   [FlagKeys.AuthMicrosoft]: true,
   [FlagKeys.AuthMicrosoftWork]: false,
   [FlagKeys.AuthWhatsapp]: false,
+  [FlagKeys.AuthApple]: false,
   [FlagKeys.AdminCms]: true,
   [FlagKeys.BlockEditor]: true,
   [FlagKeys.BlockEditorPreview]: true,

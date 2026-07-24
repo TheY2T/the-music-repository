@@ -37,5 +37,8 @@
     "@biomejs/biome": "catalog:",
     "turbo": "catalog:",
     "typescript": "catalog:"
+  },
+  "dependencies": {
+    "@better-auth/infra": "^0.3.7"
   }
 }

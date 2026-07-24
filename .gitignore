@@ -52,3 +52,6 @@ packages/storybook/public/
 
 # Personal Claude Code settings (not shared)
 .claude/settings.local.json
+
+# Apple Sign in with Apple private keys — never commit
+*.p8

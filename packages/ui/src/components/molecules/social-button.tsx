@@ -3,7 +3,7 @@ import { cn } from '../../lib/utils';
 import { buttonVariants } from '../ui/button';
 
 /** Social identity providers a {@link SocialButton} can represent. */
-export type SocialProvider = 'google' | 'facebook' | 'microsoft' | 'whatsapp';
+export type SocialProvider = 'google' | 'facebook' | 'microsoft' | 'whatsapp' | 'apple';
 
 /**
  * Provider brand marks. Brand logos aren't part of the Lucide icon set and must keep each provider's
@@ -52,6 +52,16 @@ const BRAND_ICON: Record<SocialProvider, React.ReactNode> = {
       <path
         fill="#25D366"
         d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91a9.84 9.84 0 0 0-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.22 8.22 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.39c0-4.54 3.7-8.23 8.24-8.23a8.2 8.2 0 0 1 5.82 2.42 8.19 8.19 0 0 1 2.41 5.82c0 4.54-3.7 8.24-8.24 8.24Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.8-.79.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.43.06-.65.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.54.12.17 1.73 2.64 4.19 3.7.59.25 1.04.4 1.4.52.59.19 1.12.16 1.54.1.47-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.11-.22-.17-.47-.29Z"
+      />
+    </svg>
+  ),
+  // Apple's mark is monochrome; `currentColor` tracks the button's foreground token so it stays black on
+  // light themes and white on dark ones, per Apple's brand guidance.
+  apple: (
+    <svg viewBox="0 0 24 24" className="size-4 shrink-0" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M17.05 12.54c-.03-2.69 2.2-3.98 2.3-4.05-1.25-1.83-3.2-2.08-3.89-2.11-1.66-.17-3.24.98-4.08.98-.84 0-2.14-.96-3.52-.93-1.81.03-3.48 1.05-4.41 2.67-1.88 3.26-.48 8.09 1.35 10.74.89 1.3 1.95 2.75 3.34 2.7 1.34-.05 1.85-.87 3.47-.87 1.62 0 2.08.87 3.5.84 1.44-.03 2.36-1.32 3.24-2.62 1.02-1.5 1.44-2.95 1.46-3.03-.03-.01-2.8-1.08-2.83-4.28M14.38 4.73c.74-.9 1.24-2.14 1.1-3.38-1.06.04-2.35.71-3.11 1.6-.68.79-1.28 2.06-1.12 3.27 1.19.09 2.39-.6 3.13-1.49"
       />
     </svg>
   ),

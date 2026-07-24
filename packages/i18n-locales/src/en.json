@@ -162,6 +162,7 @@
   "social.continueMicrosoft": "Continue with Microsoft",
   "social.continueMicrosoftWork": "Continue with a work or school account",
   "social.continueWhatsapp": "Continue with WhatsApp",
+  "social.continueApple": "Continue with Apple",
   "social.failed": "Couldn't sign in with that provider. Please try again.",
 
   "whatsapp.phoneLabel": "Phone number",

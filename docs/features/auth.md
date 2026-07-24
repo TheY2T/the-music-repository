@@ -14,6 +14,8 @@
     off; intended to switch on once classroom features land.
   - `auth.whatsapp` — gates the "Continue with WhatsApp" phone-OTP sign-in (ADR 0053). Default off (needs
     a provisioned WhatsApp Business sender + an approved template to function).
+  - `auth.apple` — gates the "Sign in with Apple" button (ADR 0054). Default off (needs an Apple Developer
+    Program membership + a Services ID and signing key to function).
 
 ## Purpose
 
@@ -26,11 +28,11 @@ verified before first sign-in) or with a Google or Facebook identity (ADR 0013, 
 - `/signin` — email/password form (React island) with dev-account quick-fill, a **Forgot password?**
   link, a **Create an account** link (when `auth.signup`), and social sign-in buttons (each gated by its
   own provider flag — `auth.social`, `auth.facebook`, `auth.microsoft`, `auth.microsoft-work`,
-  `auth.whatsapp`). On success → `?redirect` target (default `/admin`).
+  `auth.apple`, `auth.whatsapp`). On success → `?redirect` target (default `/admin`).
 - `/signup` — name/email/password form (when `auth.signup`; else redirects to `/signin`). On success a
   verification email is sent and the form shows a "check your email" confirmation — the account can't
   sign in until the address is verified. Social buttons appear per provider flag (`auth.social`,
-  `auth.facebook`, `auth.microsoft`, `auth.microsoft-work`, `auth.whatsapp`). Anonymous only.
+  `auth.facebook`, `auth.microsoft`, `auth.microsoft-work`, `auth.apple`, `auth.whatsapp`). Anonymous only.
 - `/forgot-password` — enter an email to request a reset link. The confirmation is neutral (it never
   reveals whether an account exists). Anonymous only.
 - `/reset-password?token=…` — set a new password from the emailed link; on success → `/signin`. Missing or
@@ -88,7 +90,7 @@ The three recovery forms (`ForgotPasswordForm`, `ResetPasswordForm`, `VerifyEmai
 `@TheY2T/tmr-common-ui` and report outcomes neutrally to avoid account enumeration. `SignUpForm` (also in
 common-ui) creates accounts and shows the verify-email confirmation.
 
-## Social sign-in (Google, Facebook, Microsoft)
+## Social sign-in (Google, Facebook, Microsoft, Apple)
 
 Configured in `apps/api/src/auth/better-auth.ts`; each provider is registered only when its credentials
 are set, so leaving them unset simply hides that button. `SocialSignInButtons` (`@TheY2T/tmr-common-ui`)
@@ -97,18 +99,16 @@ per provider by the `showSocial` / `showMicrosoft` / `showMicrosoftWork` props t
 pages derive from the flags.
 
 - **Callback URI** (register in each provider's developer console):
-  `${BETTER_AUTH_URL}/api/auth/callback/<google|facebook|microsoft>` for the built-in social providers,
-  and `${BETTER_AUTH_URL}/api/auth/oauth2/callback/microsoft-entra-id` for work/school Microsoft.
+  `${BETTER_AUTH_URL}/api/auth/callback/<google|facebook|microsoft|apple>` for the built-in social
+  providers (Apple returns via `form_post`, a POST to that URL), and
+  `${BETTER_AUTH_URL}/api/auth/oauth2/callback/microsoft-entra-id` for work/school Microsoft.
 - **Google / Facebook** — built-in `socialProviders`; the browser calls
   `authClient.signIn.social({ provider, callbackURL })`. Set `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`
   and `FACEBOOK_CLIENT_ID`/`FACEBOOK_CLIENT_SECRET`.
 - **Account linking** — `account.accountLinking.enabled` links a sign-in to an existing account when the
   provider reports the email verified; `trustedProviders: ['google']` additionally links Google without a
-  verification check. Facebook and both Microsoft flows use the verified-email path only.
-- **Apple (Sign in with Apple) is deferred** — it requires the paid Apple Developer Program membership
-  plus domain verification and a signed-JWT client secret (ADR 0050). Adding it later is a config-only
-  change: register the `apple` provider + credentials in `better-auth.ts`, add `apple` to `SocialProvider`
-  in `@TheY2T/tmr-ui`, and add a `social.continueApple` string.
+  verification check. Facebook, both Microsoft flows, and Apple use the verified-email path only (Apple's
+  private-relay addresses make trusted linking unsafe).
 
 ### Microsoft (personal vs work/school)
 
@@ -141,6 +141,28 @@ app registration (a flag on with no credentials shows a button that errors on cl
 Full step-by-step — Azure app registration, publisher verification, and the Partner Center
 identity-verification gotchas — is in
 [`docs/runbooks/microsoft-oauth-setup.md`](../runbooks/microsoft-oauth-setup.md).
+
+### Apple (Sign in with Apple)
+
+Apple sign-in (`auth.apple`, default off; ADR 0054) is a one-click OAuth button like Google/Facebook —
+`authClient.signIn.social({ provider: 'apple' })`, callback `.../api/auth/callback/apple`. It differs from
+the other providers in two ways handled in code:
+
+- **Client secret is a signed JWT, not a static string.** Apple's OAuth `client_secret` is a short-lived
+  ES256 JWT signed with the account's Sign in with Apple key. `apps/api/src/auth/create-apple-client-secret.ts`
+  builds it with `node:crypto` (no JWT library) and hands `better-auth.ts` a self-refreshing value that
+  regenerates before it expires, so the secret never needs manual rotation. The provider registers only
+  when all of `APPLE_CLIENT_ID` (the Services ID), `APPLE_TEAM_ID`, `APPLE_KEY_ID`, and `APPLE_PRIVATE_KEY`
+  (the `.p8` PEM, `\n`-escaped for single-line storage) are set.
+- **Profile data.** Apple returns the user's name only on the **first** authorization and the email is
+  often a private-relay address; Better Auth's Apple provider captures the first-authorization name and
+  accepts the relay email, so no custom profile mapping is needed. Apple is intentionally **not** a trusted
+  linking provider (relay emails make trusted linking unsafe).
+
+Apple disallows `localhost` return URLs, so the full callback round-trip is verified on the deployed HTTPS
+environment rather than locally; local dev confirms the button renders and starts the redirect. Full
+step-by-step — App ID, Services ID, signing key, domain verification, and the env vars — is in
+[`docs/runbooks/apple-oauth-setup.md`](../runbooks/apple-oauth-setup.md).
 
 ## WhatsApp (phone OTP)
 

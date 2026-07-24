@@ -19,6 +19,10 @@ function wellKnownRoutes() {
           pattern: '/.well-known/microsoft-identity-association.json',
           entrypoint: './src/well-known/microsoft-identity-association.ts',
         });
+        injectRoute({
+          pattern: '/.well-known/apple-developer-domain-association.txt',
+          entrypoint: './src/well-known/apple-developer-domain-association.ts',
+        });
       },
     },
   };

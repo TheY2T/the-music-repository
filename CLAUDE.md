@@ -149,7 +149,7 @@ pnpm build | pnpm lint | pnpm check-types | pnpm test   # turbo across workspace
 pnpm test:coverage | pnpm test:integration              # v8 coverage · api Testcontainers (Docker)
 pnpm test:e2e | pnpm test:e2e:live                      # Playwright: mocked (hermetic) · full stack
 pnpm --filter @TheY2T/tmr-api db:generate               # drizzle migration from schema
-pnpm infra:up                                           # backing services only: db+meili+minio (run api/web on host); infra:down to stop
+pnpm infra:up                                           # backing services only: Postgres (run api/web on host); infra:down to stop
 pnpm app:up                                             # full containerized app: infra + api + web via `--profile app` (builds images); app:down to stop
 pnpm obs:up                                             # optional observability stack (separate project); obs:down to stop
 ```

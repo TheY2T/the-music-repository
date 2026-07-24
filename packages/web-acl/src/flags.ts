@@ -17,6 +17,7 @@ export const FLAG_FIELD_BY_KEY = {
   [FlagKeys.AuthMicrosoft]: 'authMicrosoft',
   [FlagKeys.AuthMicrosoftWork]: 'authMicrosoftWork',
   [FlagKeys.AuthWhatsapp]: 'authWhatsapp',
+  [FlagKeys.AuthApple]: 'authApple',
   [FlagKeys.AdminCms]: 'adminCms',
   [FlagKeys.BlockEditor]: 'blockEditor',
   [FlagKeys.BlockEditorPreview]: 'blockEditorPreview',

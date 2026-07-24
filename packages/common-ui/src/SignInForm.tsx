@@ -14,6 +14,7 @@ export default function SignInForm({
   showMicrosoft = false,
   showMicrosoftWork = false,
   showWhatsapp = false,
+  showApple = false,
 }: {
   redirectTo?: string;
   locale: Locale;
@@ -23,6 +24,7 @@ export default function SignInForm({
   showMicrosoft?: boolean;
   showMicrosoftWork?: boolean;
   showWhatsapp?: boolean;
+  showApple?: boolean;
 }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -90,7 +92,12 @@ export default function SignInForm({
         </div>
       </form>
 
-      {showSocial || showFacebook || showMicrosoft || showMicrosoftWork || showWhatsapp ? (
+      {showSocial ||
+      showFacebook ||
+      showMicrosoft ||
+      showMicrosoftWork ||
+      showApple ||
+      showWhatsapp ? (
         <div className="space-y-4">
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
             <span className="h-px flex-1 bg-border" />
@@ -105,6 +112,7 @@ export default function SignInForm({
               showFacebook={showFacebook}
               showMicrosoft={showMicrosoft}
               showMicrosoftWork={showMicrosoftWork}
+              showApple={showApple}
             />
             {showWhatsapp ? <WhatsAppSignIn locale={locale} callbackURL={redirectTo} /> : null}
           </div>
