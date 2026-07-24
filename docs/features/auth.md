@@ -159,6 +159,14 @@ the other providers in two ways handled in code:
   accepts the relay email, so no custom profile mapping is needed. Apple is intentionally **not** a trusted
   linking provider (relay emails make trusted linking unsafe).
 
+- **Domain verification is on the API domain.** Better Auth builds the redirect_uri from `BETTER_AUTH_URL`
+  (the API, `api.<site>`), so Apple must have **`api.<site>`** — not the web/apex domain — registered and
+  verified on the Services ID, with the exact Return URL `.../api/auth/callback/apple`. Apple fetches the
+  verification file from that domain, so the **API** serves it: `apps/api`'s `WellKnownModule` returns the
+  `APPLE_DOMAIN_ASSOCIATION_TXT` env var at `/.well-known/apple-developer-domain-association.txt` (unset ⇒ 404).
+  Registering the apex domain / serving the file from the web app yields **"Invalid client id or web
+  redirect url"** at sign-in.
+
 Apple disallows `localhost` return URLs, so the full callback round-trip is verified on the deployed HTTPS
 environment rather than locally; local dev confirms the button renders and starts the redirect. Full
 step-by-step — App ID, Services ID, signing key, domain verification, and the env vars — is in

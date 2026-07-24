@@ -91,6 +91,13 @@ Better Auth lives in `src/auth/` and owns `/api/auth/*`. Key rules:
   (`trustedProviders: ['google']`). Apple's client secret is a self-refreshing ES256 JWT built by
   `create-apple-client-secret.ts` (`node:crypto`, no JWT lib) from `APPLE_CLIENT_ID`/`TEAM_ID`/`KEY_ID`/
   `PRIVATE_KEY`; set up per `docs/runbooks/apple-oauth-setup.md`.
+- **OAuth callbacks are on the API domain** (`redirect_uri = ${BETTER_AUTH_URL}/api/auth/callback/<p>`,
+  i.e. `api.<site>`). Any provider that verifies the redirect_uri's **domain** (Apple) must register +
+  verify **`api.<site>`** (not the web/apex domain) and serve its verification file from the API — Apple's
+  is `WellKnownModule` returning the `APPLE_DOMAIN_ASSOCIATION_TXT` env var at
+  `/.well-known/apple-developer-domain-association.txt`. Getting this domain wrong surfaces as Apple's
+  "Invalid client id or web redirect url". The API is ungated by Cloudflare Access, so `/.well-known/*`
+  there needs no Access bypass (unlike the web app's paths).
 - **Rate limiting (ADR 0050):** built-in `rateLimit`, Postgres-backed, keyed off `cf-connecting-ip`;
   env-toggled by `AUTH_RATE_LIMIT_ENABLED` (unset ⇒ on in prod, off in dev/test). It's boot config, not a
   DB flag.

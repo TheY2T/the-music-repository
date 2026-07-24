@@ -47,6 +47,11 @@ export const envSchema = z.object({
   APPLE_TEAM_ID: z.string().optional(),
   APPLE_KEY_ID: z.string().optional(),
   APPLE_PRIVATE_KEY: z.string().optional(),
+  // Apple's domain-verification document, served verbatim at
+  // `/.well-known/apple-developer-domain-association.txt`. Apple verifies the domain in the OAuth
+  // redirect_uri — this API's domain — so the file is served from here. Paste the document Apple issues
+  // for this Services ID + domain; unset ⇒ the path 404s.
+  APPLE_DOMAIN_ASSOCIATION_TXT: z.string().optional(),
 
   // WhatsApp phone-OTP sign-in (Better Auth `phoneNumber` plugin). The plugin registers only when a
   // sender is configured — all three of ACCESS_TOKEN + PHONE_NUMBER_ID + OTP_TEMPLATE_NAME set — so the

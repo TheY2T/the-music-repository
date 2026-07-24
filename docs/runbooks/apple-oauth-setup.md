@@ -41,6 +41,17 @@ These come straight from `apps/api/src/auth/better-auth.ts` / `create-apple-clie
 > does **not** accept `http://localhost` return URLs, so there is no local round-trip — test on the
 > deployed environment.
 
+> **⚠️ The domain to register + verify is the API domain (`api.themusicrepository.com`), NOT the web
+> domain.** Better Auth builds the OAuth `redirect_uri` from `BETTER_AUTH_URL`, which is the **API**
+> (`https://api.themusicrepository.com/api/auth/callback/apple`). Apple requires the redirect_uri's domain
+> to be a registered + verified domain on the Services ID, so `api.themusicrepository.com` is what goes in
+> **Domains and Subdomains**, and Apple fetches the verification file from
+> `https://api.themusicrepository.com/.well-known/...`. Registering the bare web domain instead is what
+> causes **"Invalid client id or web redirect url"** at sign-in. Confirm the exact values Better Auth sends
+> with: `curl -sX POST https://api.themusicrepository.com/api/auth/sign-in/social -H 'Content-Type:
+> application/json' -d '{"provider":"apple","callbackURL":"https://themusicrepository.com/"}'` → read
+> `client_id` + `redirect_uri` from the returned `url`.
+
 ## Step 1 — App ID
 
 1. **Identifiers → +** → **App IDs → App**.
@@ -54,20 +65,26 @@ These come straight from `apps/api/src/auth/better-auth.ts` / `create-apple-clie
    `APPLE_CLIENT_ID`** — it is *not* the App ID from Step 1.
 3. Register, then open it and tick **Sign in with Apple → Configure**:
    - **Primary App ID:** the App ID from Step 1.
-   - **Domains and Subdomains:** the site domain (e.g. `themusicrepository.com`).
-   - **Return URLs:** the prod Return URL from the table above.
+   - **Domains and Subdomains:** **`api.themusicrepository.com`** — the API domain (the host of
+     `BETTER_AUTH_URL`), because that's the host in the OAuth redirect_uri. **Not** the bare web domain.
+   - **Return URLs:** `https://api.themusicrepository.com/api/auth/callback/apple` (exact).
 4. Save.
 
-## Step 3 — Domain verification
+## Step 3 — Domain verification (served by the API, not the web app)
 
-Apple requires proof you control the domain used above.
+Apple verifies the domain from Step 2 by fetching the association file from **that** domain — the API.
 
-1. In the Services ID's Sign in with Apple config, **download** `apple-developer-domain-association.txt`.
-2. Serve it at `https://<domain>/.well-known/apple-developer-domain-association.txt`.
-   - In this app, `.well-known` files are middleware-rewrite-only routes that must be **injected** to be
-     served in production (see the existing `.well-known` handling / `docs/features` notes on
-     middleware-mode routing). A dev-only file drop won't survive the prod build.
-3. Back in Apple, click **Verify**.
+1. In the Services ID's Sign in with Apple config, add `api.themusicrepository.com`, then **download** the
+   `apple-developer-domain-association.txt` Apple generates for it (the file's embedded payload names the
+   exact domain, so the API-domain file differs from any web-domain one).
+2. Serve it from the **API** at `https://api.themusicrepository.com/.well-known/apple-developer-domain-association.txt`.
+   The API (`apps/api`) serves this via `WellKnownModule` from the **`APPLE_DOMAIN_ASSOCIATION_TXT`** env var —
+   paste the downloaded file's contents into that var on the `tmr-api-dev` service (multi-line is fine),
+   and it serves immediately (no code change). The API is ungated by Cloudflare Access, so no bypass is
+   needed there. (The web app's `.well-known` route is only for the Microsoft/Entra apex verification — a
+   different mechanism — so Apple does **not** go through it.)
+3. Verify it serves: `curl -sI https://api.themusicrepository.com/.well-known/apple-developer-domain-association.txt`
+   → `200 text/plain`. Then click **Verify** in Apple.
 
 ## Step 4 — Signing key (the client-secret key)
 
@@ -85,9 +102,12 @@ APPLE_KEY_ID=<Key ID of the .p8>
 APPLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
 ```
 Store `APPLE_PRIVATE_KEY` as the PEM with literal `\n` in place of newlines (the API normalizes them).
+Add `APPLE_DOMAIN_ASSOCIATION_TXT` too (from Step 3) if verifying locally isn't needed you can skip it locally.
 
-**Render:** add the same four keys to the **`dev` env group** (Dashboard → Env Groups → dev), not inline
-in `render.yaml`. Render supports multi-line values, so you can paste the raw PEM there instead of escaping.
+**Render:** set all five keys on the **`tmr-api-dev`** service (Dashboard → the service → Environment, or
+the `dev` env group). Render supports multi-line values, so paste the raw `.p8` PEM and the raw
+`APPLE_DOMAIN_ASSOCIATION_TXT` file contents directly (no escaping needed). The five:
+`APPLE_CLIENT_ID`, `APPLE_TEAM_ID`, `APPLE_KEY_ID`, `APPLE_PRIVATE_KEY`, `APPLE_DOMAIN_ASSOCIATION_TXT`.
 
 ## Step 6 — Flag
 
@@ -107,6 +127,12 @@ in `render.yaml`. Render supports multi-line values, so you can paste the raw PE
 
 ## Gotchas — lessons learned
 
+- **"Invalid client id or web redirect url" = the redirect_uri's domain isn't verified.** The callback is
+  on the **API** domain (`api.themusicrepository.com`, from `BETTER_AUTH_URL`), so that subdomain — not the
+  web/apex domain — must be the registered + verified **Domains and Subdomains** entry, with the exact
+  Return URL `https://api.themusicrepository.com/api/auth/callback/apple`. The verification file is served
+  by the API (`WellKnownModule` + `APPLE_DOMAIN_ASSOCIATION_TXT`), because Apple fetches it from the same
+  domain. This bit us on the first setup: the file was on the web app and the apex domain was registered.
 - **Services ID ≠ App ID.** The OAuth `client_id` (`APPLE_CLIENT_ID`) is the **Services ID**, not the App
   ID. Using the App ID yields `invalid_client`.
 - **No `localhost` return URLs.** Apple only accepts HTTPS return URLs on verified domains, so the full
@@ -116,8 +142,10 @@ in `render.yaml`. Render supports multi-line values, so you can paste the raw PE
   within six months. Keep the `.p8` + Team ID + Key ID in env, not a pre-baked JWT.
 - **Download the `.p8` immediately.** Apple shows the private key exactly once; if lost, revoke the key and
   make a new one.
-- **Domain-association file must be served in prod.** A `.well-known` file that only exists in dev/static
-  won't be served by the production middleware-mode server unless its route is injected.
+- **The association file is served by the API, from an env var.** `apps/api` `WellKnownModule` returns
+  `APPLE_DOMAIN_ASSOCIATION_TXT` at `/.well-known/apple-developer-domain-association.txt`; if the var is unset
+  the path 404s (so Apple verification fails). It's domain-specific — the file Apple issues for
+  `api.themusicrepository.com` won't verify any other domain.
 - **Private-relay email + transactional mail.** If the app ever emails a user at a
   `@privaterelay.appleid.com` address, register the sender under Sign in with Apple → **Email Sources** or
   it bounces. (Apple accounts arrive `emailVerified`, so no verification email is sent on sign-up.)

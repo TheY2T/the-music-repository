@@ -19,10 +19,9 @@ function wellKnownRoutes() {
           pattern: '/.well-known/microsoft-identity-association.json',
           entrypoint: './src/well-known/microsoft-identity-association.ts',
         });
-        injectRoute({
-          pattern: '/.well-known/apple-developer-domain-association.txt',
-          entrypoint: './src/well-known/apple-developer-domain-association.ts',
-        });
+        // Sign in with Apple verifies the domain in the OAuth redirect_uri — the API's domain
+        // (`api.<site>`), not the web app — so its association file is served by the API
+        // (apps/api WellKnownModule via APPLE_DOMAIN_ASSOCIATION), not injected here.
       },
     },
   };
