@@ -109,6 +109,10 @@ if (
       return appleClientSecret.value;
     },
   };
+  // Apple returns via `response_mode=form_post`, so the browser POSTs the callback with
+  // `Origin: https://appleid.apple.com`. Better Auth's origin check rejects it as INVALID_ORIGIN unless
+  // Apple's origin is trusted, so add it when Apple is configured.
+  trustedOrigins.push('https://appleid.apple.com');
 }
 
 /**

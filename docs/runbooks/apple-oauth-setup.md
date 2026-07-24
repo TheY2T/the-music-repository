@@ -52,11 +52,14 @@ These come straight from `apps/api/src/auth/better-auth.ts` / `create-apple-clie
 > application/json' -d '{"provider":"apple","callbackURL":"https://themusicrepository.com/"}'` → read
 > `client_id` + `redirect_uri` from the returned `url`.
 
-## Step 1 — App ID
+## Step 1 — App ID (the *primary* App ID — do this first)
 
 1. **Identifiers → +** → **App IDs → App**.
 2. Give it a description and a Bundle ID (reverse-DNS, e.g. `com.themusicrepository.app`).
-3. Under **Capabilities**, tick **Sign in with Apple**. Register.
+3. Under **Capabilities**, tick **Sign in with Apple** (leave it "Enable as primary App ID"). Register.
+
+> This is a prerequisite for Step 2: a Services ID only offers the **Sign in with Apple** option once a
+> primary App ID has the capability enabled.
 
 ## Step 2 — Services ID (this is the OAuth `client_id`)
 
@@ -69,6 +72,12 @@ These come straight from `apps/api/src/auth/better-auth.ts` / `create-apple-clie
      `BETTER_AUTH_URL`), because that's the host in the OAuth redirect_uri. **Not** the bare web domain.
    - **Return URLs:** `https://api.themusicrepository.com/api/auth/callback/apple` (exact).
 4. Save.
+
+> **If the "Sign in with Apple" checkbox / Configure button doesn't appear on the Services ID:** first
+> confirm Step 1's App ID has the capability; then **register the Services ID and re-open it** (Configure
+> only shows on the saved record). If it's *still* missing, **sign out of the Apple Developer portal and
+> back in** — the portal caches the capability list per session and won't show it until you re-auth. (This
+> bit us; the log-out/in was the fix.)
 
 ## Step 3 — Domain verification (served by the API, not the web app)
 
@@ -127,6 +136,17 @@ the `dev` env group). Render supports multi-line values, so paste the raw `.p8` 
 
 ## Gotchas — lessons learned
 
+- **`INVALID_ORIGIN` on the callback = Apple's origin isn't trusted.** Apple returns via
+  `response_mode=form_post`, so the browser POSTs `.../api/auth/callback/apple` with
+  `Origin: https://appleid.apple.com`. Better Auth's CSRF origin check rejects it unless that origin is in
+  `trustedOrigins`. `better-auth.ts` pushes `https://appleid.apple.com` onto `trustedOrigins` when Apple is
+  configured — no env change needed. (This is separate from `TRUSTED_ORIGINS`/CORS, which governs the web
+  app's credentialed XHRs, not Apple's top-level form POST.)
+- **"Invalid client" (no "…redirect url") = the Services ID isn't fully set up for Sign in with Apple** —
+  usually the primary App ID lacks the capability, the Configure step wasn't saved, or the domain isn't
+  verified yet. If the **Sign in with Apple** option is missing on the Services ID entirely: enable it on a
+  primary App ID first, then register + re-open the Services ID, and if still missing **sign out of the
+  portal and back in** (session cache).
 - **"Invalid client id or web redirect url" = the redirect_uri's domain isn't verified.** The callback is
   on the **API** domain (`api.themusicrepository.com`, from `BETTER_AUTH_URL`), so that subdomain — not the
   web/apex domain — must be the registered + verified **Domains and Subdomains** entry, with the exact

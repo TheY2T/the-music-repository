@@ -159,6 +159,9 @@ the other providers in two ways handled in code:
   accepts the relay email, so no custom profile mapping is needed. Apple is intentionally **not** a trusted
   linking provider (relay emails make trusted linking unsafe).
 
+- **Apple posts the callback (`response_mode=form_post`).** The browser POSTs `.../api/auth/callback/apple`
+  with `Origin: https://appleid.apple.com`, so `better-auth.ts` adds that origin to `trustedOrigins` when
+  Apple is configured — otherwise Better Auth rejects the callback with `INVALID_ORIGIN`.
 - **Domain verification is on the API domain.** Better Auth builds the redirect_uri from `BETTER_AUTH_URL`
   (the API, `api.<site>`), so Apple must have **`api.<site>`** — not the web/apex domain — registered and
   verified on the Services ID, with the exact Return URL `.../api/auth/callback/apple`. Apple fetches the
