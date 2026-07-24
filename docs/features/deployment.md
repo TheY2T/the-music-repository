@@ -3,9 +3,10 @@
 - **ADR:** [0055](../adr/0055-single-vps-hetzner-r2-meilisearch-observability.md) (supersedes
   [0049](../adr/0049-hosting-render-cloudflare-resend.md)) · **Status:** dev environment
 - **Runbook:** [`deploy-hetzner.md`](../runbooks/deploy-hetzner.md) (step-by-step procedure).
-- **Topology:** the whole stack runs on **one Hetzner box** via Docker Compose — Postgres, Meilisearch,
-  API (NestJS), web (Astro SSR), the self-hosted observability stack, and a Cloudflare Tunnel. Media
-  lives in Cloudflare R2. Search + media are **env-selected** adapters (Postgres is the fallback).
+- **Topology:** the whole stack runs on **one Hetzner box** (CPX31, Falkenstein/EU, 8 GB) via Docker
+  Compose — Postgres, Meilisearch, API (NestJS), web (Astro SSR), and a Cloudflare Tunnel; the
+  self-hosted observability stack is an **opt-in profile**. Media lives in Cloudflare R2. Search + media
+  are **env-selected** adapters (Postgres is the fallback).
 
 ## Single-box compose (`infra/podman/compose.prod.yaml`)
 
@@ -16,8 +17,8 @@
 | `init` | One-shot: waits for Meilisearch, then `db:migrate && db:seed:auth && (db:seed \|\| true)` (builds the search index + writes seed media to R2) |
 | `api` | Docker (`apps/api/Dockerfile`), port 3000, health `/health` |
 | `web` | Docker (`apps/web/Dockerfile`), port 4321, entry `server.mjs` |
-| `otel-collector`/`tempo`/`loki`/`prometheus`/`grafana` | Observability stack (traces/logs/metrics/dashboards), volumes for retention |
 | `cloudflared` | Cloudflare Tunnel — the only ingress |
+| `otel-collector`/`tempo`/`loki`/`prometheus`/`grafana` | **`--profile observability` only** — self-hosted traces/logs/metrics/dashboards, each `mem_limit`-capped + short retention to fit the 8 GB box |
 
 - **Migrations/seed** run in the `init` service (the compose equivalent of a pre-deploy hook). The runner
   image contains `drizzle-kit` + the `drizzle/` folder.
@@ -41,12 +42,13 @@
 ## Cloudflare
 
 - **Ingress:** a **Cloudflare Tunnel** (`cloudflared` container) is the only path in — no inbound ports,
-  origin IP hidden. Public hostnames route apex/`www` → web, `api.` → API, `grafana.` → Grafana. TLS is
-  terminated at Cloudflare; the tunnel is encrypted end-to-end (no origin cert on the box).
+  origin IP hidden. Public hostnames route apex/`www` → web and `api.` → API (+ `grafana.` → Grafana when
+  the observability profile runs). TLS is terminated at Cloudflare; the tunnel is encrypted end-to-end
+  (no origin cert on the box).
 - **R2:** the `tmr-media` bucket is exposed on `media.themusicrepository.com` (public reads) with a CORS
   policy allowing `PUT` from the site origin (CMS uploads).
-- **Cloudflare Access (Zero Trust):** one Access application over apex + `www` + `grafana.` (the operator's
-  email); `api.` stays **ungated** (gating it breaks CORS/OAuth).
+- **Cloudflare Access (Zero Trust):** one Access application over apex + `www` (add `grafana.` when
+  running observability); `api.` stays **ungated** (gating it breaks CORS/OAuth).
 - **De-indexing (defence in depth):** with `APP_ENV != production`, `BaseLayout` emits a global
   `noindex,nofollow` and `robots.txt` returns `Disallow: /`.
 - **CDN caching:** origins compress + set `Cache-Control`; Cloudflare Cache Rules (auth-cookie bypass)
@@ -54,10 +56,11 @@
 
 ## Observability
 
-The OTel SDK is preloaded in the API image; setting `OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317`
-(done in the prod compose) activates it — traces → Tempo, logs → Loki, metrics → Prometheus, viewed in
-Grafana. Grafana is locked down (no anonymous access, admin password) and reachable only through the
-tunnel behind Access. See ADR 0008.
+Opt-in via `--profile observability`. The OTel SDK is preloaded in the API image; bring up the profile
+and set `OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317` in `.env` to activate it — traces →
+Tempo, logs → Loki, metrics → Prometheus, viewed in Grafana. Each container is `mem_limit`-capped with
+short retention so the stack fits alongside the app on the 8 GB box. Grafana is locked down (no anonymous
+access, admin password) and reachable only through the tunnel behind Access. See ADR 0008.
 
 ## Resend + contact form
 

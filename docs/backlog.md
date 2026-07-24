@@ -53,6 +53,19 @@ Status legend: 🟢 dependency-free · 📚 needs a client library · 💳 needs
 | ✅ **High-quality instrument playback** | **Shipped** `/tools/soundfont` (`tools.soundfont`) — sampled General-MIDI instruments via **smplr**, lazy-loaded, with **graceful fallback** to the oscillator engine when samples can't load (offline). Reuses `useMidiInput` | Med | High |
 | ✅ **Notation-synced playback of imported scores** | **Shipped** — `/tools/score` gained **Play** + a speed slider: Verovio's `renderToTimemap` + `getMIDIValuesForElement` schedule the audio (`scheduleTone`) and `getElementsAtTime` drives a red highlight cursor over the engraved SVG (per-note, synced). Reuses the Verovio toolkit already loaded for engraving | High | High |
 
+## Infra — revisit hosting choice later
+
+Shipped on a single **Hetzner CPX31 (Falkenstein, 8 GB, 20 TB traffic)** behind Cloudflare Tunnel, with
+R2 media + Meilisearch + Grafana Cloud (ADR 0055). Chosen for the 20 TB allowance and marginal price
+edge — but the **June 2026 Hetzner price increase erased most of the old cost advantage**, so the field
+is now line-ball (~$45–50/mo): DigitalOcean (Sydney region + optional managed Postgres — removes the
+self-run-DB backup burden), Fly.io (anycast/global), Vultr (SYD, but AU egress $0.10/GB). Because media
+serves from R2 (zero origin egress), included-bandwidth tiers barely matter for us. **Revisit if**
+Hetzner raises prices again, if the audience skews AU (a Sydney origin would help), or if self-running
+Postgres backups on one box becomes a burden — the whole stack is provider-agnostic (Docker Compose +
+Tunnel + R2), so moving to a DO droplet is "different box, same everything." See
+`docs/audits/hosting-comparison-2026-07.md`.
+
 ## Group 5 — Search & discovery (leverage Meilisearch)
 
 Meilisearch is now the search backend behind the `CatalogueSearch`/`CollectionSearchIndex` ports

@@ -1,8 +1,10 @@
-# Single-box production stack for a Hetzner VPS: Postgres + Meilisearch + API + web, the self-hosted
-# observability stack (OTel Collector → Tempo/Loki/Prometheus → Grafana), and a Cloudflare Tunnel that
-# is the only ingress (no published ports — the box exposes nothing directly to the internet).
+# Single-box production stack for a Hetzner CPX31 (Falkenstein, 4 vCPU / 8 GB / 20 TB): Postgres +
+# Meilisearch + API + web, fronted by a Cloudflare Tunnel that is the only ingress (no published ports).
+# Media serves from Cloudflare R2; observability goes to Grafana Cloud via an opt-in OTLP collector
+# (the `observability` profile) rather than a self-hosted LGTM stack, so it fits comfortably in 8 GB.
 #
 # Run from the repo root:  docker compose -f infra/podman/compose.prod.yaml up -d --build
+#   + observability:       docker compose -f infra/podman/compose.prod.yaml --profile observability up -d
 # Secrets + per-env values come from a root `.env` file (chmod 600) — see docs/runbooks/deploy-hetzner.md.
 name: tmr-prod
 
@@ -27,8 +29,9 @@ x-app-env: &app-env
   R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY:?set in .env}
   R2_BUCKET: ${R2_BUCKET:?set in .env}
   R2_PUBLIC_URL: ${R2_PUBLIC_URL:?set in .env}
-  # Observability — export OTLP to the collector on the compose network.
-  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+  # Observability — unset by default (no export). Set to http://otel-collector:4317 in .env once the
+  # `observability` profile + Grafana Cloud credentials are configured.
+  OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
   OTEL_SERVICE_NAME: tmr-api
   # Auth + mail + site (secrets/URLs from .env)
   BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set in .env}
@@ -118,8 +121,6 @@ services:
         condition: service_healthy
       meilisearch:
         condition: service_started
-      otel-collector:
-        condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:3000/health || exit 1"]
       interval: 10s
@@ -149,47 +150,59 @@ services:
       api:
         condition: service_healthy
 
-  # --- Observability (self-hosted; reachable only via the tunnel, Grafana behind Cloudflare Access) ---
+  # Observability (opt-in, self-hosted): OTel Collector → Tempo/Loki/Prometheus → Grafana. Enable with
+  # `--profile observability`, and set OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317 in .env so
+  # the API exports to it. Every container is memory-capped (the real OOM safety on an 8 GB box) and
+  # retention is short. Route grafana.themusicrepository.com through the tunnel behind Access to view it.
   otel-collector:
+    profiles: ["observability"]
     image: docker.io/otel/opentelemetry-collector-contrib:0.119.0
     restart: unless-stopped
     command: ["--config=/etc/otel-collector.yaml"]
+    mem_limit: 300m
     volumes:
       - ./observability/otel-collector.yaml:/etc/otel-collector.yaml:ro,Z
     depends_on: [tempo, loki, prometheus]
 
   tempo:
+    profiles: ["observability"]
     image: docker.io/grafana/tempo:2.7.0
     restart: unless-stopped
     command: ["-config.file=/etc/tempo.yaml"]
+    mem_limit: 512m
     volumes:
       - ./observability/tempo.yaml:/etc/tempo.yaml:ro,Z
       - tempo_data:/var/tempo
 
   loki:
+    profiles: ["observability"]
     image: docker.io/grafana/loki:3.3.0
     restart: unless-stopped
     command: ["-config.file=/etc/loki/local-config.yaml"]
+    mem_limit: 512m
     volumes:
       - loki_data:/loki
 
   prometheus:
+    profiles: ["observability"]
     image: docker.io/prom/prometheus:v3.1.0
     restart: unless-stopped
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--web.enable-otlp-receiver"
-      - "--storage.tsdb.retention.time=15d"
+      - "--storage.tsdb.retention.time=7d"
+    mem_limit: 700m
     volumes:
       - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro,Z
       - prometheus_data:/prometheus
 
   grafana:
+    profiles: ["observability"]
     image: docker.io/grafana/grafana:11.5.0
     restart: unless-stopped
+    mem_limit: 300m
     environment:
-      # Locked down for a public box: no anonymous access, real admin login required. Reached only
-      # through the tunnel at grafana.themusicrepository.com, itself gated by Cloudflare Access.
+      # Public-facing via the tunnel: no anonymous access, real admin login, reached only behind Access.
       GF_AUTH_ANONYMOUS_ENABLED: "false"
       GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD:?set in .env}
       GF_SERVER_ROOT_URL: https://grafana.themusicrepository.com
@@ -214,6 +227,7 @@ services:
 volumes:
   pgdata:
   meili_data:
+  # Observability profile only.
   tempo_data:
   loki_data:
   prometheus_data:

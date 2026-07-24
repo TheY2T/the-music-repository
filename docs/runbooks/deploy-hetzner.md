@@ -12,11 +12,13 @@ Render runbook (`deploy-from-scratch.md`).
 
 ## What you get
 
-- One Hetzner **CPX41** (8 vCPU / 16 GB / 240 GB NVMe, 20 TB traffic, Ashburn) running Postgres +
-  Meilisearch + API + web + OTel Collector/Tempo/Loki/Prometheus/Grafana + `cloudflared`.
+- One Hetzner **CPX31** (4 vCPU / 8 GB / 160 GB NVMe, 20 TB traffic, **Falkenstein/EU**) running
+  Postgres + Meilisearch + API + web + `cloudflared`. No Hetzner Volume needed — the 160 GB local NVMe
+  holds the Docker volumes; media lives in R2.
+- Observability (OTel Collector + Tempo/Loki/Prometheus/Grafana) is an **opt-in `observability`
+  profile**, memory-capped to run alongside the app on 8 GB.
 - Ingress only through Cloudflare Tunnel — **no inbound ports open**, origin IP hidden.
-- Media served from `media.themusicrepository.com` (R2, zero origin egress); Grafana at
-  `grafana.themusicrepository.com` behind Cloudflare Access.
+- Media served from `media.themusicrepository.com` (R2, zero origin egress).
 
 ## Reference identifiers (dev)
 
@@ -26,7 +28,8 @@ Render runbook (`deploy-from-scratch.md`).
 
 ## 1. Provision the box
 
-1. Create a Hetzner Cloud CPX41 in **Ashburn (US-East)**, Ubuntu 24.04, with your SSH key.
+1. Create a Hetzner Cloud **CPX31** in **Falkenstein (EU)**, Ubuntu 24.04+ (26.04 LTS works), with your
+   SSH key. No Volume add-on. (EU includes 20 TB traffic; Cloudflare's edge masks origin latency.)
 2. Harden + install Docker:
    ```bash
    ssh root@<ip>
@@ -68,9 +71,12 @@ R2_PUBLIC_URL=https://media.themusicrepository.com
 # Mail (Resend) — carry over from the Render dev env group
 SMTP_URL=smtps://resend:<key>@smtp.resend.com:465
 MAIL_FROM=The Music Repository <no-reply@themusicrepository.com>
-# Grafana + Tunnel (from step 4)
-GF_SECURITY_ADMIN_PASSWORD=<generate>
+# Tunnel (from step 4)
 TUNNEL_TOKEN=<from cloudflared tunnel token>
+# Observability (only when running --profile observability): a Grafana admin password, and point the
+# API's exporter at the collector. Leave OTEL_EXPORTER_OTLP_ENDPOINT unset to run without observability.
+GF_SECURITY_ADMIN_PASSWORD=<generate>
+# OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
 # Social providers, Turnstile, etc. — carry over as needed
 ```
 
@@ -104,16 +110,19 @@ TUNNEL_TOKEN=<from cloudflared tunnel token>
    | `themusicrepository.com` | `http://web:4321` |
    | `www.themusicrepository.com` | `http://web:4321` |
    | `api.themusicrepository.com` | `http://api:3000` |
-   | `grafana.themusicrepository.com` | `http://grafana:3000` |
+   | `grafana.themusicrepository.com` (only if running observability) | `http://grafana:3000` |
    Cloudflare auto-creates the proxied CNAMEs to `<tunnel-id>.cfargotunnel.com`.
-3. **Access:** add `grafana.themusicrepository.com` (and keep apex + www) to the existing Access
-   application; leave `api.` **ungated** (gating it breaks CORS/OAuth). SSL/TLS mode **Full**.
+3. **Access:** keep apex + www on the existing Access application (add `grafana.` too **only** when you
+   run the observability profile); leave `api.` **ungated** (gating it breaks CORS/OAuth). SSL/TLS **Full**.
 
 ## 5. Deploy
 
 ```bash
 cd /opt/tmr
 docker compose -f infra/podman/compose.prod.yaml up -d --build   # or: pnpm prod:up
+# with self-hosted observability (after setting GF_SECURITY_ADMIN_PASSWORD +
+# OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317 in .env):
+#   docker compose -f infra/podman/compose.prod.yaml --profile observability up -d --build
 ```
 `init` waits for Meilisearch `/health`, applies migrations, seeds auth + content, builds the search
 index, and — because R2 is configured — writes seed media into R2. `api` then starts and `cloudflared`

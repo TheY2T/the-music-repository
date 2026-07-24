@@ -9,15 +9,19 @@
   the dormant OpenTelemetry stack (ADR 0008) and the retired Meilisearch/MinIO capabilities (ADR 0048)
   come back as ordinary containers on the same host rather than paid managed services.
 - **Decision:**
-  - **One Hetzner box (US-East/Ashburn, CPX41: 8 vCPU / 16 GB / 240 GB NVMe, 20 TB traffic)** runs the
-    whole stack via `infra/podman/compose.prod.yaml`: Postgres, Meilisearch, the API and web images, the
-    self-hosted observability stack (OTel Collector → Tempo/Loki/Prometheus → Grafana), and a Cloudflare
-    Tunnel. A one-shot `init` service runs `db:deploy` (migrate + seed) — the compose equivalent of
-    Render's `preDeployCommand`.
+  - **One Hetzner box (Falkenstein/EU, CPX31: 4 vCPU / 8 GB / 160 GB NVMe, 20 TB traffic)** runs the
+    whole stack via `infra/podman/compose.prod.yaml`: Postgres, Meilisearch, the API and web images, and a
+    Cloudflare Tunnel; the self-hosted observability stack (OTel Collector → Tempo/Loki/Prometheus →
+    Grafana) is an **opt-in `observability` profile** — memory-capped per container and short-retention so
+    it fits alongside the app on 8 GB. A one-shot `init` service runs `db:deploy` (migrate + seed) — the
+    compose equivalent of Render's `preDeployCommand`. (Falkenstein/EU is the cost-effective region and
+    the only Hetzner region that includes 20 TB traffic; Cloudflare's edge masks origin latency. The
+    June-2026 Hetzner price increase means the field is now line-ball with DigitalOcean/Fly — revisit per
+    the backlog note.)
   - **Cloudflare Tunnel (`cloudflared`) is the only ingress.** No ports are published on any service and
-    the origin IP is never exposed; the tunnel routes `themusicrepository.com`/`www` → web,
-    `api.` → API, and `grafana.` → Grafana. TLS is terminated at Cloudflare and the tunnel is encrypted
-    end-to-end, so there is no origin certificate to manage on the box.
+    the origin IP is never exposed; the tunnel routes `themusicrepository.com`/`www` → web and
+    `api.` → API (+ `grafana.` → Grafana when the observability profile runs). TLS is terminated at
+    Cloudflare and the tunnel is encrypted end-to-end, so there is no origin certificate to manage.
   - **Media moves to Cloudflare R2** behind the existing `MediaLibrary` port via a new `S3MediaLibrary`
     (S3-compatible) adapter. R2 is a **public bucket on `media.themusicrepository.com`**, so the browser
     reads bytes directly from the edge (zero origin egress) and uploads via a short-lived presigned PUT.
@@ -27,11 +31,13 @@
     switches search to Meilisearch, `R2_BUCKET` switches media to R2; unset, both fall back to the
     Postgres adapters. So local dev and CI stay Postgres-only with no extra services, and the app still
     boots if either dependency is absent.
-  - **Observability is activated** by pointing the already-preloaded OTel SDK at the collector
-    (`OTEL_EXPORTER_OTLP_ENDPOINT`); no application code changes. Grafana is locked down (no anonymous
-    access, admin password) and reachable only through the tunnel behind Cloudflare Access.
+  - **Observability is opt-in** (`--profile observability`): bring up the memory-capped LGTM stack and
+    point the already-preloaded OTel SDK at the collector (`OTEL_EXPORTER_OTLP_ENDPOINT`) — no application
+    code changes. Grafana is locked down (no anonymous access, admin password) and reachable only through
+    the tunnel behind Cloudflare Access.
 - **Consequences:**
-  - What carries over from ADR 0049 unchanged: Cloudflare Access on apex+www (Grafana added), the
+  - What carries over from ADR 0049 unchanged: Cloudflare Access on apex+www (Grafana added when
+    observability is on), the
     `AUTH_COOKIE_DOMAIN` cross-subdomain cookie, `TRUSTED_ORIGINS`, Resend SMTP, the CDN cache rules, and
     `APP_ENV`-driven de-indexing. Web `PUBLIC_*` config is still baked at Docker build (compose
     `build.args`); the production web entry stays `server.mjs` (ADR 0051).

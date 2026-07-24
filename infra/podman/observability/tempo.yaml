@@ -15,3 +15,8 @@ storage:
       path: /var/tempo/traces
     wal:
       path: /var/tempo/wal
+
+# Delete trace blocks older than 7 days so the local store stays bounded on the box.
+compactor:
+  compaction:
+    block_retention: 168h
