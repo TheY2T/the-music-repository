@@ -77,9 +77,6 @@ export const FlagKeys = {
   InfoView: 'learning.info-view',
   /** Interactive score player — click/seek/A–B loop/scrub/metronome (ADR 0026); off = basic play/stop. */
   InteractiveScores: 'learning.interactive-scores',
-  /** Immersive instrument controls (ADR 0044) — fullscreen, instrument skins, and guitar
-   *  left/right handedness on the piano & guitar tools; persists per-user. Off = fixed single view. */
-  InstrumentCustomization: 'learning.instrument-customization',
   /** Interactive piano keyboard tool. */
   ToolKeyboard: 'tools.keyboard',
   /** Circle of fifths explorer tool. */
@@ -278,7 +275,6 @@ export const FlagDefaults = {
   [FlagKeys.UserCollections]: true,
   [FlagKeys.Progress]: true,
   [FlagKeys.InteractiveScores]: true,
-  [FlagKeys.InstrumentCustomization]: false,
   [FlagKeys.ToolPractice]: true,
   [FlagKeys.InfoView]: true,
   [FlagKeys.ToolKeyboard]: true,

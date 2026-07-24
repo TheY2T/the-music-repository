@@ -46,7 +46,15 @@ function percentTemplate(pct: number): TargetingRule {
   };
 }
 
-export default function AdminFlagManager({ locale }: { locale: Locale }) {
+export default function AdminFlagManager({
+  locale,
+  appEnv,
+}: {
+  locale: Locale;
+  /** The environment key this deployment resolves flags against (APP_ENV) — the editor defaults to and
+   * marks this env, so the admin reflects what the live site actually reads. */
+  appEnv?: string;
+}) {
   const tr = (key: MessageKey, params?: Record<string, string | number>) => t(locale, key, params);
 
   const [environments, setEnvironments] = useState<FlagEnvironmentRow[]>([]);
@@ -89,8 +97,17 @@ export default function AdminFlagManager({ locale }: { locale: Locale }) {
   const reloadEnvironments = useCallback(async () => {
     const items = await featureFlagAdminApi.listEnvironments();
     setEnvironments(items);
-    setSelectedEnvId((prev) => prev || items.find((e) => e.isDefault)?.id || items[0]?.id || '');
-  }, []);
+    // Default to the environment this deployment actually runs (APP_ENV) so the editor matches the live
+    // site; fall back to the DB default, then the first env.
+    setSelectedEnvId(
+      (prev) =>
+        prev ||
+        (appEnv ? items.find((e) => e.key === appEnv)?.id : undefined) ||
+        items.find((e) => e.isDefault)?.id ||
+        items[0]?.id ||
+        '',
+    );
+  }, [appEnv]);
 
   useEffect(() => {
     run(async () => {
@@ -166,7 +183,9 @@ export default function AdminFlagManager({ locale }: { locale: Locale }) {
             {environments.map((env) => (
               <option key={env.id} value={env.id}>
                 {env.label}
-                {env.isDefault ? ` (${tr('flagadmin.currentEnv')})` : ''}
+                {(appEnv ? env.key === appEnv : env.isDefault)
+                  ? ` (${tr('flagadmin.currentEnv')})`
+                  : ''}
               </option>
             ))}
           </Select>

@@ -1,6 +1,6 @@
 # ADR 0044 — Instrument customization (fullscreen, skins, guitar handedness, per-user preferences)
 
-- **Status:** accepted
+- **Status:** accepted (the `learning.instrument-customization` flag was later retired — the feature is now always on)
 - **Date:** 2026-07
 
 ## Context

@@ -13,7 +13,6 @@ const showInfoView = Astro.locals.flags.infoView;
 const logPracticeEnabled =
   Astro.locals.flags.toolPractice && Astro.locals.flags.progress && !!Astro.locals.user;
 const locale = Astro.locals.locale;
-const customization = Astro.locals.flags.instrumentCustomization;
 const authenticated = !!Astro.locals.user;
 ---
 
@@ -29,7 +28,7 @@ const authenticated = !!Astro.locals.user;
       <GuitarFretboardTool
         client:load
         locale={locale}
-        customization={customization}
+        customization={true}
         authenticated={authenticated}
       />
     </PageShell>

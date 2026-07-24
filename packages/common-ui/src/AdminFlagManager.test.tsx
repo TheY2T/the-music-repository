@@ -102,6 +102,17 @@ describe('AdminFlagManager', () => {
     expect(checkbox.checked).toBe(true);
   });
 
+  it('defaults to and marks the deployment environment (appEnv) over the DB default', async () => {
+    render(<AdminFlagManager locale="en" appEnv="uat" />);
+    await screen.findByText('tools.metronome');
+    const envSelect = screen.getByLabelText('Environment') as HTMLSelectElement;
+    const selected = envSelect.selectedOptions[0];
+    // Selected env is the deployed one (uat), not the DB default (dev), and it's marked current.
+    expect(selected?.textContent).toContain('UAT');
+    expect(selected?.textContent).toContain('current');
+    expect(selected?.textContent).not.toContain('Development');
+  });
+
   it('toggles a flag for the selected environment', async () => {
     render(<AdminFlagManager locale="en" />);
     const checkbox = (await screen.findByLabelText('Enabled')) as HTMLInputElement;

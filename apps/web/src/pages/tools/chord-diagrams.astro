@@ -14,7 +14,6 @@ const logPracticeEnabled =
   Astro.locals.flags.toolPractice && Astro.locals.flags.progress && !!Astro.locals.user;
 const locale = Astro.locals.locale;
 const authenticated = !!Astro.locals.user;
-const customization = Astro.locals.flags.instrumentCustomization;
 ---
 
 <BaseLayout
@@ -26,7 +25,7 @@ const customization = Astro.locals.flags.instrumentCustomization;
       subtitle={t(locale, 'tool.chord-diagrams.summary')}
       back={{ href: localizedPath(locale, '/tools'), label: t(locale, 'common.backTools') }}
     >
-      <ChordDiagramsTool client:load authenticated={authenticated} customization={customization} />
+      <ChordDiagramsTool client:load authenticated={authenticated} customization={true} />
     </PageShell>
     {showInfoView && <InfoView client:idle />}
     {logPracticeEnabled && <ToolPracticeLogger client:load enabled={true} />}

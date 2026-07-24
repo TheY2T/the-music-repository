@@ -13,6 +13,9 @@ if (!Astro.locals.flags.featureFlags) {
   return Astro.redirect('/admin');
 }
 const locale = Astro.locals.locale;
+// The environment this deployment resolves flags against (matches middleware's snapshot fetch), so the
+// admin editor defaults to + marks the env the live site actually reads.
+const appEnv = process.env.APP_ENV ?? 'dev';
 ---
 
 <BaseLayout noindex title={`${t(locale, 'flagadmin.title')} — ${t(locale, 'nav.admin')}`}>
@@ -22,6 +25,6 @@ const locale = Astro.locals.locale;
     back={{ href: localizedPath(locale, '/admin'), label: t(locale, 'common.backContent') }}
     maxWidth="max-w-6xl"
   >
-    <AdminFlagManager client:load locale={locale} />
+    <AdminFlagManager client:load locale={locale} appEnv={appEnv} />
   </PageShell>
 </BaseLayout>

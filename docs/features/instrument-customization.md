@@ -1,8 +1,6 @@
 # Feature: Instrument customization (fullscreen · skins · handedness)
 
-- **Phase:** 5 · **Status:** shipped
-- **Flag key:** `learning.instrument-customization` (from `@TheY2T/tmr-flags`) → web field
-  `instrumentCustomization`
+- **Phase:** 5 · **Status:** shipped · **always available** (not behind a feature flag)
 
 ## Purpose
 
@@ -14,8 +12,8 @@ sessions and pages.
 
 ## UX behaviour
 
-When `instrumentCustomization` is on, the piano (`/tools/keyboard`) and guitar (`/tools/fretboard`)
-tools gain a toolbar above the instrument:
+The piano (`/tools/keyboard`) and guitar (`/tools/fretboard`) tools have a toolbar above the
+instrument:
 
 - **Cinema mode** — a theater-mode toggle (like a video player's) that full-bleeds the tool to the
   browser width in-page and enlarges its canvas, without leaving the page (the header/nav stay visible).
@@ -36,7 +34,7 @@ tools gain a toolbar above the instrument:
   the right), the DOM fallback grid, the scale-box grid, and every chord diagram — including the chord
   diagrams and fingering charts embedded in catalogue articles.
 
-When the flag is off, the tools render their base view: right-handed, the `theme` skin, no controls.
+The defaults are right-handed with the `theme` skin; the toolbar lets learners change them.
 
 ## Data model
 
@@ -75,10 +73,9 @@ None registered.
   string columns + position label side).
 - **Integration:** `apps/api/src/preferences/infrastructure/drizzle-user-preferences.integration.test.ts`
   (Testcontainers Postgres — upsert/read round-trip; `pnpm test:integration`).
-- **E2E:** `apps/web/e2e/instrument-customization.spec.ts` (base view with the flag off; skin/handedness/
-  fullscreen controls when enabled).
+- **E2E:** `apps/web/e2e/instrument-customization.spec.ts` (skin/handedness/fullscreen controls render).
 
-Verify end-to-end: enable `learning.instrument-customization` in `/admin/feature-flags`, open
+Verify end-to-end: open
 `/tools/fretboard` — toggle left-handed and confirm the board + a catalogue article's chord diagram
 mirror; switch skins; enter/exit fullscreen. Signed in, reload → persisted; signed out → the
 localStorage copy still applies.

@@ -84,5 +84,5 @@ No backend — everything is computed in the browser (no API, no DB):
 ## Immersive customization
 
 The piano (`/tools/keyboard`) and guitar (`/tools/fretboard`) tools support fullscreen, instrument
-skins, and guitar left/right handedness behind `learning.instrument-customization`. Preferences persist
+skins, and guitar left/right handedness (always available). Preferences persist
 per user. See `docs/features/instrument-customization.md` (ADR 0044).
